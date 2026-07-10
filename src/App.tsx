@@ -11,7 +11,6 @@ import {
   navLinks,
   programOptions,
   programs,
-  reasons,
   trainingBadges,
   trainingIncludes,
   trustItems,
@@ -25,6 +24,49 @@ type DecorationItem =
   | { kind: 'icon'; icon: IconName; className: string }
   | { kind: 'arch'; className: string }
   | { kind: 'crescent'; className: string };
+
+const whyChooseItems: Array<{ title: string; description: string; icon: IconName }> = [
+  {
+    title: 'Qualified Egyptian Teachers',
+    description: 'Learn with experienced, patient, and certified Egyptian teachers.',
+    icon: 'teacher',
+  },
+  {
+    title: 'Al-Azhar Educational Background',
+    description: 'Strong foundation in authentic Islamic knowledge and values.',
+    icon: 'mosque',
+  },
+  {
+    title: 'Simple Approach for Non-Arabic Speakers',
+    description: 'Step-by-step lessons designed to build understanding and confidence.',
+    icon: 'chat',
+  },
+  {
+    title: 'Suitable for All Levels',
+    description: 'From beginner to advanced, we have the right program for you.',
+    icon: 'star',
+  },
+  {
+    title: 'Flexible One-to-One and Small Group Classes',
+    description: 'Choose the format that suits your schedule and goals.',
+    icon: 'users',
+  },
+  {
+    title: 'Parent Follow-up & Reports',
+    description: "Stay informed with regular updates on your child's progress.",
+    icon: 'clipboard',
+  },
+  {
+    title: 'Safe Online Learning Environment',
+    description: 'A secure, respectful, and moderated space for focused Islamic learning.',
+    icon: 'shield',
+  },
+  {
+    title: 'Free Trial Class',
+    description: 'Try a class for free and experience the Musliman Academy difference.',
+    icon: 'gift',
+  },
+];
 
 function SectionBadge({ icon, children, dark = false }: { icon?: IconName; children: string; dark?: boolean }) {
   return (
@@ -461,34 +503,94 @@ function AudienceSection() {
 }
 
 function WhyChooseSection() {
+  const cardsPerPage = 2;
+  const totalPages = Math.ceil(whyChooseItems.length / cardsPerPage);
+  const [activePage, setActivePage] = useState(0);
+  const [isSliderPaused, setIsSliderPaused] = useState(false);
+
+  const visibleCards = whyChooseItems.slice(
+    activePage * cardsPerPage,
+    activePage * cardsPerPage + cardsPerPage,
+  );
+
+  function goNext() {
+    setActivePage((prev) => (prev + 1) % totalPages);
+  }
+
+  function goPrev() {
+    setActivePage((prev) => (prev === 0 ? totalPages - 1 : prev - 1));
+  }
+
+  useEffect(() => {
+    if (isSliderPaused) {
+      return undefined;
+    }
+
+    const interval = window.setInterval(() => {
+      setActivePage((prev) => (prev + 1) % totalPages);
+    }, 2000);
+
+    return () => window.clearInterval(interval);
+  }, [isSliderPaused, totalPages]);
+
   return (
-    <section className="why-section" id="why-choose-us">
+    <section className="why-section section-light" id="why-choose-us">
       <SectionDecorations variant="light" type="why" />
       <div className="container why-container">
         <div className="why-layout">
           <div className="why-left">
-            <SectionBadge icon="star">Why Choose Musliman Academy?</SectionBadge>
-            <h2>A Simple, Trusted<br />Learning Experience</h2>
-            <p className="section-description">We make learning the Quran, Arabic, and Islamic studies easy, effective, and meaningful for every background, age, and level.</p>
-            <div className="reasons-grid">
-              {reasons.map((reason, index) => (
-                <article className="reason-card" key={reason.title}>
-                  <span className="reason-card__number">{index + 1}</span>
-                  <Icon name={reason.icon} />
-                  <div>
-                    <h3>{reason.title}</h3>
-                    <p>{reason.text}</p>
-                  </div>
-                </article>
-              ))}
+            <SectionBadge icon="star">Why Choose Musliman Academy</SectionBadge>
+            <h2><span>A Simple, Trusted</span><br /><span>Learning Experience</span></h2>
+            <p className="why-description">We make learning the Quran, Arabic, and Islamic studies easy, effective, and meaningful for every background, age, and level.</p>
+
+            <div
+              className="why-slider-area"
+              onMouseEnter={() => setIsSliderPaused(true)}
+              onMouseLeave={() => setIsSliderPaused(false)}
+            >
+              <div className="why-slider-controls">
+                <button type="button" className="why-slider-btn" onClick={goPrev} aria-label="Previous feature">
+                  <span aria-hidden="true">&lt;</span>
+                </button>
+                <span className="why-slider-count">{activePage + 1} / {totalPages}</span>
+                <button type="button" className="why-slider-btn" onClick={goNext} aria-label="Next feature">
+                  <span aria-hidden="true">&gt;</span>
+                </button>
+              </div>
+
+              <div className="why-slider">
+                {visibleCards.map((item, index) => (
+                  <article className="why-slide-card" key={`${item.title}-${index}`}>
+                    <span className="why-slide-card__number">{activePage * cardsPerPage + index + 1}</span>
+                    <div className="why-slide-card__icon">
+                      <Icon name={item.icon} />
+                    </div>
+                    <h3>{item.title}</h3>
+                    <div className="why-slide-card__line" />
+                    <p>{item.description}</p>
+                  </article>
+                ))}
+              </div>
+
+              <div className="why-slider-dots">
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <button
+                    type="button"
+                    key={index}
+                    className={`why-dot ${index === activePage ? 'is-active' : ''}`}
+                    onClick={() => setActivePage(index)}
+                    aria-label={`Show feature page ${index + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
           <WhyChooseVisual />
         </div>
-        <div className="why-stats stats-bar">
-          <div><Icon name="certificate" /><strong>10,000+</strong><span>Students Taught</span></div>
-          <div><Icon name="users" /><strong>50+</strong><span>Expert Teachers</span></div>
-          <div><Icon name="globe" /><strong>30+</strong><span>Countries Served</span></div>
+        <div className="why-stats">
+          <div className="why-stat"><Icon name="certificate" /><strong>10,000+</strong><span>Students Taught</span></div>
+          <div className="why-stat"><Icon name="users" /><strong>50+</strong><span>Expert Teachers</span></div>
+          <div className="why-stat"><Icon name="globe" /><strong>30+</strong><span>Countries Served</span></div>
         </div>
       </div>
     </section>

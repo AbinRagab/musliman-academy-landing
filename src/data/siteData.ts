@@ -3,7 +3,7 @@ import type { IconName } from '../components/Icon';
 export const contact = {
   whatsappDisplay: '+201038331058',
   whatsappNumber: '201038331058',
-  email: 'info@muslimanacademy.com',
+  email: 'AbinRagab@gmail.com',
   website: 'www.muslimanacademy.com',
 };
 
