@@ -9,7 +9,6 @@ import {
   faqs,
   howSteps,
   navLinks,
-  programOptions,
   programs,
   trainingBadges,
   trainingIncludes,
@@ -17,6 +16,7 @@ import {
 } from './data/siteData';
 
 type Theme = 'light' | 'dark';
+type BookingType = 'trial' | 'training';
 type DecorationVariant = 'light' | 'dark';
 type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'who' | 'why' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
 
@@ -24,6 +24,15 @@ type DecorationItem =
   | { kind: 'icon'; icon: IconName; className: string }
   | { kind: 'arch'; className: string }
   | { kind: 'crescent'; className: string };
+type BookingLeadData = Record<string, string | undefined> & {
+  requestType: 'Free Trial' | 'Teacher Training';
+  name: string;
+  whatsapp: string;
+  country: string;
+  preferredTime: string;
+  message: string;
+  source: string;
+};
 
 const whyChooseItems: Array<{ title: string; description: string; icon: IconName }> = [
   {
@@ -77,9 +86,9 @@ function SectionBadge({ icon, children, dark = false }: { icon?: IconName; child
   );
 }
 
-function Button({ href, children, icon = 'calendar', className = '' }: { href: string; children: string; icon?: IconName; className?: string }) {
+function Button({ href, children, icon = 'calendar', className = '', onClick }: { href: string; children: string; icon?: IconName; className?: string; onClick?: () => void }) {
   return (
-    <a className={`btn btn-primary ${className}`} href={href}>
+    <a className={`btn btn-primary ${className}`} href={href} onClick={onClick}>
       <Icon name={icon} />
       <span>{children}</span>
     </a>
@@ -103,7 +112,7 @@ function ThemeToggle({ theme, onToggle, className = '' }: { theme: Theme; onTogg
   );
 }
 
-function Navbar({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: () => void }) {
+function Navbar({ theme, onToggleTheme, onSelectBookingType }: { theme: Theme; onToggleTheme: () => void; onSelectBookingType: (type: BookingType) => void }) {
   const [open, setOpen] = useState(false);
   const logoVariant = theme === 'dark' ? 'light' : 'dark';
 
@@ -121,7 +130,7 @@ function Navbar({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: () => v
             <Icon name="whatsapp" />
           </a>
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-          <Button href="#book-trial">Book Free Trial</Button>
+          <Button href="#book-trial" onClick={() => onSelectBookingType('trial')}>Book Free Trial</Button>
           <button className="menu-button" type="button" aria-label="Open menu" onClick={() => setOpen(true)}>
             <Icon name="menu" />
           </button>
@@ -138,7 +147,16 @@ function Navbar({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: () => v
           <a key={link.href} href={link.href} onClick={() => setOpen(false)}>{link.label}</a>
         ))}
         <ThemeToggle theme={theme} onToggle={onToggleTheme} className="theme-toggle--mobile" />
-        <Button href="#book-trial" className="mobile-panel__cta">Book Free Trial</Button>
+        <Button
+          href="#book-trial"
+          className="mobile-panel__cta"
+          onClick={() => {
+            onSelectBookingType('trial');
+            setOpen(false);
+          }}
+        >
+          Book Free Trial
+        </Button>
       </div>
     </header>
   );
@@ -286,7 +304,7 @@ function SectionDecorations({ variant = 'light', type = 'default' }: { variant?:
   );
 }
 
-function HeroSection() {
+function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: BookingType) => void }) {
   return (
     <section className="hero section-dark" id="home">
       <SectionDecorations variant="dark" type="hero" />
@@ -305,7 +323,7 @@ function HeroSection() {
             <span>Today</span>
           </h1>
           <p>Book a free trial class for you or your child and experience our live, one-to-one Islamic learning with qualified Egyptian teachers.</p>
-          <Button href="#book-trial" icon="calendar" className="hero__cta">Book Your Free Trial Class</Button>
+          <Button href="#book-trial" icon="calendar" className="hero__cta" onClick={() => onSelectBookingType('trial')}>Book Your Free Trial Class</Button>
           <div className="hero-trust">
             <div><Icon name="laptop" /><span>Online Classes</span></div>
             <div><Icon name="clock" /><span>Flexible Schedule</span></div>
@@ -319,83 +337,289 @@ function HeroSection() {
   );
 }
 
-function TrialForm() {
-  const [submitted, setSubmitted] = useState(false);
+function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedLead, setSubmittedLead] = useState<BookingLeadData | null>(null);
+  const [formResetKey, setFormResetKey] = useState(0);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const isTraining = activeBookingType === 'training';
+  const heading = isTraining ? 'Join Teacher Training' : 'Book a Free Trial';
+  const description = isTraining
+    ? 'Tell us about your teaching background and our team will contact you with the suitable training path.'
+    : 'Fill in the form below and our team will get in touch with you.';
+  const successMessage = isTraining
+    ? 'Your teacher training request has been received. Our team will contact you shortly.'
+    : 'Your free trial request has been received. Our team will contact you shortly.';
+
+  useEffect(() => {
+    setErrors({});
+    setIsSubmitting(false);
+    setSubmittedLead(null);
+    setFormResetKey((key) => key + 1);
+  }, [activeBookingType]);
+
+  function getFormValue(formData: FormData, field: string) {
+    return String(formData.get(field) || '').trim();
+  }
+
+  function getFieldError(field: string) {
+    return errors[field] ? <span className="field-error">{errors[field]}</span> : null;
+  }
+
+  function buildWhatsAppUrl(leadData: BookingLeadData) {
+    const message = leadData.requestType === 'Teacher Training'
+      ? [
+        'Hello Musliman Academy, I would like to join the Teacher Training program.',
+        '',
+        'Request Type: Teacher Training',
+        `Name: ${leadData.name}`,
+        `WhatsApp: ${leadData.whatsapp}`,
+        `Country: ${leadData.country}`,
+        `Teaching Experience: ${leadData.experience}`,
+        `Current Qualification: ${leadData.qualification}`,
+        `Training Goal: ${leadData.trainingGoal}`,
+        `Preferred Time: ${leadData.preferredTime}`,
+        `Message: ${leadData.message}`,
+      ].join('\n')
+      : [
+        'Hello Musliman Academy, I would like to book a free trial class.',
+        '',
+        'Request Type: Free Trial',
+        `Name: ${leadData.name}`,
+        `WhatsApp: ${leadData.whatsapp}`,
+        `Country: ${leadData.country}`,
+        `Student Age: ${leadData.age}`,
+        `Program: ${leadData.program}`,
+        `Preferred Time: ${leadData.preferredTime}`,
+        `Message: ${leadData.message}`,
+      ].join('\n');
+
+    return `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(message)}`;
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+
+    if (isSubmitting) {
+      return;
+    }
+
+    const formData = new FormData(event.currentTarget);
+    const requiredFields = isTraining
+      ? ['name', 'whatsapp', 'country', 'experience', 'qualification', 'trainingGoal', 'preferredTime']
+      : ['name', 'whatsapp', 'country', 'age', 'program', 'preferredTime'];
+    const nextErrors: Record<string, string> = {};
+
+    requiredFields.forEach((field) => {
+      if (!getFormValue(formData, field)) {
+        nextErrors[field] = 'This field is required.';
+      }
+    });
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
+
+    setErrors({});
+    setIsSubmitting(true);
+
+    const leadData: BookingLeadData = isTraining
+      ? {
+        requestType: 'Teacher Training',
+        name: getFormValue(formData, 'name'),
+        whatsapp: getFormValue(formData, 'whatsapp'),
+        country: getFormValue(formData, 'country'),
+        experience: getFormValue(formData, 'experience'),
+        qualification: getFormValue(formData, 'qualification'),
+        trainingGoal: getFormValue(formData, 'trainingGoal'),
+        preferredTime: getFormValue(formData, 'preferredTime'),
+        message: getFormValue(formData, 'message'),
+        source: 'Musliman Academy Website',
+      }
+      : {
+        requestType: 'Free Trial',
+        name: getFormValue(formData, 'name'),
+        whatsapp: getFormValue(formData, 'whatsapp'),
+        country: getFormValue(formData, 'country'),
+        age: getFormValue(formData, 'age'),
+        program: getFormValue(formData, 'program'),
+        preferredTime: getFormValue(formData, 'preferredTime'),
+        message: getFormValue(formData, 'message'),
+        source: 'Musliman Academy Website',
+      };
+
+    // TODO: Send leadData to Google Sheets or CRM when integration details are available.
+    window.setTimeout(() => {
+      setSubmittedLead(leadData);
+      setIsSubmitting(false);
+    }, 650);
+  }
+
+  function resetRequest() {
+    setErrors({});
+    setIsSubmitting(false);
+    setSubmittedLead(null);
+    setFormResetKey((key) => key + 1);
   }
 
   return (
-    <section id="book-trial" className="booking-section">
+    <section id="book-trial" className="booking-section section-light">
       <SectionDecorations variant="light" type="trial" />
       <div className="container">
-        <form className="trial-form" onSubmit={handleSubmit}>
-          <div className="trial-form__heading">
-            <Icon name="calendar" />
-            <h2>Book a Free Trial</h2>
-            <p>Fill in the form below and our team will get in touch with you.</p>
+        <div className="booking-card">
+          <div className="booking-heading">
+            <SectionBadge icon={isTraining ? 'certificate' : 'calendar'}>{isTraining ? 'Teacher Training' : 'Book Online'}</SectionBadge>
+            <h2>{heading}</h2>
+            <p>{description}</p>
           </div>
-          <div className="form-grid">
-            <label>
-              <span>Student / Parent Name</span>
-              <input type="text" name="name" placeholder="Enter your full name" required />
-            </label>
-            <label>
-              <span>WhatsApp Number</span>
-              <input type="tel" name="whatsapp" placeholder="e.g. +20 123 456 7890" required />
-            </label>
-            <label>
-              <span>Country</span>
-              <select name="country" required defaultValue="">
-                <option value="" disabled>Select your country</option>
-                {countryOptions.map((country) => <option key={country}>{country}</option>)}
-              </select>
-            </label>
-            <label>
-              <span>Student Age</span>
-              <select name="age" required defaultValue="">
-                <option value="" disabled>Select age</option>
-                <option>4 - 6</option>
-                <option>7 - 10</option>
-                <option>11 - 15</option>
-                <option>16 - 18</option>
-                <option>Adult</option>
-              </select>
-            </label>
-            <label>
-              <span>Program Interested In</span>
-              <select name="program" required defaultValue="">
-                <option value="" disabled>Select a program</option>
-                {programOptions.map((program) => <option key={program}>{program}</option>)}
-              </select>
-            </label>
-            <label>
-              <span>Preferred Class Time</span>
-              <select name="time" required defaultValue="">
-                <option value="" disabled>Select preferred time</option>
-                <option>Morning</option>
-                <option>Afternoon</option>
-                <option>Evening</option>
-                <option>Weekend</option>
-                <option>Flexible</option>
-              </select>
-            </label>
-            <label className="form-grid__full">
-              <span>Message (Optional)</span>
-              <textarea name="message" maxLength={300} placeholder="Tell us anything else we should know..." />
-              <small>0 / 300</small>
-            </label>
+
+          <div className="booking-toggle" role="tablist" aria-label="Booking request type">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={!isTraining}
+              className={`booking-toggle__btn ${activeBookingType === 'trial' ? 'is-active' : ''}`}
+              onClick={() => onBookingTypeChange('trial')}
+            >
+              Book a Free Trial
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={isTraining}
+              className={`booking-toggle__btn ${activeBookingType === 'training' ? 'is-active' : ''}`}
+              onClick={() => onBookingTypeChange('training')}
+            >
+              Teacher Training
+            </button>
           </div>
-          <button className="btn btn-primary trial-form__button" type="submit">
-            <Icon name="send" />
-            <span>Book Free Trial</span>
-          </button>
-          <div className={`success-note ${submitted ? 'is-visible' : ''}`}>
-            <Icon name="shield" /> Our team will contact you shortly.
-          </div>
-        </form>
+
+          {submittedLead ? (
+            <div className="booking-success">
+              <Icon name="shield" />
+              <h3>Request Received</h3>
+              <p>{successMessage}</p>
+              <div className="booking-success__actions">
+                <a className="btn whatsapp-btn" href={buildWhatsAppUrl(submittedLead)} target="_blank" rel="noreferrer">
+                  <Icon name="whatsapp" />
+                  <span>Continue on WhatsApp</span>
+                </a>
+                <button className="btn btn-primary" type="button" onClick={resetRequest}>
+                  <Icon name="send" />
+                  <span>Submit Another Request</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form className="booking-form" onSubmit={handleSubmit} noValidate key={`${activeBookingType}-${formResetKey}`}>
+              <div className="form-grid">
+                <label>
+                  <span>{isTraining ? 'Full Name' : 'Student / Parent Name'}</span>
+                  <input type="text" name="name" placeholder="Enter your full name" aria-invalid={Boolean(errors.name)} />
+                  {getFieldError('name')}
+                </label>
+                <label>
+                  <span>WhatsApp Number</span>
+                  <input type="tel" name="whatsapp" placeholder="e.g. +20 123 456 7890" aria-invalid={Boolean(errors.whatsapp)} />
+                  {getFieldError('whatsapp')}
+                </label>
+                <label>
+                  <span>Country</span>
+                  <select name="country" defaultValue="" aria-invalid={Boolean(errors.country)}>
+                    <option value="" disabled>Select your country</option>
+                    {countryOptions.map((country) => <option key={country}>{country}</option>)}
+                  </select>
+                  {getFieldError('country')}
+                </label>
+
+                {isTraining ? (
+                  <>
+                    <label>
+                      <span>Teaching Experience</span>
+                      <select name="experience" defaultValue="" aria-invalid={Boolean(errors.experience)}>
+                        <option value="" disabled>Select experience</option>
+                        <option>No experience</option>
+                        <option>Less than 1 year</option>
+                        <option>1-2 years</option>
+                        <option>3+ years</option>
+                      </select>
+                      {getFieldError('experience')}
+                    </label>
+                    <label>
+                      <span>Current Qualification</span>
+                      <select name="qualification" defaultValue="" aria-invalid={Boolean(errors.qualification)}>
+                        <option value="" disabled>Select qualification</option>
+                        <option>Quran Teacher</option>
+                        <option>Arabic Teacher</option>
+                        <option>Islamic Studies Teacher</option>
+                        <option>Ijazah Holder</option>
+                        <option>Student of Knowledge</option>
+                        <option>Other</option>
+                      </select>
+                      {getFieldError('qualification')}
+                    </label>
+                    <label>
+                      <span>Training Goal</span>
+                      <select name="trainingGoal" defaultValue="" aria-invalid={Boolean(errors.trainingGoal)}>
+                        <option value="" disabled>Select training goal</option>
+                        <option>Teach non-Arabic speakers</option>
+                        <option>Improve online teaching skills</option>
+                        <option>Learn lesson planning</option>
+                        <option>Improve student follow-up</option>
+                        <option>Join Musliman Academy teachers</option>
+                        <option>Other</option>
+                      </select>
+                      {getFieldError('trainingGoal')}
+                    </label>
+                  </>
+                ) : (
+                  <>
+                    <label>
+                      <span>Student Age</span>
+                      <select name="age" defaultValue="" aria-invalid={Boolean(errors.age)}>
+                        <option value="" disabled>Select age</option>
+                        <option>Child</option>
+                        <option>Teenager</option>
+                        <option>Adult</option>
+                      </select>
+                      {getFieldError('age')}
+                    </label>
+                    <label>
+                      <span>Program Interested In</span>
+                      <select name="program" defaultValue="" aria-invalid={Boolean(errors.program)}>
+                        <option value="" disabled>Select a program</option>
+                        {programs.map((program) => <option key={program.title}>{program.title}</option>)}
+                      </select>
+                      {getFieldError('program')}
+                    </label>
+                  </>
+                )}
+
+                <label>
+                  <span>{isTraining ? 'Preferred Training Time' : 'Preferred Class Time'}</span>
+                  <select name="preferredTime" defaultValue="" aria-invalid={Boolean(errors.preferredTime)}>
+                    <option value="" disabled>Select preferred time</option>
+                    <option>Morning</option>
+                    <option>Afternoon</option>
+                    <option>Evening</option>
+                    <option>Flexible</option>
+                  </select>
+                  {getFieldError('preferredTime')}
+                </label>
+                <label className="form-grid__full">
+                  <span>Message (Optional)</span>
+                  <textarea name="message" maxLength={300} placeholder="Tell us anything else we should know..." />
+                </label>
+              </div>
+              <button className="btn btn-primary booking-form__button" type="submit" disabled={isSubmitting}>
+                <Icon name="send" />
+                <span>{isSubmitting ? 'Submitting...' : isTraining ? 'Submit Teacher Training Request' : 'Book Free Trial'}</span>
+              </button>
+            </form>
+          )}
+        </div>
       </div>
     </section>
   );
@@ -622,7 +846,7 @@ function HowItWorksSection() {
   );
 }
 
-function TeacherTrainingSection() {
+function TeacherTrainingSection({ onSelectBookingType }: { onSelectBookingType: (type: BookingType) => void }) {
   return (
     <section className="training section-dark" id="teacher-training">
       <SectionDecorations variant="dark" type="training" />
@@ -636,7 +860,7 @@ function TeacherTrainingSection() {
               <div key={item.title}><Icon name={item.icon} /><span>{item.title}</span></div>
             ))}
           </div>
-          <Button href="#book-trial" icon="certificate" className="training__cta">Join Teacher Training</Button>
+          <Button href="#book-trial" icon="certificate" className="training__cta" onClick={() => onSelectBookingType('training')}>Join Teacher Training</Button>
         </div>
         <ClassIllustration mode="training" />
         <div className="training-badges">
@@ -766,6 +990,7 @@ export default function App() {
 
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
+  const [activeBookingType, setActiveBookingType] = useState<BookingType>('trial');
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -778,17 +1003,17 @@ export default function App() {
 
   return (
     <div className="app-shell" data-theme={theme}>
-      <Navbar theme={theme} onToggleTheme={toggleTheme} />
+      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} />
       <main>
-        <HeroSection />
-        <TrialForm />
+        <HeroSection onSelectBookingType={setActiveBookingType} />
+        <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} />
         <AboutSection />
         <TrustBarSection />
         <ProgramsSection />
         <AudienceSection />
         <WhyChooseSection />
         <HowItWorksSection />
-        <TeacherTrainingSection />
+        <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />
         <FAQSection />
       </main>
       <Footer />

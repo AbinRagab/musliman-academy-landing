@@ -1206,41 +1206,79 @@ p {
 .booking-section {
   position: relative;
   z-index: 5;
+  overflow: hidden;
+  isolation: isolate;
   margin-top: -90px;
-  padding-bottom: 72px;
+  padding: 96px 0 72px;
+  background: #F8F7F3;
 }
 
-.trial-form {
-  width: min(100%, 1040px);
+.booking-card {
+  max-width: 1120px;
   margin-inline: auto;
-  padding: 34px 46px 38px;
-  border: 1px solid rgba(184, 115, 51, 0.2);
-  border-radius: 8px;
-  background: var(--white);
-  box-shadow: 0 28px 70px rgba(11, 31, 58, 0.16);
+  padding: 42px;
+  border: 1px solid #E6E8EC;
+  border-radius: 24px;
+  background: #FFFFFF;
+  box-shadow: 0 24px 60px rgba(11, 31, 58, 0.1);
 }
 
-.trial-form__heading {
-  max-width: 610px;
-  margin: 0 auto 24px;
+.booking-heading {
+  max-width: 720px;
+  margin: 0 auto 28px;
   text-align: center;
 }
 
-.trial-form__heading svg {
-  display: inline-block;
-  color: var(--copper);
-  width: 34px;
-  height: 34px;
-  margin-bottom: 8px;
+.booking-heading .section-badge {
+  margin-inline: auto;
 }
 
-.trial-form__heading h2 {
-  font-size: 2.05rem;
+.booking-heading h2 {
+  margin-top: 18px;
+  color: #0B1F3A;
+  font-size: 2.45rem;
 }
 
-.trial-form__heading p {
+.booking-heading p {
+  max-width: 620px;
+  margin: 12px auto 0;
   color: var(--muted);
-  font-size: 0.96rem;
+  font-size: 1rem;
+}
+
+.booking-toggle {
+  display: flex;
+  gap: 6px;
+  width: fit-content;
+  margin: 0 auto 34px;
+  padding: 6px;
+  border: 1px solid rgba(184, 115, 51, 0.35);
+  border-radius: 999px;
+  background: #F8F7F3;
+}
+
+.booking-toggle__btn {
+  padding: 14px 28px;
+  border: 0;
+  border-radius: 999px;
+  color: #0B1F3A;
+  background: transparent;
+  font-weight: 800;
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.booking-toggle__btn.is-active {
+  color: #FFFFFF;
+  background: #0B1F3A;
+  box-shadow: 0 10px 24px rgba(11, 31, 58, 0.18);
+}
+
+.booking-toggle__btn:not(.is-active):hover {
+  color: #B87333;
+}
+
+.booking-form {
+  width: 100%;
 }
 
 .form-grid {
@@ -1285,42 +1323,73 @@ p {
   box-shadow: 0 0 0 4px rgba(184, 115, 51, 0.12);
 }
 
+.form-grid [aria-invalid='true'] {
+  border-color: #b42318;
+  background: #fff7f6;
+}
+
+.field-error {
+  color: #b42318;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
 .form-grid__full {
   position: relative;
   grid-column: 1 / -1;
 }
 
-.form-grid__full small {
-  position: absolute;
-  right: 16px;
-  bottom: 12px;
-  color: #8793a5;
-  font-weight: 500;
-}
-
-.trial-form__button {
+.booking-form__button {
   display: flex;
   width: min(440px, 100%);
   margin: 24px auto 0;
 }
 
-.success-note {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: min(440px, 100%);
-  margin: 12px auto 0;
-  padding: 12px 16px;
+.booking-form__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+  transform: none;
+}
+
+.booking-success {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 34px;
   border: 1px solid rgba(18, 140, 72, 0.2);
-  border-radius: 8px;
+  border-radius: 20px;
   background: #ecfdf5;
   color: #0f7a3a;
+  text-align: center;
+}
+
+.booking-success > svg {
+  width: 58px;
+  height: 58px;
+  padding: 14px;
+  border-radius: 50%;
+  color: #0f7a3a;
+  background: rgba(18, 140, 72, 0.12);
+}
+
+.booking-success h3 {
+  color: #0B1F3A;
+  font-size: 1.65rem;
+}
+
+.booking-success p {
+  color: #255f3d;
   font-weight: 800;
 }
 
-.success-note.is-visible {
+.booking-success__actions {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
 }
 
 /* About and trust */
@@ -2538,7 +2607,7 @@ p {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.app-shell[data-theme='dark'] .trial-form,
+.app-shell[data-theme='dark'] .booking-card,
 .app-shell[data-theme='dark'] .program-card,
 .app-shell[data-theme='dark'] .audience-card,
 .app-shell[data-theme='dark'] .why-slide-card,
@@ -2559,7 +2628,7 @@ p {
   background: #123052;
 }
 
-.app-shell[data-theme='dark'] .trial-form__heading p,
+.app-shell[data-theme='dark'] .booking-heading p,
 .app-shell[data-theme='dark'] .program-card p,
 .app-shell[data-theme='dark'] .audience-card p,
 .app-shell[data-theme='dark'] .why-slide-card p,
@@ -2607,6 +2676,19 @@ p {
 .app-shell[data-theme='dark'] .trust-bar__item svg {
   color: #B87333;
   background: rgba(184, 115, 51, 0.16);
+}
+
+.app-shell[data-theme='dark'] .booking-toggle {
+  border-color: rgba(184, 115, 51, 0.42);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.app-shell[data-theme='dark'] .booking-toggle__btn {
+  color: #f8fafc;
+}
+
+.app-shell[data-theme='dark'] .booking-toggle__btn.is-active {
+  background: #B87333;
 }
 
 .app-shell[data-theme='dark'] .accordion__icon,
@@ -2886,8 +2968,8 @@ p {
     grid-template-columns: 1fr;
   }
 
-  .trial-form {
-    padding: 26px 22px;
+  .booking-card {
+    padding: 28px;
   }
 
   .booking-section {
@@ -2960,6 +3042,19 @@ p {
 
   .why-container {
     width: min(100% - 28px, 1200px);
+  }
+
+  .booking-card {
+    padding: 24px;
+  }
+
+  .booking-toggle {
+    width: 100%;
+  }
+
+  .booking-toggle__btn {
+    flex: 1;
+    padding-inline: 16px;
   }
 }
 
