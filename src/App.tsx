@@ -5,6 +5,7 @@ import Logo from './components/Logo';
 import {
   audiences,
   contact,
+  countryOptions,
   faqs,
   howSteps,
   navLinks,
@@ -17,6 +18,13 @@ import {
 } from './data/siteData';
 
 type Theme = 'light' | 'dark';
+type DecorationVariant = 'light' | 'dark';
+type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'who' | 'why' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
+
+type DecorationItem =
+  | { kind: 'icon'; icon: IconName; className: string }
+  | { kind: 'arch'; className: string }
+  | { kind: 'crescent'; className: string };
 
 function SectionBadge({ icon, children, dark = false }: { icon?: IconName; children: string; dark?: boolean }) {
   return (
@@ -154,10 +162,92 @@ function WhyChooseVisual() {
   );
 }
 
+const sectionDecorationItems: Record<DecorationType, DecorationItem[]> = {
+  hero: [
+    { kind: 'arch', className: 'decor-arch--hero' },
+    { kind: 'crescent', className: 'decor-crescent--hero is-accent' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--hero-star-one' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--hero-star-two is-accent' },
+  ],
+  trial: [
+    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--trial-book is-accent' },
+    { kind: 'crescent', className: 'decor-crescent--trial' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--trial-star is-accent' },
+  ],
+  about: [
+    { kind: 'icon', icon: 'quranStand', className: 'decor-icon--book decor-icon--xl decor-pos--about-book is-accent' },
+    { kind: 'icon', icon: 'globe', className: 'decor-icon--globe decor-icon--md decor-pos--about-globe' },
+    { kind: 'crescent', className: 'decor-crescent--about is-accent' },
+  ],
+  programs: [
+    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--lg decor-pos--programs-book' },
+    { kind: 'icon', icon: 'arabicLetters', className: 'decor-icon--arabic decor-icon--md decor-pos--programs-arabic is-accent' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--programs-star is-accent' },
+  ],
+  who: [
+    { kind: 'icon', icon: 'globe', className: 'decor-icon--globe decor-icon--lg decor-pos--who-globe' },
+    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--who-book is-accent' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--who-star is-accent' },
+  ],
+  why: [
+    { kind: 'arch', className: 'decor-arch--why' },
+    { kind: 'icon', icon: 'shield', className: 'decor-icon--shield decor-icon--lg decor-pos--why-shield' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--why-star is-accent' },
+  ],
+  steps: [
+    { kind: 'icon', icon: 'calendar', className: 'decor-icon--calendar decor-icon--lg decor-pos--steps-calendar' },
+    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--steps-book is-accent' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--steps-star is-accent' },
+  ],
+  training: [
+    { kind: 'arch', className: 'decor-arch--training' },
+    { kind: 'icon', icon: 'teacher', className: 'decor-icon--graduation decor-icon--lg decor-pos--training-teacher' },
+    { kind: 'icon', icon: 'certificate', className: 'decor-icon--certificate decor-icon--md decor-pos--training-certificate is-accent' },
+    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--training-book' },
+  ],
+  faq: [
+    { kind: 'icon', icon: 'chat', className: 'decor-icon--help decor-icon--lg decor-pos--faq-help' },
+    { kind: 'crescent', className: 'decor-crescent--faq is-accent' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--faq-star is-accent' },
+  ],
+  footer: [
+    { kind: 'arch', className: 'decor-arch--footer' },
+    { kind: 'crescent', className: 'decor-crescent--footer is-accent' },
+    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--footer-book' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--footer-star is-accent' },
+  ],
+  default: [
+    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--default-book is-accent' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--default-star' },
+  ],
+};
+
+function SectionDecorations({ variant = 'light', type = 'default' }: { variant?: DecorationVariant; type?: DecorationType }) {
+  return (
+    <div className={`section-decorations section-decorations--${variant} section-decorations--${type}`} aria-hidden="true">
+      {sectionDecorationItems[type].map((item, index) => {
+        if (item.kind === 'arch') {
+          return <span className={`decor-arch ${item.className}`} key={`${item.kind}-${index}`} />;
+        }
+
+        if (item.kind === 'crescent') {
+          return <span className={`decor-crescent ${item.className}`} key={`${item.kind}-${index}`} />;
+        }
+
+        return (
+          <span className={`decor-icon ${item.className}`} key={`${item.icon}-${index}`}>
+            <Icon name={item.icon} />
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 function HeroSection() {
   return (
     <section className="hero section-dark" id="home">
-      <div className="pattern pattern--top-right" />
+      <SectionDecorations variant="dark" type="hero" />
       <div className="container hero__grid">
         <div className="hero__content">
           <div className="hero__eyebrow">
@@ -197,6 +287,7 @@ function TrialForm() {
 
   return (
     <section id="book-trial" className="booking-section">
+      <SectionDecorations variant="light" type="trial" />
       <div className="container">
         <form className="trial-form" onSubmit={handleSubmit}>
           <div className="trial-form__heading">
@@ -217,14 +308,7 @@ function TrialForm() {
               <span>Country</span>
               <select name="country" required defaultValue="">
                 <option value="" disabled>Select your country</option>
-                <option>United States</option>
-                <option>United Kingdom</option>
-                <option>Canada</option>
-                <option>Australia</option>
-                <option>Egypt</option>
-                <option>Saudi Arabia</option>
-                <option>United Arab Emirates</option>
-                <option>Other</option>
+                {countryOptions.map((country) => <option key={country}>{country}</option>)}
               </select>
             </label>
             <label>
@@ -278,16 +362,19 @@ function TrialForm() {
 function AboutSection() {
   return (
     <section className="about-section section-light" id="about">
-      <div className="container about-section__grid">
+      <SectionDecorations variant="light" type="about" />
+      <div className="container about-container about-section__grid">
         <div className="about-visual">
-          <div className="about-arch">
-            <Icon name="quranStand" />
-          </div>
+          <img
+            src="/assets/about-visual.png"
+            alt="Quran learning visual"
+            className="about-visual__image"
+          />
         </div>
         <div className="about-content">
           <SectionBadge icon="star">About Musliman Academy</SectionBadge>
           <h2>Every Learner Has a Way</h2>
-          <p className="lead">At Musliman Academy, we make learning simple, clear, and achievable through the right method, patient guidance, and step-by-step support for every student.</p>
+          <p className="about-lead">At Musliman Academy, we make learning simple, clear, and achievable through the right method, patient guidance, and step-by-step support for every student.</p>
           <p>At Musliman Academy, we believe that every learner has a way. Every student learns differently, so we provide simple, patient, and step-by-step online education designed around each learner's level and needs.</p>
           <p>The Academy offers Quran, Arabic, Tajweed, Islamic Studies, Islamic Values, Quran Memorization, Quran Tafseer, Tarteel Qaidah, and Teacher Training programs through qualified Egyptian teachers with Al-Azhar educational background.</p>
         </div>
@@ -299,6 +386,7 @@ function AboutSection() {
 function TrustBarSection() {
   return (
     <section className="trust-section" aria-label="Academy trust highlights">
+      <SectionDecorations variant="light" type="default" />
       <div className="container">
         <div className="trust-bar">
           {trustItems.map((item) => (
@@ -316,6 +404,7 @@ function TrustBarSection() {
 function ProgramsSection() {
   return (
     <section className="programs section-light" id="programs">
+      <SectionDecorations variant="light" type="programs" />
       <div className="container">
         <div className="section-heading section-heading--center">
           <SectionBadge icon="star">Our Programs</SectionBadge>
@@ -341,6 +430,7 @@ function ProgramsSection() {
 function AudienceSection() {
   return (
     <section className="audience section-light" id="who-we-teach">
+      <SectionDecorations variant="light" type="who" />
       <div className="container">
         <div className="audience__top">
           <div className="audience__copy">
@@ -373,6 +463,7 @@ function AudienceSection() {
 function WhyChooseSection() {
   return (
     <section className="why-section" id="why-choose-us">
+      <SectionDecorations variant="light" type="why" />
       <div className="container why-container">
         <div className="why-layout">
           <div className="why-left">
@@ -407,6 +498,7 @@ function WhyChooseSection() {
 function HowItWorksSection() {
   return (
     <section className="how section-warm" id="how-it-works">
+      <SectionDecorations variant="light" type="steps" />
       <div className="container">
         <div className="section-heading section-heading--center">
           <span className="eyebrow-line">How It Works</span>
@@ -431,7 +523,7 @@ function HowItWorksSection() {
 function TeacherTrainingSection() {
   return (
     <section className="training section-dark" id="teacher-training">
-      <div className="pattern pattern--top-left" />
+      <SectionDecorations variant="dark" type="training" />
       <div className="container training__grid">
         <div className="training__content">
           <SectionBadge icon="certificate" dark>Teacher Training Program</SectionBadge>
@@ -460,6 +552,7 @@ function FAQSection() {
 
   return (
     <section className="faq section-light" id="faq">
+      <SectionDecorations variant="light" type="faq" />
       <div className="container">
         <div className="section-heading section-heading--center">
           <span className="eyebrow-line">FAQ</span>
@@ -508,6 +601,7 @@ function Footer() {
 
   return (
     <footer className="footer">
+      <SectionDecorations variant="dark" type="footer" />
       <div className="container footer__grid">
         <div className="footer__brand">
           <Logo variant="light" />
