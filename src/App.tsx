@@ -1,5 +1,7 @@
 import { FormEvent, MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok } from 'react-icons/fa6';
+import type { IconType } from 'react-icons';
 import './styles.css';
 import Icon, { IconName } from './components/Icon';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -42,6 +44,33 @@ type BookingLeadData = Record<string, string | undefined> & {
 // TODO: move this URL to an environment variable before production if needed.
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJ0VhS9N31RZtRt37NIj8MQHp66luS_1qMInzfv4wagELRjc3w6daWeVRX0CXOIOXx/exec';
 const WHATSAPP_NUMBER = '+0201038331058';
+// TODO: Add YouTube social link when the official Musliman Academy YouTube URL is available.
+const faqSocialLinks: Array<{ name: string; url: string; className: string; icon: IconType }> = [
+  {
+    name: 'Facebook',
+    url: 'https://www.facebook.com/muslimanacademy',
+    className: 'facebook',
+    icon: FaFacebookF,
+  },
+  {
+    name: 'Instagram',
+    url: 'https://www.instagram.com/muslimanacademy/',
+    className: 'instagram',
+    icon: FaInstagram,
+  },
+  {
+    name: 'LinkedIn',
+    url: 'https://www.linkedin.com/company/musliman-academy/',
+    className: 'linkedin',
+    icon: FaLinkedinIn,
+  },
+  {
+    name: 'TikTok',
+    url: 'https://www.tiktok.com/@muslimanacademy',
+    className: 'tiktok',
+    icon: FaTiktok,
+  },
+];
 
 const faqIcons: IconName[] = ['laptop', 'book', 'users', 'gift', 'clipboardCheck', 'user'];
 const experienceOptions = ['none', 'lessThanOne', 'oneToTwo', 'threePlus'];
@@ -1060,6 +1089,27 @@ function FAQSection() {
               <Icon name="whatsapp" /> {t('faq.whatsappCta')}
             </a>
             <div className="faq-card__trust"><Icon name="shieldCheck" />{t('faq.trust')}</div>
+            <div className="faq-social-block">
+              <span className="faq-social-title">Follow us on social media</span>
+              <div className="faq-social-links" aria-label="Musliman Academy social media links">
+                {faqSocialLinks.map((item) => {
+                  const SocialIcon = item.icon;
+
+                  return (
+                    <a
+                      key={item.name}
+                      href={item.url}
+                      className={`faq-social-link faq-social-link--${item.className}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Follow Musliman Academy on ${item.name}`}
+                    >
+                      <SocialIcon aria-hidden="true" />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
           </aside>
         </div>
       </div>
@@ -1108,10 +1158,22 @@ function Footer() {
           <a href={`mailto:${contact.email}`}><Icon name="mail" /><span>{t('footer.email')}<br /><small>{contact.email}</small></span></a>
           <a href="#home"><Icon name="globe" /><span>{t('footer.website')}<br /><small>{contact.website}</small></span></a>
           <div className="social-links">
-            <a href="#" aria-label="Facebook"><Icon name="link" /></a>
-            <a href="#" aria-label="Instagram"><Icon name="link" /></a>
-            <a href="#" aria-label="YouTube"><Icon name="link" /></a>
-            <a href="#" aria-label="TikTok"><Icon name="link" /></a>
+            {faqSocialLinks.map((item) => {
+              const SocialIcon = item.icon;
+
+              return (
+                <a
+                  key={item.name}
+                  href={item.url}
+                  className={`faq-social-link--${item.className}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Follow Musliman Academy on ${item.name}`}
+                >
+                  <SocialIcon aria-hidden="true" />
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>

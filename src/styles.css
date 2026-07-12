@@ -979,13 +979,13 @@ p {
 .hero-curve {
   position: absolute;
   left: 50%;
-  bottom: -1px;
+  bottom: 20px;
   transform: translateX(-50%);
   width: 125%;
   height: 190px;
   background: #F8F7F3;
-  border-top-left-radius: 50% 100%;
-  border-top-right-radius: 50% 100%;
+  border-top-left-radius: 100% 100%;
+  border-top-right-radius: 100% 100%;
   z-index: 2;
   pointer-events: none;
 }
@@ -1324,6 +1324,7 @@ p {
   margin: 0 auto;
   padding: 54px 42px 42px;
   border: 1px solid #E6E8EC;
+  transform: translateY(-5%);
   border-radius: 28px;
   background: #FFFFFF;
   box-shadow: 0 30px 80px rgba(11, 31, 58, 0.16);
@@ -2769,6 +2770,98 @@ p {
   color: var(--midnight);
 }
 
+.faq-social-block {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(11, 31, 58, 0.10);
+  text-align: center;
+}
+
+.faq-social-title {
+  display: block;
+  margin-bottom: 14px;
+  color: #0B1F3A;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.faq-social-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.faq-social-link {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(11, 31, 58, 0.10);
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 10px 22px rgba(11, 31, 58, 0.08);
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.faq-social-link svg,
+.social-links a svg {
+  width: 18px;
+  height: 18px;
+}
+
+.faq-social-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(11, 31, 58, 0.14);
+}
+
+.faq-social-link--facebook {
+  color: #1877F2;
+}
+
+.faq-social-link--instagram {
+  color: #E4405F;
+}
+
+.faq-social-link--linkedin {
+  color: #0A66C2;
+}
+
+.faq-social-link--tiktok {
+  color: #000000;
+}
+
+.faq-social-link--facebook:hover {
+  border-color: #1877F2;
+  background: #1877F2;
+  color: #FFFFFF;
+}
+
+.faq-social-link--instagram:hover {
+  border-color: transparent;
+  background:
+    radial-gradient(circle at 30% 107%, #FDF497 0%, #FDF497 5%, #FD5949 45%, #D6249F 60%, #285AEB 90%);
+  color: #FFFFFF;
+}
+
+.faq-social-link--linkedin:hover {
+  border-color: #0A66C2;
+  background: #0A66C2;
+  color: #FFFFFF;
+}
+
+.faq-social-link--tiktok:hover {
+  border-color: #000000;
+  background: #000000;
+  color: #FFFFFF;
+}
+
 /* Footer */
 .footer {
   padding: 88px 0 0;
@@ -3254,6 +3347,22 @@ html[dir="rtl"] .testimonial-quote-mark {
 
 .app-shell[data-theme='dark'] .why-intro-card p {
   color: #b8c4d4;
+}
+
+.dark .faq-social-block,
+[data-theme="dark"] .faq-social-block {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+.dark .faq-social-title,
+[data-theme="dark"] .faq-social-title {
+  color: #FFFFFF;
+}
+
+.dark .faq-social-link,
+[data-theme="dark"] .faq-social-link {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .app-shell[data-theme='dark'] .pricing-tab {
