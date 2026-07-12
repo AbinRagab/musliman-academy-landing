@@ -1,0 +1,251 @@
+{
+  "seo": {
+    "title": "Musliman Academy | Online Quran- und Arabischkurse",
+    "description": "Musliman Academy unterrichtet Quran, Arabisch, Tajweed, islamische Studien und Lehrertraining online fur Nicht-Arabischsprachige."
+  },
+  "language": {
+    "label": "Sprache",
+    "english": "English",
+    "arabic": "العربية",
+    "spanish": "Español",
+    "german": "Deutsch",
+    "italian": "Italiano",
+    "urdu": "اردو",
+    "turkish": "Türkçe"
+  },
+  "aria": {
+    "mainNavigation": "Hauptnavigation",
+    "contactWhatsapp": "Uber WhatsApp kontaktieren",
+    "openMenu": "Menu offnen",
+    "closeMenu": "Menu schliessen",
+    "bookingType": "Anfragetyp",
+    "previousFeature": "Vorheriges Merkmal",
+    "nextFeature": "Nachstes Merkmal",
+    "showFeaturePage": "Merkmalsseite {{page}} anzeigen",
+    "floatingWhatsapp": "Musliman Academy uber WhatsApp kontaktieren",
+    "trustHighlights": "Vertrauensmerkmale der Akademie",
+    "switchToTheme": "Zum {{theme}}-Design wechseln"
+  },
+  "theme": {
+    "light": "Hell",
+    "dark": "Dunkel"
+  },
+  "nav": {
+    "about": "Uber uns",
+    "programs": "Programme",
+    "whoWeTeach": "Wen wir unterrichten",
+    "whyChooseUs": "Warum wir",
+    "faq": "FAQ",
+    "bookFreeTrial": "Kostenlose Probestunde"
+  },
+  "hero": {
+    "eyebrow": {
+      "live": "Live",
+      "personalized": "Personlich",
+      "trusted": "Vertrauensvoll"
+    },
+    "headlineLine1": "Beginne deine Quran-",
+    "headlineLine2": "und Arabischreise",
+    "headlineAccent": "heute",
+    "description": "Buche eine kostenlose Probestunde fur dich oder dein Kind und erlebe live, personlichen islamischen Unterricht mit qualifizierten agyptischen Lehrern.",
+    "cta": "Kostenlose Probestunde buchen",
+    "trust": {
+      "online": "Online-Unterricht",
+      "schedule": "Flexible Zeiten",
+      "levels": "Alle Niveaus willkommen"
+    }
+  },
+  "booking": {
+    "badgeTrial": "Online buchen",
+    "badgeTraining": "Lehrertraining",
+    "titleTrial": "Kostenlose Probestunde buchen",
+    "titleTraining": "Am Lehrertraining teilnehmen",
+    "descTrial": "Fulle das Formular aus und unser Team meldet sich bei dir.",
+    "descTraining": "Erzahle uns von deinem Unterrichtshintergrund und wir melden uns mit dem passenden Trainingsweg.",
+    "toggleTrial": "Kostenlose Probestunde",
+    "toggleTraining": "Lehrertraining",
+    "successTitle": "Anfrage erhalten",
+    "successTrial": "Deine Anfrage fur eine Probestunde wurde erhalten. Unser Team meldet sich bald.",
+    "successTraining": "Deine Anfrage zum Lehrertraining wurde erhalten. Unser Team meldet sich bald.",
+    "continueWhatsapp": "Auf WhatsApp fortfahren",
+    "submitAnother": "Weitere Anfrage senden",
+    "submitTrial": "Probestunde buchen",
+    "submitTraining": "Trainingsanfrage senden",
+    "submitting": "Wird gesendet...",
+    "requestTypes": {
+      "freeTrial": "Kostenlose Probestunde",
+      "teacherTraining": "Lehrertraining"
+    },
+    "fields": {
+      "name": "Vollstandiger Name",
+      "whatsapp": "WhatsApp-Nummer",
+      "country": "Land",
+      "experience": "Unterrichtserfahrung",
+      "qualification": "Aktuelle Qualifikation",
+      "trainingGoal": "Trainingsziel",
+      "studentAge": "Alter des Schulers",
+      "program": "Interessiertes Programm",
+      "preferredTrainingTime": "Bevorzugte Trainingszeit",
+      "preferredClassTime": "Bevorzugte Unterrichtszeit",
+      "message": "Nachricht (optional)"
+    },
+    "placeholders": {
+      "name": "Vollstandigen Namen eingeben",
+      "whatsapp": "z. B. +20 123 456 7890",
+      "country": "Land auswahlen",
+      "experience": "Erfahrung auswahlen",
+      "qualification": "Qualifikation auswahlen",
+      "trainingGoal": "Trainingsziel auswahlen",
+      "studentAge": "Alter auswahlen",
+      "program": "Programm auswahlen",
+      "preferredTime": "Zeit auswahlen",
+      "message": "Teile uns weitere Details mit...",
+      "email": "E-Mail eingeben"
+    },
+    "options": {
+      "experience": {
+        "none": "Keine Erfahrung",
+        "lessThanOne": "Weniger als 1 Jahr",
+        "oneToTwo": "1-2 Jahre",
+        "threePlus": "3+ Jahre"
+      },
+      "qualification": {
+        "quranTeacher": "Quran-Lehrer",
+        "arabicTeacher": "Arabischlehrer",
+        "islamicStudiesTeacher": "Lehrer fur islamische Studien",
+        "ijazahHolder": "Ijazah-Inhaber",
+        "studentOfKnowledge": "Wissensstudent",
+        "other": "Andere"
+      },
+      "trainingGoal": {
+        "teachNonArabic": "Nicht-Arabischsprachige unterrichten",
+        "onlineTeaching": "Online-Unterricht verbessern",
+        "lessonPlanning": "Unterrichtsplanung lernen",
+        "studentFollowUp": "Schulerbetreuung verbessern",
+        "joinAcademy": "Musliman Academy Lehrern beitreten",
+        "other": "Andere"
+      },
+      "studentAge": {
+        "child": "Kind",
+        "teenager": "Teenager",
+        "adult": "Erwachsener"
+      },
+      "preferredTime": {
+        "morning": "Morgen",
+        "afternoon": "Nachmittag",
+        "evening": "Abend",
+        "flexible": "Flexibel"
+      }
+    },
+    "validation": {
+      "required": "Dieses Feld ist erforderlich.",
+      "submitError": "Etwas ist schiefgelaufen. Bitte versuche es erneut oder kontaktiere uns uber WhatsApp."
+    },
+    "whatsapp": {
+      "trialIntro": "Hallo Musliman Academy, ich mochte eine kostenlose Probestunde buchen.",
+      "trainingIntro": "Hallo Musliman Academy, ich mochte am Lehrertrainingsprogramm teilnehmen.",
+      "requestType": "Anfragetyp",
+      "name": "Name",
+      "whatsapp": "WhatsApp",
+      "country": "Land",
+      "studentAge": "Alter des Schulers",
+      "program": "Programm",
+      "experience": "Unterrichtserfahrung",
+      "qualification": "Aktuelle Qualifikation",
+      "trainingGoal": "Trainingsziel",
+      "preferredTime": "Bevorzugte Zeit",
+      "message": "Nachricht"
+    }
+  },
+  "about": {
+    "badge": "Uber Musliman Academy",
+    "heading": "Jeder Lernende hat seinen Weg",
+    "lead": "Bei Musliman Academy machen wir Lernen einfach, klar und erreichbar durch die richtige Methode, geduldige Begleitung und Schritt-fur-Schritt-Unterstutzung.",
+    "paragraph1": "Jeder Schuler lernt anders. Deshalb bieten wir einfachen und geduldigen Online-Unterricht passend zum Niveau und Bedarf.",
+    "paragraph2": "Die Akademie bietet Quran, Arabisch, Tajweed, islamische Studien, islamische Werte, Auswendiglernen, Tafseer und Lehrertraining mit qualifizierten agyptischen Lehrern.",
+    "imageAlt": "Quran-Lernvisual"
+  },
+  "trust": {
+    "experiencedTeachers": "Erfahrene agyptische Lehrer",
+    "ijazahCertified": "Ijazah-zertifizierte Lehrer",
+    "azharBackground": "Al-Azhar-Bildungshintergrund",
+    "personalizedPlans": "Personliche Lernplane",
+    "liveOnline": "Live-Online-Unterricht",
+    "smallGroups": "Einzelunterricht und Kleingruppen",
+    "parentFollowUp": "Eltern-Updates",
+    "freeTrial": "Kostenlose Probestunde",
+    "allLevels": "Alle Niveaus willkommen"
+  },
+  "programs": {
+    "badge": "Unsere Programme",
+    "heading": "Wahle den richtigen Lernweg",
+    "description": "Programme fur jedes Niveau, Alter und Ziel, damit du mit Vertrauen lernst und verstehst.",
+    "learnMore": "Mehr erfahren",
+    "items": {
+      "quranReading": { "title": "Quran-Lesen" },
+      "tarteelQaidah": { "title": "Tarteel Qaidah" },
+      "quranMemorization": { "title": "Quran-Auswendiglernen" },
+      "tajweed": { "title": "Tajweed" },
+      "quranTafseer": { "title": "Quran-Tafseer" },
+      "arabicLanguage": { "title": "Arabische Sprache" },
+      "islamicStudies": { "title": "Islamische Studien" },
+      "islamicValues": { "title": "Islamische Werte fur Kinder" }
+    }
+  },
+  "audience": {
+    "badge": "Wen wir unterrichten",
+    "headingLine1": "Lernen fur jede",
+    "headingLine2": "Phase und jedes Niveau",
+    "description": "Wir unterrichten Kinder, Erwachsene, Anfanger und Nicht-Arabischsprachige mit einfachem, geduldigem Online-Unterricht.",
+    "visualAlt": "Online-Lernen fur verschiedene Schuler",
+    "reassurance": "Egal wer du bist oder woher du kommst, du bist willkommen.",
+    "reassuranceStrong": "Wir helfen dir, zu lernen, zu wachsen und mit Quran und Glauben verbunden zu bleiben."
+  },
+  "whyChoose": {
+    "badge": "Warum Musliman Academy",
+    "headingLine1": "Eine einfache,",
+    "headingLine2": "vertrauensvolle Lernerfahrung",
+    "description": "Wir machen Quran, Arabisch und islamische Studien einfach, effektiv und sinnvoll.",
+    "visualAlt": "Vertrauensvolle Online-Quran-Lernerfahrung",
+    "stats": {
+      "students": "Unterrichtete Schuler",
+      "teachers": "Expertenlehrer",
+      "countries": "Lander erreicht"
+    }
+  },
+  "how": {
+    "eyebrow": "So funktioniert es",
+    "heading": "Starte in 3 einfachen Schritten",
+    "description": "Der Einstieg bei Musliman Academy ist einfach und unkompliziert."
+  },
+  "training": {
+    "badge": "Lehrertrainingsprogramm",
+    "heading": "Lehrer sicher unterrichten lassen",
+    "description": "Praktisches Training fur neue und erfahrene Lehrer, die Quran-, Arabisch- und Werteunterricht verbessern mochten.",
+    "cta": "Am Lehrertraining teilnehmen"
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "heading": "Haufige Fragen",
+    "description": "Antworten auf haufige Fragen zu unseren Online-Kursen.",
+    "cardTitle": "Noch Fragen?",
+    "cardText": "Wir helfen dir auf deinem Lernweg.",
+    "whatsappCta": "Kontaktiere uns auf WhatsApp",
+    "trust": "Vertrauensvolle Unterstutzung von echten Menschen"
+  },
+  "footer": {
+    "aboutText": "Musliman Academy ist eine vertrauensvolle Online-Plattform fur Quran, Arabisch und islamische Werte.",
+    "stayConnected": "Verbunden bleiben",
+    "subscribeText": "Erhalte Updates zu Programmen, Kursen und Angeboten.",
+    "programs": "Programme",
+    "quickLinks": "Schnelllinks",
+    "contact": "Kontakt",
+    "teacherTraining": "Lehrertraining",
+    "bookFreeTrial": "Kostenlose Probestunde",
+    "whatsapp": "WhatsApp",
+    "email": "E-Mail",
+    "website": "Website",
+    "copyright": "Copyright 2026 Musliman Academy. Alle Rechte vorbehalten.",
+    "trusted": "Vertrauensvolle islamische Online-Bildung"
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "seo": {
+    "title": "Musliman Academy | Online Quran ve Arapca Dersleri",
+    "description": "Musliman Academy, Arapca bilmeyenler icin online Quran, Arapca, Tajweed, Islami ilimler ve ogretmen egitimi sunar."
+  },
+  "language": {
+    "label": "Dil",
+    "english": "English",
+    "arabic": "العربية",
+    "spanish": "Español",
+    "german": "Deutsch",
+    "italian": "Italiano",
+    "urdu": "اردو",
+    "turkish": "Türkçe"
+  },
+  "aria": {
+    "mainNavigation": "Ana navigasyon",
+    "contactWhatsapp": "WhatsApp ile iletisime gec",
+    "openMenu": "Menuyu ac",
+    "closeMenu": "Menuyu kapat",
+    "bookingType": "Basvuru turu",
+    "previousFeature": "Onceki ozellik",
+    "nextFeature": "Sonraki ozellik",
+    "showFeaturePage": "{{page}}. ozellik sayfasini goster",
+    "floatingWhatsapp": "Musliman Academy ile WhatsApp uzerinden iletisime gec",
+    "trustHighlights": "Akademi guven noktalarimiz",
+    "switchToTheme": "{{theme}} temaya gec"
+  },
+  "theme": {
+    "light": "Acik",
+    "dark": "Koyu"
+  },
+  "nav": {
+    "about": "Hakkimizda",
+    "programs": "Programlar",
+    "whoWeTeach": "Kimlere ogretiyoruz",
+    "whyChooseUs": "Neden biz",
+    "faq": "SSS",
+    "bookFreeTrial": "Ucretsiz deneme al"
+  },
+  "hero": {
+    "eyebrow": {
+      "live": "Canli",
+      "personalized": "Kisisel",
+      "trusted": "Guvenilir"
+    },
+    "headlineLine1": "Quran ve Arapca",
+    "headlineLine2": "ogrenme yolculuguna",
+    "headlineAccent": "bugun basla",
+    "description": "Kendiniz veya cocugunuz icin ucretsiz deneme dersi ayirtin ve nitelikli Misirli ogretmenlerle canli, birebir Islami egitimi deneyimleyin.",
+    "cta": "Ucretsiz deneme dersi ayirt",
+    "trust": {
+      "online": "Online dersler",
+      "schedule": "Esnek program",
+      "levels": "Tum seviyeler"
+    }
+  },
+  "booking": {
+    "badgeTrial": "Online rezervasyon",
+    "badgeTraining": "Ogretmen egitimi",
+    "titleTrial": "Ucretsiz deneme dersi ayirt",
+    "titleTraining": "Ogretmen egitimine katil",
+    "descTrial": "Formu doldurun, ekibimiz sizinle iletisime gececek.",
+    "descTraining": "Ogretmenlik gecmisinizi anlatin, ekibimiz uygun egitim yolu icin sizinle iletisime gececek.",
+    "toggleTrial": "Ucretsiz deneme",
+    "toggleTraining": "Ogretmen egitimi",
+    "successTitle": "Basvuru alindi",
+    "successTrial": "Ucretsiz deneme basvurunuz alindi. Ekibimiz yakinda iletisime gececek.",
+    "successTraining": "Ogretmen egitimi basvurunuz alindi. Ekibimiz yakinda iletisime gececek.",
+    "continueWhatsapp": "WhatsApp'ta devam et",
+    "submitAnother": "Baska basvuru gonder",
+    "submitTrial": "Deneme dersi ayirt",
+    "submitTraining": "Egitim basvurusu gonder",
+    "submitting": "Gonderiliyor...",
+    "requestTypes": {
+      "freeTrial": "Ucretsiz deneme",
+      "teacherTraining": "Ogretmen egitimi"
+    },
+    "fields": {
+      "name": "Ad soyad",
+      "whatsapp": "WhatsApp numarasi",
+      "country": "Ulke",
+      "experience": "Ogretmenlik deneyimi",
+      "qualification": "Mevcut yeterlilik",
+      "trainingGoal": "Egitim hedefi",
+      "studentAge": "Ogrenci yasi",
+      "program": "Ilgilenilen program",
+      "preferredTrainingTime": "Tercih edilen egitim saati",
+      "preferredClassTime": "Tercih edilen ders saati",
+      "message": "Mesaj (istege bagli)"
+    },
+    "placeholders": {
+      "name": "Adinizi ve soyadinizi girin",
+      "whatsapp": "orn. +20 123 456 7890",
+      "country": "Ulkenizi secin",
+      "experience": "Deneyim secin",
+      "qualification": "Yeterlilik secin",
+      "trainingGoal": "Egitim hedefi secin",
+      "studentAge": "Yas secin",
+      "program": "Program secin",
+      "preferredTime": "Tercih edilen zamani secin",
+      "message": "Eklemek istediginiz bilgiler...",
+      "email": "E-postanizi girin"
+    },
+    "options": {
+      "experience": {
+        "none": "Deneyim yok",
+        "lessThanOne": "1 yildan az",
+        "oneToTwo": "1-2 yil",
+        "threePlus": "3+ yil"
+      },
+      "qualification": {
+        "quranTeacher": "Quran ogretmeni",
+        "arabicTeacher": "Arapca ogretmeni",
+        "islamicStudiesTeacher": "Islami ilimler ogretmeni",
+        "ijazahHolder": "Ijazah sahibi",
+        "studentOfKnowledge": "Ilm talebesi",
+        "other": "Diger"
+      },
+      "trainingGoal": {
+        "teachNonArabic": "Arapca bilmeyenlere ogretmek",
+        "onlineTeaching": "Online ogretim becerilerini gelistirmek",
+        "lessonPlanning": "Ders planlamasi ogrenmek",
+        "studentFollowUp": "Ogrenci takibini gelistirmek",
+        "joinAcademy": "Musliman Academy ogretmenlerine katilmak",
+        "other": "Diger"
+      },
+      "studentAge": {
+        "child": "Cocuk",
+        "teenager": "Genc",
+        "adult": "Yetiskin"
+      },
+      "preferredTime": {
+        "morning": "Sabah",
+        "afternoon": "Ogle",
+        "evening": "Aksam",
+        "flexible": "Esnek"
+      }
+    },
+    "validation": {
+      "required": "Bu alan zorunludur.",
+      "submitError": "Bir seyler ters gitti. Lutfen tekrar deneyin veya WhatsApp'tan bize ulasin."
+    },
+    "whatsapp": {
+      "trialIntro": "Merhaba Musliman Academy, ucretsiz deneme dersi ayirtmak istiyorum.",
+      "trainingIntro": "Merhaba Musliman Academy, ogretmen egitimi programina katilmak istiyorum.",
+      "requestType": "Basvuru turu",
+      "name": "Ad",
+      "whatsapp": "WhatsApp",
+      "country": "Ulke",
+      "studentAge": "Ogrenci yasi",
+      "program": "Program",
+      "experience": "Ogretmenlik deneyimi",
+      "qualification": "Mevcut yeterlilik",
+      "trainingGoal": "Egitim hedefi",
+      "preferredTime": "Tercih edilen zaman",
+      "message": "Mesaj"
+    }
+  },
+  "about": {
+    "badge": "Musliman Academy hakkinda",
+    "heading": "Her ogrencinin bir yolu vardir",
+    "lead": "Musliman Academy'de dogru yontem, sabirli rehberlik ve adim adim destekle ogrenmeyi basit, net ve ulasilabilir hale getiriyoruz.",
+    "paragraph1": "Her ogrenci farkli ogrenir. Bu nedenle her seviyeye ve ihtiyaca uygun, sabirli ve sade online egitim sunuyoruz.",
+    "paragraph2": "Akademi Quran, Arapca, Tajweed, Islami ilimler, Islami degerler, ezber, Tafseer ve ogretmen egitimi programlari sunar.",
+    "imageAlt": "Quran ogrenme gorseli"
+  },
+  "trust": {
+    "experiencedTeachers": "Deneyimli Misirli ogretmenler",
+    "ijazahCertified": "Ijazah sertifikali ogretmenler",
+    "azharBackground": "Al-Azhar egitim gecmisi",
+    "personalizedPlans": "Kisisel ogrenme planlari",
+    "liveOnline": "Canli online dersler",
+    "smallGroups": "Birebir ve kucuk gruplar",
+    "parentFollowUp": "Veli takibi",
+    "freeTrial": "Ucretsiz deneme dersi",
+    "allLevels": "Tum seviyeler"
+  },
+  "programs": {
+    "badge": "Programlarimiz",
+    "heading": "Dogru ogrenme yolunu secin",
+    "description": "Her seviye, yas ve hedef icin guvenle ogrenmenizi saglayan programlar.",
+    "learnMore": "Daha fazla bilgi",
+    "items": {
+      "quranReading": { "title": "Quran okuma" },
+      "tarteelQaidah": { "title": "Tarteel Qaidah" },
+      "quranMemorization": { "title": "Quran ezberi" },
+      "tajweed": { "title": "Tajweed" },
+      "quranTafseer": { "title": "Quran Tafseer" },
+      "arabicLanguage": { "title": "Arapca dili" },
+      "islamicStudies": { "title": "Islami ilimler" },
+      "islamicValues": { "title": "Cocuklar icin Islami degerler" }
+    }
+  },
+  "audience": {
+    "badge": "Kimlere ogretiyoruz",
+    "headingLine1": "Her asama ve",
+    "headingLine2": "seviye icin egitim",
+    "description": "Cocuklara, yetiskinlere, baslangic seviyesindekilere ve Arapca bilmeyenlere sade, sabirli ve adim adim online egitim veriyoruz.",
+    "visualAlt": "Farkli ogrenciler icin online ogrenme",
+    "reassurance": "Kim olursaniz olun ve nereden gelirseniz gelin, burada hos geldiniz.",
+    "reassuranceStrong": "Ogrenmenize, gelismenize ve Quran ile imanla bagli kalmaniza yardim etmek icin buradayiz."
+  },
+  "whyChoose": {
+    "badge": "Neden Musliman Academy",
+    "headingLine1": "Basit ve guvenilir",
+    "headingLine2": "bir ogrenme deneyimi",
+    "description": "Quran, Arapca ve Islami ilimleri her yas, seviye ve gecmis icin kolay, etkili ve anlamli hale getiriyoruz.",
+    "visualAlt": "Guvenilir online Quran ogrenme deneyimi",
+    "stats": {
+      "students": "Egitilen ogrenci",
+      "teachers": "Uzman ogretmen",
+      "countries": "Hizmet verilen ulke"
+    }
+  },
+  "how": {
+    "eyebrow": "Nasil calisir",
+    "heading": "3 basit adimda baslayin",
+    "description": "Musliman Academy'de baslamak kolay ve zahmetsizdir."
+  },
+  "training": {
+    "badge": "Ogretmen egitimi programi",
+    "heading": "Ogretmenleri guvenle ogretmeye hazirla",
+    "description": "Quran, Arapca ve Islami degerler ogretimini gelistirmek isteyen yeni ve deneyimli ogretmenler icin pratik egitim.",
+    "cta": "Ogretmen egitimine katil"
+  },
+  "faq": {
+    "eyebrow": "SSS",
+    "heading": "Sik sorulan sorular",
+    "description": "Online Islami ve Arapca derslerimiz hakkinda sik sorulan sorularin cevaplari.",
+    "cardTitle": "Hala sorulariniz var mi?",
+    "cardText": "Ogrenme yolculugunuzda size yardim etmek icin buradayiz.",
+    "whatsappCta": "WhatsApp'tan bize ulasin",
+    "trust": "Gercek kisilerden guvenilir destek"
+  },
+  "footer": {
+    "aboutText": "Musliman Academy, Arapca bilmeyenlere Quran, Arapca ve Islami degerleri ogreten guvenilir bir online platformdur.",
+    "stayConnected": "Baglantida kalin",
+    "subscribeText": "Yeni programlar, dersler ve tekliflerle ilgili guncellemeler alin.",
+    "programs": "Programlar",
+    "quickLinks": "Hizli baglantilar",
+    "contact": "Iletisim",
+    "teacherTraining": "Ogretmen egitimi",
+    "bookFreeTrial": "Ucretsiz deneme",
+    "whatsapp": "WhatsApp",
+    "email": "E-posta",
+    "website": "Web sitesi",
+    "copyright": "Copyright 2026 Musliman Academy. Tum haklari saklidir.",
+    "trusted": "Guvenilir online Islami egitim"
+  }
+}

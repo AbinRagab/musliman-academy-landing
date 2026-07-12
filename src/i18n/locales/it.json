@@ -1,0 +1,251 @@
+{
+  "seo": {
+    "title": "Musliman Academy | Lezioni online di Quran e arabo",
+    "description": "Musliman Academy insegna Quran, arabo, Tajweed, studi islamici e formazione per insegnanti online per non arabofoni."
+  },
+  "language": {
+    "label": "Lingua",
+    "english": "English",
+    "arabic": "العربية",
+    "spanish": "Español",
+    "german": "Deutsch",
+    "italian": "Italiano",
+    "urdu": "اردو",
+    "turkish": "Türkçe"
+  },
+  "aria": {
+    "mainNavigation": "Navigazione principale",
+    "contactWhatsapp": "Contatta su WhatsApp",
+    "openMenu": "Apri menu",
+    "closeMenu": "Chiudi menu",
+    "bookingType": "Tipo di richiesta",
+    "previousFeature": "Caratteristica precedente",
+    "nextFeature": "Caratteristica successiva",
+    "showFeaturePage": "Mostra pagina {{page}}",
+    "floatingWhatsapp": "Contatta Musliman Academy su WhatsApp",
+    "trustHighlights": "Punti di fiducia dell'accademia",
+    "switchToTheme": "Passa al tema {{theme}}"
+  },
+  "theme": {
+    "light": "Chiaro",
+    "dark": "Scuro"
+  },
+  "nav": {
+    "about": "Chi siamo",
+    "programs": "Programmi",
+    "whoWeTeach": "A chi insegniamo",
+    "whyChooseUs": "Perche sceglierci",
+    "faq": "FAQ",
+    "bookFreeTrial": "Prova gratuita"
+  },
+  "hero": {
+    "eyebrow": {
+      "live": "Dal vivo",
+      "personalized": "Personalizzato",
+      "trusted": "Affidabile"
+    },
+    "headlineLine1": "Inizia il tuo percorso",
+    "headlineLine2": "con Quran e arabo",
+    "headlineAccent": "oggi",
+    "description": "Prenota una lezione di prova gratuita per te o tuo figlio e vivi un apprendimento islamico online, in diretta e personalizzato con insegnanti egiziani qualificati.",
+    "cta": "Prenota la prova gratuita",
+    "trust": {
+      "online": "Lezioni online",
+      "schedule": "Orari flessibili",
+      "levels": "Tutti i livelli"
+    }
+  },
+  "booking": {
+    "badgeTrial": "Prenota online",
+    "badgeTraining": "Formazione insegnanti",
+    "titleTrial": "Prenota una prova gratuita",
+    "titleTraining": "Unisciti alla formazione insegnanti",
+    "descTrial": "Compila il modulo e il nostro team ti contattera.",
+    "descTraining": "Raccontaci la tua esperienza di insegnamento e ti contatteremo con il percorso adatto.",
+    "toggleTrial": "Prova gratuita",
+    "toggleTraining": "Formazione insegnanti",
+    "successTitle": "Richiesta ricevuta",
+    "successTrial": "La tua richiesta di prova gratuita e stata ricevuta. Il nostro team ti contattera presto.",
+    "successTraining": "La tua richiesta di formazione insegnanti e stata ricevuta. Il nostro team ti contattera presto.",
+    "continueWhatsapp": "Continua su WhatsApp",
+    "submitAnother": "Invia un'altra richiesta",
+    "submitTrial": "Prenota prova gratuita",
+    "submitTraining": "Invia richiesta di formazione",
+    "submitting": "Invio...",
+    "requestTypes": {
+      "freeTrial": "Prova gratuita",
+      "teacherTraining": "Formazione insegnanti"
+    },
+    "fields": {
+      "name": "Nome completo",
+      "whatsapp": "Numero WhatsApp",
+      "country": "Paese",
+      "experience": "Esperienza di insegnamento",
+      "qualification": "Qualifica attuale",
+      "trainingGoal": "Obiettivo della formazione",
+      "studentAge": "Eta dello studente",
+      "program": "Programma di interesse",
+      "preferredTrainingTime": "Orario preferito per la formazione",
+      "preferredClassTime": "Orario preferito per la lezione",
+      "message": "Messaggio (opzionale)"
+    },
+    "placeholders": {
+      "name": "Inserisci il tuo nome completo",
+      "whatsapp": "es. +20 123 456 7890",
+      "country": "Seleziona il paese",
+      "experience": "Seleziona esperienza",
+      "qualification": "Seleziona qualifica",
+      "trainingGoal": "Seleziona obiettivo",
+      "studentAge": "Seleziona eta",
+      "program": "Seleziona un programma",
+      "preferredTime": "Seleziona orario",
+      "message": "Raccontaci altri dettagli...",
+      "email": "Inserisci la tua email"
+    },
+    "options": {
+      "experience": {
+        "none": "Nessuna esperienza",
+        "lessThanOne": "Meno di 1 anno",
+        "oneToTwo": "1-2 anni",
+        "threePlus": "3+ anni"
+      },
+      "qualification": {
+        "quranTeacher": "Insegnante di Quran",
+        "arabicTeacher": "Insegnante di arabo",
+        "islamicStudiesTeacher": "Insegnante di studi islamici",
+        "ijazahHolder": "Con Ijazah",
+        "studentOfKnowledge": "Studente di conoscenza",
+        "other": "Altro"
+      },
+      "trainingGoal": {
+        "teachNonArabic": "Insegnare a non arabofoni",
+        "onlineTeaching": "Migliorare l'insegnamento online",
+        "lessonPlanning": "Imparare la pianificazione delle lezioni",
+        "studentFollowUp": "Migliorare il follow-up degli studenti",
+        "joinAcademy": "Unirsi agli insegnanti di Musliman Academy",
+        "other": "Altro"
+      },
+      "studentAge": {
+        "child": "Bambino",
+        "teenager": "Adolescente",
+        "adult": "Adulto"
+      },
+      "preferredTime": {
+        "morning": "Mattina",
+        "afternoon": "Pomeriggio",
+        "evening": "Sera",
+        "flexible": "Flessibile"
+      }
+    },
+    "validation": {
+      "required": "Questo campo e obbligatorio.",
+      "submitError": "Qualcosa e andato storto. Riprova o contattaci su WhatsApp."
+    },
+    "whatsapp": {
+      "trialIntro": "Ciao Musliman Academy, vorrei prenotare una lezione di prova gratuita.",
+      "trainingIntro": "Ciao Musliman Academy, vorrei unirmi al programma di formazione insegnanti.",
+      "requestType": "Tipo di richiesta",
+      "name": "Nome",
+      "whatsapp": "WhatsApp",
+      "country": "Paese",
+      "studentAge": "Eta dello studente",
+      "program": "Programma",
+      "experience": "Esperienza di insegnamento",
+      "qualification": "Qualifica attuale",
+      "trainingGoal": "Obiettivo della formazione",
+      "preferredTime": "Orario preferito",
+      "message": "Messaggio"
+    }
+  },
+  "about": {
+    "badge": "Chi siamo - Musliman Academy",
+    "heading": "Ogni studente ha il suo percorso",
+    "lead": "In Musliman Academy rendiamo l'apprendimento semplice, chiaro e raggiungibile con il metodo giusto, guida paziente e supporto passo dopo passo.",
+    "paragraph1": "Ogni studente impara in modo diverso, quindi offriamo educazione online semplice e paziente in base al livello e alle necessita.",
+    "paragraph2": "L'accademia offre Quran, arabo, Tajweed, studi islamici, valori islamici, memorizzazione, Tafseer e formazione insegnanti con insegnanti egiziani qualificati.",
+    "imageAlt": "Visuale di apprendimento del Quran"
+  },
+  "trust": {
+    "experiencedTeachers": "Insegnanti egiziani esperti",
+    "ijazahCertified": "Insegnanti certificati Ijazah",
+    "azharBackground": "Formazione Al-Azhar",
+    "personalizedPlans": "Piani personalizzati",
+    "liveOnline": "Lezioni online dal vivo",
+    "smallGroups": "Uno a uno e piccoli gruppi",
+    "parentFollowUp": "Aggiornamenti per genitori",
+    "freeTrial": "Lezione di prova gratuita",
+    "allLevels": "Tutti i livelli"
+  },
+  "programs": {
+    "badge": "I nostri programmi",
+    "heading": "Scegli il percorso giusto",
+    "description": "Programmi per ogni livello, eta e obiettivo, per imparare e comprendere con fiducia.",
+    "learnMore": "Scopri di piu",
+    "items": {
+      "quranReading": { "title": "Lettura del Quran" },
+      "tarteelQaidah": { "title": "Tarteel Qaidah" },
+      "quranMemorization": { "title": "Memorizzazione del Quran" },
+      "tajweed": { "title": "Tajweed" },
+      "quranTafseer": { "title": "Tafseer del Quran" },
+      "arabicLanguage": { "title": "Lingua araba" },
+      "islamicStudies": { "title": "Studi islamici" },
+      "islamicValues": { "title": "Valori islamici per bambini" }
+    }
+  },
+  "audience": {
+    "badge": "A chi insegniamo",
+    "headingLine1": "Apprendimento per ogni",
+    "headingLine2": "fase e livello",
+    "description": "Insegniamo a bambini, adulti, principianti e non arabofoni con educazione online semplice, paziente e graduale.",
+    "visualAlt": "Apprendimento online per studenti diversi",
+    "reassurance": "Chiunque tu sia e da qualunque luogo provenga, sei il benvenuto.",
+    "reassuranceStrong": "Siamo qui per aiutarti a imparare, crescere e restare connesso al Quran e alla fede."
+  },
+  "whyChoose": {
+    "badge": "Perche scegliere Musliman Academy",
+    "headingLine1": "Un'esperienza",
+    "headingLine2": "semplice e affidabile",
+    "description": "Rendiamo Quran, arabo e studi islamici facili, efficaci e significativi.",
+    "visualAlt": "Esperienza affidabile di apprendimento online del Quran",
+    "stats": {
+      "students": "Studenti formati",
+      "teachers": "Insegnanti esperti",
+      "countries": "Paesi serviti"
+    }
+  },
+  "how": {
+    "eyebrow": "Come funziona",
+    "heading": "Inizia in 3 semplici passi",
+    "description": "Iniziare con Musliman Academy e facile e senza complicazioni."
+  },
+  "training": {
+    "badge": "Programma di formazione insegnanti",
+    "heading": "Forma insegnanti a insegnare con fiducia",
+    "description": "Formazione pratica per insegnanti principianti ed esperti che vogliono migliorare l'insegnamento di Quran, arabo e valori islamici.",
+    "cta": "Unisciti alla formazione"
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "heading": "Domande frequenti",
+    "description": "Trova risposte sulle nostre lezioni islamiche e di arabo online.",
+    "cardTitle": "Hai ancora domande?",
+    "cardText": "Siamo qui per aiutarti nel tuo percorso.",
+    "whatsappCta": "Contattaci su WhatsApp",
+    "trust": "Supporto affidabile da persone reali"
+  },
+  "footer": {
+    "aboutText": "Musliman Academy e una piattaforma online affidabile che aiuta i non arabofoni a imparare Quran, arabo e valori islamici.",
+    "stayConnected": "Rimani aggiornato",
+    "subscribeText": "Ricevi aggiornamenti su programmi, lezioni e offerte.",
+    "programs": "Programmi",
+    "quickLinks": "Link rapidi",
+    "contact": "Contatto",
+    "teacherTraining": "Formazione insegnanti",
+    "bookFreeTrial": "Prova gratuita",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "website": "Sito web",
+    "copyright": "Copyright 2026 Musliman Academy. Tutti i diritti riservati.",
+    "trusted": "Educazione islamica online affidabile"
+  }
+}

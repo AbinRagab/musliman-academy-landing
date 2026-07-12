@@ -1,0 +1,251 @@
+{
+  "seo": {
+    "title": "Musliman Academy | آن لائن قرآن اور عربی کلاسز",
+    "description": "Musliman Academy غیر عربی بولنے والوں کے لیے قرآن، عربی، تجوید، اسلامیات اور ٹیچر ٹریننگ آن لائن پڑھاتی ہے۔"
+  },
+  "language": {
+    "label": "زبان",
+    "english": "English",
+    "arabic": "العربية",
+    "spanish": "Español",
+    "german": "Deutsch",
+    "italian": "Italiano",
+    "urdu": "اردو",
+    "turkish": "Türkçe"
+  },
+  "aria": {
+    "mainNavigation": "مرکزی نیویگیشن",
+    "contactWhatsapp": "واٹس ایپ پر رابطہ کریں",
+    "openMenu": "مینو کھولیں",
+    "closeMenu": "مینو بند کریں",
+    "bookingType": "درخواست کی قسم",
+    "previousFeature": "پچھلی خصوصیت",
+    "nextFeature": "اگلی خصوصیت",
+    "showFeaturePage": "خصوصیت کا صفحہ {{page}} دکھائیں",
+    "floatingWhatsapp": "Musliman Academy سے واٹس ایپ پر رابطہ کریں",
+    "trustHighlights": "اکیڈمی کی قابل اعتماد خصوصیات",
+    "switchToTheme": "{{theme}} تھیم پر جائیں"
+  },
+  "theme": {
+    "light": "لائٹ",
+    "dark": "ڈارک"
+  },
+  "nav": {
+    "about": "تعارف",
+    "programs": "پروگرامز",
+    "whoWeTeach": "ہم کس کو پڑھاتے ہیں",
+    "whyChooseUs": "ہمیں کیوں منتخب کریں",
+    "faq": "سوالات",
+    "bookFreeTrial": "مفت ٹرائل بک کریں"
+  },
+  "hero": {
+    "eyebrow": {
+      "live": "لائیو",
+      "personalized": "ذاتی",
+      "trusted": "قابل اعتماد"
+    },
+    "headlineLine1": "قرآن اور عربی سیکھنے",
+    "headlineLine2": "کا سفر شروع کریں",
+    "headlineAccent": "آج",
+    "description": "اپنے لیے یا اپنے بچے کے لیے مفت ٹرائل کلاس بک کریں اور اہل مصری اساتذہ کے ساتھ لائیو، ون ٹو ون اسلامی تعلیم کا تجربہ کریں۔",
+    "cta": "مفت ٹرائل کلاس بک کریں",
+    "trust": {
+      "online": "آن لائن کلاسز",
+      "schedule": "لچکدار شیڈول",
+      "levels": "ہر سطح کے لیے"
+    }
+  },
+  "booking": {
+    "badgeTrial": "آن لائن بکنگ",
+    "badgeTraining": "ٹیچر ٹریننگ",
+    "titleTrial": "مفت ٹرائل بک کریں",
+    "titleTraining": "ٹیچر ٹریننگ میں شامل ہوں",
+    "descTrial": "فارم پُر کریں، ہماری ٹیم آپ سے رابطہ کرے گی۔",
+    "descTraining": "اپنے تدریسی پس منظر کے بارے میں بتائیں، ہماری ٹیم مناسب ٹریننگ راستے کے ساتھ رابطہ کرے گی۔",
+    "toggleTrial": "مفت ٹرائل",
+    "toggleTraining": "ٹیچر ٹریننگ",
+    "successTitle": "درخواست موصول ہوگئی",
+    "successTrial": "آپ کی مفت ٹرائل درخواست موصول ہوگئی ہے۔ ہماری ٹیم جلد رابطہ کرے گی۔",
+    "successTraining": "آپ کی ٹیچر ٹریننگ درخواست موصول ہوگئی ہے۔ ہماری ٹیم جلد رابطہ کرے گی۔",
+    "continueWhatsapp": "واٹس ایپ پر جاری رکھیں",
+    "submitAnother": "دوسری درخواست بھیجیں",
+    "submitTrial": "مفت ٹرائل بک کریں",
+    "submitTraining": "ٹیچر ٹریننگ درخواست بھیجیں",
+    "submitting": "بھیجا جا رہا ہے...",
+    "requestTypes": {
+      "freeTrial": "مفت ٹرائل",
+      "teacherTraining": "ٹیچر ٹریننگ"
+    },
+    "fields": {
+      "name": "مکمل نام",
+      "whatsapp": "واٹس ایپ نمبر",
+      "country": "ملک",
+      "experience": "تدریسی تجربہ",
+      "qualification": "موجودہ قابلیت",
+      "trainingGoal": "ٹریننگ کا مقصد",
+      "studentAge": "طالب علم کی عمر",
+      "program": "دلچسپی کا پروگرام",
+      "preferredTrainingTime": "پسندیدہ ٹریننگ وقت",
+      "preferredClassTime": "پسندیدہ کلاس وقت",
+      "message": "پیغام (اختیاری)"
+    },
+    "placeholders": {
+      "name": "اپنا مکمل نام درج کریں",
+      "whatsapp": "مثلا +20 123 456 7890",
+      "country": "اپنا ملک منتخب کریں",
+      "experience": "تجربہ منتخب کریں",
+      "qualification": "قابلیت منتخب کریں",
+      "trainingGoal": "ٹریننگ مقصد منتخب کریں",
+      "studentAge": "عمر منتخب کریں",
+      "program": "پروگرام منتخب کریں",
+      "preferredTime": "پسندیدہ وقت منتخب کریں",
+      "message": "مزید معلومات لکھیں...",
+      "email": "اپنا ای میل درج کریں"
+    },
+    "options": {
+      "experience": {
+        "none": "کوئی تجربہ نہیں",
+        "lessThanOne": "ایک سال سے کم",
+        "oneToTwo": "1-2 سال",
+        "threePlus": "3 سال یا زیادہ"
+      },
+      "qualification": {
+        "quranTeacher": "قرآن استاد",
+        "arabicTeacher": "عربی استاد",
+        "islamicStudiesTeacher": "اسلامیات استاد",
+        "ijazahHolder": "اجازہ یافتہ",
+        "studentOfKnowledge": "طالب علم",
+        "other": "دیگر"
+      },
+      "trainingGoal": {
+        "teachNonArabic": "غیر عربی بولنے والوں کو پڑھانا",
+        "onlineTeaching": "آن لائن تدریس بہتر بنانا",
+        "lessonPlanning": "سبق کی منصوبہ بندی سیکھنا",
+        "studentFollowUp": "طلبہ کا فالو اپ بہتر بنانا",
+        "joinAcademy": "Musliman Academy کے اساتذہ میں شامل ہونا",
+        "other": "دیگر"
+      },
+      "studentAge": {
+        "child": "بچہ",
+        "teenager": "نوعمر",
+        "adult": "بالغ"
+      },
+      "preferredTime": {
+        "morning": "صبح",
+        "afternoon": "دوپہر",
+        "evening": "شام",
+        "flexible": "لچکدار"
+      }
+    },
+    "validation": {
+      "required": "یہ فیلڈ ضروری ہے۔",
+      "submitError": "کچھ غلط ہوگیا۔ دوبارہ کوشش کریں یا واٹس ایپ پر رابطہ کریں۔"
+    },
+    "whatsapp": {
+      "trialIntro": "السلام علیکم Musliman Academy، میں مفت ٹرائل کلاس بک کرنا چاہتا/چاہتی ہوں۔",
+      "trainingIntro": "السلام علیکم Musliman Academy، میں ٹیچر ٹریننگ پروگرام میں شامل ہونا چاہتا/چاہتی ہوں۔",
+      "requestType": "درخواست کی قسم",
+      "name": "نام",
+      "whatsapp": "واٹس ایپ",
+      "country": "ملک",
+      "studentAge": "طالب علم کی عمر",
+      "program": "پروگرام",
+      "experience": "تدریسی تجربہ",
+      "qualification": "موجودہ قابلیت",
+      "trainingGoal": "ٹریننگ کا مقصد",
+      "preferredTime": "پسندیدہ وقت",
+      "message": "پیغام"
+    }
+  },
+  "about": {
+    "badge": "Musliman Academy کے بارے میں",
+    "heading": "ہر طالب علم کا اپنا راستہ ہے",
+    "lead": "Musliman Academy میں ہم صحیح طریقہ، صبر سے رہنمائی اور مرحلہ وار مدد کے ذریعے تعلیم کو آسان، واضح اور قابل حصول بناتے ہیں۔",
+    "paragraph1": "ہر طالب علم مختلف انداز میں سیکھتا ہے، اس لیے ہم ہر سطح اور ضرورت کے مطابق آسان اور صبر پر مبنی آن لائن تعلیم دیتے ہیں۔",
+    "paragraph2": "اکیڈمی قرآن، عربی، تجوید، اسلامیات، اسلامی اقدار، حفظ، تفسیر اور ٹیچر ٹریننگ کے پروگرام اہل مصری اساتذہ کے ساتھ پیش کرتی ہے۔",
+    "imageAlt": "قرآن سیکھنے کی تصویر"
+  },
+  "trust": {
+    "experiencedTeachers": "تجربہ کار مصری اساتذہ",
+    "ijazahCertified": "اجازہ یافتہ اساتذہ",
+    "azharBackground": "الازہر تعلیمی پس منظر",
+    "personalizedPlans": "ذاتی تعلیمی منصوبے",
+    "liveOnline": "لائیو آن لائن کلاسز",
+    "smallGroups": "ون ٹو ون اور چھوٹے گروپس",
+    "parentFollowUp": "والدین کے لیے فالو اپ",
+    "freeTrial": "مفت ٹرائل کلاس",
+    "allLevels": "ہر سطح کے لیے"
+  },
+  "programs": {
+    "badge": "ہمارے پروگرامز",
+    "heading": "صحیح تعلیمی راستہ منتخب کریں",
+    "description": "ہر سطح، عمر اور مقصد کے لیے پروگرامز تاکہ آپ اعتماد کے ساتھ سیکھیں اور سمجھیں۔",
+    "learnMore": "مزید جانیں",
+    "items": {
+      "quranReading": { "title": "قرآن پڑھنا" },
+      "tarteelQaidah": { "title": "ترتیل قاعدہ" },
+      "quranMemorization": { "title": "قرآن حفظ" },
+      "tajweed": { "title": "تجوید" },
+      "quranTafseer": { "title": "قرآن تفسیر" },
+      "arabicLanguage": { "title": "عربی زبان" },
+      "islamicStudies": { "title": "اسلامی علوم" },
+      "islamicValues": { "title": "بچوں کے لیے اسلامی اقدار" }
+    }
+  },
+  "audience": {
+    "badge": "ہم کس کو پڑھاتے ہیں",
+    "headingLine1": "ہر مرحلے اور",
+    "headingLine2": "ہر سطح کے لیے تعلیم",
+    "description": "ہم بچوں، بڑوں، مبتدیوں اور غیر عربی بولنے والوں کو آسان، صبر آموز اور مرحلہ وار آن لائن تعلیم دیتے ہیں۔",
+    "visualAlt": "مختلف طلبہ کے لیے آن لائن تعلیم",
+    "reassurance": "آپ جو بھی ہیں اور جہاں سے بھی ہیں، یہاں آپ کا خیر مقدم ہے۔",
+    "reassuranceStrong": "ہم آپ کو سیکھنے، بڑھنے اور قرآن و ایمان سے جڑے رہنے میں مدد دینے کے لیے موجود ہیں۔"
+  },
+  "whyChoose": {
+    "badge": "Musliman Academy کیوں منتخب کریں",
+    "headingLine1": "ایک آسان اور",
+    "headingLine2": "قابل اعتماد تعلیمی تجربہ",
+    "description": "ہم قرآن، عربی اور اسلامیات کو ہر پس منظر، عمر اور سطح کے لیے آسان، مؤثر اور بامعنی بناتے ہیں۔",
+    "visualAlt": "قابل اعتماد آن لائن قرآن تعلیمی تجربہ",
+    "stats": {
+      "students": "طلبہ کو پڑھایا گیا",
+      "teachers": "ماہر اساتذہ",
+      "countries": "ممالک"
+    }
+  },
+  "how": {
+    "eyebrow": "طریقہ کار",
+    "heading": "3 آسان مراحل میں شروع کریں",
+    "description": "Musliman Academy کے ساتھ شروع کرنا آسان ہے۔"
+  },
+  "training": {
+    "badge": "ٹیچر ٹریننگ پروگرام",
+    "heading": "اساتذہ کو اعتماد سے پڑھانے کی تربیت دیں",
+    "description": "ابتدائی اور تجربہ کار اساتذہ کے لیے عملی تربیت جو قرآن، عربی اور اسلامی اقدار کی تدریس بہتر بنانا چاہتے ہیں۔",
+    "cta": "ٹیچر ٹریننگ میں شامل ہوں"
+  },
+  "faq": {
+    "eyebrow": "سوالات",
+    "heading": "اکثر پوچھے گئے سوالات",
+    "description": "ہماری آن لائن اسلامی اور عربی کلاسز کے بارے میں عام سوالات کے جواب۔",
+    "cardTitle": "مزید سوالات ہیں؟",
+    "cardText": "ہم آپ کے تعلیمی سفر میں مدد کے لیے موجود ہیں۔",
+    "whatsappCta": "واٹس ایپ پر رابطہ کریں",
+    "trust": "حقیقی لوگوں کی قابل اعتماد مدد"
+  },
+  "footer": {
+    "aboutText": "Musliman Academy ایک قابل اعتماد آن لائن پلیٹ فارم ہے جو غیر عربی بولنے والوں کو قرآن، عربی اور اسلامی اقدار سکھاتا ہے۔",
+    "stayConnected": "رابطے میں رہیں",
+    "subscribeText": "نئے پروگرامز، کلاسز اور آفرز کی اپ ڈیٹس حاصل کریں۔",
+    "programs": "پروگرامز",
+    "quickLinks": "فوری لنکس",
+    "contact": "رابطہ",
+    "teacherTraining": "ٹیچر ٹریننگ",
+    "bookFreeTrial": "مفت ٹرائل بک کریں",
+    "whatsapp": "واٹس ایپ",
+    "email": "ای میل",
+    "website": "ویب سائٹ",
+    "copyright": "کاپی رائٹ 2026 Musliman Academy. جملہ حقوق محفوظ ہیں۔",
+    "trusted": "قابل اعتماد آن لائن اسلامی تعلیم"
+  }
+}

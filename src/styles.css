@@ -729,6 +729,57 @@ p {
   margin-top: 10px;
 }
 
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid rgba(11, 31, 58, 0.14);
+  border-radius: 999px;
+  color: var(--midnight);
+  background: var(--white);
+  font-size: 0.84rem;
+  font-weight: 800;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.language-switcher:hover {
+  transform: translateY(-1px);
+  border-color: rgba(184, 115, 51, 0.42);
+  box-shadow: var(--shadow-sm);
+}
+
+.language-switcher svg {
+  width: 17px;
+  height: 17px;
+  color: var(--copper);
+}
+
+.language-switcher select {
+  width: 44px;
+  border: 0;
+  outline: 0;
+  color: var(--midnight);
+  background: transparent;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.language-switcher--mobile {
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+  padding: 0 14px;
+  border-radius: 8px;
+}
+
+.language-switcher--mobile select {
+  width: auto;
+  min-width: 76px;
+}
+
 .menu-button {
   display: none;
   color: var(--midnight);
@@ -2660,6 +2711,51 @@ p {
   font-size: 24px;
 }
 
+/* Multilingual direction support */
+html[dir="rtl"] body {
+  direction: rtl;
+}
+
+html[dir="rtl"] .navbar,
+html[dir="rtl"] .hero__grid,
+html[dir="rtl"] .about-container,
+html[dir="rtl"] .why-layout,
+html[dir="rtl"] .who-top,
+html[dir="rtl"] .audience__top,
+html[dir="rtl"] .footer-container,
+html[dir="rtl"] .footer__grid {
+  direction: rtl;
+}
+
+html[dir="rtl"] .navbar__links a::after {
+  left: 4px;
+  right: 4px;
+}
+
+html[dir="rtl"] .card-number,
+html[dir="rtl"] .why-slide-card__number {
+  right: 14px;
+  left: auto;
+}
+
+html[dir="rtl"] .why-slide-card__number {
+  right: 22px;
+}
+
+html[dir="rtl"] .footer li a:hover,
+html[dir="rtl"] .footer__contact > a:hover {
+  transform: translateX(-4px);
+}
+
+html[dir="rtl"] .accordion button,
+html[dir="rtl"] .trust-bar__item,
+html[dir="rtl"] .audience-card,
+html[dir="rtl"] .training-list div,
+html[dir="rtl"] .training-badges div,
+html[dir="rtl"] .faq-card__trust {
+  text-align: right;
+}
+
 /* Theme */
 .app-shell[data-theme='dark'] h1,
 .app-shell[data-theme='dark'] h2,
@@ -2737,10 +2833,15 @@ p {
 }
 
 .app-shell[data-theme='dark'] .section-badge,
-.app-shell[data-theme='dark'] .eyebrow-line {
+.app-shell[data-theme='dark'] .eyebrow-line,
+.app-shell[data-theme='dark'] .language-switcher {
   border-color: rgba(184, 115, 51, 0.42);
   color: #f8fafc;
   background: rgba(255, 255, 255, 0.08);
+}
+
+.app-shell[data-theme='dark'] .language-switcher select {
+  color: #f8fafc;
 }
 
 .app-shell[data-theme='dark'] .booking-card,
@@ -3075,6 +3176,7 @@ p {
 
   .navbar__links,
   .navbar__actions > .btn,
+  .navbar__actions > .language-switcher,
   .navbar__actions .whatsapp-circle {
     display: none;
   }
@@ -3099,6 +3201,18 @@ p {
   }
 
   .mobile-panel.is-open {
+    transform: translateX(0);
+  }
+
+  html[dir="rtl"] .mobile-panel {
+    inset: 0 auto auto 0;
+    border-right: 1px solid var(--line);
+    border-left: 0;
+    box-shadow: 24px 0 60px rgba(11, 31, 58, 0.18);
+    transform: translateX(-105%);
+  }
+
+  html[dir="rtl"] .mobile-panel.is-open {
     transform: translateX(0);
   }
 
