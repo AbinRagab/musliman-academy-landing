@@ -2663,6 +2663,27 @@ p {
   background: rgba(255, 255, 255, 0.12);
 }
 
+.app-shell[data-theme='dark'] .trust-bar__item {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.055);
+  color: #FFFFFF;
+}
+
+.app-shell[data-theme='dark'] .trust-bar__item span {
+  color: #FFFFFF;
+}
+
+.app-shell[data-theme='dark'] .trust-bar__item svg {
+  border: 1px solid rgba(184, 115, 51, 0.28);
+  background: rgba(184, 115, 51, 0.14);
+  color: #B87333;
+}
+
+.app-shell[data-theme='dark'] .trust-bar__item:hover {
+  border-color: rgba(184, 115, 51, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .app-shell[data-theme='dark'] .step-card__visual,
 .app-shell[data-theme='dark'] .accordion__content {
   border-color: rgba(255, 255, 255, 0.13);
@@ -2672,8 +2693,7 @@ p {
 .app-shell[data-theme='dark'] .program-card__icon,
 .app-shell[data-theme='dark'] .round-icon,
 .app-shell[data-theme='dark'] .faq-card__icon,
-.app-shell[data-theme='dark'] .why-slide-card__icon,
-.app-shell[data-theme='dark'] .trust-bar__item svg {
+.app-shell[data-theme='dark'] .why-slide-card__icon {
   color: #B87333;
   background: rgba(184, 115, 51, 0.16);
 }
