@@ -35,6 +35,7 @@
     "programs": "پروگرامز",
     "whoWeTeach": "ہم کس کو پڑھاتے ہیں",
     "whyChooseUs": "ہمیں کیوں منتخب کریں",
+    "teacherTraining": "ٹیچر ٹریننگ",
     "faq": "سوالات",
     "bookFreeTrial": "مفت ٹرائل بک کریں"
   },
@@ -91,7 +92,7 @@
     },
     "placeholders": {
       "name": "اپنا مکمل نام درج کریں",
-      "whatsapp": "مثلا +20 123 456 7890",
+      "whatsapp": "Phone number",
       "country": "اپنا ملک منتخب کریں",
       "experience": "تجربہ منتخب کریں",
       "qualification": "قابلیت منتخب کریں",

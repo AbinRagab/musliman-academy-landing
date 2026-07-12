@@ -335,8 +335,12 @@ p {
   bottom: 24%;
 }
 
-.decor-pos--trial-book,
-.section-decorations--about .decor-icon--book {
+.decor-pos--trial-book {
+  left: 4%;
+  bottom: 12%;
+}
+
+.decor-pos--about-mark {
   left: 4%;
   bottom: 12%;
 }
@@ -1453,19 +1457,19 @@ p {
 /* About and trust */
 .about-section {
   position: relative;
-  overflow: hidden;
   padding: 100px 0;
   background: #F8F7F3;
+  overflow: hidden;
 }
 
 .about-container,
 .about-section__grid {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  align-items: center;
-  gap: 80px;
   max-width: 1200px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 72px;
+  align-items: center;
 }
 
 .about-visual {
@@ -1473,23 +1477,25 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: auto;
 }
 
 .about-visual__image {
-  display: block;
   width: 100%;
-  max-width: 520px;
+  max-width: 560px;
+  height: auto;
+  display: block;
   object-fit: contain;
-  border-radius: 220px 220px 22px 22px;
+  border-radius: 260px 260px 28px 28px;
   box-shadow: 0 28px 60px rgba(11, 31, 58, 0.12);
 }
 
 .about-content h2 {
   margin: 24px 0 22px;
-  color: #0B1F3A;
-  font-family: "Cinzel", var(--font-heading);
-  font-size: 56px;
+  font-family: "Cinzel", serif;
+  font-size: clamp(46px, 4.5vw, 64px);
   line-height: 1.12;
+  color: #0B1F3A;
 }
 
 .about-lead {
@@ -3122,17 +3128,18 @@ html[dir="rtl"] .faq-card__trust {
   .about-container,
   .about-section__grid {
     grid-template-columns: 1fr;
-    gap: 44px;
+    gap: 48px;
     text-align: center;
   }
 
   .about-content {
     max-width: 760px;
-    margin-inline: auto;
+    margin: 0 auto;
   }
 
   .about-visual__image {
-    max-width: 500px;
+    max-width: 520px;
+    margin: 0 auto;
   }
 
   .audience__top {
@@ -3295,7 +3302,12 @@ html[dir="rtl"] .faq-card__trust {
   }
 
   .about-content h2 {
-    font-size: 38px;
+    font-size: 40px;
+  }
+
+  .about-visual__image {
+    max-width: 100%;
+    border-radius: 180px 180px 22px 22px;
   }
 
   .about-lead {
@@ -3539,7 +3551,6 @@ html[dir="rtl"] .faq-card__trust {
     padding: 16px;
   }
 
-  .about-section,
   .programs,
   .audience,
   .why-section,

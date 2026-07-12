@@ -35,6 +35,7 @@
     "programs": "Programlar",
     "whoWeTeach": "Kimlere ogretiyoruz",
     "whyChooseUs": "Neden biz",
+    "teacherTraining": "Ogretmen egitimi",
     "faq": "SSS",
     "bookFreeTrial": "Ucretsiz deneme al"
   },
@@ -91,7 +92,7 @@
     },
     "placeholders": {
       "name": "Adinizi ve soyadinizi girin",
-      "whatsapp": "orn. +20 123 456 7890",
+      "whatsapp": "Phone number",
       "country": "Ulkenizi secin",
       "experience": "Deneyim secin",
       "qualification": "Yeterlilik secin",

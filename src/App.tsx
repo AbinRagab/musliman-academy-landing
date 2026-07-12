@@ -178,9 +178,16 @@ function ClassIllustration({ mode = 'hero' }: { mode?: 'hero' | 'light' | 'train
 }
 
 function HeroVisual() {
+  const { t } = useTranslation();
+
   return (
-    <div className="hero-visual" aria-hidden="true">
-      <img src="/assets/hero-visual.jpg" alt="" />
+    <div className="hero-visual">
+      <img
+        src="/assets/hero-visual.jpg"
+        alt={t('hero.imageAlt')}
+        width="748"
+        height="510"
+      />
     </div>
   );
 }
@@ -190,7 +197,14 @@ function WhoWeTeachVisual() {
 
   return (
     <div className="who-visual">
-      <img src="/assets/who-we-teach-visual.jpg" alt={t('audience.visualAlt')} />
+      <img
+        src="/assets/who-we-teach-visual.jpg"
+        alt={t('audience.visualAlt')}
+        width="755"
+        height="440"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 }
@@ -200,7 +214,14 @@ function WhyChooseVisual() {
 
   return (
     <div className="why-visual">
-      <img src="/assets/why-choose-visual.jpg" alt={t('whyChoose.visualAlt')} />
+      <img
+        src="/assets/why-choose-visual.jpg"
+        alt={t('whyChoose.visualAlt')}
+        width="748"
+        height="900"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 }
@@ -218,7 +239,7 @@ const sectionDecorationItems: Record<DecorationType, DecorationItem[]> = {
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--trial-star is-accent' },
   ],
   about: [
-    { kind: 'icon', icon: 'bookMarked', className: 'decor-icon--book decor-icon--xl decor-pos--about-book is-accent' },
+    { kind: 'icon', icon: 'bookMarked', className: 'decor-icon--about-mark decor-icon--xl decor-pos--about-mark is-accent' },
     { kind: 'icon', icon: 'globe', className: 'decor-icon--globe decor-icon--md decor-pos--about-globe' },
     { kind: 'crescent', className: 'decor-crescent--about is-accent' },
   ],
@@ -625,6 +646,7 @@ function AboutSection() {
             src="/assets/about-visual.png"
             alt={t('about.imageAlt')}
             className="about-visual__image"
+            loading="lazy"
           />
         </div>
         <div className="about-content">

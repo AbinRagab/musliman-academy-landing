@@ -35,6 +35,7 @@
     "programs": "البرامج",
     "whoWeTeach": "من نعلّم",
     "whyChooseUs": "لماذا نحن",
+    "teacherTraining": "تدريب المعلمين",
     "faq": "الأسئلة",
     "bookFreeTrial": "احجز تجربة مجانية"
   },
@@ -91,7 +92,7 @@
     },
     "placeholders": {
       "name": "أدخل اسمك الكامل",
-      "whatsapp": "مثال: +20 123 456 7890",
+      "whatsapp": "Phone number",
       "country": "اختر الدولة",
       "experience": "اختر الخبرة",
       "qualification": "اختر المؤهل",

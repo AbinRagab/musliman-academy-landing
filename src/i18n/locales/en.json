@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "Musliman Academy | Online Quran & Arabic Classes",
-    "description": "Musliman Academy teaches Quran, Arabic, Tajweed, Islamic Studies, and Teacher Training online for non-Arabic speakers."
+    "title": "Musliman Academy | Online Quran, Arabic & Tajweed Classes",
+    "description": "Musliman Academy offers online Quran, Arabic, Tajweed, Islamic Studies, and teacher training classes for non-Arabic speakers with qualified Egyptian teachers."
   },
   "language": {
     "label": "Language",
@@ -35,6 +35,7 @@
     "programs": "Programs",
     "whoWeTeach": "Who We Teach",
     "whyChooseUs": "Why Choose Us",
+    "teacherTraining": "Teacher Training",
     "faq": "FAQ",
     "bookFreeTrial": "Book Free Trial"
   },
@@ -47,7 +48,8 @@
     "headlineLine1": "Start Your Quran and",
     "headlineLine2": "Arabic Learning Journey",
     "headlineAccent": "Today",
-    "description": "Book a free trial class for you or your child and experience our live, one-to-one Islamic learning with qualified Egyptian teachers.",
+    "description": "Book a free trial class to learn Quran online with qualified Egyptian Quran teachers through live, one-to-one online Quran classes for non-Arabic speakers.",
+    "imageAlt": "Online Quran classes with qualified Egyptian Quran teachers at Musliman Academy",
     "cta": "Book Your Free Trial Class",
     "trust": {
       "online": "Online Classes",
@@ -91,7 +93,7 @@
     },
     "placeholders": {
       "name": "Enter your full name",
-      "whatsapp": "e.g. +20 123 456 7890",
+      "whatsapp": "Phone number",
       "country": "Select your country",
       "experience": "Select experience",
       "qualification": "Select qualification",
@@ -160,9 +162,9 @@
   "about": {
     "badge": "About Musliman Academy",
     "heading": "Every Learner Has a Way",
-    "lead": "At Musliman Academy, we make learning simple, clear, and achievable through the right method, patient guidance, and step-by-step support for every student.",
-    "paragraph1": "At Musliman Academy, we believe that every learner has a way. Every student learns differently, so we provide simple, patient, and step-by-step online education designed around each learner's level and needs.",
-    "paragraph2": "The Academy offers Quran, Arabic, Tajweed, Islamic Studies, Islamic Values, Quran Memorization, Quran Tafseer, Tarteel Qaidah, and Teacher Training programs through qualified Egyptian teachers with Al-Azhar educational background.",
+    "lead": "At Musliman Academy, we make learning simple, clear, and achievable through the right method, patient guidance, and step-by-step support for every student who wants to learn Quran online.",
+    "paragraph1": "At Musliman Academy, we believe that every learner has a way. Every student learns differently, so we provide simple, patient, and step-by-step online Quran classes and Arabic classes for beginners designed around each learner's level and needs.",
+    "paragraph2": "The Academy offers Quran reading for children, Online Tajweed classes, Arabic, Islamic Studies for children, Quran Memorization, Quran Tafseer, Tarteel Qaidah, and teacher training for Quran teachers through qualified Egyptian Quran teachers with Al-Azhar educational background.",
     "imageAlt": "Quran learning visual"
   },
   "trust": {
@@ -179,12 +181,12 @@
   "programs": {
     "badge": "Our Programs",
     "heading": "Choose the Right Learning Path",
-    "description": "Programs designed for every level, age, and goal, helping you learn, understand, and live the teachings of Islam with confidence.",
+    "description": "Programs designed for every level, age, and goal, including Online Quran classes, Online Tajweed classes, Arabic classes for beginners, and Islamic Studies for children.",
     "learnMore": "Learn More",
     "items": {
       "quranReading": {
         "title": "Quran Reading",
-        "text": "Learn to read the Quran correctly with step-by-step guidance, clear pronunciation, and continuous correction."
+        "text": "Learn Quran online and read the Quran correctly with step-by-step guidance, clear pronunciation, and continuous correction."
       },
       "tarteelQaidah": {
         "title": "Tarteel Qaidah",
@@ -204,11 +206,11 @@
       },
       "arabicLanguage": {
         "title": "Arabic Language",
-        "text": "Learn Arabic letters, pronunciation, reading, writing, and simple understanding to build a strong language foundation."
+        "text": "Arabic classes for beginners covering letters, pronunciation, reading, writing, and simple understanding to build a strong language foundation."
       },
       "islamicStudies": {
         "title": "Islamic Studies",
-        "text": "Learn the basics of Islamic belief, worship, Seerah, manners, and morals in a clear and simple way."
+        "text": "Islamic Studies for children and adults covering belief, worship, Seerah, manners, and morals in a clear and simple way."
       },
       "islamicValues": {
         "title": "Islamic Values for Children",
@@ -220,7 +222,7 @@
     "badge": "Who We Teach",
     "headingLine1": "Learning for Every",
     "headingLine2": "Stage and Level",
-    "description": "We teach children, adults, non-Arabic speakers, beginners, and advanced learners through simple, patient, and step-by-step online education. Whether a student is starting from zero or needs extra support, Musliman Academy helps every learner find the right way to learn with confidence.",
+    "description": "We teach children, adults, non-Arabic speakers, beginners, and advanced learners through Quran classes for non-Arabic speakers and simple, patient, step-by-step online education.",
     "visualAlt": "Online learning for different students",
     "reassurance": "No matter who you are or where you're from, you're welcome here.",
     "reassuranceStrong": "We're here to help you learn, grow, and stay connected to the Quran and your faith.",
@@ -259,7 +261,7 @@
     "badge": "Why Choose Musliman Academy",
     "headingLine1": "A Simple, Trusted",
     "headingLine2": "Learning Experience",
-    "description": "We make learning the Quran, Arabic, and Islamic studies easy, effective, and meaningful for every background, age, and level.",
+    "description": "We make Online Quran classes, Arabic, Tajweed, and Islamic studies easy, effective, and meaningful for every background, age, and level.",
     "visualAlt": "Trusted online Quran learning experience",
     "stats": {
       "students": "Students Taught",
@@ -323,7 +325,7 @@
   "training": {
     "badge": "Teacher Training Program",
     "heading": "Train Teachers to Teach with Confidence",
-    "description": "Musliman Academy offers practical training for beginner and experienced teachers who want to improve their Quran, Arabic, and Islamic-values teaching for non-Arabic speakers.",
+    "description": "Musliman Academy offers practical teacher training for Quran teachers who want to improve Quran, Arabic, and Islamic-values teaching for non-Arabic speakers.",
     "cta": "Join Teacher Training",
     "includes": {
       "methods": "Teaching methods for non-Arabic speakers",

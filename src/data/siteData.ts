@@ -10,8 +10,8 @@ export const contact = {
 export const navLinks = [
   { labelKey: 'nav.about', href: '#about' },
   { labelKey: 'nav.programs', href: '#programs' },
-  { labelKey: 'nav.whoWeTeach', href: '#who-we-teach' },
   { labelKey: 'nav.whyChooseUs', href: '#why-choose-us' },
+  { labelKey: 'nav.teacherTraining', href: '#teacher-training' },
   { labelKey: 'nav.faq', href: '#faq' },
 ];
 

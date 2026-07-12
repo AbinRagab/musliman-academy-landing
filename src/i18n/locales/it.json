@@ -35,6 +35,7 @@
     "programs": "Programmi",
     "whoWeTeach": "A chi insegniamo",
     "whyChooseUs": "Perche sceglierci",
+    "teacherTraining": "Formazione insegnanti",
     "faq": "FAQ",
     "bookFreeTrial": "Prova gratuita"
   },
@@ -91,7 +92,7 @@
     },
     "placeholders": {
       "name": "Inserisci il tuo nome completo",
-      "whatsapp": "es. +20 123 456 7890",
+      "whatsapp": "Phone number",
       "country": "Seleziona il paese",
       "experience": "Seleziona esperienza",
       "qualification": "Seleziona qualifica",
