@@ -33,6 +33,7 @@
   "nav": {
     "about": "Hakkimizda",
     "programs": "Programlar",
+    "scheduleFee": "Schedule & Fee",
     "whoWeTeach": "Kimlere ogretiyoruz",
     "whyChooseUs": "Neden biz",
     "teacherTraining": "Ogretmen egitimi",
@@ -192,6 +193,22 @@
       "islamicStudies": { "title": "Islami ilimler" },
       "islamicValues": { "title": "Cocuklar icin Islami degerler" }
     }
+  },
+  "pricing": {
+    "badge": "Pricing Plans",
+    "heading": "Schedule & Fee",
+    "subtitle": "Each class is 30 minutes. Monthly plans are calculated based on 4 total learning hours per month.",
+    "currencyAria": "Select currency",
+    "columns": {
+      "program": "Program",
+      "tier": "Tier",
+      "oneOnOne": "1-on-1 Class",
+      "group": "Group Class",
+      "monthly": "Monthly Plan"
+    },
+    "note": "All prices are starting prices and may vary depending on the selected program, class type, and learning plan.",
+    "ctaText": "Flexible plans designed for different learning goals.",
+    "cta": "Book a Free Trial"
   },
   "audience": {
     "badge": "Kimlere ogretiyoruz",

@@ -11,17 +11,19 @@ import {
   faqs,
   howSteps,
   navLinks,
+  pricingData,
   programs,
   reasons,
   trainingBadges,
   trainingIncludes,
   trustItems,
+  type PricingCurrency,
 } from './data/siteData';
 
 type Theme = 'light' | 'dark';
 type BookingType = 'trial' | 'training';
 type DecorationVariant = 'light' | 'dark';
-type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'who' | 'why' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
+type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'pricing' | 'who' | 'why' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
 
 type DecorationItem =
   | { kind: 'icon'; icon: IconName; className: string }
@@ -247,6 +249,11 @@ const sectionDecorationItems: Record<DecorationType, DecorationItem[]> = {
     { kind: 'icon', icon: 'book', className: 'decor-icon--book decor-icon--lg decor-pos--programs-book' },
     { kind: 'icon', icon: 'languages', className: 'decor-icon--arabic decor-icon--md decor-pos--programs-arabic is-accent' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--programs-star is-accent' },
+  ],
+  pricing: [
+    { kind: 'icon', icon: 'calendar', className: 'decor-icon--calendar decor-icon--lg decor-pos--pricing-calendar is-accent' },
+    { kind: 'icon', icon: 'award', className: 'decor-icon--award decor-icon--md decor-pos--pricing-award' },
+    { kind: 'crescent', className: 'decor-crescent--pricing is-accent' },
   ],
   who: [
     { kind: 'icon', icon: 'globe', className: 'decor-icon--globe decor-icon--lg decor-pos--who-globe' },
@@ -709,6 +716,77 @@ function ProgramsSection() {
   );
 }
 
+function PricingSection() {
+  const { t } = useTranslation();
+  const [activeCurrency, setActiveCurrency] = useState<PricingCurrency>('USD');
+  const currentPricing = pricingData[activeCurrency];
+  const currencyEntries = Object.entries(pricingData) as Array<[PricingCurrency, (typeof pricingData)[PricingCurrency]]>;
+
+  return (
+    <section className="pricing-section section-light" id="schedule-fee">
+      <SectionDecorations variant="light" type="pricing" />
+      <div className="container pricing-container">
+        <div className="section-heading pricing-heading">
+          <SectionBadge icon="calendar">{t('pricing.badge')}</SectionBadge>
+          <h2>{t('pricing.heading')}</h2>
+          <p>{t('pricing.subtitle')}</p>
+        </div>
+
+        <div className="pricing-tabs" role="tablist" aria-label={t('pricing.currencyAria')}>
+          {currencyEntries.map(([key, currency]) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={activeCurrency === key}
+              className={`pricing-tab ${activeCurrency === key ? 'is-active' : ''}`}
+              onClick={() => setActiveCurrency(key)}
+            >
+              {currency.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="pricing-table-card">
+          <table className="pricing-table">
+            <thead>
+              <tr>
+                <th scope="col">{t('pricing.columns.program')}</th>
+                <th scope="col">{t('pricing.columns.tier')}</th>
+                <th scope="col">{t('pricing.columns.oneOnOne')}</th>
+                <th scope="col">{t('pricing.columns.group')}</th>
+                <th scope="col">{t('pricing.columns.monthly')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentPricing.rows.map((row) => (
+                <tr key={row.track}>
+                  <td>{row.track}</td>
+                  <td>
+                    <span className={`tier-badge tier-badge--${row.tier.toLowerCase()}`}>
+                      {row.tier}
+                    </span>
+                  </td>
+                  <td>{row.oneOnOne}</td>
+                  <td>{row.group}</td>
+                  <td className="pricing-table__monthly">{row.monthly}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="pricing-note">{t('pricing.note')}</p>
+
+        <div className="pricing-cta">
+          <p>{t('pricing.ctaText')}</p>
+          <Button href="#book-trial" icon="calendar">{t('pricing.cta')}</Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AudienceSection() {
   const { t } = useTranslation();
 
@@ -1044,6 +1122,7 @@ export default function App() {
         <AboutSection />
         <TrustBarSection />
         <ProgramsSection />
+        <PricingSection />
         <AudienceSection />
         <WhyChooseSection />
         <HowItWorksSection />

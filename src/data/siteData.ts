@@ -10,6 +10,7 @@ export const contact = {
 export const navLinks = [
   { labelKey: 'nav.about', href: '#about' },
   { labelKey: 'nav.programs', href: '#programs' },
+  { labelKey: 'nav.scheduleFee', href: '#schedule-fee' },
   { labelKey: 'nav.whyChooseUs', href: '#why-choose-us' },
   { labelKey: 'nav.teacherTraining', href: '#teacher-training' },
   { labelKey: 'nav.faq', href: '#faq' },
@@ -226,6 +227,78 @@ export const programs: Array<{ number: string; key: string; icon: IconName }> = 
   { number: '7', key: 'islamicStudies', icon: 'landmark' },
   { number: '8', key: 'islamicValues', icon: 'heartHandshake' },
 ];
+
+export type PricingCurrency = 'USD' | 'CAD' | 'GBP' | 'AUD';
+export type PricingTier = 'Foundational' | 'Standard' | 'Specialized';
+
+export const pricingData: Record<PricingCurrency, {
+  label: string;
+  symbol: string;
+  rows: Array<{
+    track: string;
+    tier: PricingTier;
+    oneOnOne: string;
+    group: string;
+    monthly: string;
+  }>;
+}> = {
+  USD: {
+    label: 'USA Dollars',
+    symbol: '$',
+    rows: [
+      { track: 'Tarteel Qaidah', tier: 'Foundational', oneOnOne: '$8 / Hour', group: '$6 / Hour', monthly: '$32 / Month' },
+      { track: 'Arabic Language', tier: 'Foundational', oneOnOne: '$8 / Hour', group: '$6 / Hour', monthly: '$32 / Month' },
+      { track: 'Islamic Values for Children', tier: 'Foundational', oneOnOne: '$8 / Hour', group: '$6 / Hour', monthly: '$32 / Month' },
+      { track: 'Quran Reading', tier: 'Standard', oneOnOne: '$8 / Hour', group: '$6 / Hour', monthly: '$32 / Month' },
+      { track: 'Tajweed', tier: 'Standard', oneOnOne: '$8 / Hour', group: '$6 / Hour', monthly: '$32 / Month' },
+      { track: 'Islamic Studies', tier: 'Standard', oneOnOne: '$8 / Hour', group: '$6 / Hour', monthly: '$32 / Month' },
+      { track: 'Quran Memorization', tier: 'Specialized', oneOnOne: '$8 / Hour', group: '$6 / Hour', monthly: '$32 / Month' },
+      { track: 'Quran Tafseer', tier: 'Specialized', oneOnOne: '$8 / Hour', group: '$6 / Hour', monthly: '$32 / Month' },
+    ],
+  },
+  CAD: {
+    label: 'Canadian Dollars',
+    symbol: 'C$',
+    rows: [
+      { track: 'Tarteel Qaidah', tier: 'Foundational', oneOnOne: 'C$11.36 / Hour', group: 'C$8.52 / Hour', monthly: 'C$45.44 / Month' },
+      { track: 'Arabic Language', tier: 'Foundational', oneOnOne: 'C$11.36 / Hour', group: 'C$8.52 / Hour', monthly: 'C$45.44 / Month' },
+      { track: 'Islamic Values for Children', tier: 'Foundational', oneOnOne: 'C$11.36 / Hour', group: 'C$8.52 / Hour', monthly: 'C$45.44 / Month' },
+      { track: 'Quran Reading', tier: 'Standard', oneOnOne: 'C$11.36 / Hour', group: 'C$8.52 / Hour', monthly: 'C$45.44 / Month' },
+      { track: 'Tajweed', tier: 'Standard', oneOnOne: 'C$11.36 / Hour', group: 'C$8.52 / Hour', monthly: 'C$45.44 / Month' },
+      { track: 'Islamic Studies', tier: 'Standard', oneOnOne: 'C$11.36 / Hour', group: 'C$8.52 / Hour', monthly: 'C$45.44 / Month' },
+      { track: 'Quran Memorization', tier: 'Specialized', oneOnOne: 'C$11.36 / Hour', group: 'C$8.52 / Hour', monthly: 'C$45.44 / Month' },
+      { track: 'Quran Tafseer', tier: 'Specialized', oneOnOne: 'C$11.36 / Hour', group: 'C$8.52 / Hour', monthly: 'C$45.44 / Month' },
+    ],
+  },
+  GBP: {
+    label: 'UK Pounds',
+    symbol: '',
+    rows: [
+      { track: 'Tarteel Qaidah', tier: 'Foundational', oneOnOne: '6.00 / Hour', group: '4.50 / Hour', monthly: '24.00 / Month' },
+      { track: 'Arabic Language', tier: 'Foundational', oneOnOne: '6.00 / Hour', group: '4.50 / Hour', monthly: '24.00 / Month' },
+      { track: 'Islamic Values for Children', tier: 'Foundational', oneOnOne: '6.00 / Hour', group: '4.50 / Hour', monthly: '24.00 / Month' },
+      { track: 'Quran Reading', tier: 'Standard', oneOnOne: '6.00 / Hour', group: '4.50 / Hour', monthly: '24.00 / Month' },
+      { track: 'Tajweed', tier: 'Standard', oneOnOne: '6.00 / Hour', group: '4.50 / Hour', monthly: '24.00 / Month' },
+      { track: 'Islamic Studies', tier: 'Standard', oneOnOne: '6.00 / Hour', group: '4.50 / Hour', monthly: '24.00 / Month' },
+      { track: 'Quran Memorization', tier: 'Specialized', oneOnOne: '6.00 / Hour', group: '4.50 / Hour', monthly: '24.00 / Month' },
+      { track: 'Quran Tafseer', tier: 'Specialized', oneOnOne: '6.00 / Hour', group: '4.50 / Hour', monthly: '24.00 / Month' },
+    ],
+  },
+  AUD: {
+    label: 'Australian Dollars',
+    symbol: 'A$',
+    rows: [
+      { track: 'Tarteel Qaidah', tier: 'Foundational', oneOnOne: 'A$11.52 / Hour', group: 'A$8.64 / Hour', monthly: 'A$46.08 / Month' },
+      { track: 'Arabic Language', tier: 'Foundational', oneOnOne: 'A$11.52 / Hour', group: 'A$8.64 / Hour', monthly: 'A$46.08 / Month' },
+      { track: 'Islamic Values for Children', tier: 'Foundational', oneOnOne: 'A$11.52 / Hour', group: 'A$8.64 / Hour', monthly: 'A$46.08 / Month' },
+      { track: 'Quran Reading', tier: 'Standard', oneOnOne: 'A$11.52 / Hour', group: 'A$8.64 / Hour', monthly: 'A$46.08 / Month' },
+      { track: 'Tajweed', tier: 'Standard', oneOnOne: 'A$11.52 / Hour', group: 'A$8.64 / Hour', monthly: 'A$46.08 / Month' },
+      { track: 'Islamic Studies', tier: 'Standard', oneOnOne: 'A$11.52 / Hour', group: 'A$8.64 / Hour', monthly: 'A$46.08 / Month' },
+      { track: 'Quran Memorization', tier: 'Specialized', oneOnOne: 'A$11.52 / Hour', group: 'A$8.64 / Hour', monthly: 'A$46.08 / Month' },
+      { track: 'Quran Tafseer', tier: 'Specialized', oneOnOne: 'A$11.52 / Hour', group: 'A$8.64 / Hour', monthly: 'A$46.08 / Month' },
+    ],
+  },
+};
 
 export const trustItems: Array<{ key: string; icon: IconName }> = [
   { key: 'experiencedTeachers', icon: 'graduationCap' },

@@ -33,6 +33,7 @@
   "nav": {
     "about": "About",
     "programs": "Programs",
+    "scheduleFee": "Schedule & Fee",
     "whoWeTeach": "Who We Teach",
     "whyChooseUs": "Why Choose Us",
     "teacherTraining": "Teacher Training",
@@ -47,7 +48,7 @@
     },
     "headlineLine1": "Start Your Quran and",
     "headlineLine2": "Arabic Learning Journey",
-    "headlineAccent": "Today",
+    "headlineAccent": "Now",
     "description": "Book a free trial class to learn Quran online with qualified Egyptian Quran teachers through live, one-to-one online Quran classes for non-Arabic speakers.",
     "imageAlt": "Online Quran classes with qualified Egyptian Quran teachers at Musliman Academy",
     "cta": "Book Your Free Trial Class",
@@ -217,6 +218,22 @@
         "text": "Help children build good Islamic character through practical values such as honesty, respect, mercy, cooperation, and love for learning."
       }
     }
+  },
+  "pricing": {
+    "badge": "Pricing Plans",
+    "heading": "Schedule & Fee",
+    "subtitle": "Each class is 30 minutes. Monthly plans are calculated based on 4 total learning hours per month.",
+    "currencyAria": "Select currency",
+    "columns": {
+      "program": "Program",
+      "tier": "Tier",
+      "oneOnOne": "1-on-1 Class",
+      "group": "Group Class",
+      "monthly": "Monthly Plan"
+    },
+    "note": "All prices are starting prices and may vary depending on the selected program, class type, and learning plan.",
+    "ctaText": "Flexible plans designed for different learning goals.",
+    "cta": "Book a Free Trial"
   },
   "audience": {
     "badge": "Who We Teach",
