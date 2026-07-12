@@ -279,6 +279,10 @@
     "headingLine1": "A Simple, Trusted",
     "headingLine2": "Learning Experience",
     "description": "We make Online Quran classes, Arabic, Tajweed, and Islamic studies easy, effective, and meaningful for every background, age, and level.",
+    "intro": {
+      "paragraph1": "At Musliman Academy, we make Quran learning simple, accessible, and meaningful through personalized online classes with certified instructors. Our flexible schedules and safe learning environment allow students to learn from anywhere at their own pace.",
+      "paragraph2": "We focus on correct Tajweed, continuous guidance, and step-by-step progress, helping every learner build confidence and connect with the words of Allah."
+    },
     "visualAlt": "Trusted online Quran learning experience",
     "stats": {
       "students": "Students Taught",

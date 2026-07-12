@@ -190,7 +190,7 @@ p {
   isolation: isolate;
 }
 
-.hero__grid,
+.hero__inner,
 .booking-section > .container,
 .about-container,
 .trust-section > .container,
@@ -819,38 +819,77 @@ p {
 /* Hero */
 .hero {
   position: relative;
-  overflow: hidden;
-  min-height: 620px;
-  padding: 64px 0 150px;
+  min-height: 660px;
+  padding: 76px 0 220px;
+  overflow: visible;
+  isolation: isolate;
+  z-index: 1;
   background:
-    radial-gradient(circle at 65% 45%, rgba(184, 115, 51, 0.16), transparent 35%),
-    linear-gradient(135deg, #0B1F3A 0%, #06182D 100%);
+    linear-gradient(
+      90deg,
+      rgba(6, 24, 45, 0.98) 0%,
+      rgba(6, 24, 45, 0.95) 32%,
+      rgba(6, 24, 45, 0.72) 52%,
+      rgba(6, 24, 45, 0.22) 74%,
+      rgba(6, 24, 45, 0.08) 100%
+    ),
+    url("/assets/hero-bg.png");
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
 }
 
-.hero__grid {
-  position: relative;
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 18% 25%, rgba(184, 115, 51, 0.13), transparent 34%),
+    radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.04), transparent 28%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   z-index: 1;
-  display: grid;
-  grid-template-columns: 520px 1fr;
-  align-items: center;
-  gap: 48px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(11, 31, 58, 0.18) 0%,
+      rgba(11, 31, 58, 0.03) 46%,
+      rgba(11, 31, 58, 0.46) 100%
+    );
+  pointer-events: none;
+}
+
+.hero__overlay,
+.hero__pattern {
+  display: none;
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 5;
+  display: block;
 }
 
 .hero__content {
   position: relative;
-  z-index: 2;
-  max-width: 610px;
+  z-index: 5;
+  max-width: 860px;
 }
 
 .hero__eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   color: #B87333;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0;
+  font-weight: 800;
+  font-size: 16px;
 }
 
 .hero__eyebrow i {
@@ -866,18 +905,19 @@ p {
 }
 
 .hero h1 {
-  max-width: 760px;
   margin: 0;
-  font-family: var(--font-heading);
-  font-size: 56px;
+  max-width: 880px;
+  font-family: "Cinzel", serif;
+  font-size: clamp(54px, 4.7vw, 74px);
   line-height: 1.08;
-  letter-spacing: 0;
+  letter-spacing: -1px;
+  color: #FFFFFF;
   white-space: nowrap;
 }
 
 .hero h1 span {
+  display: inline-block;
   color: #B87333;
-  display: block;
 }
 
 .training__content h2 span {
@@ -885,83 +925,69 @@ p {
 }
 
 .hero p {
-  max-width: 560px;
-  margin: 24px 0 28px;
-  color: #D6DEE8;
-  font-size: 1.125rem;
-  line-height: 1.7;
+  max-width: 610px;
+  margin: 28px 0 30px;
+  color: #E6EDF5;
+  font-size: 18px;
+  line-height: 1.75;
 }
 
 .hero__cta {
+  margin-top: 4px;
   min-height: 56px;
   padding-inline: 28px;
-}
-
-.hero-visual {
-  position: absolute;
-  z-index: 1;
-  right: 0;
-  bottom: 42px;
-  width: 58%;
-  max-width: 860px;
-  height: 520px;
-  overflow: hidden;
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.18) 12%, #000 34%);
-  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.18) 12%, #000 34%);
-}
-
-.hero-visual img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center bottom;
 }
 
 .hero-trust {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
-  gap: 28px;
-  margin-top: 28px;
+  gap: 34px;
+  margin-top: 34px;
+  margin-bottom: 18px;
   color: #FFFFFF;
+  flex-wrap: wrap;
+}
+
+.hero .container,
+.hero__content,
+.hero-trust,
+.hero__cta {
+  position: relative;
+  z-index: 5;
 }
 
 .hero-trust div {
   display: flex;
   align-items: center;
-  flex: 0 0 auto;
   gap: 12px;
-  color: var(--white);
+  color: #FFFFFF;
   font-weight: 800;
-  line-height: 1.22;
+  white-space: nowrap;
 }
 
 .hero-trust svg,
 .hero-trust .icon {
-  width: 48px;
-  height: 48px;
-  padding: 12px;
+  width: 52px;
+  height: 52px;
+  padding: 13px;
   border: 1px solid rgba(184, 115, 51, 0.55);
   border-radius: 50%;
   color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.hero-trust span {
-  font-size: 0.94rem;
-  line-height: 1.25;
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .hero-curve {
   position: absolute;
-  left: 0;
+  left: 50%;
   bottom: -1px;
-  width: 100%;
-  height: 74px;
-  background: var(--off-white);
-  clip-path: polygon(0 45%, 100% 0, 100% 100%, 0 100%);
+  transform: translateX(-50%);
+  width: 125%;
+  height: 190px;
+  background: #F8F7F3;
+  border-top-left-radius: 50% 100%;
+  border-top-right-radius: 50% 100%;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* Illustration */
@@ -1283,22 +1309,24 @@ p {
 /* Booking */
 .booking-section {
   position: relative;
-  z-index: 5;
-  overflow: hidden;
+  z-index: 8;
+  overflow: visible;
   isolation: isolate;
-  margin-top: -90px;
-  padding: 96px 0 72px;
+  margin-top: -165px;
+  padding: 0 0 96px;
   background: #F8F7F3;
 }
 
 .booking-card {
+  position: relative;
+  z-index: 9;
   max-width: 1120px;
-  margin-inline: auto;
-  padding: 42px;
+  margin: 0 auto;
+  padding: 54px 42px 42px;
   border: 1px solid #E6E8EC;
-  border-radius: 24px;
+  border-radius: 28px;
   background: #FFFFFF;
-  box-shadow: 0 24px 60px rgba(11, 31, 58, 0.1);
+  box-shadow: 0 30px 80px rgba(11, 31, 58, 0.16);
 }
 
 .booking-heading {
@@ -1897,31 +1925,69 @@ p {
   gap: 56px;
 }
 
-.why-left {
+.why-left,
+.why-content {
   position: relative;
   z-index: 2;
   min-width: 0;
 }
 
-.why-left h2 {
-  margin: 22px 0 18px;
+.why-left h2,
+.why-content h2 {
+  margin: 24px 0 22px;
   color: #0B1F3A;
   font-family: "Cinzel", var(--font-heading);
-  font-size: 54px;
-  line-height: 1.12;
-  letter-spacing: 0;
+  font-size: clamp(44px, 4.7vw, 64px);
+  line-height: 1.08;
+  letter-spacing: -0.6px;
 }
 
 .why-left h2 span {
   white-space: nowrap;
 }
 
-.why-description {
-  max-width: 560px;
+.why-intro-card {
+  position: relative;
+  max-width: 650px;
   margin: 0 0 28px;
-  color: #4B5563;
-  font-size: 18px;
-  line-height: 1.7;
+  padding: 24px 28px;
+  border: 1px solid rgba(184, 115, 51, 0.28);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.58));
+  box-shadow: 0 16px 38px rgba(11, 31, 58, 0.06);
+}
+
+.why-intro-card::before {
+  content: "";
+  position: absolute;
+  left: 28px;
+  top: -18px;
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, #B87333, transparent);
+}
+
+.why-intro-card::after {
+  content: "";
+  position: absolute;
+  left: 165px;
+  top: -21px;
+  width: 8px;
+  height: 8px;
+  background: #B87333;
+  transform: rotate(45deg);
+}
+
+.why-intro-card p {
+  margin: 0;
+  color: #334155;
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.why-intro-card p + p {
+  margin-top: 18px;
 }
 
 .why-slider-area {
@@ -1932,7 +1998,7 @@ p {
   display: flex;
   align-items: center;
   gap: 18px;
-  margin: 0 0 28px;
+  margin: 8px 0 28px;
 }
 
 .why-slider-btn {
@@ -3023,7 +3089,7 @@ html[dir="rtl"] body {
 }
 
 html[dir="rtl"] .navbar,
-html[dir="rtl"] .hero__grid,
+html[dir="rtl"] .hero__inner,
 html[dir="rtl"] .about-container,
 html[dir="rtl"] .why-layout,
 html[dir="rtl"] .footer-container,
@@ -3178,6 +3244,16 @@ html[dir="rtl"] .testimonial-quote-mark {
 .app-shell[data-theme='dark'] .pricing-tabs {
   border-color: rgba(184, 115, 51, 0.42);
   background: #0d2542;
+}
+
+.app-shell[data-theme='dark'] .why-intro-card {
+  border-color: rgba(184, 115, 51, 0.35);
+  background:
+    linear-gradient(180deg, rgba(13, 37, 66, 0.9), rgba(13, 37, 66, 0.72));
+}
+
+.app-shell[data-theme='dark'] .why-intro-card p {
+  color: #b8c4d4;
 }
 
 .app-shell[data-theme='dark'] .pricing-tab {
@@ -3372,18 +3448,6 @@ html[dir="rtl"] .testimonial-quote-mark {
     grid-template-columns: 1fr;
   }
 
-  .hero {
-    padding-top: 58px;
-  }
-
-  .hero__grid {
-    gap: 38px;
-  }
-
-  .hero h1 {
-    font-size: 52px;
-  }
-
   .class-visual {
     min-height: 460px;
   }
@@ -3406,11 +3470,13 @@ html[dir="rtl"] .testimonial-quote-mark {
     text-align: center;
   }
 
-  .why-left h2 {
+  .why-left h2,
+  .why-content h2 {
     font-size: 46px;
   }
 
-  .why-description {
+  .why-intro-card {
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
   }
@@ -3432,59 +3498,59 @@ html[dir="rtl"] .testimonial-quote-mark {
   }
 }
 
-@media (max-width: 1100px) {
+@media (min-width: 1200px) {
   .hero {
-    min-height: auto;
-    padding: 56px 0 124px;
+    padding-top: 78px;
+    padding-bottom: 230px;
   }
 
-  .hero__grid {
-    grid-template-columns: 1fr;
-    gap: 0;
-    text-align: center;
+  .booking-section {
+    margin-top: -175px;
+  }
+
+  .hero-curve {
+    width: 128%;
+    height: 200px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .hero {
+    min-height: 650px;
+    background-position: 62% center;
   }
 
   .hero__content {
     max-width: 720px;
-    margin: 0 auto;
-  }
-
-  .hero__eyebrow {
-    justify-content: center;
-  }
-
-  .hero p,
-  .hero-trust {
-    margin-inline: auto;
   }
 
   .hero h1 {
-    max-width: 720px;
-    margin-inline: auto;
-    font-size: 48px;
+    font-size: clamp(48px, 5.3vw, 64px);
   }
 
   .hero p {
-    max-width: 620px;
+    max-width: 560px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero {
+    padding-top: 72px;
+    padding-bottom: 185px;
   }
 
-  .hero-visual {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    z-index: 1;
-    width: min(100% - 40px, 680px);
-    max-width: 680px;
-    height: 420px;
-    margin: 36px auto 0;
-    -webkit-mask-image: none;
-    mask-image: none;
+  .hero-curve {
+    width: 130%;
+    height: 150px;
   }
 
-  .hero-trust {
-    justify-content: center;
+  .booking-section {
+    margin-top: -125px;
+    padding-bottom: 84px;
   }
+}
 
+@media (max-width: 1100px) {
   .why-left {
     margin-inline: auto;
   }
@@ -3606,10 +3672,6 @@ html[dir="rtl"] .testimonial-quote-mark {
     padding: 28px;
   }
 
-  .booking-section {
-    margin-top: -72px;
-  }
-
   .training-badges div {
     border-right: 0;
     border-bottom: 1px solid rgba(184, 115, 51, 0.38);
@@ -3701,65 +3763,64 @@ html[dir="rtl"] .testimonial-quote-mark {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .hero {
     min-height: auto;
-    padding: 48px 0 120px;
-  }
-
-  .hero__grid {
-    grid-template-columns: 1fr;
-    gap: 36px;
-    text-align: center;
+    padding: 64px 0 150px;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(6, 24, 45, 0.98) 0%,
+        rgba(6, 24, 45, 0.94) 44%,
+        rgba(6, 24, 45, 0.82) 100%
+      ),
+      url("/assets/hero-bg.png");
+    background-size: cover;
+    background-position: 72% center;
   }
 
   .hero__content {
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .hero__eyebrow {
-    justify-content: center;
-  }
-
-  .hero__eyebrow,
-  .hero p,
-  .hero-trust {
-    margin-inline: auto;
+    max-width: 100%;
   }
 
   .hero h1 {
-    max-width: 720px;
-    margin-inline: auto;
-    font-size: 44px;
+    font-size: 42px;
+    line-height: 1.12;
+    white-space: normal;
   }
 
   .hero p {
-    max-width: 620px;
-  }
-
-  .hero-visual {
-    min-height: auto;
-    max-width: 620px;
-    height: 380px;
-    margin: 34px auto 0;
-  }
-
-  .hero-visual img {
-    width: 100%;
+    font-size: 16px;
+    line-height: 1.7;
   }
 
   .hero-trust {
-    justify-content: center;
-    flex-wrap: nowrap;
+    gap: 18px;
   }
 
   .hero-trust div {
-    text-align: left;
+    width: 100%;
+    white-space: normal;
+  }
+
+  .hero__cta {
+    width: 100%;
+    justify-content: center;
   }
 
   .booking-section {
     margin-top: -90px;
+    padding-bottom: 64px;
+  }
+
+  .booking-card {
+    border-radius: 22px;
+    box-shadow: 0 18px 40px rgba(11, 31, 58, 0.12);
+  }
+
+  .hero-curve {
+    width: 140%;
+    height: 110px;
   }
 }
 
@@ -3902,22 +3963,6 @@ html[dir="rtl"] .testimonial-quote-mark {
 
   h2 {
     font-size: 2.1rem;
-  }
-
-  .hero {
-    padding: 48px 0 112px;
-  }
-
-  .hero h1 {
-    font-size: 38px;
-  }
-
-  .hero p {
-    font-size: 1.03rem;
-  }
-
-  .hero-trust {
-    max-width: none;
   }
 
   .class-visual,
@@ -4067,6 +4112,20 @@ html[dir="rtl"] .testimonial-quote-mark {
     max-width: 100%;
     border-radius: 20px;
   }
+
+  .why-content h2 {
+    font-size: 40px;
+  }
+
+  .why-intro-card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .why-intro-card p {
+    font-size: 15.5px;
+    line-height: 1.7;
+  }
 }
 
 @media (max-width: 560px) {
@@ -4074,16 +4133,13 @@ html[dir="rtl"] .testimonial-quote-mark {
     padding: 72px 0;
   }
 
-  .why-left h2 {
+  .why-left h2,
+  .why-content h2 {
     font-size: 36px;
   }
 
   .why-left h2 span {
     white-space: normal;
-  }
-
-  .why-description {
-    font-size: 16px;
   }
 
   .why-slider {
@@ -4101,55 +4157,21 @@ html[dir="rtl"] .testimonial-quote-mark {
     text-align: center;
   }
 
-  .hero {
-    padding: 42px 0 104px;
-  }
-
   .hero__eyebrow {
     gap: 8px;
-    padding-inline: 11px;
-    font-size: 0.7rem;
+    font-size: 14px;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 64px;
+    background-position: 76% center;
   }
 
   .hero h1 {
-    font-size: 30px;
-    line-height: 1.09;
-  }
-
-  .hero p {
-    margin-top: 18px;
-    font-size: 0.98rem;
-    line-height: 1.68;
-  }
-
-  .hero__cta {
-    width: 100%;
-    justify-content: center;
-    margin-top: 24px;
-  }
-
-  .hero-trust {
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 24px;
-  }
-
-  .hero-trust div {
-    min-width: 120px;
-    justify-content: center;
-  }
-
-  .hero-visual img {
-    width: 100%;
-  }
-
-  .hero-visual {
-    height: 280px;
-    margin-top: 28px;
-  }
-
-  .booking-section {
-    margin-top: -90px;
+    font-size: 36px;
   }
 }
 
@@ -4192,11 +4214,5 @@ html[dir="rtl"] .testimonial-quote-mark {
   .tier-badge {
     padding: 5px 9px;
     font-size: 10px;
-  }
-}
-
-@media (max-width: 380px) {
-  .hero h1 {
-    font-size: 27px;
   }
 }

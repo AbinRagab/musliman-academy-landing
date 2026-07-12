@@ -179,21 +179,6 @@ function ClassIllustration({ mode = 'hero' }: { mode?: 'hero' | 'light' | 'train
   );
 }
 
-function HeroVisual() {
-  const { t } = useTranslation();
-
-  return (
-    <div className="hero-visual">
-      <img
-        src="/assets/hero-visual.jpg"
-        alt={t('hero.imageAlt')}
-        width="748"
-        height="510"
-      />
-    </div>
-  );
-}
-
 function WhyChooseVisual() {
   const { t } = useTranslation();
 
@@ -300,8 +285,9 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
 
   return (
     <section className="hero section-dark" id="home">
-      <SectionDecorations variant="dark" type="hero" />
-      <div className="container hero__grid">
+      <div className="hero__overlay" />
+      <div className="hero__pattern" />
+      <div className="container hero__inner">
         <div className="hero__content">
           <div className="hero__eyebrow">
             <span>{t('hero.eyebrow.live')}</span>
@@ -324,7 +310,6 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
           </div>
         </div>
       </div>
-      <HeroVisual />
       <div className="hero-curve" />
     </section>
   );
@@ -810,10 +795,13 @@ function WhyChooseSection() {
       <SectionDecorations variant="light" type="why" />
       <div className="container why-container">
         <div className="why-layout">
-          <div className="why-left">
+          <div className="why-left why-content">
             <SectionBadge icon="star">{t('whyChoose.badge')}</SectionBadge>
             <h2><span>{t('whyChoose.headingLine1')}</span><br /><span>{t('whyChoose.headingLine2')}</span></h2>
-            <p className="why-description">{t('whyChoose.description')}</p>
+            <div className="why-intro-card">
+              <p>{t('whyChoose.intro.paragraph1')}</p>
+              <p>{t('whyChoose.intro.paragraph2')}</p>
+            </div>
 
             <div
               className="why-slider-area"
