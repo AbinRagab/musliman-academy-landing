@@ -312,6 +312,45 @@ export const trustItems: Array<{ key: string; icon: IconName }> = [
   { key: 'allLevels', icon: 'badgeCheck' },
 ];
 
+// TODO: Replace placeholder testimonials with real verified reviews before final launch.
+export const testimonials = [
+  {
+    quote: 'The teacher was very patient and helped my son improve his Quran reading step by step.',
+    name: 'A Parent',
+    role: 'Parent of a Quran Reading student',
+    program: 'Quran Reading',
+    rating: 5,
+  },
+  {
+    quote: 'My daughter feels more confident now and enjoys her online Quran lessons.',
+    name: 'A Parent',
+    role: 'Parent of a Tajweed student',
+    program: 'Tajweed',
+    rating: 5,
+  },
+  {
+    quote: 'The lessons are clear, organized, and suitable for beginners.',
+    name: 'Adult Learner',
+    role: 'Arabic beginner',
+    program: 'Arabic Language',
+    rating: 5,
+  },
+  {
+    quote: 'I appreciate the regular follow-up and the simple way of explaining.',
+    name: 'A Parent',
+    role: 'Parent follow-up',
+    program: 'Islamic Studies',
+    rating: 5,
+  },
+  {
+    quote: 'The trial class helped us understand the right learning plan for our child.',
+    name: 'A Parent',
+    role: 'Free trial experience',
+    program: 'Free Trial Class',
+    rating: 5,
+  },
+];
+
 export const reasons: Array<{ key: string; icon: IconName }> = [
   { key: 'qualifiedTeachers', icon: 'user' },
   { key: 'azharBackground', icon: 'landmark' },

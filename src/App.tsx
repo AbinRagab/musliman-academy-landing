@@ -13,6 +13,7 @@ import {
   pricingData,
   programs,
   reasons,
+  testimonials,
   trainingBadges,
   trainingIncludes,
   trustItems,
@@ -22,7 +23,7 @@ import {
 type Theme = 'light' | 'dark';
 type BookingType = 'trial' | 'training';
 type DecorationVariant = 'light' | 'dark';
-type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'pricing' | 'why' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
+type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'pricing' | 'why' | 'testimonials' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
 
 type DecorationItem =
   | { kind: 'icon'; icon: IconName; className: string }
@@ -238,6 +239,11 @@ const sectionDecorationItems: Record<DecorationType, DecorationItem[]> = {
     { kind: 'arch', className: 'decor-arch--why' },
     { kind: 'icon', icon: 'shieldCheck', className: 'decor-icon--shield decor-icon--lg decor-pos--why-shield' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--why-star is-accent' },
+  ],
+  testimonials: [
+    { kind: 'icon', icon: 'messageCircle', className: 'decor-icon--message decor-icon--lg decor-pos--testimonials-message is-accent' },
+    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--testimonials-star' },
+    { kind: 'crescent', className: 'decor-crescent--testimonials is-accent' },
   ],
   steps: [
     { kind: 'icon', icon: 'calendar', className: 'decor-icon--calendar decor-icon--lg decor-pos--steps-calendar' },
@@ -857,6 +863,110 @@ function WhyChooseSection() {
   );
 }
 
+function TestimonialsSection() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  function goNext() {
+    setActiveIndex((prev) => (prev + 1) % testimonials.length);
+  }
+
+  function goPrev() {
+    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  }
+
+  useEffect(() => {
+    if (isPaused) {
+      return undefined;
+    }
+
+    const interval = window.setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % testimonials.length);
+    }, 4000);
+
+    return () => window.clearInterval(interval);
+  }, [isPaused]);
+
+  const visibleTestimonials = Array.from({ length: 3 }, (_, offset) => testimonials[(activeIndex + offset) % testimonials.length]);
+
+  return (
+    <section className="testimonials-section section-light" id="testimonials">
+      <SectionDecorations variant="light" type="testimonials" />
+      <div className="container testimonials-container">
+        <div className="section-heading testimonials-heading">
+          <SectionBadge icon="star">Student & Parent Stories</SectionBadge>
+          <h2>What Our Learners Say</h2>
+          <p>Real feedback from learners and parents who started their Quran and Arabic learning journey with Musliman Academy.</p>
+        </div>
+
+        <div
+          className="testimonials-slider-area"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div className="testimonials-controls">
+            <button type="button" className="testimonial-btn" onClick={goPrev} aria-label="Previous testimonial">
+              <Icon name="chevronLeft" />
+            </button>
+            <button type="button" className="testimonial-btn" onClick={goNext} aria-label="Next testimonial">
+              <Icon name="chevronRight" />
+            </button>
+          </div>
+
+          <div className="testimonials-grid">
+            {visibleTestimonials.map((item, index) => (
+              <article
+                className={`testimonial-card ${index === 1 ? 'is-featured' : ''}`}
+                key={`${item.name}-${item.program}-${index}`}
+              >
+                <div className="testimonial-quote-mark" aria-hidden="true" />
+
+                <div className="testimonial-rating" role="img" aria-label={`${item.rating} star rating`}>
+                  {Array.from({ length: item.rating }).map((_, starIndex) => (
+                    <Icon key={starIndex} name="star" />
+                  ))}
+                </div>
+
+                <p className="testimonial-quote">{item.quote}</p>
+
+                <div className="testimonial-footer">
+                  <div className="testimonial-avatar">
+                    <Icon name="user" />
+                  </div>
+
+                  <div>
+                    <h3>{item.name}</h3>
+                    <p>{item.role}</p>
+                  </div>
+                </div>
+
+                <span className="testimonial-program">{item.program}</span>
+              </article>
+            ))}
+          </div>
+
+          <div className="testimonial-dots">
+            {testimonials.map((_, index) => (
+              <button
+                type="button"
+                key={index}
+                className={`testimonial-dot ${index === activeIndex ? 'is-active' : ''}`}
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Show testimonial ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="testimonials-cta">
+          <p>Ready to start your learning journey?</p>
+          <Button href="#book-trial" icon="calendar">Book a Free Trial</Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function HowItWorksSection() {
   const { t } = useTranslation();
 
@@ -1063,6 +1173,7 @@ export default function App() {
         <ProgramsSection />
         <PricingSection />
         <WhyChooseSection />
+        <TestimonialsSection />
         <HowItWorksSection />
         <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />
         <FAQSection />
