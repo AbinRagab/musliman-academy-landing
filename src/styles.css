@@ -174,7 +174,6 @@ p {
 .trust-section,
 .programs,
 .pricing-section,
-.audience,
 .why-section,
 .how,
 .training,
@@ -191,7 +190,6 @@ p {
 .trust-section > .container,
 .programs > .container,
 .pricing-container,
-.audience > .container,
 .why-container,
 .how > .container,
 .training__grid,
@@ -405,21 +403,6 @@ p {
 .decor-crescent--pricing {
   right: 12%;
   bottom: 12%;
-}
-
-.section-decorations--who .decor-icon--globe {
-  right: 8%;
-  top: 16%;
-}
-
-.decor-pos--who-book {
-  right: 34%;
-  bottom: 10%;
-}
-
-.decor-pos--who-star {
-  left: 8%;
-  top: 18%;
 }
 
 .section-decorations--why .decor-arch {
@@ -1615,7 +1598,6 @@ p {
 }
 
 .program-card__icon,
-.round-icon,
 .faq-card__icon {
   display: grid;
   place-items: center;
@@ -1827,154 +1809,6 @@ p {
   margin: 0 0 18px;
   color: #4B5563;
   font-size: 17px;
-}
-
-/* Audience */
-.audience {
-  padding: 96px 0;
-  background: #F8F7F3;
-}
-
-.audience .container {
-  width: min(1200px, calc(100% - 40px));
-}
-
-.audience__top {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: 56px;
-  margin-bottom: 48px;
-}
-
-.audience__copy h2 {
-  margin-top: 4px;
-  color: #0B1F3A;
-}
-
-.audience__copy h2::after {
-  content: '';
-  display: block;
-  width: 72px;
-  height: 3px;
-  margin-top: 22px;
-  border-radius: 999px;
-  background: #B87333;
-}
-
-.audience__copy p {
-  max-width: 620px;
-  margin-top: 24px;
-  color: #4B5563;
-  font-size: 1rem;
-  line-height: 1.75;
-}
-
-.who-visual {
-  overflow: hidden;
-  border-radius: 16px;
-  box-shadow: 0 18px 42px rgba(16, 24, 40, 0.12);
-}
-
-.who-visual img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1.35;
-  object-fit: cover;
-  object-position: center;
-}
-
-.audience-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 24px;
-}
-
-.audience-card {
-  display: flex;
-  align-items: flex-start;
-  grid-column: span 3;
-  gap: 20px;
-  min-height: 176px;
-  padding: 24px;
-  border: 1px solid #E6E8EC;
-  border-radius: 16px;
-  background: #FFFFFF;
-  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-
-.audience-card:nth-child(n + 5) {
-  grid-column: span 4;
-}
-
-.audience-card:hover {
-  transform: translateY(-3px);
-  background: #FFFFFF;
-  box-shadow: 0 16px 32px rgba(16, 24, 40, 0.1);
-}
-
-.audience-card h3 {
-  color: #0B1F3A;
-  font-family: var(--font-heading);
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.25;
-}
-
-.audience-card p {
-  margin-top: 8px;
-  color: #4B5563;
-  font-size: 16px;
-  line-height: 1.58;
-}
-
-.round-icon {
-  width: 72px;
-  height: 72px;
-  flex: 0 0 72px;
-  border: 0;
-  background: #F8EFE6;
-  color: #B87333;
-}
-
-.round-icon svg {
-  width: 36px;
-  height: 36px;
-}
-
-.reassurance-banner {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
-  margin-top: 32px;
-  padding: 24px 32px;
-  border-radius: 16px;
-  color: var(--white);
-  background: #0B1F3A;
-  box-shadow: 0 16px 34px rgba(11, 31, 58, 0.16);
-}
-
-.reassurance-banner svg {
-  width: 56px;
-  height: 56px;
-  flex: 0 0 56px;
-  padding: 13px;
-  border-radius: 50%;
-  color: #B87333;
-  background: rgba(184, 115, 51, 0.14);
-}
-
-.reassurance-banner p {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.02rem;
-  line-height: 1.65;
-}
-
-.reassurance-banner strong {
-  display: block;
-  color: #B87333;
 }
 
 /* Why */
@@ -2203,17 +2037,17 @@ p {
 .why-visual {
   position: relative;
   z-index: 2;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 0;
 }
 
 .why-visual img {
-  display: block;
   width: 100%;
-  max-width: 560px;
-  min-height: 520px;
+  max-width: 620px;
+  height: auto;
+  display: block;
   object-fit: contain;
   border-radius: 24px;
   box-shadow: 0 24px 60px rgba(11, 31, 58, 0.1);
@@ -2785,7 +2619,6 @@ p {
 /* Unified Lucide icon system */
 .icon-circle,
 .program-card__icon,
-.audience-card__icon,
 .why-slide-card__icon,
 .why-card__icon,
 .trust-icon,
@@ -2804,7 +2637,6 @@ p {
 
 .icon-circle svg,
 .program-card__icon svg,
-.audience-card__icon svg,
 .why-slide-card__icon svg,
 .why-card__icon svg,
 .trust-icon svg,
@@ -2822,7 +2654,6 @@ p {
 
 .section-light .icon-circle,
 .section-light .program-card__icon,
-.section-light .audience-card__icon,
 .section-light .why-slide-card__icon,
 .section-light .why-card__icon,
 .section-light .trust-icon,
@@ -2839,7 +2670,6 @@ p {
 
 .section-dark .icon-circle,
 .section-dark .program-card__icon,
-.section-dark .audience-card__icon,
 .section-dark .why-slide-card__icon,
 .section-dark .why-card__icon,
 .section-dark .trust-icon,
@@ -2861,12 +2691,6 @@ p {
   width: 86px;
   height: 86px;
   font-size: 38px;
-}
-
-.audience-card__icon {
-  width: 72px;
-  height: 72px;
-  font-size: 34px;
 }
 
 .why-slide-card__icon {
@@ -2920,8 +2744,6 @@ html[dir="rtl"] .navbar,
 html[dir="rtl"] .hero__grid,
 html[dir="rtl"] .about-container,
 html[dir="rtl"] .why-layout,
-html[dir="rtl"] .who-top,
-html[dir="rtl"] .audience__top,
 html[dir="rtl"] .footer-container,
 html[dir="rtl"] .footer__grid {
   direction: rtl;
@@ -2949,7 +2771,6 @@ html[dir="rtl"] .footer__contact > a:hover {
 
 html[dir="rtl"] .accordion button,
 html[dir="rtl"] .trust-bar__item,
-html[dir="rtl"] .audience-card,
 html[dir="rtl"] .training-list div,
 html[dir="rtl"] .training-badges div,
 html[dir="rtl"] .faq-card__trust {
@@ -3016,7 +2837,6 @@ html[dir="rtl"] .pricing-table td {
 
 .app-shell[data-theme='dark'] .trust-section,
 .app-shell[data-theme='dark'] .about-section,
-.app-shell[data-theme='dark'] .audience,
 .app-shell[data-theme='dark'] .why-section {
   background: #07182e;
 }
@@ -3027,7 +2847,6 @@ html[dir="rtl"] .pricing-table td {
 .app-shell[data-theme='dark'] .pricing-heading p,
 .app-shell[data-theme='dark'] .pricing-note,
 .app-shell[data-theme='dark'] .pricing-cta p,
-.app-shell[data-theme='dark'] .audience__copy p,
 .app-shell[data-theme='dark'] .why-description,
 .app-shell[data-theme='dark'] .faq-card p {
   color: #b8c4d4;
@@ -3056,7 +2875,6 @@ html[dir="rtl"] .pricing-table td {
 .app-shell[data-theme='dark'] .booking-card,
 .app-shell[data-theme='dark'] .program-card,
 .app-shell[data-theme='dark'] .pricing-table-card,
-.app-shell[data-theme='dark'] .audience-card,
 .app-shell[data-theme='dark'] .why-slide-card,
 .app-shell[data-theme='dark'] .step-card,
 .app-shell[data-theme='dark'] .accordion,
@@ -3104,7 +2922,6 @@ html[dir="rtl"] .pricing-table td {
 }
 
 .app-shell[data-theme='dark'] .program-card:hover,
-.app-shell[data-theme='dark'] .audience-card:hover,
 .app-shell[data-theme='dark'] .why-slide-card:hover,
 .app-shell[data-theme='dark'] .step-card:hover,
 .app-shell[data-theme='dark'] .accordion.is-open,
@@ -3114,7 +2931,6 @@ html[dir="rtl"] .pricing-table td {
 
 .app-shell[data-theme='dark'] .booking-heading p,
 .app-shell[data-theme='dark'] .program-card p,
-.app-shell[data-theme='dark'] .audience-card p,
 .app-shell[data-theme='dark'] .why-slide-card p,
 .app-shell[data-theme='dark'] .step-card p,
 .app-shell[data-theme='dark'] .accordion__content p {
@@ -3175,7 +2991,6 @@ html[dir="rtl"] .pricing-table td {
 }
 
 .app-shell[data-theme='dark'] .program-card__icon,
-.app-shell[data-theme='dark'] .round-icon,
 .app-shell[data-theme='dark'] .faq-card__icon,
 .app-shell[data-theme='dark'] .why-slide-card__icon,
 .app-shell[data-theme='dark'] .step-card__visual,
@@ -3243,8 +3058,7 @@ html[dir="rtl"] .pricing-table td {
     font-size: 0.76rem;
   }
 
-  .training__grid,
-  .audience__top {
+  .training__grid {
     grid-template-columns: 1fr;
   }
 
@@ -3301,9 +3115,10 @@ html[dir="rtl"] .pricing-table td {
   }
 
   .why-visual img {
-    margin: 0 auto;
     max-width: 620px;
-    min-height: auto;
+    margin: 0 auto;
+    height: auto;
+    min-height: 0;
   }
 }
 
@@ -3383,34 +3198,6 @@ html[dir="rtl"] .pricing-table td {
     margin: 0 auto;
   }
 
-  .audience__top {
-    grid-template-columns: 1fr;
-    gap: 34px;
-    text-align: center;
-  }
-
-  .audience__copy,
-  .audience__copy p {
-    margin-inline: auto;
-  }
-
-  .audience__copy h2::after {
-    margin-inline: auto;
-  }
-
-  .who-visual {
-    width: min(100%, 640px);
-    margin-inline: auto;
-  }
-
-  .audience-grid {
-    grid-template-columns: repeat(12, 1fr);
-  }
-
-  .audience-card,
-  .audience-card:nth-child(n + 5) {
-    grid-column: span 6;
-  }
 }
 
 @media (max-width: 920px) {
@@ -3823,7 +3610,6 @@ html[dir="rtl"] .pricing-table td {
   }
 
   .programs,
-  .audience,
   .why-section,
   .how,
   .training,
@@ -3833,15 +3619,6 @@ html[dir="rtl"] .pricing-table td {
 
   .trust-section {
     padding-bottom: 54px;
-  }
-
-  .reassurance-banner,
-  .audience-card {
-    align-items: flex-start;
-  }
-
-  .reassurance-banner {
-    padding: 22px;
   }
 
   .step-card {
@@ -3879,34 +3656,9 @@ html[dir="rtl"] .pricing-table td {
 }
 
 @media (max-width: 640px) {
-  .audience .container {
-    width: min(100% - 28px, 1200px);
-  }
-
-  .audience-grid {
-    grid-template-columns: repeat(12, 1fr);
-  }
-
-  .audience-card,
-  .audience-card:nth-child(n + 5) {
-    grid-column: span 12;
-  }
-
-  .audience-card {
-    gap: 16px;
-    padding: 22px;
-  }
-
-  .round-icon {
-    width: 64px;
-    height: 64px;
-    flex-basis: 64px;
-  }
-
-  .reassurance-banner {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px;
+  .why-visual img {
+    max-width: 100%;
+    border-radius: 20px;
   }
 }
 

@@ -5,7 +5,6 @@ import Icon, { IconName } from './components/Icon';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import Logo from './components/Logo';
 import {
-  audiences,
   contact,
   countryOptions,
   faqs,
@@ -23,7 +22,7 @@ import {
 type Theme = 'light' | 'dark';
 type BookingType = 'trial' | 'training';
 type DecorationVariant = 'light' | 'dark';
-type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'pricing' | 'who' | 'why' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
+type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'pricing' | 'why' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
 
 type DecorationItem =
   | { kind: 'icon'; icon: IconName; className: string }
@@ -194,23 +193,6 @@ function HeroVisual() {
   );
 }
 
-function WhoWeTeachVisual() {
-  const { t } = useTranslation();
-
-  return (
-    <div className="who-visual">
-      <img
-        src="/assets/who-we-teach-visual.jpg"
-        alt={t('audience.visualAlt')}
-        width="755"
-        height="440"
-        loading="lazy"
-        decoding="async"
-      />
-    </div>
-  );
-}
-
 function WhyChooseVisual() {
   const { t } = useTranslation();
 
@@ -219,10 +201,7 @@ function WhyChooseVisual() {
       <img
         src="/assets/why-choose-visual.jpg"
         alt={t('whyChoose.visualAlt')}
-        width="748"
-        height="900"
         loading="lazy"
-        decoding="async"
       />
     </div>
   );
@@ -254,11 +233,6 @@ const sectionDecorationItems: Record<DecorationType, DecorationItem[]> = {
     { kind: 'icon', icon: 'calendar', className: 'decor-icon--calendar decor-icon--lg decor-pos--pricing-calendar is-accent' },
     { kind: 'icon', icon: 'award', className: 'decor-icon--award decor-icon--md decor-pos--pricing-award' },
     { kind: 'crescent', className: 'decor-crescent--pricing is-accent' },
-  ],
-  who: [
-    { kind: 'icon', icon: 'globe', className: 'decor-icon--globe decor-icon--lg decor-pos--who-globe' },
-    { kind: 'icon', icon: 'book', className: 'decor-icon--book decor-icon--md decor-pos--who-book is-accent' },
-    { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--who-star is-accent' },
   ],
   why: [
     { kind: 'arch', className: 'decor-arch--why' },
@@ -787,41 +761,6 @@ function PricingSection() {
   );
 }
 
-function AudienceSection() {
-  const { t } = useTranslation();
-
-  return (
-    <section className="audience section-light" id="who-we-teach">
-      <SectionDecorations variant="light" type="who" />
-      <div className="container">
-        <div className="audience__top">
-          <div className="audience__copy">
-            <SectionBadge icon="users">{t('audience.badge')}</SectionBadge>
-            <h2>{t('audience.headingLine1')}<br />{t('audience.headingLine2')}</h2>
-            <p>{t('audience.description')}</p>
-          </div>
-          <WhoWeTeachVisual />
-        </div>
-        <div className="audience-grid">
-          {audiences.map((audience) => (
-            <article className="audience-card" key={audience.key}>
-              <div className="round-icon audience-card__icon"><Icon name={audience.icon} /></div>
-              <div>
-                <h3>{t(`audience.items.${audience.key}.title`)}</h3>
-                <p>{t(`audience.items.${audience.key}.text`)}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-        <div className="reassurance-banner">
-          <Icon name="shieldCheck" />
-          <p>{t('audience.reassurance')} <strong>{t('audience.reassuranceStrong')}</strong></p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function WhyChooseSection() {
   const { t } = useTranslation();
   const cardsPerPage = 2;
@@ -1123,7 +1062,6 @@ export default function App() {
         <TrustBarSection />
         <ProgramsSection />
         <PricingSection />
-        <AudienceSection />
         <WhyChooseSection />
         <HowItWorksSection />
         <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />

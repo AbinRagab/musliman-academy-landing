@@ -312,16 +312,6 @@ export const trustItems: Array<{ key: string; icon: IconName }> = [
   { key: 'allLevels', icon: 'badgeCheck' },
 ];
 
-export const audiences: Array<{ key: string; icon: IconName }> = [
-  { key: 'children', icon: 'user' },
-  { key: 'adults', icon: 'users' },
-  { key: 'beginners', icon: 'book' },
-  { key: 'nonArabic', icon: 'globe' },
-  { key: 'readingDifficulties', icon: 'bookUser' },
-  { key: 'parents', icon: 'heartHandshake' },
-  { key: 'teachers', icon: 'graduationCap' },
-];
-
 export const reasons: Array<{ key: string; icon: IconName }> = [
   { key: 'qualifiedTeachers', icon: 'user' },
   { key: 'azharBackground', icon: 'landmark' },
