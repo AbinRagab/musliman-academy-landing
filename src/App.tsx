@@ -1,6 +1,6 @@
 import { FormEvent, MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok } from 'react-icons/fa6';
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
 import type { IconType } from 'react-icons';
 import './styles.css';
 import Icon, { IconName } from './components/Icon';
@@ -44,7 +44,6 @@ type BookingLeadData = Record<string, string | undefined> & {
 // TODO: move this URL to an environment variable before production if needed.
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJ0VhS9N31RZtRt37NIj8MQHp66luS_1qMInzfv4wagELRjc3w6daWeVRX0CXOIOXx/exec';
 const WHATSAPP_NUMBER = '+0201038331058';
-// TODO: Add YouTube social link when the official Musliman Academy YouTube URL is available.
 const faqSocialLinks: Array<{ name: string; url: string; className: string; icon: IconType }> = [
   {
     name: 'Facebook',
@@ -69,6 +68,12 @@ const faqSocialLinks: Array<{ name: string; url: string; className: string; icon
     url: 'https://www.tiktok.com/@muslimanacademy',
     className: 'tiktok',
     icon: FaTiktok,
+  },
+  {
+    name: 'YouTube',
+    url: 'https://www.youtube.com/@muslimanacademy',
+    className: 'youtube',
+    icon: FaYoutube,
   },
 ];
 
@@ -212,7 +217,7 @@ function WhyChooseVisual() {
   const { t } = useTranslation();
 
   return (
-    <div className="why-visual">
+    <div className="why-top__visual">
       <img
         src="/assets/why-choose-visual.jpg"
         alt={t('whyChoose.visualAlt')}
@@ -220,6 +225,22 @@ function WhyChooseVisual() {
       />
     </div>
   );
+}
+
+function getWhyCardsPerPage() {
+  if (typeof window === 'undefined') {
+    return 4;
+  }
+
+  if (window.innerWidth <= 640) {
+    return 1;
+  }
+
+  if (window.innerWidth <= 1024) {
+    return 2;
+  }
+
+  return 4;
 }
 
 const sectionDecorationItems: Record<DecorationType, DecorationItem[]> = {
@@ -789,10 +810,10 @@ function PricingSection() {
 
 function WhyChooseSection() {
   const { t } = useTranslation();
-  const cardsPerPage = 2;
-  const totalPages = Math.ceil(reasons.length / cardsPerPage);
+  const [cardsPerPage, setCardsPerPage] = useState(getWhyCardsPerPage);
   const [activePage, setActivePage] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
+  const totalPages = Math.ceil(reasons.length / cardsPerPage);
 
   const visibleCards = reasons.slice(
     activePage * cardsPerPage,
@@ -814,69 +835,86 @@ function WhyChooseSection() {
 
     const interval = window.setInterval(() => {
       setActivePage((prev) => (prev + 1) % totalPages);
-    }, 2000);
+    }, 3000);
 
     return () => window.clearInterval(interval);
   }, [isSliderPaused, totalPages]);
+
+  useEffect(() => {
+    function handleResize() {
+      setCardsPerPage(getWhyCardsPerPage());
+    }
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    setActivePage((prev) => Math.min(prev, Math.max(totalPages - 1, 0)));
+  }, [totalPages]);
 
   return (
     <section className="why-section section-light" id="why-choose-us">
       <SectionDecorations variant="light" type="why" />
       <div className="container why-container">
-        <div className="why-layout">
-          <div className="why-left why-content">
+        <div className="why-top">
+          <div className="why-top__content">
             <SectionBadge icon="star">{t('whyChoose.badge')}</SectionBadge>
             <h2><span>{t('whyChoose.headingLine1')}</span><br /><span>{t('whyChoose.headingLine2')}</span></h2>
             <div className="why-intro-card">
               <p>{t('whyChoose.intro.paragraph1')}</p>
               <p>{t('whyChoose.intro.paragraph2')}</p>
             </div>
-
-            <div
-              className="why-slider-area"
-              onMouseEnter={() => setIsSliderPaused(true)}
-              onMouseLeave={() => setIsSliderPaused(false)}
-            >
-              <div className="why-slider-controls">
-                <button type="button" className="why-slider-btn" onClick={goPrev} aria-label={t('aria.previousFeature')}>
-                  <span aria-hidden="true">&lt;</span>
-                </button>
-                <span className="why-slider-count">{activePage + 1} / {totalPages}</span>
-                <button type="button" className="why-slider-btn" onClick={goNext} aria-label={t('aria.nextFeature')}>
-                  <span aria-hidden="true">&gt;</span>
-                </button>
-              </div>
-
-              <div className="why-slider">
-                {visibleCards.map((item, index) => (
-                  <article className="why-slide-card" key={`${item.key}-${index}`}>
-                    <span className="why-slide-card__number">{activePage * cardsPerPage + index + 1}</span>
-                    <div className="why-slide-card__icon">
-                      <Icon name={item.icon} />
-                    </div>
-                    <h3>{t(`whyChoose.items.${item.key}.title`)}</h3>
-                    <div className="why-slide-card__line" />
-                    <p>{t(`whyChoose.items.${item.key}.description`)}</p>
-                  </article>
-                ))}
-              </div>
-
-              <div className="why-slider-dots">
-                {Array.from({ length: totalPages }).map((_, index) => (
-                  <button
-                    type="button"
-                    key={index}
-                    className={`why-dot ${index === activePage ? 'is-active' : ''}`}
-                    onClick={() => setActivePage(index)}
-                    aria-label={t('aria.showFeaturePage', { page: index + 1 })}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
           <WhyChooseVisual />
         </div>
-        <div className="why-stats">
+
+        <div
+          className="why-slider-area"
+          onMouseEnter={() => setIsSliderPaused(true)}
+          onMouseLeave={() => setIsSliderPaused(false)}
+        >
+          <div className="why-slider-header">
+            <div className="why-slider-controls">
+              <button type="button" className="why-slider-btn" onClick={goPrev} aria-label={t('aria.previousFeature')}>
+                <span aria-hidden="true">&lt;</span>
+              </button>
+              <span className="why-slider-count">{activePage + 1} / {totalPages}</span>
+              <button type="button" className="why-slider-btn" onClick={goNext} aria-label={t('aria.nextFeature')}>
+                <span aria-hidden="true">&gt;</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="why-cards-grid">
+            {visibleCards.map((item, index) => (
+              <article className="why-card" key={`${item.key}-${index}`}>
+                <span className="why-card__number">{activePage * cardsPerPage + index + 1}</span>
+                <div className="why-card__icon">
+                  <Icon name={item.icon} />
+                </div>
+                <h3>{t(`whyChoose.items.${item.key}.title`)}</h3>
+                <div className="why-card__line" />
+                <p>{t(`whyChoose.items.${item.key}.description`)}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="why-slider-dots">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <button
+                type="button"
+                key={index}
+                className={`why-dot ${index === activePage ? 'is-active' : ''}`}
+                onClick={() => setActivePage(index)}
+                aria-label={t('aria.showFeaturePage', { page: index + 1 })}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="why-stats why-stats-bar">
           <div className="why-stat"><Icon name="award" /><strong>10,000+</strong><span>{t('whyChoose.stats.students')}</span></div>
           <div className="why-stat"><Icon name="users" /><strong>50+</strong><span>{t('whyChoose.stats.teachers')}</span></div>
           <div className="why-stat"><Icon name="globe" /><strong>30+</strong><span>{t('whyChoose.stats.countries')}</span></div>
