@@ -350,6 +350,10 @@ export const faqs = [
   { key: 'q4' },
   { key: 'q5' },
   { key: 'q6' },
+  { key: 'q7' },
+  { key: 'q8' },
+  { key: 'q9' },
+  { key: 'q10' },
 ];
 
 export const programOptions = programs.map((program) => program.key).concat('teacherTraining');
