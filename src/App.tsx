@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, MouseEventHandler, useEffect, useState } from 'react';
 import './styles.css';
 import Icon, { IconName } from './components/Icon';
 import Logo from './components/Logo';
@@ -34,21 +34,35 @@ type BookingLeadData = Record<string, string | undefined> & {
   source: string;
 };
 
+// TODO: move this URL to an environment variable before production if needed.
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJ0VhS9N31RZtRt37NIj8MQHp66luS_1qMInzfv4wagELRjc3w6daWeVRX0CXOIOXx/exec';
+const WHATSAPP_NUMBER = '+0201038331058';
+const trialProgramOptions = [
+  'Quran Reading',
+  'Tarteel Qaidah',
+  'Quran Memorization',
+  'Tajweed',
+  'Quran Tafseer',
+  'Arabic Language',
+  'Islamic Studies',
+  'Islamic Values for Children',
+];
+
 const whyChooseItems: Array<{ title: string; description: string; icon: IconName }> = [
   {
     title: 'Qualified Egyptian Teachers',
     description: 'Learn with experienced, patient, and certified Egyptian teachers.',
-    icon: 'teacher',
+    icon: 'user',
   },
   {
     title: 'Al-Azhar Educational Background',
     description: 'Strong foundation in authentic Islamic knowledge and values.',
-    icon: 'mosque',
+    icon: 'landmark',
   },
   {
     title: 'Simple Approach for Non-Arabic Speakers',
     description: 'Step-by-step lessons designed to build understanding and confidence.',
-    icon: 'chat',
+    icon: 'messageCircle',
   },
   {
     title: 'Suitable for All Levels',
@@ -63,12 +77,12 @@ const whyChooseItems: Array<{ title: string; description: string; icon: IconName
   {
     title: 'Parent Follow-up & Reports',
     description: "Stay informed with regular updates on your child's progress.",
-    icon: 'clipboard',
+    icon: 'clipboardCheck',
   },
   {
     title: 'Safe Online Learning Environment',
     description: 'A secure, respectful, and moderated space for focused Islamic learning.',
-    icon: 'shield',
+    icon: 'shieldCheck',
   },
   {
     title: 'Free Trial Class',
@@ -76,6 +90,8 @@ const whyChooseItems: Array<{ title: string; description: string; icon: IconName
     icon: 'gift',
   },
 ];
+
+const faqIcons: IconName[] = ['laptop', 'book', 'users', 'gift', 'clipboardCheck', 'user'];
 
 function SectionBadge({ icon, children, dark = false }: { icon?: IconName; children: string; dark?: boolean }) {
   return (
@@ -86,7 +102,7 @@ function SectionBadge({ icon, children, dark = false }: { icon?: IconName; child
   );
 }
 
-function Button({ href, children, icon = 'calendar', className = '', onClick }: { href: string; children: string; icon?: IconName; className?: string; onClick?: () => void }) {
+function Button({ href, children, icon = 'calendar', className = '', onClick }: { href: string; children: string; icon?: IconName; className?: string; onClick?: MouseEventHandler<HTMLAnchorElement> }) {
   return (
     <a className={`btn btn-primary ${className}`} href={href} onClick={onClick}>
       <Icon name={icon} />
@@ -130,7 +146,7 @@ function Navbar({ theme, onToggleTheme, onSelectBookingType }: { theme: Theme; o
             <Icon name="whatsapp" />
           </a>
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-          <Button href="#book-trial" onClick={() => onSelectBookingType('trial')}>Book Free Trial</Button>
+          <Button href="#book-trial" onClick={(event) => { event.preventDefault(); onSelectBookingType('trial'); document.getElementById('book-trial')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>Book Free Trial</Button>
           <button className="menu-button" type="button" aria-label="Open menu" onClick={() => setOpen(true)}>
             <Icon name="menu" />
           </button>
@@ -150,9 +166,11 @@ function Navbar({ theme, onToggleTheme, onSelectBookingType }: { theme: Theme; o
         <Button
           href="#book-trial"
           className="mobile-panel__cta"
-          onClick={() => {
+          onClick={(event) => {
+            event.preventDefault();
             onSelectBookingType('trial');
             setOpen(false);
+            document.getElementById('book-trial')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }}
         >
           Book Free Trial
@@ -230,54 +248,54 @@ const sectionDecorationItems: Record<DecorationType, DecorationItem[]> = {
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--hero-star-two is-accent' },
   ],
   trial: [
-    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--trial-book is-accent' },
+    { kind: 'icon', icon: 'book', className: 'decor-icon--book decor-icon--md decor-pos--trial-book is-accent' },
     { kind: 'crescent', className: 'decor-crescent--trial' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--trial-star is-accent' },
   ],
   about: [
-    { kind: 'icon', icon: 'quranStand', className: 'decor-icon--book decor-icon--xl decor-pos--about-book is-accent' },
+    { kind: 'icon', icon: 'bookMarked', className: 'decor-icon--book decor-icon--xl decor-pos--about-book is-accent' },
     { kind: 'icon', icon: 'globe', className: 'decor-icon--globe decor-icon--md decor-pos--about-globe' },
     { kind: 'crescent', className: 'decor-crescent--about is-accent' },
   ],
   programs: [
-    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--lg decor-pos--programs-book' },
-    { kind: 'icon', icon: 'arabicLetters', className: 'decor-icon--arabic decor-icon--md decor-pos--programs-arabic is-accent' },
+    { kind: 'icon', icon: 'book', className: 'decor-icon--book decor-icon--lg decor-pos--programs-book' },
+    { kind: 'icon', icon: 'languages', className: 'decor-icon--arabic decor-icon--md decor-pos--programs-arabic is-accent' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--programs-star is-accent' },
   ],
   who: [
     { kind: 'icon', icon: 'globe', className: 'decor-icon--globe decor-icon--lg decor-pos--who-globe' },
-    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--who-book is-accent' },
+    { kind: 'icon', icon: 'book', className: 'decor-icon--book decor-icon--md decor-pos--who-book is-accent' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--who-star is-accent' },
   ],
   why: [
     { kind: 'arch', className: 'decor-arch--why' },
-    { kind: 'icon', icon: 'shield', className: 'decor-icon--shield decor-icon--lg decor-pos--why-shield' },
+    { kind: 'icon', icon: 'shieldCheck', className: 'decor-icon--shield decor-icon--lg decor-pos--why-shield' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--why-star is-accent' },
   ],
   steps: [
     { kind: 'icon', icon: 'calendar', className: 'decor-icon--calendar decor-icon--lg decor-pos--steps-calendar' },
-    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--steps-book is-accent' },
+    { kind: 'icon', icon: 'book', className: 'decor-icon--book decor-icon--md decor-pos--steps-book is-accent' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--steps-star is-accent' },
   ],
   training: [
     { kind: 'arch', className: 'decor-arch--training' },
-    { kind: 'icon', icon: 'teacher', className: 'decor-icon--graduation decor-icon--lg decor-pos--training-teacher' },
-    { kind: 'icon', icon: 'certificate', className: 'decor-icon--certificate decor-icon--md decor-pos--training-certificate is-accent' },
-    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--training-book' },
+    { kind: 'icon', icon: 'graduationCap', className: 'decor-icon--graduation decor-icon--lg decor-pos--training-teacher' },
+    { kind: 'icon', icon: 'award', className: 'decor-icon--certificate decor-icon--md decor-pos--training-certificate is-accent' },
+    { kind: 'icon', icon: 'book', className: 'decor-icon--book decor-icon--md decor-pos--training-book' },
   ],
   faq: [
-    { kind: 'icon', icon: 'chat', className: 'decor-icon--help decor-icon--lg decor-pos--faq-help' },
+    { kind: 'icon', icon: 'question', className: 'decor-icon--help decor-icon--lg decor-pos--faq-help' },
     { kind: 'crescent', className: 'decor-crescent--faq is-accent' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--faq-star is-accent' },
   ],
   footer: [
     { kind: 'arch', className: 'decor-arch--footer' },
     { kind: 'crescent', className: 'decor-crescent--footer is-accent' },
-    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--footer-book' },
+    { kind: 'icon', icon: 'book', className: 'decor-icon--book decor-icon--md decor-pos--footer-book' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--footer-star is-accent' },
   ],
   default: [
-    { kind: 'icon', icon: 'bookOpen', className: 'decor-icon--book decor-icon--md decor-pos--default-book is-accent' },
+    { kind: 'icon', icon: 'book', className: 'decor-icon--book decor-icon--md decor-pos--default-book is-accent' },
     { kind: 'icon', icon: 'star', className: 'decor-icon--star decor-icon--sm decor-pos--default-star' },
   ],
 };
@@ -323,7 +341,7 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
             <span>Today</span>
           </h1>
           <p>Book a free trial class for you or your child and experience our live, one-to-one Islamic learning with qualified Egyptian teachers.</p>
-          <Button href="#book-trial" icon="calendar" className="hero__cta" onClick={() => onSelectBookingType('trial')}>Book Your Free Trial Class</Button>
+          <Button href="#book-trial" icon="calendar" className="hero__cta" onClick={(event) => { event.preventDefault(); onSelectBookingType('trial'); document.getElementById('book-trial')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>Book Your Free Trial Class</Button>
           <div className="hero-trust">
             <div><Icon name="laptop" /><span>Online Classes</span></div>
             <div><Icon name="clock" /><span>Flexible Schedule</span></div>
@@ -342,6 +360,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedLead, setSubmittedLead] = useState<BookingLeadData | null>(null);
   const [formResetKey, setFormResetKey] = useState(0);
+  const [submitError, setSubmitError] = useState('');
 
   const isTraining = activeBookingType === 'training';
   const heading = isTraining ? 'Join Teacher Training' : 'Book a Free Trial';
@@ -356,6 +375,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
     setErrors({});
     setIsSubmitting(false);
     setSubmittedLead(null);
+    setSubmitError('');
     setFormResetKey((key) => key + 1);
   }, [activeBookingType]);
 
@@ -395,7 +415,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
         `Message: ${leadData.message}`,
       ].join('\n');
 
-    return `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/${WHATSAPP_NUMBER.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -424,6 +444,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
 
     setErrors({});
     setIsSubmitting(true);
+    setSubmitError('');
 
     const leadData: BookingLeadData = isTraining
       ? {
@@ -450,17 +471,29 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
         source: 'Musliman Academy Website',
       };
 
-    // TODO: Send leadData to Google Sheets or CRM when integration details are available.
-    window.setTimeout(() => {
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify(leadData),
+      });
+
       setSubmittedLead(leadData);
+    } catch (error) {
+      setSubmitError('Something went wrong. Please try again or contact us on WhatsApp.');
+    } finally {
       setIsSubmitting(false);
-    }, 650);
+    }
   }
 
   function resetRequest() {
     setErrors({});
     setIsSubmitting(false);
     setSubmittedLead(null);
+    setSubmitError('');
     setFormResetKey((key) => key + 1);
   }
 
@@ -470,7 +503,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
       <div className="container">
         <div className="booking-card">
           <div className="booking-heading">
-            <SectionBadge icon={isTraining ? 'certificate' : 'calendar'}>{isTraining ? 'Teacher Training' : 'Book Online'}</SectionBadge>
+            <SectionBadge icon={isTraining ? 'award' : 'calendar'}>{isTraining ? 'Teacher Training' : 'Book Online'}</SectionBadge>
             <h2>{heading}</h2>
             <p>{description}</p>
           </div>
@@ -498,7 +531,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
 
           {submittedLead ? (
             <div className="booking-success">
-              <Icon name="shield" />
+              <Icon name="shieldCheck" />
               <h3>Request Received</h3>
               <p>{successMessage}</p>
               <div className="booking-success__actions">
@@ -590,7 +623,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
                       <span>Program Interested In</span>
                       <select name="program" defaultValue="" aria-invalid={Boolean(errors.program)}>
                         <option value="" disabled>Select a program</option>
-                        {programs.map((program) => <option key={program.title}>{program.title}</option>)}
+                        {trialProgramOptions.map((program) => <option key={program}>{program}</option>)}
                       </select>
                       {getFieldError('program')}
                     </label>
@@ -613,6 +646,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
                   <textarea name="message" maxLength={300} placeholder="Tell us anything else we should know..." />
                 </label>
               </div>
+              {submitError && <div className="booking-form__error">{submitError}</div>}
               <button className="btn btn-primary booking-form__button" type="submit" disabled={isSubmitting}>
                 <Icon name="send" />
                 <span>{isSubmitting ? 'Submitting...' : isTraining ? 'Submit Teacher Training Request' : 'Book Free Trial'}</span>
@@ -651,7 +685,7 @@ function AboutSection() {
 
 function TrustBarSection() {
   return (
-    <section className="trust-section" aria-label="Academy trust highlights">
+    <section className="trust-section section-light" aria-label="Academy trust highlights">
       <SectionDecorations variant="light" type="default" />
       <div className="container">
         <div className="trust-bar">
@@ -709,7 +743,7 @@ function AudienceSection() {
         <div className="audience-grid">
           {audiences.map((audience) => (
             <article className="audience-card" key={audience.title}>
-              <div className="round-icon"><Icon name={audience.icon} /></div>
+              <div className="round-icon audience-card__icon"><Icon name={audience.icon} /></div>
               <div>
                 <h3>{audience.title}</h3>
                 <p>{audience.text}</p>
@@ -718,7 +752,7 @@ function AudienceSection() {
           ))}
         </div>
         <div className="reassurance-banner">
-          <Icon name="shield" />
+          <Icon name="shieldCheck" />
           <p>No matter who you are or where you’re from, you’re welcome here. <strong>We’re here to help you learn, grow, and stay connected to the Quran and your faith.</strong></p>
         </div>
       </div>
@@ -812,7 +846,7 @@ function WhyChooseSection() {
           <WhyChooseVisual />
         </div>
         <div className="why-stats">
-          <div className="why-stat"><Icon name="certificate" /><strong>10,000+</strong><span>Students Taught</span></div>
+          <div className="why-stat"><Icon name="award" /><strong>10,000+</strong><span>Students Taught</span></div>
           <div className="why-stat"><Icon name="users" /><strong>50+</strong><span>Expert Teachers</span></div>
           <div className="why-stat"><Icon name="globe" /><strong>30+</strong><span>Countries Served</span></div>
         </div>
@@ -823,7 +857,7 @@ function WhyChooseSection() {
 
 function HowItWorksSection() {
   return (
-    <section className="how section-warm" id="how-it-works">
+    <section className="how section-warm section-light" id="how-it-works">
       <SectionDecorations variant="light" type="steps" />
       <div className="container">
         <div className="section-heading section-heading--center">
@@ -835,7 +869,7 @@ function HowItWorksSection() {
           {howSteps.map((step) => (
             <article className="step-card" key={step.step}>
               <span className="step-card__badge">{step.step}</span>
-              <div className="step-card__visual"><Icon name={step.icon} /></div>
+              <div className="step-card__visual step-card__icon"><Icon name={step.icon} /></div>
               <h3>{step.title}</h3>
               <p>{step.text}</p>
             </article>
@@ -852,7 +886,7 @@ function TeacherTrainingSection({ onSelectBookingType }: { onSelectBookingType: 
       <SectionDecorations variant="dark" type="training" />
       <div className="container training__grid">
         <div className="training__content">
-          <SectionBadge icon="certificate" dark>Teacher Training Program</SectionBadge>
+          <SectionBadge icon="award" dark>Teacher Training Program</SectionBadge>
           <h2>Train Teachers to Teach with Confidence</h2>
           <p>Musliman Academy offers practical training for beginner and experienced teachers who want to improve their Quran, Arabic, and Islamic-values teaching for non-Arabic speakers.</p>
           <div className="training-list">
@@ -860,7 +894,7 @@ function TeacherTrainingSection({ onSelectBookingType }: { onSelectBookingType: 
               <div key={item.title}><Icon name={item.icon} /><span>{item.title}</span></div>
             ))}
           </div>
-          <Button href="#book-trial" icon="certificate" className="training__cta" onClick={() => onSelectBookingType('training')}>Join Teacher Training</Button>
+          <Button href="#book-trial" icon="award" className="training__cta" onClick={() => onSelectBookingType('training')}>Join Teacher Training</Button>
         </div>
         <ClassIllustration mode="training" />
         <div className="training-badges">
@@ -899,7 +933,7 @@ function FAQSection() {
                   </button>
                   {isOpen && (
                     <div className="accordion__content">
-                      <Icon name="laptop" />
+                      <Icon name={faqIcons[index] || 'question'} />
                       <p>{faq.answer}</p>
                     </div>
                   )}
@@ -908,13 +942,13 @@ function FAQSection() {
             })}
           </div>
           <aside className="faq-card">
-            <div className="faq-card__icon"><Icon name="phone" /></div>
+            <div className="faq-card__icon faq-icon"><Icon name="phone" /></div>
             <h3>Still have questions?</h3>
             <p>We're here to help you on your learning journey.</p>
             <a className="btn whatsapp-btn" href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer">
               <Icon name="whatsapp" /> Contact us on WhatsApp
             </a>
-            <div className="faq-card__trust"><Icon name="shield" />Trusted support from real people</div>
+            <div className="faq-card__trust"><Icon name="shieldCheck" />Trusted support from real people</div>
           </aside>
         </div>
       </div>
@@ -926,7 +960,7 @@ function Footer() {
   const quickLinks = navLinks.filter((link) => link.label !== 'Teacher Training');
 
   return (
-    <footer className="footer">
+    <footer className="footer section-dark">
       <SectionDecorations variant="dark" type="footer" />
       <div className="container footer__grid">
         <div className="footer__brand">
@@ -946,7 +980,7 @@ function Footer() {
           <h3>Programs</h3>
           <ul>
             {programs.map((program) => <li key={program.title}><a href="#programs"><Icon name={program.icon} />{program.title}</a></li>)}
-            <li><a href="#teacher-training"><Icon name="certificate" />Teacher Training</a></li>
+            <li><a href="#teacher-training"><Icon name="award" />Teacher Training</a></li>
           </ul>
         </div>
         <div>
@@ -962,16 +996,16 @@ function Footer() {
           <a href={`mailto:${contact.email}`}><Icon name="mail" /><span>Email<br /><small>{contact.email}</small></span></a>
           <a href="#home"><Icon name="globe" /><span>Website<br /><small>{contact.website}</small></span></a>
           <div className="social-links">
-            <a href="#" aria-label="Facebook">f</a>
-            <a href="#" aria-label="Instagram">IG</a>
-            <a href="#" aria-label="YouTube">YT</a>
-            <a href="#" aria-label="TikTok">TT</a>
+            <a href="#" aria-label="Facebook"><Icon name="link" /></a>
+            <a href="#" aria-label="Instagram"><Icon name="link" /></a>
+            <a href="#" aria-label="YouTube"><Icon name="link" /></a>
+            <a href="#" aria-label="TikTok"><Icon name="link" /></a>
           </div>
         </div>
       </div>
       <div className="container footer__bottom">
         <span>Copyright 2026 Musliman Academy. All rights reserved.</span>
-        <span><Icon name="shield" /> Trusted Online Islamic Education</span>
+        <span><Icon name="shieldCheck" /> Trusted Online Islamic Education</span>
       </div>
     </footer>
   );

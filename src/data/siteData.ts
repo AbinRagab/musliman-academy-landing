@@ -220,104 +220,104 @@ export const programs: Array<{ number: string; title: string; text: string; icon
   {
     number: '1',
     title: 'Quran Reading',
-    icon: 'bookOpen',
+    icon: 'book',
     text: 'Learn to read the Quran correctly with step-by-step guidance, clear pronunciation, and continuous correction.',
   },
   {
     number: '2',
     title: 'Tarteel Qaidah',
-    icon: 'arabicLetters',
+    icon: 'languages',
     text: 'Start from Arabic letters and sounds, then progress to reading Quranic words, verses, and reciting with confidence.',
   },
   {
     number: '3',
     title: 'Quran Memorization',
-    icon: 'sunBook',
+    icon: 'bookMarked',
     text: 'A structured memorization program with revision, correction, and regular follow-up to help students memorize effectively.',
   },
   {
     number: '4',
     title: 'Tajweed',
-    icon: 'tajweed',
+    icon: 'scrollText',
     text: 'Improve your Quran recitation by learning Tajweed rules in a simple, practical, and easy-to-apply way.',
   },
   {
     number: '5',
     title: 'Quran Tafseer',
-    icon: 'searchBook',
+    icon: 'fileText',
     text: "Understand the meanings of Quranic verses through simplified explanations suitable for the student's age and level.",
   },
   {
     number: '6',
     title: 'Arabic Language',
-    icon: 'arabicDad',
+    icon: 'languages',
     text: 'Learn Arabic letters, pronunciation, reading, writing, and simple understanding to build a strong language foundation.',
   },
   {
     number: '7',
     title: 'Islamic Studies',
-    icon: 'mosque',
+    icon: 'landmark',
     text: 'Learn the basics of Islamic belief, worship, Seerah, manners, and morals in a clear and simple way.',
   },
   {
     number: '8',
     title: 'Islamic Values for Children',
-    icon: 'family',
+    icon: 'heartHandshake',
     text: 'Help children build good Islamic character through practical values such as honesty, respect, mercy, cooperation, and love for learning.',
   },
 ];
 
 export const trustItems: Array<{ label: string; icon: IconName }> = [
-  { label: 'Experienced Egyptian Teachers', icon: 'teacher' },
-  { label: 'Ijazah-Certified Teachers', icon: 'certificate' },
-  { label: 'Al-Azhar Educational Background', icon: 'mosque' },
-  { label: 'Personalized Learning Plans', icon: 'route' },
-  { label: 'Live Online Classes', icon: 'laptop' },
+  { label: 'Experienced Egyptian Teachers', icon: 'graduationCap' },
+  { label: 'Ijazah-Certified Teachers', icon: 'award' },
+  { label: 'Al-Azhar Educational Background', icon: 'landmark' },
+  { label: 'Personalized Learning Plans', icon: 'clipboardCheck' },
+  { label: 'Live Online Classes', icon: 'video' },
   { label: 'One-to-One & Small Groups', icon: 'users' },
-  { label: 'Parent Follow-up', icon: 'clipboard' },
+  { label: 'Parent Follow-up', icon: 'clipboardCheck' },
   { label: 'Free Trial Class', icon: 'gift' },
-  { label: 'All Levels Welcome', icon: 'star' },
+  { label: 'All Levels Welcome', icon: 'badgeCheck' },
 ];
 
 export const audiences: Array<{ title: string; text: string; icon: IconName }> = [
-  { title: 'Children', text: 'Engaging lessons designed for young minds.', icon: 'child' },
-  { title: 'Adults', text: "It's never too late to start your journey.", icon: 'adult' },
-  { title: 'Beginners', text: 'Start from the basics with confidence.', icon: 'bookOpen' },
+  { title: 'Children', text: 'Engaging lessons designed for young minds.', icon: 'user' },
+  { title: 'Adults', text: "It's never too late to start your journey.", icon: 'users' },
+  { title: 'Beginners', text: 'Start from the basics with confidence.', icon: 'book' },
   { title: 'Non-Arabic Speakers', text: 'Learn with expert teachers in a supportive environment.', icon: 'globe' },
-  { title: 'Students with Quran Reading Difficulties', text: 'Patient, step-by-step support to help you improve.', icon: 'readingIssue' },
-  { title: 'Parents Seeking Islamic Values for Children', text: 'Build a strong foundation of faith and character at home.', icon: 'heartFamily' },
-  { title: 'Teachers Seeking Training', text: 'Enhance your skills and teach with confidence.', icon: 'presentation' },
+  { title: 'Students with Quran Reading Difficulties', text: 'Patient, step-by-step support to help you improve.', icon: 'bookUser' },
+  { title: 'Parents Seeking Islamic Values for Children', text: 'Build a strong foundation of faith and character at home.', icon: 'heartHandshake' },
+  { title: 'Teachers Seeking Training', text: 'Enhance your skills and teach with confidence.', icon: 'graduationCap' },
 ];
 
 export const reasons: Array<{ title: string; text: string; icon: IconName }> = [
-  { title: 'Qualified Egyptian Teachers', text: 'Learn with experienced, patient, and certified Egyptian teachers.', icon: 'teacher' },
-  { title: 'Al-Azhar Educational Background', text: 'Strong foundation in authentic Islamic knowledge and values.', icon: 'mosque' },
-  { title: 'Simple Approach for Non-Arabic Speakers', text: 'Step-by-step lessons designed to build understanding and confidence.', icon: 'chat' },
+  { title: 'Qualified Egyptian Teachers', text: 'Learn with experienced, patient, and certified Egyptian teachers.', icon: 'user' },
+  { title: 'Al-Azhar Educational Background', text: 'Strong foundation in authentic Islamic knowledge and values.', icon: 'landmark' },
+  { title: 'Simple Approach for Non-Arabic Speakers', text: 'Step-by-step lessons designed to build understanding and confidence.', icon: 'messageCircle' },
   { title: 'Suitable for All Levels', text: 'From beginner to advanced, we have the right program for you.', icon: 'star' },
   { title: 'Flexible One-to-One and Small Group Classes', text: 'Choose the format that suits your schedule and goals.', icon: 'users' },
-  { title: 'Parent Follow-up & Reports', text: "Stay informed with regular updates on your child's progress.", icon: 'clipboard' },
-  { title: 'Safe Online Learning Environment', text: 'A secure, respectful, and moderated space for focused Islamic learning.', icon: 'shield' },
+  { title: 'Parent Follow-up & Reports', text: "Stay informed with regular updates on your child's progress.", icon: 'clipboardCheck' },
+  { title: 'Safe Online Learning Environment', text: 'A secure, respectful, and moderated space for focused Islamic learning.', icon: 'shieldCheck' },
   { title: 'Free Trial Class', text: 'Try a class for free and experience the Musliman Academy difference.', icon: 'gift' },
 ];
 
 export const howSteps: Array<{ step: string; title: string; text: string; icon: IconName }> = [
   { step: '01', title: 'Book a Free Trial', text: 'Submit your details and choose the program that suits your goals.', icon: 'calendar' },
   { step: '02', title: 'Meet Your Teacher', text: 'We assess your level and schedule your first one-to-one online class.', icon: 'video' },
-  { step: '03', title: 'Start Learning', text: 'Follow a personalized learning plan with regular guidance and support.', icon: 'quranStand' },
+  { step: '03', title: 'Start Learning', text: 'Follow a personalized learning plan with regular guidance and support.', icon: 'book' },
 ];
 
 export const trainingIncludes: Array<{ title: string; icon: IconName }> = [
-  { title: 'Teaching methods for non-Arabic speakers', icon: 'users' },
-  { title: 'Online teaching techniques', icon: 'laptop' },
-  { title: 'Lesson planning and class management', icon: 'clipboard' },
-  { title: 'Student follow-up and progress evaluation', icon: 'chart' },
+  { title: 'Teaching methods for non-Arabic speakers', icon: 'graduationCap' },
+  { title: 'Online teaching techniques', icon: 'video' },
+  { title: 'Lesson planning and class management', icon: 'clipboardCheck' },
+  { title: 'Student follow-up and progress evaluation', icon: 'barChart3' },
 ];
 
 export const trainingBadges: Array<{ title: string; icon: IconName }> = [
-  { title: 'Certificate of Completion', icon: 'certificate' },
+  { title: 'Certificate of Completion', icon: 'award' },
   { title: 'Practical Training & Mentorship', icon: 'users' },
   { title: 'Flexible Online Schedule', icon: 'clock' },
-  { title: 'Grow Your Impact as a Teacher', icon: 'chart' },
+  { title: 'Grow Your Impact as a Teacher', icon: 'trophy' },
 ];
 
 export const faqs = [

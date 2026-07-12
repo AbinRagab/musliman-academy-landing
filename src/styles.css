@@ -95,10 +95,10 @@ button {
 }
 
 .icon {
-  width: 24px;
-  height: 24px;
   flex: 0 0 auto;
   overflow: visible;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .icon * {
@@ -1334,6 +1334,13 @@ p {
   font-weight: 800;
 }
 
+.booking-form__error {
+  margin-top: 14px;
+  color: #b42318;
+  font-weight: 800;
+  text-align: center;
+}
+
 .form-grid__full {
   position: relative;
   grid-column: 1 / -1;
@@ -2524,6 +2531,135 @@ p {
   height: 31px;
 }
 
+/* Unified Lucide icon system */
+.icon-circle,
+.program-card__icon,
+.audience-card__icon,
+.why-slide-card__icon,
+.why-card__icon,
+.trust-icon,
+.about-point__icon,
+.footer-icon,
+.teacher-feature__icon,
+.step-card__icon,
+.step-card__visual,
+.faq-icon,
+.faq-card__icon {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.icon-circle svg,
+.program-card__icon svg,
+.audience-card__icon svg,
+.why-slide-card__icon svg,
+.why-card__icon svg,
+.trust-icon svg,
+.about-point__icon svg,
+.footer-icon svg,
+.teacher-feature__icon svg,
+.step-card__icon svg,
+.step-card__visual svg,
+.faq-icon svg,
+.faq-card__icon svg {
+  width: 1em;
+  height: 1em;
+  stroke-width: 1.9;
+}
+
+.section-light .icon-circle,
+.section-light .program-card__icon,
+.section-light .audience-card__icon,
+.section-light .why-slide-card__icon,
+.section-light .why-card__icon,
+.section-light .trust-icon,
+.section-light .about-point__icon,
+.section-light .step-card__icon,
+.section-light .step-card__visual,
+.section-light .faq-icon,
+.section-light .faq-card__icon,
+.section-light .accordion__content svg {
+  background: #F8EFE6;
+  color: #B87333;
+  border: 1px solid rgba(184, 115, 51, 0.16);
+}
+
+.section-dark .icon-circle,
+.section-dark .program-card__icon,
+.section-dark .audience-card__icon,
+.section-dark .why-slide-card__icon,
+.section-dark .why-card__icon,
+.section-dark .trust-icon,
+.section-dark .about-point__icon,
+.section-dark .footer-icon,
+.section-dark .teacher-feature__icon,
+.section-dark .step-card__icon,
+.section-dark .step-card__visual,
+.section-dark .faq-icon,
+.section-dark .faq-card__icon,
+.section-dark .training-list svg,
+.section-dark .training-badges svg {
+  background: rgba(255, 255, 255, 0.08);
+  color: #B87333;
+  border: 1px solid rgba(184, 115, 51, 0.35);
+}
+
+.program-card__icon {
+  width: 86px;
+  height: 86px;
+  font-size: 38px;
+}
+
+.audience-card__icon {
+  width: 72px;
+  height: 72px;
+  font-size: 34px;
+}
+
+.why-slide-card__icon {
+  width: 92px;
+  height: 92px;
+  font-size: 40px;
+}
+
+.trust-icon,
+.about-point__icon,
+.teacher-feature__icon,
+.training-list svg,
+.training-badges svg {
+  width: 52px;
+  height: 52px;
+  padding: 13px;
+  font-size: 24px;
+}
+
+.why-stat svg,
+.why-stat .icon {
+  width: 52px;
+  height: 52px;
+  padding: 13px;
+  border-radius: 50%;
+  border: 1px solid rgba(184, 115, 51, 0.9);
+  color: #B87333;
+}
+
+.step-card__visual,
+.step-card__icon {
+  width: 92px;
+  height: 92px;
+  margin: 0 auto 24px;
+  font-size: 42px;
+}
+
+.faq-icon,
+.faq-card__icon {
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+}
+
 /* Theme */
 .app-shell[data-theme='dark'] h1,
 .app-shell[data-theme='dark'] h2,
@@ -2674,8 +2810,8 @@ p {
 }
 
 .app-shell[data-theme='dark'] .trust-bar__item svg {
-  border: 1px solid rgba(184, 115, 51, 0.28);
-  background: rgba(184, 115, 51, 0.14);
+  border: 1px solid rgba(184, 115, 51, 0.35);
+  background: rgba(255, 255, 255, 0.08);
   color: #B87333;
 }
 
@@ -2693,9 +2829,14 @@ p {
 .app-shell[data-theme='dark'] .program-card__icon,
 .app-shell[data-theme='dark'] .round-icon,
 .app-shell[data-theme='dark'] .faq-card__icon,
-.app-shell[data-theme='dark'] .why-slide-card__icon {
+.app-shell[data-theme='dark'] .why-slide-card__icon,
+.app-shell[data-theme='dark'] .step-card__visual,
+.app-shell[data-theme='dark'] .training-list svg,
+.app-shell[data-theme='dark'] .training-badges svg,
+.app-shell[data-theme='dark'] .accordion__content svg {
   color: #B87333;
-  background: rgba(184, 115, 51, 0.16);
+  border: 1px solid rgba(184, 115, 51, 0.35);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .app-shell[data-theme='dark'] .booking-toggle {
@@ -3075,6 +3216,10 @@ p {
   .booking-toggle__btn {
     flex: 1;
     padding-inline: 16px;
+  }
+
+  .booking-toggle {
+    gap: 4px;
   }
 }
 
