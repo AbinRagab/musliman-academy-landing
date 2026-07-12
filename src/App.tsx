@@ -712,48 +712,54 @@ function PricingSection() {
           <p>{t('pricing.subtitle')}</p>
         </div>
 
-        <div className="pricing-tabs" role="tablist" aria-label={t('pricing.currencyAria')}>
-          {currencyEntries.map(([key, currency]) => (
-            <button
-              key={key}
-              type="button"
-              role="tab"
-              aria-selected={activeCurrency === key}
-              className={`pricing-tab ${activeCurrency === key ? 'is-active' : ''}`}
-              onClick={() => setActiveCurrency(key)}
-            >
-              {currency.label}
-            </button>
-          ))}
+        <div className="pricing-tabs-wrap">
+          <div className="pricing-tabs" role="tablist" aria-label={t('pricing.currencyAria')}>
+            {currencyEntries.map(([key, currency]) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={activeCurrency === key}
+                className={`pricing-tab ${activeCurrency === key ? 'is-active' : ''}`}
+                onClick={() => setActiveCurrency(key)}
+              >
+                {currency.label}
+              </button>
+            ))}
+          </div>
         </div>
 
+        <p className="pricing-scroll-hint">Swipe to view all pricing details</p>
+
         <div className="pricing-table-card">
-          <table className="pricing-table">
-            <thead>
-              <tr>
-                <th scope="col">{t('pricing.columns.program')}</th>
-                <th scope="col">{t('pricing.columns.tier')}</th>
-                <th scope="col">{t('pricing.columns.oneOnOne')}</th>
-                <th scope="col">{t('pricing.columns.group')}</th>
-                <th scope="col">{t('pricing.columns.monthly')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentPricing.rows.map((row) => (
-                <tr key={row.track}>
-                  <td>{row.track}</td>
-                  <td>
-                    <span className={`tier-badge tier-badge--${row.tier.toLowerCase()}`}>
-                      {row.tier}
-                    </span>
-                  </td>
-                  <td>{row.oneOnOne}</td>
-                  <td>{row.group}</td>
-                  <td className="pricing-table__monthly">{row.monthly}</td>
+          <div className="pricing-table-scroll">
+            <table className="pricing-table">
+              <thead>
+                <tr>
+                  <th scope="col">{t('pricing.columns.program')}</th>
+                  <th scope="col">{t('pricing.columns.tier')}</th>
+                  <th scope="col">{t('pricing.columns.oneOnOne')}</th>
+                  <th scope="col">{t('pricing.columns.group')}</th>
+                  <th scope="col">{t('pricing.columns.monthly')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {currentPricing.rows.map((row) => (
+                  <tr key={row.track}>
+                    <td>{row.track}</td>
+                    <td>
+                      <span className={`tier-badge tier-badge--${row.tier.toLowerCase()}`}>
+                        {row.tier}
+                      </span>
+                    </td>
+                    <td>{row.oneOnOne}</td>
+                    <td>{row.group}</td>
+                    <td className="pricing-table__monthly">{row.monthly}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <p className="pricing-note">{t('pricing.note')}</p>
