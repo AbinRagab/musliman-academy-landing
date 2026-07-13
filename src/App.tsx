@@ -175,7 +175,7 @@ function Navbar({ theme, onToggleTheme, onSelectBookingType }: { theme: Theme; o
   );
 }
 
-function ClassIllustration({ mode = 'hero' }: { mode?: 'hero' | 'light' | 'training' }) {
+function ClassIllustration({ mode = 'hero' }: { mode?: 'hero' | 'light' }) {
   const { t } = useTranslation();
 
   return (
@@ -204,11 +204,6 @@ function ClassIllustration({ mode = 'hero' }: { mode?: 'hero' | 'light' | 'train
       </div>
       <div className="student student-one" />
       <div className="student student-two" />
-      {mode === 'training' && (
-        <div className="mini-call-grid">
-          <span /><span /><span /><span />
-        </div>
-      )}
     </div>
   );
 }
@@ -1059,21 +1054,27 @@ function TeacherTrainingSection({ onSelectBookingType }: { onSelectBookingType: 
   const { t } = useTranslation();
 
   return (
-    <section className="training section-dark" id="teacher-training">
+    <section className="teacher-training-section section-dark" id="teacher-training">
       <SectionDecorations variant="dark" type="training" />
-      <div className="container training__grid">
-        <div className="training__content">
+      <div className="container teacher-training-container">
+        <div className="teacher-training-content">
           <SectionBadge icon="award" dark>{t('training.badge')}</SectionBadge>
           <h2>{t('training.heading')}</h2>
           <p>{t('training.description')}</p>
-          <div className="training-list">
+          <div className="teacher-training-features">
             {trainingIncludes.map((item) => (
-              <div key={item.key}><Icon name={item.icon} /><span>{t(`training.includes.${item.key}`)}</span></div>
+              <div className="teacher-training-feature" key={item.key}><Icon name={item.icon} /><span>{t(`training.includes.${item.key}`)}</span></div>
             ))}
           </div>
           <Button href="#book-trial" icon="award" className="training__cta" onClick={() => onSelectBookingType('training')}>{t('training.cta')}</Button>
         </div>
-        <ClassIllustration mode="training" />
+        <div className="teacher-training-visual">
+          <img
+            src="/assets/teacher-training-visual.jpg"
+            alt="Online Quran teacher training program"
+            loading="lazy"
+          />
+        </div>
         <div className="training-badges">
           {trainingBadges.map((badge) => (
             <div key={badge.key}><Icon name={badge.icon} /><span>{t(`training.badges.${badge.key}`)}</span></div>
