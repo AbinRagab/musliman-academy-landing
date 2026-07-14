@@ -26,6 +26,16 @@ type Theme = 'light' | 'dark';
 type BookingType = 'trial' | 'training';
 type DecorationVariant = 'light' | 'dark';
 type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'pricing' | 'why' | 'testimonials' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
+type VideoStory = {
+  id: number;
+  label: string;
+  title: string;
+  description: string;
+  duration: string;
+  thumbnail: string;
+  videoUrl: string;
+  type: 'embed' | 'mp4';
+};
 
 type DecorationItem =
   | { kind: 'icon'; icon: IconName; className: string }
@@ -83,6 +93,48 @@ const qualificationOptions = ['quranTeacher', 'arabicTeacher', 'islamicStudiesTe
 const trainingGoalOptions = ['teachNonArabic', 'onlineTeaching', 'lessonPlanning', 'studentFollowUp', 'joinAcademy', 'other'];
 const studentAgeOptions = ['child', 'teenager', 'adult'];
 const preferredTimeOptions = ['morning', 'afternoon', 'evening', 'flexible'];
+const videoStories: VideoStory[] = [
+  {
+    id: 1,
+    label: 'Student Story',
+    title: 'From First Letters to Confident Quran Reading',
+    description: 'Step-by-step progress with Tajweed',
+    duration: '1:24',
+    thumbnail: '/assets/hero-bg.png',
+    videoUrl: '/videos/student-story.mp4',
+    type: 'mp4',
+  },
+  {
+    id: 2,
+    label: 'Parent Feedback',
+    title: 'Parent Feedback',
+    description: 'How our team supports every learner',
+    duration: '1:15',
+    thumbnail: '/assets/why-choose-visual.jpg',
+    videoUrl: 'https://www.youtube.com/embed/YOUTUBE_VIDEO_ID',
+    type: 'embed',
+  },
+  {
+    id: 3,
+    label: 'Arabic Beginner',
+    title: 'Arabic Beginner',
+    description: 'Learning Arabic with clarity',
+    duration: '1:07',
+    thumbnail: '/assets/about-visual.png',
+    videoUrl: '/videos/arabic-beginner.mp4',
+    type: 'mp4',
+  },
+  {
+    id: 4,
+    label: 'Teacher Training',
+    title: 'Teacher Training',
+    description: 'Training teachers to guide with confidence',
+    duration: '1:42',
+    thumbnail: '/assets/teacher-training-visual.jpg',
+    videoUrl: '/videos/teacher-training.mp4',
+    type: 'mp4',
+  },
+];
 
 function SectionBadge({ icon, children, dark = false }: { icon?: IconName; children: string; dark?: boolean }) {
   return (
@@ -1023,6 +1075,187 @@ function TestimonialsSection() {
   );
 }
 
+function VideoStoriesSection() {
+  const [activeVideo, setActiveVideo] = useState<VideoStory>(videoStories[0]);
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isVideoOpen) {
+      return undefined;
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsVideoOpen(false);
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isVideoOpen]);
+
+  return (
+    <section className="video-stories-section section-dark" id="video-stories">
+      <div className="video-stories-bg-icon video-stories-bg-icon--one" aria-hidden="true" />
+      <div className="video-stories-bg-icon video-stories-bg-icon--two" aria-hidden="true" />
+
+      <div className="container video-stories-container">
+        <div className="video-stories-header">
+          <div className="section-badge section-badge--dark">
+            <Icon name="play" />
+            <span>Real Learning Moments</span>
+          </div>
+
+          <h2>Watch How Our Students Learn with Confidence</h2>
+
+          <div className="section-divider" aria-hidden="true" />
+
+          <p>
+            Short video stories from students, parents, and teachers showing how Musliman Academy supports Quran, Arabic, and Islamic learning step by step.
+          </p>
+        </div>
+
+        <div className="video-stories-layout">
+          <div className="video-feature-card">
+            <img
+              src={activeVideo.thumbnail}
+              alt={activeVideo.title}
+              className="video-feature-card__image"
+              loading="lazy"
+            />
+
+            <div className="video-feature-card__overlay" />
+
+            <div className="video-feature-card__top">
+              <span className="video-label">
+                <Icon name="users" />
+                {activeVideo.label}
+              </span>
+
+              <span className="video-duration">{activeVideo.duration}</span>
+            </div>
+
+            <button
+              type="button"
+              className="video-play-button"
+              aria-label={`Play ${activeVideo.title}`}
+              onClick={() => setIsVideoOpen(true)}
+            >
+              <Icon name="play" />
+            </button>
+
+            <div className="video-feature-card__content">
+              <h3>{activeVideo.title}</h3>
+
+              <div className="video-progress-line" aria-hidden="true">
+                <span />
+              </div>
+            </div>
+          </div>
+
+          <aside className="video-playlist-card">
+            <div className="video-playlist-title">
+              <Icon name="list" />
+              <span>Video Playlist</span>
+            </div>
+
+            <div className="video-playlist-list">
+              {videoStories.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`video-playlist-item ${activeVideo.id === item.id ? 'is-active' : ''}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setActiveVideo(item);
+                    setIsVideoOpen(true);
+                  }}
+                >
+                  <span className="video-playlist-number">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+
+                  <span className="video-playlist-thumb">
+                    <img src={item.thumbnail} alt="" loading="lazy" />
+                    <span className="video-playlist-thumb__play">
+                      <Icon name="play" />
+                    </span>
+                  </span>
+
+                  <span className="video-playlist-text">
+                    <strong>{item.title}</strong>
+                    <small>{item.description}</small>
+                  </span>
+
+                  <span className="video-playlist-duration">{item.duration}</span>
+                </button>
+              ))}
+            </div>
+          </aside>
+        </div>
+
+        <div className="video-stories-cta">
+          <div className="video-stories-cta__icon">
+            <Icon name="star" />
+          </div>
+
+          <div>
+            <h3>Want your child to start their journey?</h3>
+            <p>Book a free trial class and experience the difference.</p>
+          </div>
+
+          <Button href="#book-trial" icon="calendar" className="video-stories-cta__button">
+            Book a Free Trial Class
+          </Button>
+        </div>
+      </div>
+
+      {isVideoOpen && (
+        <div
+          className="video-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={activeVideo.title}
+          onClick={() => setIsVideoOpen(false)}
+        >
+          <div
+            className="video-modal__content"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="video-modal__close"
+              aria-label="Close video"
+              onClick={() => setIsVideoOpen(false)}
+            >
+              <Icon name="x" />
+            </button>
+
+            <div className="video-modal__player">
+              {activeVideo.type === 'embed' ? (
+                <iframe
+                  src={activeVideo.videoUrl}
+                  title={activeVideo.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <video controls autoPlay poster={activeVideo.thumbnail}>
+                  <source src={activeVideo.videoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function HowItWorksSection() {
   const { t } = useTranslation();
 
@@ -1269,6 +1502,7 @@ export default function App() {
         <PricingSection />
         <WhyChooseSection />
         <TestimonialsSection />
+        <VideoStoriesSection />
         <HowItWorksSection />
         <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />
         <FAQSection />
