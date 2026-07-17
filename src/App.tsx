@@ -765,8 +765,15 @@ function ProgramsSection() {
         <div className="program-grid">
           {programs.map((program) => (
             <article className="program-card" key={program.key}>
-              <span className="card-number">{program.number}</span>
-              <div className="program-card__icon"><Icon name={program.icon} /></div>
+              <span className="program-card__number">{program.number}</span>
+              <div className="program-card__visual">
+                <img
+                  src={program.image}
+                  alt={`${t(`programs.items.${program.key}.title`)} illustration`}
+                  className="program-card__image"
+                  loading="lazy"
+                />
+              </div>
               <h3>{t(`programs.items.${program.key}.title`)}</h3>
               <p>{t(`programs.items.${program.key}.text`)}</p>
               <a href="#book-trial">{t('programs.learnMore')} <span>-&gt;</span></a>

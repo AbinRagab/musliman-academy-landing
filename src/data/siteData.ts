@@ -217,15 +217,15 @@ export const countryOptions = [
   'Other',
 ];
 
-export const programs: Array<{ number: string; key: string; icon: IconName }> = [
-  { number: '1', key: 'quranReading', icon: 'book' },
-  { number: '2', key: 'tarteelQaidah', icon: 'languages' },
-  { number: '3', key: 'quranMemorization', icon: 'bookMarked' },
-  { number: '4', key: 'tajweed', icon: 'scrollText' },
-  { number: '5', key: 'quranTafseer', icon: 'fileText' },
-  { number: '6', key: 'arabicLanguage', icon: 'languages' },
-  { number: '7', key: 'islamicStudies', icon: 'landmark' },
-  { number: '8', key: 'islamicValues', icon: 'heartHandshake' },
+export const programs: Array<{ number: string; key: string; icon: IconName; image: string }> = [
+  { number: '1', key: 'quranReading', icon: 'book', image: '/assets/programs/quran-reading.png' },
+  { number: '2', key: 'tarteelQaidah', icon: 'languages', image: '/assets/programs/tarteel-qaidah.png' },
+  { number: '3', key: 'quranMemorization', icon: 'bookMarked', image: '/assets/programs/quran-memorization.png' },
+  { number: '4', key: 'tajweed', icon: 'scrollText', image: '/assets/programs/tajweed.png' },
+  { number: '5', key: 'quranTafseer', icon: 'fileText', image: '/assets/programs/quran-tafseer.png' },
+  { number: '6', key: 'arabicLanguage', icon: 'languages', image: '/assets/programs/arabic-language.png' },
+  { number: '7', key: 'islamicStudies', icon: 'landmark', image: '/assets/programs/islamic-studies.png' },
+  { number: '8', key: 'islamicValues', icon: 'heartHandshake', image: '/assets/programs/islamic-values-children.png' },
 ];
 
 export type PricingCurrency = 'USD' | 'CAD' | 'GBP' | 'AUD';

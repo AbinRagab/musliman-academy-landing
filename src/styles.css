@@ -1666,39 +1666,38 @@ p {
 
 .program-card {
   position: relative;
-  min-height: 310px;
-  padding: 30px 24px 26px;
-  border: 1px solid rgba(11, 31, 58, 0.09);
-  border-radius: 8px;
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  padding: 28px 26px 30px;
+  border-radius: 22px;
+  background: #FFFFFF;
+  border: 1px solid rgba(11, 31, 58, 0.10);
+  box-shadow: 0 18px 44px rgba(11, 31, 58, 0.07);
   text-align: center;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .program-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(184, 115, 51, 0.38);
-  background: var(--white);
-  box-shadow: var(--shadow);
+  transform: translateY(-6px);
+  border-color: rgba(184, 115, 51, 0.28);
+  box-shadow: 0 24px 58px rgba(11, 31, 58, 0.12);
 }
 
-.card-number {
+.program-card__number {
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: var(--midnight);
-  color: var(--white);
-  font-size: 0.76rem;
-  font-weight: 800;
+  background: #0B1F3A;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 900;
 }
 
-.program-card__icon,
 .faq-card__icon {
   display: grid;
   place-items: center;
@@ -1711,29 +1710,52 @@ p {
   color: var(--midnight);
 }
 
-.program-card__icon svg {
-  width: 40px;
-  height: 40px;
+.program-card__visual {
+  width: 100%;
+  height: 210px;
+  margin: 0 auto 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.program-card__image {
+  max-width: 100%;
+  max-height: 210px;
+  width: auto;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .program-card h3 {
-  margin-top: 18px;
+  margin: 0 0 14px;
+  font-family: "Cinzel", serif;
+  color: #0B1F3A;
+  font-size: 24px;
+  line-height: 1.2;
 }
 
 .program-card p {
-  margin-top: 12px;
-  color: #475569;
-  font-size: 0.94rem;
-  line-height: 1.65;
+  margin: 0;
+  color: #334155;
+  font-size: 16px;
+  line-height: 1.7;
 }
 
 .program-card a {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  margin-top: 18px;
-  color: var(--copper-2);
+  margin-top: 22px;
+  color: #9B5A1E;
   font-weight: 800;
+  text-decoration: none;
+}
+
+.program-card a:hover {
+  color: #B87333;
 }
 
 /* Pricing */
@@ -3704,7 +3726,6 @@ p {
 
 /* Unified Lucide icon system */
 .icon-circle,
-.program-card__icon,
 .why-card__icon,
 .trust-icon,
 .about-point__icon,
@@ -3721,7 +3742,6 @@ p {
 }
 
 .icon-circle svg,
-.program-card__icon svg,
 .why-card__icon svg,
 .trust-icon svg,
 .about-point__icon svg,
@@ -3737,7 +3757,6 @@ p {
 }
 
 .section-light .icon-circle,
-.section-light .program-card__icon,
 .section-light .why-card__icon,
 .section-light .trust-icon,
 .section-light .about-point__icon,
@@ -3752,7 +3771,6 @@ p {
 }
 
 .section-dark .icon-circle,
-.section-dark .program-card__icon,
 .section-dark .why-card__icon,
 .section-dark .trust-icon,
 .section-dark .about-point__icon,
@@ -3766,12 +3784,6 @@ p {
   background: rgba(255, 255, 255, 0.08);
   color: #B87333;
   border: 1px solid rgba(184, 115, 51, 0.35);
-}
-
-.program-card__icon {
-  width: 86px;
-  height: 86px;
-  font-size: 38px;
 }
 
 .trust-icon,
@@ -3828,9 +3840,9 @@ html[dir="rtl"] .navbar__links a::after {
   right: 4px;
 }
 
-html[dir="rtl"] .card-number,
+html[dir="rtl"] .program-card__number,
 html[dir="rtl"] .why-card__number {
-  right: 14px;
+  right: 18px;
   left: auto;
 }
 
@@ -4102,6 +4114,25 @@ body.dark-mode .language-switcher__option.is-active {
   background: #123052;
 }
 
+.dark .program-card,
+[data-theme="dark"] .program-card,
+body.dark-mode .program-card {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dark .program-card h3,
+[data-theme="dark"] .program-card h3,
+body.dark-mode .program-card h3 {
+  color: #FFFFFF;
+}
+
+.dark .program-card p,
+[data-theme="dark"] .program-card p,
+body.dark-mode .program-card p {
+  color: rgba(255, 255, 255, 0.76);
+}
+
 .app-shell[data-theme='dark'] .booking-heading p,
 .app-shell[data-theme='dark'] .program-card p,
 .app-shell[data-theme='dark'] .why-card p,
@@ -4163,7 +4194,6 @@ body.dark-mode .language-switcher__option.is-active {
   background: rgba(255, 255, 255, 0.07);
 }
 
-.app-shell[data-theme='dark'] .program-card__icon,
 .app-shell[data-theme='dark'] .faq-card__icon,
 .app-shell[data-theme='dark'] .why-card__icon,
 .app-shell[data-theme='dark'] .step-card__visual,
@@ -4322,6 +4352,14 @@ body.dark-mode .language-switcher__option.is-active {
 }
 
 @media (max-width: 1024px) {
+  .program-card__visual {
+    height: 190px;
+  }
+
+  .program-card__image {
+    max-height: 190px;
+  }
+
   .hero {
     padding-top: 72px;
     padding-bottom: 185px;
@@ -4945,6 +4983,27 @@ body.dark-mode .language-switcher__option.is-active {
 }
 
 @media (max-width: 640px) {
+  .program-card {
+    padding: 24px 20px 28px;
+  }
+
+  .program-card__visual {
+    height: 170px;
+    margin-bottom: 18px;
+  }
+
+  .program-card__image {
+    max-height: 170px;
+  }
+
+  .program-card h3 {
+    font-size: 22px;
+  }
+
+  .program-card p {
+    font-size: 15px;
+  }
+
   .video-modal {
     padding: 14px;
   }
