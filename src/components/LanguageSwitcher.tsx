@@ -1,7 +1,7 @@
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, Globe2 } from 'lucide-react';
-import { supportedLanguages, type SupportedLanguage, updateDocumentLanguage } from '../i18n';
+import { loadLanguageResource, supportedLanguages, type SupportedLanguage, updateDocumentLanguage } from '../i18n';
 
 const languages: Array<{ code: SupportedLanguage; shortCode: string; label: string }> = [
   { code: 'en', shortCode: 'EN', label: 'English' },
@@ -32,6 +32,7 @@ export default function LanguageSwitcher({ className = '' }: LanguageSwitcherPro
     : 'en';
 
   async function handleLanguageChange(language: string) {
+    await loadLanguageResource(language);
     await i18n.changeLanguage(language);
     window.localStorage.setItem('i18nextLng', language);
     updateDocumentLanguage(language);

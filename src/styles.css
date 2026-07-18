@@ -73,6 +73,10 @@ svg {
   display: block;
 }
 
+picture {
+  display: contents;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -894,6 +898,7 @@ p {
 
 /* Hero */
 .hero {
+  --hero-bg: url("/assets/hero-bg.png");
   position: relative;
   min-height: 660px;
   padding: 76px 0 220px;
@@ -909,10 +914,19 @@ p {
       rgba(6, 24, 45, 0.22) 74%,
       rgba(6, 24, 45, 0.08) 100%
     ),
-    url("/assets/hero-bg.png");
+    var(--hero-bg);
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
+}
+
+@supports (background: image-set(url("/assets/optimized/hero-bg.webp") type("image/webp"))) {
+  .hero {
+    --hero-bg: image-set(
+      url("/assets/optimized/hero-bg.webp") type("image/webp"),
+      url("/assets/hero-bg.png") type("image/png")
+    );
+  }
 }
 
 .hero::before {
@@ -1064,296 +1078,6 @@ p {
   border-top-right-radius: 100% 100%;
   z-index: 2;
   pointer-events: none;
-}
-
-/* Illustration */
-.class-visual {
-  position: relative;
-  min-height: 500px;
-  isolation: isolate;
-}
-
-.class-visual--light {
-  min-height: 420px;
-}
-
-.arch-frame {
-  position: absolute;
-  inset: 30px 26px 62px 38px;
-  z-index: -2;
-  border: 3px solid var(--copper-light);
-  border-bottom: 0;
-  border-radius: 48% 48% 0 0 / 28% 28% 0 0;
-  opacity: 0.95;
-  clip-path: polygon(0 28%, 10% 28%, 10% 18%, 50% 0, 90% 18%, 90% 28%, 100% 28%, 100% 100%, 0 100%);
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 20px);
-}
-
-.class-visual--light .arch-frame {
-  border-color: rgba(184, 115, 51, 0.48);
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.2)),
-    repeating-linear-gradient(45deg, rgba(11, 31, 58, 0.05) 0 1px, transparent 1px 20px);
-}
-
-.desk-top {
-  position: absolute;
-  left: 7%;
-  right: 5%;
-  bottom: 48px;
-  height: 112px;
-  border: 1px solid rgba(216, 163, 107, 0.35);
-  border-radius: 8px;
-  background: linear-gradient(180deg, rgba(184, 115, 51, 0.18), rgba(40, 23, 12, 0.48));
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.24);
-}
-
-.class-visual--light .desk-top {
-  background: linear-gradient(180deg, rgba(184, 115, 51, 0.1), rgba(255, 255, 255, 0.76));
-  box-shadow: var(--shadow);
-}
-
-.laptop {
-  position: absolute;
-  z-index: 2;
-  left: 20%;
-  right: 18%;
-  bottom: 100px;
-}
-
-.laptop-screen {
-  position: relative;
-  height: 220px;
-  overflow: hidden;
-  border: 12px solid #111827;
-  border-radius: 8px 8px 4px 4px;
-  background: linear-gradient(135deg, #dfe9f1, #fffaf2 64%, #c9d5df);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
-}
-
-.laptop-base {
-  width: 110%;
-  height: 18px;
-  margin-left: -5%;
-  border-radius: 0 0 24px 24px;
-  background: linear-gradient(180deg, #d8dce0, #737b84);
-}
-
-.teacher-avatar {
-  position: absolute;
-  left: 34px;
-  bottom: 0;
-  width: 110px;
-  height: 170px;
-}
-
-.teacher-face {
-  position: absolute;
-  top: 34px;
-  left: 20px;
-  width: 72px;
-  height: 72px;
-  border-radius: 50% 50% 46% 46%;
-  background: #d5a071;
-  box-shadow: inset 0 -18px 0 rgba(45, 30, 24, 0.16);
-}
-
-.teacher-face::before,
-.teacher-face::after {
-  content: '';
-  position: absolute;
-  top: 32px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #111827;
-}
-
-.teacher-face::before {
-  left: 22px;
-}
-
-.teacher-face::after {
-  right: 22px;
-}
-
-.teacher-cap {
-  position: absolute;
-  top: 20px;
-  left: 24px;
-  width: 66px;
-  height: 24px;
-  border-radius: 30px 30px 10px 10px;
-  background: var(--white);
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
-}
-
-.teacher-avatar::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 116px;
-  height: 86px;
-  border-radius: 50px 50px 0 0;
-  background: var(--midnight);
-}
-
-.arabic-board {
-  position: absolute;
-  right: 26px;
-  top: 46px;
-  width: 164px;
-  min-height: 108px;
-  padding: 16px 12px;
-  border: 2px solid var(--copper);
-  border-radius: 8px;
-  background: var(--warm);
-  color: var(--midnight);
-  text-align: center;
-  font-size: 0.83rem;
-  font-weight: 800;
-  line-height: 1.65;
-}
-
-.arabic-board span {
-  display: block;
-}
-
-.meeting-dots {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  display: flex;
-  gap: 6px;
-  transform: translateX(-50%);
-}
-
-.meeting-dots i {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  background: #c7332f;
-}
-
-.quran-book {
-  position: absolute;
-  left: 2%;
-  bottom: 25px;
-  display: grid;
-  place-items: center;
-  width: 122px;
-  height: 76px;
-  transform: rotate(-7deg);
-  border: 2px solid var(--copper-light);
-  border-radius: 8px;
-  color: var(--copper-light);
-  background: linear-gradient(135deg, var(--midnight), #143358);
-  font-family: var(--font-heading);
-  font-weight: 700;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
-}
-
-.open-notebook {
-  position: absolute;
-  right: 20%;
-  bottom: 20px;
-  width: 134px;
-  height: 64px;
-  border-radius: 60px 60px 8px 8px;
-  transform: rotate(8deg);
-  background: linear-gradient(90deg, #fff 0 49%, #e5e7eb 50% 51%, #fff 52%);
-}
-
-.plant {
-  position: absolute;
-  left: 18%;
-  bottom: 54px;
-  width: 54px;
-  height: 56px;
-  border-radius: 0 0 8px 8px;
-  background: #c2a07f;
-}
-
-.plant::before,
-.plant::after,
-.plant span {
-  content: '';
-  position: absolute;
-  bottom: 48px;
-  width: 14px;
-  height: 64px;
-  border-radius: 100% 0 100% 0;
-  background: #4c7a4d;
-  transform-origin: bottom;
-}
-
-.plant::before {
-  left: 15px;
-  transform: rotate(-22deg);
-}
-
-.plant::after {
-  right: 14px;
-  transform: rotate(18deg);
-}
-
-.plant span {
-  left: 20px;
-}
-
-.student {
-  position: absolute;
-  z-index: 3;
-  bottom: 72px;
-  border-radius: 60% 60% 0 0;
-  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.22));
-}
-
-.student-one {
-  right: 10%;
-  width: 120px;
-  height: 190px;
-  background: linear-gradient(180deg, #d5bdab 0 36%, #0d3358 37%);
-}
-
-.student-one::before {
-  content: '';
-  position: absolute;
-  top: 20px;
-  left: 18px;
-  width: 84px;
-  height: 50px;
-  border: 6px dotted #d4c4b6;
-  border-radius: 50%;
-  background: #f4efea;
-}
-
-.student-two {
-  right: -1%;
-  width: 148px;
-  height: 245px;
-  background: linear-gradient(180deg, #ceb9aa, #b79f8c);
-}
-
-.floating-star {
-  position: absolute;
-  color: var(--copper-light);
-  font-size: 1.5rem;
-  font-weight: 800;
-}
-
-.star-one {
-  top: 90px;
-  left: 12%;
-}
-
-.star-two {
-  top: 160px;
-  right: 18%;
 }
 
 /* Booking */
@@ -4277,10 +4001,6 @@ body.dark-mode .program-card p {
     font-size: 0.76rem;
   }
 
-  .class-visual {
-    min-height: 460px;
-  }
-
   .program-grid,
   .footer__grid {
     grid-template-columns: repeat(2, 1fr);
@@ -4609,7 +4329,7 @@ body.dark-mode .program-card p {
         rgba(6, 24, 45, 0.94) 44%,
         rgba(6, 24, 45, 0.82) 100%
       ),
-      url("/assets/hero-bg.png");
+      var(--hero-bg);
     background-size: cover;
     background-position: 72% center;
   }
@@ -4862,59 +4582,6 @@ body.dark-mode .program-card p {
 
   h2 {
     font-size: 2.1rem;
-  }
-
-  .class-visual,
-  .class-visual--light {
-    min-height: 370px;
-  }
-
-  .laptop {
-    left: 11%;
-    right: 8%;
-    bottom: 110px;
-  }
-
-  .laptop-screen {
-    height: 160px;
-    border-width: 9px;
-  }
-
-  .arabic-board {
-    right: 12px;
-    top: 35px;
-    width: 116px;
-    min-height: 86px;
-    padding: 10px 6px;
-    font-size: 0.66rem;
-  }
-
-  .teacher-avatar {
-    left: 12px;
-    transform: scale(0.72);
-    transform-origin: bottom left;
-  }
-
-  .student-one {
-    right: 14%;
-    width: 78px;
-    height: 130px;
-  }
-
-  .student-two {
-    width: 90px;
-    height: 170px;
-  }
-
-  .desk-top {
-    bottom: 52px;
-    height: 92px;
-  }
-
-  .quran-book,
-  .open-notebook,
-  .plant {
-    display: none;
   }
 
   .program-grid,
@@ -5184,5 +4851,16 @@ body.dark-mode .program-card p {
   .tier-badge {
     padding: 5px 9px;
     font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -1,4 +1,5 @@
 import { FormEvent, MouseEventHandler, useEffect, useState } from 'react';
+import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
 import type { IconType } from 'react-icons';
@@ -35,6 +36,11 @@ type VideoStory = {
   thumbnail: string;
   videoUrl: string;
   type: 'embed' | 'mp4';
+};
+type OptimizedImage = {
+  webp: string;
+  width: number;
+  height: number;
 };
 
 type DecorationItem =
@@ -93,6 +99,20 @@ const qualificationOptions = ['quranTeacher', 'arabicTeacher', 'islamicStudiesTe
 const trainingGoalOptions = ['teachNonArabic', 'onlineTeaching', 'lessonPlanning', 'studentFollowUp', 'joinAcademy', 'other'];
 const studentAgeOptions = ['child', 'teenager', 'adult'];
 const preferredTimeOptions = ['morning', 'afternoon', 'evening', 'flexible'];
+const imageAssets: Record<string, OptimizedImage> = {
+  '/assets/hero-bg.png': { webp: '/assets/optimized/hero-bg.webp', width: 1672, height: 941 },
+  '/assets/about-visual.png': { webp: '/assets/optimized/about-visual.webp', width: 1086, height: 1448 },
+  '/assets/why-choose-visual.png': { webp: '/assets/optimized/why-choose-visual.webp', width: 1120, height: 1094 },
+  '/assets/teacher-training-visual.jpg': { webp: '/assets/optimized/teacher-training-visual.webp', width: 1122, height: 1402 },
+  '/assets/programs/quran-reading.png': { webp: '/assets/optimized/programs/quran-reading.webp', width: 416, height: 520 },
+  '/assets/programs/tarteel-qaidah.png': { webp: '/assets/optimized/programs/tarteel-qaidah.webp', width: 416, height: 520 },
+  '/assets/programs/quran-memorization.png': { webp: '/assets/optimized/programs/quran-memorization.webp', width: 416, height: 520 },
+  '/assets/programs/tajweed.png': { webp: '/assets/optimized/programs/tajweed.webp', width: 416, height: 520 },
+  '/assets/programs/quran-tafseer.png': { webp: '/assets/optimized/programs/quran-tafseer.webp', width: 416, height: 520 },
+  '/assets/programs/arabic-language.png': { webp: '/assets/optimized/programs/arabic-language.webp', width: 416, height: 520 },
+  '/assets/programs/islamic-studies.png': { webp: '/assets/optimized/programs/islamic-studies.webp', width: 416, height: 520 },
+  '/assets/programs/islamic-values-children.png': { webp: '/assets/optimized/programs/islamic-values-children.webp', width: 416, height: 520 },
+};
 const videoStories: VideoStory[] = [
   {
     id: 1,
@@ -110,7 +130,7 @@ const videoStories: VideoStory[] = [
     title: 'Parent Feedback',
     description: 'How our team supports every learner',
     duration: '1:15',
-    thumbnail: '/assets/why-choose-visual.jpg',
+    thumbnail: '/assets/why-choose-visual.png',
     videoUrl: 'https://www.youtube.com/embed/YOUTUBE_VIDEO_ID',
     type: 'embed',
   },
@@ -135,6 +155,30 @@ const videoStories: VideoStory[] = [
     type: 'mp4',
   },
 ];
+
+type OptimizedPictureProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'width' | 'height'> & {
+  src: string;
+  alt: string;
+};
+
+function OptimizedPicture({ src, alt, loading = 'lazy', decoding = 'async', ...imageProps }: OptimizedPictureProps) {
+  const optimizedImage = imageAssets[src];
+
+  return (
+    <picture>
+      {optimizedImage && <source srcSet={optimizedImage.webp} type="image/webp" />}
+      <img
+        src={src}
+        alt={alt}
+        width={optimizedImage?.width}
+        height={optimizedImage?.height}
+        loading={loading}
+        decoding={decoding}
+        {...imageProps}
+      />
+    </picture>
+  );
+}
 
 function SectionBadge({ icon, children, dark = false }: { icon?: IconName; children: string; dark?: boolean }) {
   return (
@@ -227,48 +271,16 @@ function Navbar({ theme, onToggleTheme, onSelectBookingType }: { theme: Theme; o
   );
 }
 
-function ClassIllustration({ mode = 'hero' }: { mode?: 'hero' | 'light' }) {
-  const { t } = useTranslation();
-
-  return (
-    <div className={`class-visual class-visual--${mode}`}>
-      <div className="arch-frame" />
-      <div className="floating-star star-one">*</div>
-      <div className="floating-star star-two">*</div>
-      <div className="desk-top">
-        <div className="quran-book"><span>{t('illustration.quran')}</span></div>
-        <div className="open-notebook" />
-        <div className="plant"><span /></div>
-      </div>
-      <div className="laptop">
-        <div className="laptop-screen">
-          <div className="teacher-avatar">
-            <div className="teacher-face" />
-            <div className="teacher-cap" />
-          </div>
-          <div className="arabic-board">
-            <span>{t('illustration.quranReading')}</span>
-            <span>{t('illustration.stepByStep')}</span>
-          </div>
-          <div className="meeting-dots"><i /><i /><i /></div>
-        </div>
-        <div className="laptop-base" />
-      </div>
-      <div className="student student-one" />
-      <div className="student student-two" />
-    </div>
-  );
-}
-
 function WhyChooseVisual() {
   const { t } = useTranslation();
 
   return (
     <div className="why-top__visual">
-      <img
-        src="/assets/why-choose-visual.jpg"
+      <OptimizedPicture
+        src="/assets/why-choose-visual.png"
         alt={t('whyChoose.visualAlt')}
         loading="lazy"
+        decoding="async"
       />
     </div>
   );
@@ -288,6 +300,10 @@ function getWhyCardsPerPage() {
   }
 
   return 4;
+}
+
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 const sectionDecorationItems: Record<DecorationType, DecorationItem[]> = {
@@ -711,11 +727,12 @@ function AboutSection() {
       <SectionDecorations variant="light" type="about" />
       <div className="container about-container about-section__grid">
         <div className="about-visual">
-          <img
+          <OptimizedPicture
             src="/assets/about-visual.png"
             alt={t('about.imageAlt')}
             className="about-visual__image"
             loading="lazy"
+            decoding="async"
           />
         </div>
         <div className="about-content">
@@ -767,11 +784,12 @@ function ProgramsSection() {
             <article className="program-card" key={program.key}>
               <span className="program-card__number">{program.number}</span>
               <div className="program-card__visual">
-                <img
+                <OptimizedPicture
                   src={program.image}
                   alt={`${t(`programs.items.${program.key}.title`)} illustration`}
                   className="program-card__image"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
               <h3>{t(`programs.items.${program.key}.title`)}</h3>
@@ -883,7 +901,7 @@ function WhyChooseSection() {
   }
 
   useEffect(() => {
-    if (isSliderPaused) {
+    if (isSliderPaused || prefersReducedMotion()) {
       return undefined;
     }
 
@@ -991,7 +1009,7 @@ function TestimonialsSection() {
   }
 
   useEffect(() => {
-    if (isPaused) {
+    if (isPaused || prefersReducedMotion()) {
       return undefined;
     }
 
@@ -1127,11 +1145,12 @@ function VideoStoriesSection() {
 
         <div className="video-stories-layout">
           <div className="video-feature-card">
-            <img
+            <OptimizedPicture
               src={activeVideo.thumbnail}
               alt={activeVideo.title}
               className="video-feature-card__image"
               loading="lazy"
+              decoding="async"
             />
 
             <div className="video-feature-card__overlay" />
@@ -1186,7 +1205,7 @@ function VideoStoriesSection() {
                   </span>
 
                   <span className="video-playlist-thumb">
-                    <img src={item.thumbnail} alt="" loading="lazy" />
+                    <OptimizedPicture src={item.thumbnail} alt="" loading="lazy" decoding="async" />
                     <span className="video-playlist-thumb__play">
                       <Icon name="play" />
                     </span>
@@ -1309,10 +1328,11 @@ function TeacherTrainingSection({ onSelectBookingType }: { onSelectBookingType: 
           <Button href="#book-trial" icon="award" className="training__cta" onClick={() => onSelectBookingType('training')}>{t('training.cta')}</Button>
         </div>
         <div className="teacher-training-visual">
-          <img
+          <OptimizedPicture
             src="/assets/teacher-training-visual.jpg"
             alt="Online Quran teacher training program"
             loading="lazy"
+            decoding="async"
           />
         </div>
         <div className="training-badges">

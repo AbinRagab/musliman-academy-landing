@@ -11,6 +11,10 @@ export default function Logo({ variant = 'dark' }: LogoProps) {
     variant === 'light'
       ? '/assets/musliman-logo-dark-bg-transparent.png'
       : '/assets/musliman-logo-light-bg-transparent.png';
+  const logoWebp =
+    variant === 'light'
+      ? '/assets/optimized/musliman-logo-dark-bg-transparent.webp'
+      : '/assets/optimized/musliman-logo-light-bg-transparent.webp';
 
   return (
     <a
@@ -18,12 +22,18 @@ export default function Logo({ variant = 'dark' }: LogoProps) {
       href="#home"
       aria-label="Musliman Academy home"
     >
-      <img
-        className="brand-logo__image"
-        src={logoSrc}
-        alt="Musliman Academy"
-        loading="eager"
-      />
+      <picture>
+        <source srcSet={logoWebp} type="image/webp" />
+        <img
+          className="brand-logo__image"
+          src={logoSrc}
+          alt="Musliman Academy"
+          width="640"
+          height="247"
+          loading="eager"
+          decoding="async"
+        />
+      </picture>
     </a>
   );
 }
