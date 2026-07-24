@@ -71,6 +71,8 @@ const statusLabels: Record<LeadStatus, string> = {
 const leadManagerRoles: AuthRole[] = ['super_admin', 'admin', 'admissions', 'academic_manager'];
 const teacherTrainingStatuses: LeadStatus[] = ['new', 'contacted', 'follow_up_later', 'lost'];
 const studentPipelineStatuses: LeadStatus[] = ['new', 'contacted', 'no_response', 'follow_up_later', 'trial_scheduled', 'trial_completed', 'lost'];
+const pageSizeOptions = [25, 50, 100];
+type LeadsSortKey = 'created_desc' | 'created_asc' | 'follow_up_asc' | 'name_asc' | 'status_asc';
 
 function mockLeads(): LeadRecord[] {
   return adminLeads.map((lead, index) => ({
@@ -222,7 +224,17 @@ export default function LeadsCRMPage() {
   const [convertLead, setConvertLead] = useState<LeadRecord | null>(null);
   const [lostLead, setLostLead] = useState<LeadRecord | null>(null);
   const [addLeadOpen, setAddLeadOpen] = useState(false);
-  const [view, setView] = useState<'pipeline' | 'table'>('pipeline');
+  const [view, setView] = useState<'pipeline' | 'table'>(() => {
+    if (typeof window === 'undefined') {
+      return 'table';
+    }
+
+    const storedView = localStorage.getItem('musliman-leads-view');
+    return storedView === 'pipeline' || storedView === 'table' ? storedView : 'table';
+  });
+  const [sortBy, setSortBy] = useState<LeadsSortKey>('created_desc');
+  const [pageSize, setPageSize] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
   const canDragLeads = role ? leadManagerRoles.includes(role) : false;
 
   async function loadLeads() {
@@ -255,6 +267,12 @@ export default function LeadsCRMPage() {
   useEffect(() => {
     loadLeads();
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('musliman-leads-view', view);
+    }
+  }, [view]);
 
   async function openLead(lead: LeadRecord, mode: 'view' | 'edit' = 'view') {
     setSelectedLead(lead);
@@ -332,6 +350,48 @@ export default function LeadsCRMPage() {
       return matchesSearch && matchesStatus && matchesLeadType && matchesProgram && matchesSource && matchesOwner && matchesTeacher && matchesFollowUp && matchesDateFrom && matchesDateTo;
     });
   }, [dateFrom, dateTo, followUpToday, leadTypeFilter, leads, ownerFilter, programFilter, search, sourceFilter, statusFilter, teacherFilter]);
+
+  const sortedLeads = useMemo(() => {
+    return [...filteredLeads].sort((first, second) => {
+      if (sortBy === 'created_asc') {
+        return new Date(first.created_at).getTime() - new Date(second.created_at).getTime();
+      }
+
+      if (sortBy === 'follow_up_asc') {
+        const firstTime = first.next_follow_up_at ? new Date(first.next_follow_up_at).getTime() : Number.MAX_SAFE_INTEGER;
+        const secondTime = second.next_follow_up_at ? new Date(second.next_follow_up_at).getTime() : Number.MAX_SAFE_INTEGER;
+        return firstTime - secondTime;
+      }
+
+      if (sortBy === 'name_asc') {
+        return first.full_name.localeCompare(second.full_name);
+      }
+
+      if (sortBy === 'status_asc') {
+        return statusLabels[first.status].localeCompare(statusLabels[second.status]);
+      }
+
+      return new Date(second.created_at).getTime() - new Date(first.created_at).getTime();
+    });
+  }, [filteredLeads, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedLeads.length / pageSize));
+  const paginatedLeads = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return sortedLeads.slice(start, start + pageSize);
+  }, [currentPage, pageSize, sortedLeads]);
+  const tableStart = sortedLeads.length ? (currentPage - 1) * pageSize + 1 : 0;
+  const tableEnd = Math.min(currentPage * pageSize, sortedLeads.length);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [dateFrom, dateTo, followUpToday, leadTypeFilter, ownerFilter, pageSize, programFilter, search, sortBy, sourceFilter, statusFilter, teacherFilter]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const stats = useMemo(() => {
     const total = leads.length;
@@ -547,8 +607,8 @@ export default function LeadsCRMPage() {
               <label><span>To</span><input type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} /></label>
             </div>
             <div className="dashboard-view-toggle">
-              <button className={view === 'pipeline' ? 'is-active' : ''} type="button" onClick={() => setView('pipeline')}>Pipeline</button>
               <button className={view === 'table' ? 'is-active' : ''} type="button" onClick={() => setView('table')}>Table</button>
+              <button className={view === 'pipeline' ? 'is-active' : ''} type="button" onClick={() => setView('pipeline')}>Pipeline</button>
             </div>
           </div>
         </div>
@@ -565,7 +625,36 @@ export default function LeadsCRMPage() {
           />
         )}
         {!loading && filteredLeads.length > 0 && view === 'table' && (
-          <DataTable className="lead-crm-table-wrap" tableClassName="lead-crm-table" columns={tableColumns} rows={filteredLeads} getRowKey={(row) => row.id} />
+          <>
+            <div className="lead-table-operations">
+              <div>
+                <strong>{sortedLeads.length} leads</strong>
+                <span>Showing {tableStart}-{tableEnd}</span>
+              </div>
+              <label>
+                Sort
+                <select value={sortBy} onChange={(event) => setSortBy(event.target.value as LeadsSortKey)}>
+                  <option value="created_desc">Newest first</option>
+                  <option value="created_asc">Oldest first</option>
+                  <option value="follow_up_asc">Follow-up due</option>
+                  <option value="name_asc">Name A-Z</option>
+                  <option value="status_asc">Status A-Z</option>
+                </select>
+              </label>
+              <label>
+                Rows
+                <select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))}>
+                  {pageSizeOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                </select>
+              </label>
+            </div>
+            <DataTable className="lead-crm-table-wrap" tableClassName="lead-crm-table" columns={tableColumns} rows={paginatedLeads} getRowKey={(row) => row.id} />
+            <div className="lead-table-pagination">
+              <ActionButton variant="secondary" disabled={currentPage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}>Previous</ActionButton>
+              <span>Page {currentPage} of {totalPages}</span>
+              <ActionButton variant="secondary" disabled={currentPage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}>Next</ActionButton>
+            </div>
+          </>
         )}
       </SectionCard>
 

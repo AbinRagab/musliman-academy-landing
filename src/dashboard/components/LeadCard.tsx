@@ -1,4 +1,3 @@
-import Icon from '../../components/Icon';
 import type { LeadRecord } from '../services/leadsService';
 import ActionButton from './ActionButton';
 import LeadStatusBadge from './LeadStatusBadge';
@@ -27,13 +26,25 @@ export default function LeadCard({
   onQuickStatus: (lead: LeadRecord) => void;
 }) {
   const isTeacherTraining = lead.lead_type === 'teacher_training';
+  const assignmentLabel = isTeacherTraining ? (lead.assignedOwnerName || 'No reviewer') : (lead.assignedTeacherName || 'Unassigned');
 
   return (
-    <article className="lead-card">
+    <article
+      className="lead-card lead-card--compact"
+      role="button"
+      tabIndex={0}
+      onClick={() => onOpen(lead)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onOpen(lead);
+        }
+      }}
+    >
       <div className="lead-card__top">
         <div>
           <h3>{lead.full_name}</h3>
-          <p>{lead.country || 'Country not set'} - {lead.programName || 'Program not assigned'}</p>
+          <p>{lead.programName || 'Program not assigned'} - {lead.country || 'Country not set'}</p>
         </div>
         <div className="lead-card__badges">
           <LeadTypeBadge type={lead.lead_type} />
@@ -41,15 +52,20 @@ export default function LeadCard({
         </div>
       </div>
       <div className="lead-card__meta">
-        <span><Icon name="phone" size={14} /> {lead.whatsapp || '-'}</span>
-        <span><Icon name="globe" size={14} /> {lead.source || 'website'}</span>
-        <span><Icon name="clock" size={14} /> {formatFollowUp(lead.next_follow_up_at)}</span>
-        <span><Icon name="user" size={14} /> {lead.assignedOwnerName || 'Unassigned'}</span>
-        {!isTeacherTraining && <span><Icon name="teacher" size={14} /> {lead.assignedTeacherName || 'No teacher'}</span>}
+        <span>{lead.whatsapp || '-'}</span>
+        <span>{assignmentLabel}</span>
+        <span>{formatFollowUp(lead.next_follow_up_at)}</span>
       </div>
       <div className="lead-card__actions">
-        <ActionButton variant="ghost" onClick={() => onOpen(lead)}>Details</ActionButton>
-        <ActionButton variant="secondary" onClick={() => onQuickStatus(lead)}>{isTeacherTraining ? 'Review' : 'Update'}</ActionButton>
+        <ActionButton
+          variant="ghost"
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpen(lead);
+          }}
+        >
+          Details
+        </ActionButton>
       </div>
     </article>
   );
