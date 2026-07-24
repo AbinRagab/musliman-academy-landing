@@ -10,15 +10,32 @@ export type WebsiteLeadPayload = {
   message?: string;
   source?: string;
   form_type?: string;
+  lead_type?: 'student' | 'teacher_training';
 };
+
+async function getFunctionErrorMessage(error: unknown) {
+  const fallback = error instanceof Error ? error.message : 'Website lead submission failed.';
+  const maybeContext = (error as { context?: Response } | null)?.context;
+
+  if (!maybeContext) {
+    return fallback;
+  }
+
+  try {
+    const body = await maybeContext.clone().json();
+    return body?.message || body?.error || fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export async function submitWebsiteLeadToCrm(payload: WebsiteLeadPayload) {
   if (!isSupabaseConfigured || !supabase) {
     if (import.meta.env.DEV) {
-      console.warn('Supabase is not configured. Website lead was not sent to CRM.');
+      console.error('Missing Supabase environment variables.');
     }
 
-    return { skipped: true };
+    throw new Error('Missing Supabase environment variables.');
   }
 
   const { data, error } = await supabase.functions.invoke('submit-lead', {
@@ -26,11 +43,28 @@ export async function submitWebsiteLeadToCrm(payload: WebsiteLeadPayload) {
   });
 
   if (error) {
+    const message = await getFunctionErrorMessage(error);
+
     if (import.meta.env.DEV) {
+      if (/failed to fetch|fetch failed|network/i.test(error.message)) {
+        console.error('submit-lead Edge Function is not reachable. Make sure it is deployed.');
+      }
+
       console.error('submit-lead Edge Function error:', error);
+      console.error('submit-lead Edge Function message:', message);
     }
 
-    throw error;
+    throw new Error(message);
+  }
+
+  if (!data?.success) {
+    const message = data?.message || 'Website lead submission failed.';
+
+    if (import.meta.env.DEV) {
+      console.error('submit-lead Edge Function returned an unsuccessful response:', data);
+    }
+
+    throw new Error(message);
   }
 
   return data;

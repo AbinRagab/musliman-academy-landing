@@ -12,6 +12,7 @@ export type LeadStatus =
   | 'lost';
 
 export type LeadPriority = 'low' | 'normal' | 'high' | 'urgent';
+export type LeadType = 'student' | 'teacher_training';
 
 export type LeadRecord = {
   id: string;
@@ -20,10 +21,12 @@ export type LeadRecord = {
   country: string | null;
   student_age: string | null;
   program_id: string | null;
+  program_name: string | null;
   preferred_time: string | null;
   message: string | null;
   source: string | null;
   form_type: string | null;
+  lead_type: LeadType | null;
   status: LeadStatus;
   assigned_to: string | null;
   assigned_teacher_id: string | null;
@@ -79,10 +82,12 @@ export type CreateLeadPayload = {
   country?: string;
   student_age?: string;
   program_id?: string;
+  program_name?: string;
   preferred_time?: string;
   message?: string;
   source?: string;
   form_type?: string;
+  lead_type?: LeadType;
 };
 
 export type ScheduleTrialPayload = {
@@ -155,7 +160,9 @@ async function hydrateLeads(leads: LeadRecord[]) {
 
   return leads.map((lead) => ({
     ...lead,
-    programName: lead.program_id ? programById.get(lead.program_id) || 'Program not assigned' : 'Program not assigned',
+    programName: lead.program_id
+      ? programById.get(lead.program_id) || lead.program_name || 'Program not assigned'
+      : lead.program_name || 'Program not assigned',
     assignedOwnerName: lead.assigned_to ? profileById.get(lead.assigned_to) || 'Assigned owner' : 'Unassigned',
     assignedTeacherName: lead.assigned_teacher_id ? profileById.get(lead.assigned_teacher_id) || 'Assigned teacher' : 'Unassigned',
   }));

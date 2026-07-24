@@ -552,21 +552,35 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
         source: 'Musliman Academy Website',
       };
 
+    const crmMessage = isTraining
+      ? [
+        leadData.experience ? `Experience: ${leadData.experience}` : '',
+        leadData.qualification ? `Qualification: ${leadData.qualification}` : '',
+        leadData.trainingGoal ? `Training goal: ${leadData.trainingGoal}` : '',
+        leadData.message ? `Message: ${leadData.message}` : '',
+      ].filter(Boolean).join('\n')
+      : leadData.message;
+
     try {
       await submitWebsiteLeadToCrm({
         full_name: leadData.name,
         whatsapp: leadData.whatsapp,
         country: leadData.country,
         student_age: leadData.age || undefined,
-        program: leadData.program || (isTraining ? 'Teacher Training' : undefined),
+        program: isTraining ? 'Teacher Training' : leadData.program,
         preferred_time: leadData.preferredTime,
-        message: leadData.message,
+        message: crmMessage,
         source: 'website',
         form_type: isTraining ? 'teacher_training' : 'free_trial',
+        lead_type: isTraining ? 'teacher_training' : 'student',
       });
 
       setSubmittedLead(leadData);
     } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error('Website CRM lead submission failed:', error);
+      }
+
       setSubmitError(t('booking.validation.submitError'));
       setIsSubmitting(false);
       return;

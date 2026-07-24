@@ -85,10 +85,12 @@ create table if not exists public.leads (
   country text,
   student_age text,
   program_id uuid references public.programs(id),
+  program_name text,
   preferred_time text,
   message text,
   source text,
   form_type text,
+  lead_type text default 'student',
   status public.lead_status default 'new',
   assigned_to uuid references public.profiles(id),
   last_contact_at timestamp with time zone,
@@ -233,6 +235,8 @@ create table if not exists public.homework_submissions (
 create index if not exists profiles_role_idx on public.profiles(role);
 create index if not exists leads_status_idx on public.leads(status);
 create index if not exists leads_assigned_to_idx on public.leads(assigned_to);
+create index if not exists leads_lead_type_idx on public.leads(lead_type);
+create index if not exists leads_form_type_idx on public.leads(form_type);
 create index if not exists students_profile_id_idx on public.students(profile_id);
 create index if not exists students_assigned_teacher_id_idx on public.students(assigned_teacher_id);
 create index if not exists classes_student_id_idx on public.classes(student_id);

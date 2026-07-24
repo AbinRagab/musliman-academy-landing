@@ -650,6 +650,41 @@
   gap: 10px;
 }
 
+.lead-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.lead-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 5px 9px;
+  color: var(--dashboard-midnight);
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+  background: rgba(11, 31, 58, 0.08);
+  border: 1px solid rgba(11, 31, 58, 0.1);
+  border-radius: 999px;
+}
+
+.lead-type-badge--teacher_training {
+  color: #7a461a;
+  background: rgba(184, 115, 51, 0.13);
+  border-color: rgba(184, 115, 51, 0.22);
+}
+
+.lead-type-badge--student {
+  color: #0f6841;
+  background: rgba(15, 104, 65, 0.1);
+  border-color: rgba(15, 104, 65, 0.18);
+}
+
 .lead-card h3 {
   margin: 0;
   color: var(--dashboard-ink);
@@ -2511,7 +2546,7 @@
 }
 
 .lead-toolbar .dashboard-filters {
-  grid-template-columns: minmax(240px, 1.35fr) repeat(5, minmax(132px, 1fr));
+  grid-template-columns: minmax(220px, 1.3fr) repeat(6, minmax(118px, 1fr));
   gap: 10px;
   padding: 16px 18px 10px;
   background: transparent;

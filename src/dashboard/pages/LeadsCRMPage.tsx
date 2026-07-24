@@ -11,6 +11,7 @@ import FollowUpModal from '../components/FollowUpModal';
 import LeadDetailDrawer from '../components/LeadDetailDrawer';
 import LeadKanbanBoard from '../components/LeadKanbanBoard';
 import LeadStatusBadge from '../components/LeadStatusBadge';
+import LeadTypeBadge from '../components/LeadTypeBadge';
 import ScheduleTrialModal from '../components/ScheduleTrialModal';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
@@ -33,6 +34,7 @@ import {
   type LeadActivity,
   type LeadRecord,
   type LeadStatus,
+  type LeadType,
   type TeacherOption,
 } from '../services/leadsService';
 
@@ -59,10 +61,12 @@ function mockLeads(): LeadRecord[] {
     country: index === 0 ? 'United Kingdom' : index === 1 ? 'United States' : 'Australia',
     student_age: index === 2 ? 'Adult' : 'Child',
     program_id: null,
+    program_name: lead.program,
     preferred_time: 'Evening',
     message: 'Interested in a structured online learning path.',
     source: lead.source,
-    form_type: 'free_trial',
+    form_type: lead.program === 'Teacher Training' ? 'teacher_training' : 'free_trial',
+    lead_type: lead.program === 'Teacher Training' ? 'teacher_training' : 'student',
     status: lead.status as LeadStatus,
     assigned_to: null,
     assigned_teacher_id: null,
@@ -121,6 +125,8 @@ function LeadActions({
   onLost: () => void;
   onConvert: () => void;
 }) {
+  const isTeacherTraining = lead.lead_type === 'teacher_training';
+
   return (
     <details className="dashboard-actions-menu">
       <summary aria-label={`Actions for ${lead.full_name}`}><Icon name="moreVertical" size={18} /></summary>
@@ -128,11 +134,21 @@ function LeadActions({
         <button type="button" onClick={onDetails}>View Details</button>
         <button type="button" onClick={() => onStatus('contacted')}>Mark Contacted</button>
         <button type="button" onClick={onOwner}>Assign Owner</button>
-        <button type="button" onClick={onTeacher}>Assign Teacher</button>
-        <button type="button" onClick={onTrial}>Schedule Trial</button>
-        <button type="button" onClick={onFollowUp}>Add Follow-up</button>
+        {isTeacherTraining ? (
+          <>
+            <button type="button" onClick={onDetails}>Review Application</button>
+            <button type="button" onClick={onOwner}>Assign Reviewer</button>
+            <button type="button" onClick={onFollowUp}>Contact Applicant</button>
+          </>
+        ) : (
+          <>
+            <button type="button" onClick={onTeacher}>Assign Teacher</button>
+            <button type="button" onClick={onTrial}>Schedule Trial</button>
+            <button type="button" onClick={onFollowUp}>Add Follow-up</button>
+            <button type="button" onClick={onConvert}>Convert to Student</button>
+          </>
+        )}
         <button type="button" onClick={onLost}>Mark Lost</button>
-        <button type="button" onClick={onConvert}>Convert to Student</button>
       </div>
     </details>
   );
@@ -149,6 +165,7 @@ export default function LeadsCRMPage() {
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>('all');
+  const [leadTypeFilter, setLeadTypeFilter] = useState<LeadType | 'all'>('all');
   const [programFilter, setProgramFilter] = useState('all');
   const [sourceFilter, setSourceFilter] = useState('all');
   const [ownerFilter, setOwnerFilter] = useState('all');
@@ -222,6 +239,7 @@ export default function LeadsCRMPage() {
     return leads.filter((lead) => {
       const matchesSearch = !query || lead.full_name.toLowerCase().includes(query) || (lead.whatsapp || '').toLowerCase().includes(query);
       const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
+      const matchesLeadType = leadTypeFilter === 'all' || (lead.lead_type || 'student') === leadTypeFilter;
       const matchesProgram = programFilter === 'all' || lead.program_id === programFilter || lead.programName === programFilter;
       const matchesSource = sourceFilter === 'all' || (lead.source || 'website') === sourceFilter;
       const matchesOwner = ownerFilter === 'all' || lead.assigned_to === ownerFilter;
@@ -230,25 +248,27 @@ export default function LeadsCRMPage() {
       const createdTime = new Date(lead.created_at).getTime();
       const matchesDateFrom = !dateFrom || createdTime >= new Date(`${dateFrom}T00:00:00`).getTime();
       const matchesDateTo = !dateTo || createdTime <= new Date(`${dateTo}T23:59:59`).getTime();
-      return matchesSearch && matchesStatus && matchesProgram && matchesSource && matchesOwner && matchesTeacher && matchesFollowUp && matchesDateFrom && matchesDateTo;
+      return matchesSearch && matchesStatus && matchesLeadType && matchesProgram && matchesSource && matchesOwner && matchesTeacher && matchesFollowUp && matchesDateFrom && matchesDateTo;
     });
-  }, [dateFrom, dateTo, followUpToday, leads, ownerFilter, programFilter, search, sourceFilter, statusFilter, teacherFilter]);
+  }, [dateFrom, dateTo, followUpToday, leadTypeFilter, leads, ownerFilter, programFilter, search, sourceFilter, statusFilter, teacherFilter]);
 
   const stats = useMemo(() => {
+    const total = leads.length;
+    const studentLeads = leads.filter((lead) => (lead.lead_type || 'student') === 'student').length;
+    const trainingLeads = leads.filter((lead) => lead.lead_type === 'teacher_training').length;
     const newCount = leads.filter((lead) => lead.status === 'new').length;
-    const contacted = leads.filter((lead) => lead.status === 'contacted').length;
     const trials = leads.filter((lead) => lead.status === 'trial_scheduled').length;
-    const completed = leads.filter((lead) => lead.status === 'trial_completed').length;
     const enrolled = leads.filter((lead) => lead.status === 'enrolled').length;
     const conversionRate = leads.length ? Math.round((enrolled / leads.length) * 100) : 0;
     const dueToday = leads.filter((lead) => isDueToday(lead.next_follow_up_at)).length;
 
     return [
+      { label: 'Total Leads', value: total, trend: 'All admissions inquiries', icon: 'chart' },
+      { label: 'Student Free Trial Leads', value: studentLeads, trend: 'Trial pipeline', icon: 'student' },
+      { label: 'Teacher Training Leads', value: trainingLeads, trend: 'Training applications', icon: 'teacher' },
       { label: 'New Leads', value: newCount, trend: 'Awaiting first contact', icon: 'gift' },
-      { label: 'Contacted', value: contacted, trend: 'Parent reached', icon: 'phone' },
       { label: 'Trials Scheduled', value: trials, trend: 'Assigned to teachers', icon: 'calendar' },
-      { label: 'Trial Completed', value: completed, trend: 'Needs decision', icon: 'checkCircle' },
-      { label: 'Enrolled', value: enrolled, trend: 'Converted students', icon: 'student' },
+      { label: 'Enrolled Students', value: enrolled, trend: 'Converted students', icon: 'checkCircle' },
       { label: 'Conversion Rate', value: `${conversionRate}%`, trend: 'Lead to enrollment', icon: 'chart' },
       { label: 'Follow-ups Due Today', value: dueToday, trend: 'Admissions action', icon: 'clock' },
     ];
@@ -299,10 +319,12 @@ export default function LeadsCRMPage() {
     { header: 'WhatsApp', accessor: (row) => row.whatsapp || '-' },
     { header: 'Country', accessor: (row) => row.country || '-' },
     { header: 'Program', accessor: (row) => row.programName || '-' },
+    { header: 'Form Type', accessor: (row) => row.form_type === 'teacher_training' ? 'Teacher Training' : row.form_type === 'free_trial' ? 'Free Trial' : row.form_type || '-' },
+    { header: 'Lead Type', accessor: (row) => <LeadTypeBadge type={row.lead_type} /> },
     { header: 'Source', accessor: (row) => row.source || 'website' },
     { header: 'Status', accessor: (row) => <LeadStatusBadge status={row.status} /> },
     { header: 'Assigned Owner', accessor: (row) => row.assignedOwnerName || 'Unassigned' },
-    { header: 'Assigned Teacher', accessor: (row) => row.assignedTeacherName || 'Unassigned' },
+    { header: 'Assigned Teacher', accessor: (row) => row.lead_type === 'teacher_training' ? 'Not applicable' : row.assignedTeacherName || 'Unassigned' },
     { header: 'Next Follow-up', accessor: (row) => formatDate(row.next_follow_up_at) },
     { header: 'Created At', accessor: (row) => formatDate(row.created_at) },
     {
@@ -332,8 +354,10 @@ export default function LeadsCRMPage() {
       whatsapp: String(formData.get('whatsapp') || ''),
       country: String(formData.get('country') || ''),
       program_id: String(formData.get('program_id') || '') || undefined,
+      program_name: String(formData.get('program_name') || '') || undefined,
       source: 'dashboard',
-      form_type: 'manual',
+      form_type: String(formData.get('lead_type') || '') === 'teacher_training' ? 'teacher_training' : 'manual',
+      lead_type: String(formData.get('lead_type') || '') === 'teacher_training' ? 'teacher_training' : 'student',
       preferred_time: String(formData.get('preferred_time') || ''),
       message: String(formData.get('message') || ''),
     });
@@ -366,6 +390,7 @@ export default function LeadsCRMPage() {
         <div className="lead-toolbar">
           <FilterBar search={search} onSearchChange={setSearch}>
             <label><span>Status</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as LeadStatus | 'all')}>{statusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+            <label><span>Lead Type</span><select value={leadTypeFilter} onChange={(event) => setLeadTypeFilter(event.target.value as LeadType | 'all')}><option value="all">All lead types</option><option value="student">Student</option><option value="teacher_training">Teacher Training</option></select></label>
             <label><span>Program</span><select value={programFilter} onChange={(event) => setProgramFilter(event.target.value)}><option value="all">All programs</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}{programs.length === 0 && Array.from(new Set(leads.map((lead) => lead.programName).filter(Boolean))).map((program) => <option key={program} value={program}>{program}</option>)}</select></label>
             <label><span>Source</span><select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)}><option value="all">All sources</option>{sources.map((source) => <option key={source} value={source}>{source}</option>)}</select></label>
             <label><span>Owner</span><select value={ownerFilter} onChange={(event) => setOwnerFilter(event.target.value)}><option value="all">All owners</option>{owners.map((owner) => <option key={owner.id} value={owner.id}>{owner.full_name}</option>)}</select></label>
@@ -443,7 +468,9 @@ export default function LeadsCRMPage() {
               <label><span>Full name</span><input name="full_name" required /></label>
               <label><span>WhatsApp</span><input name="whatsapp" /></label>
               <label><span>Country</span><input name="country" /></label>
+              <label><span>Lead type</span><select name="lead_type" defaultValue="student"><option value="student">Student free trial</option><option value="teacher_training">Teacher training</option></select></label>
               <label><span>Program</span><select name="program_id"><option value="">Select program</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}</select></label>
+              <label><span>Program name fallback</span><input name="program_name" placeholder="Used if no program is selected" /></label>
               <label><span>Preferred time</span><input name="preferred_time" /></label>
               <label><span>Message</span><textarea name="message" rows={3} /></label>
               <div className="dashboard-form-actions"><ActionButton variant="copper" type="submit">Create Lead</ActionButton><ActionButton variant="secondary" type="button" onClick={() => setAddLeadOpen(false)}>Cancel</ActionButton></div>

@@ -45,6 +45,14 @@ After the base schema and seed are complete, run the leads CRM migration:
 
 This adds lead teacher assignment, priority/lost/converted fields, lead activity logs, and RLS policies for admin/admissions/teacher lead access.
 
+Then run the public lead classification migration:
+
+```sql
+-- Paste and run supabase/migrations/20260724_public_lead_types.sql
+```
+
+This adds `lead_type` and `program_name` to `public.leads` so public website submissions can be clearly separated as student free trial leads or teacher training applications.
+
 ## 5. Create the first admin user
 
 In Supabase Authentication, create the first user manually with email and password.
@@ -116,8 +124,8 @@ supabase link --project-ref your-project-ref
 Set function secrets. Use the same project URL and the service role key from Supabase Project Settings -> API:
 
 ```bash
-supabase secrets set SUPABASE_URL=https://your-project-ref.supabase.co
-supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+npx supabase secrets set SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+npx supabase secrets set SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
 ```
 
 Deploy the function:
@@ -129,8 +137,23 @@ supabase functions deploy create-user
 Deploy the public website lead submission function:
 
 ```bash
-supabase functions deploy submit-lead
+npx supabase functions deploy submit-lead
 ```
+
+The `submit-lead` function is required for public website forms. It creates CRM leads with:
+
+- `form_type = free_trial` and `lead_type = student` for Book a Free Trial.
+- `form_type = teacher_training` and `lead_type = teacher_training` for Teacher Training.
+- `source = website` by default.
+
+The frontend must only use:
+
+```bash
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
+
+Do not add `SUPABASE_SERVICE_ROLE_KEY` to Vercel frontend environment variables.
 
 Test from the dashboard:
 

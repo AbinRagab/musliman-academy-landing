@@ -14,6 +14,7 @@ type SubmitLeadPayload = {
   message?: string;
   source?: string;
   form_type?: string;
+  lead_type?: string;
   requestType?: string;
 };
 
@@ -33,18 +34,30 @@ function jsonResponse(body: Record<string, unknown>, status = 200) {
   });
 }
 
+function errorResponse(message: string, status = 400, details?: unknown) {
+  return jsonResponse({ success: false, message, details }, status);
+}
+
 function normalizeSlug(value: string) {
   return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
 function normalizeFormType(payload: SubmitLeadPayload) {
-  const raw = payload.form_type || payload.requestType || '';
+  const raw = (payload.form_type || payload.requestType || '').trim().toLowerCase();
 
-  if (/training/i.test(raw)) {
+  if (raw === 'teacher_training' || raw === 'teacher training' || /training/i.test(raw)) {
     return 'teacher_training';
   }
 
-  return 'free_trial';
+  if (raw === 'free_trial' || raw === 'free trial' || raw === 'trial') {
+    return 'free_trial';
+  }
+
+  return '';
+}
+
+function normalizeLeadType(formType: string) {
+  return formType === 'teacher_training' ? 'teacher_training' : 'student';
 }
 
 serve(async (req) => {
@@ -53,14 +66,14 @@ serve(async (req) => {
   }
 
   if (req.method !== 'POST') {
-    return jsonResponse({ error: 'Method not allowed.', code: 'method_not_allowed' }, 405);
+    return errorResponse('Method not allowed.', 405);
   }
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
   if (!supabaseUrl || !serviceRoleKey) {
-    return jsonResponse({ error: 'Lead submission function is missing required Supabase secrets.', code: 'missing_secrets' }, 500);
+    return errorResponse('Lead submission function is missing required Supabase secrets.', 500);
   }
 
   let payload: SubmitLeadPayload;
@@ -68,17 +81,31 @@ serve(async (req) => {
   try {
     payload = await req.json();
   } catch {
-    return jsonResponse({ error: 'Invalid JSON request body.', code: 'invalid_json' }, 400);
+    return errorResponse('Invalid JSON request body.', 400);
   }
 
   const fullName = (payload.full_name || payload.name || '').trim();
   const whatsapp = (payload.whatsapp || '').trim();
   const country = (payload.country || '').trim();
-  const programInput = (payload.program || '').trim();
+  const formType = normalizeFormType(payload);
+  const leadType = normalizeLeadType(formType);
+  const requestedLeadType = (payload.lead_type || '').trim();
 
-  if (!fullName || !whatsapp || !country) {
-    return jsonResponse({ error: 'Full name, WhatsApp, and country are required.', code: 'validation_error' }, 400);
+  if (!fullName || !whatsapp || !country || !payload.form_type || !payload.lead_type) {
+    return errorResponse('Full name, WhatsApp, country, form type, and lead type are required.', 400);
   }
+
+  if (!formType) {
+    return errorResponse('Form type must be free_trial or teacher_training.', 400);
+  }
+
+  if (!['student', 'teacher_training'].includes(requestedLeadType)) {
+    return errorResponse('Lead type must be student or teacher_training.', 400);
+  }
+
+  const programInput = formType === 'teacher_training'
+    ? 'Teacher Training'
+    : (payload.program || '').trim();
 
   const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
     auth: {
@@ -91,12 +118,18 @@ serve(async (req) => {
 
   if (programInput) {
     const slug = normalizeSlug(programInput);
-    const { data: programs } = await supabaseAdmin
+    const { data: programs, error: programsError } = await supabaseAdmin
       .from('programs')
       .select('id, name, slug');
 
-    const program = (programs || []).find((item) => item.slug === slug || item.name.toLowerCase() === programInput.toLowerCase());
-    programId = program?.id || null;
+    if (programsError) {
+      console.error('Program lookup failed:', programsError);
+    } else {
+      const program = (programs || []).find((item) => (
+        item.slug === slug || item.name.toLowerCase() === programInput.toLowerCase()
+      ));
+      programId = program?.id || null;
+    }
   }
 
   const { data: lead, error } = await supabaseAdmin
@@ -107,10 +140,12 @@ serve(async (req) => {
       country,
       student_age: payload.student_age || payload.studentAge || null,
       program_id: programId,
+      program_name: programInput || null,
       preferred_time: payload.preferred_time || payload.preferredTime || null,
       message: payload.message || null,
       source: payload.source || 'website',
-      form_type: normalizeFormType(payload),
+      form_type: formType,
+      lead_type: leadType,
       status: 'new',
       lead_priority: 'normal',
     })
@@ -118,17 +153,24 @@ serve(async (req) => {
     .single();
 
   if (error) {
-    return jsonResponse({ error: error.message, code: 'lead_insert_failed' }, 500);
+    console.error('Lead insert failed:', error);
+    return errorResponse('Could not create CRM lead.', 500, error.message);
   }
 
-  await supabaseAdmin
+  const { error: activityError } = await supabaseAdmin
     .from('lead_activity_logs')
     .insert({
       lead_id: lead.id,
       action_type: 'created',
-      description: 'Lead submitted from public website form.',
+      description: formType === 'teacher_training'
+        ? 'Teacher training application submitted from public website form.'
+        : 'Free trial lead submitted from public website form.',
       new_value: 'new',
     });
+
+  if (activityError) {
+    console.error('Lead activity insert failed:', activityError);
+  }
 
   return jsonResponse({ success: true, lead });
 });

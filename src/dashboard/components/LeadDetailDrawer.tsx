@@ -1,6 +1,7 @@
 import Icon from '../../components/Icon';
 import ActionButton from './ActionButton';
 import LeadStatusBadge from './LeadStatusBadge';
+import LeadTypeBadge from './LeadTypeBadge';
 import LeadTimeline from './LeadTimeline';
 import NotesBox from './NotesBox';
 import StatusBadge from './StatusBadge';
@@ -43,6 +44,8 @@ export default function LeadDetailDrawer({
   onMarkLost: () => void;
   onConvert: () => void;
 }) {
+  const isTeacherTraining = lead.lead_type === 'teacher_training';
+
   return (
     <div className="lead-drawer" role="dialog" aria-modal="true" aria-label={`Lead details for ${lead.full_name}`}>
       <button className="lead-drawer__backdrop" type="button" aria-label="Close lead details" onClick={onClose} />
@@ -64,6 +67,7 @@ export default function LeadDetailDrawer({
             <span>Age <strong>{lead.student_age || '-'}</strong></span>
             <span>Preferred Time <strong>{lead.preferred_time || '-'}</strong></span>
             <span>Source <strong>{lead.source || 'website'}</strong></span>
+            <span>Lead Type <LeadTypeBadge type={lead.lead_type} /></span>
             <span>Created <strong>{formatDate(lead.created_at)}</strong></span>
             <span>Status <LeadStatusBadge status={lead.status} /></span>
           </div>
@@ -84,26 +88,39 @@ export default function LeadDetailDrawer({
           <div className="lead-drawer__section-header">
             <h3>Assignment</h3>
             <div>
-              <ActionButton variant="ghost" onClick={onAssignOwner}>Owner</ActionButton>
-              <ActionButton variant="ghost" onClick={onAssignTeacher}>Teacher</ActionButton>
+              <ActionButton variant="ghost" onClick={onAssignOwner}>{isTeacherTraining ? 'Reviewer' : 'Owner'}</ActionButton>
+              {!isTeacherTraining && <ActionButton variant="ghost" onClick={onAssignTeacher}>Teacher</ActionButton>}
             </div>
           </div>
           <div className="lead-summary-grid">
-            <span>Admissions owner <strong>{lead.assignedOwnerName || 'Unassigned'}</strong></span>
-            <span>Assigned teacher <strong>{lead.assignedTeacherName || 'Unassigned'}</strong></span>
+            <span>{isTeacherTraining ? 'Reviewer' : 'Admissions owner'} <strong>{lead.assignedOwnerName || 'Unassigned'}</strong></span>
+            {!isTeacherTraining && <span>Assigned teacher <strong>{lead.assignedTeacherName || 'Unassigned'}</strong></span>}
           </div>
         </div>
 
-        <div className="lead-drawer__section">
-          <div className="lead-drawer__section-header">
-            <h3>Trial Section</h3>
-            <ActionButton variant="copper" onClick={onScheduleTrial}>Schedule Free Trial</ActionButton>
+        {isTeacherTraining ? (
+          <div className="lead-drawer__section">
+            <div className="lead-drawer__section-header">
+              <h3>Application Review</h3>
+              <ActionButton variant="copper" onClick={onAddFollowUp}>Contact Applicant</ActionButton>
+            </div>
+            <div className="lead-trial-placeholder">
+              <StatusBadge label="teacher training" />
+              <p>Review the application details, assign a reviewer, and contact the applicant for the next step.</p>
+            </div>
           </div>
-          <div className="lead-trial-placeholder">
-            <StatusBadge label={lead.status === 'trial_scheduled' ? 'scheduled' : 'not scheduled'} />
-            <p>Trial details appear here once a free trial is scheduled.</p>
+        ) : (
+          <div className="lead-drawer__section">
+            <div className="lead-drawer__section-header">
+              <h3>Trial Section</h3>
+              <ActionButton variant="copper" onClick={onScheduleTrial}>Schedule Free Trial</ActionButton>
+            </div>
+            <div className="lead-trial-placeholder">
+              <StatusBadge label={lead.status === 'trial_scheduled' ? 'scheduled' : 'not scheduled'} />
+              <p>Trial details appear here once a free trial is scheduled.</p>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="lead-drawer__section">
           <h3>Notes</h3>
@@ -119,7 +136,7 @@ export default function LeadDetailDrawer({
 
         <div className="lead-drawer__footer">
           <ActionButton variant="danger" onClick={onMarkLost}>Mark Lost</ActionButton>
-          <ActionButton variant="copper" onClick={onConvert}>Convert to Student</ActionButton>
+          {!isTeacherTraining && <ActionButton variant="copper" onClick={onConvert}>Convert to Student</ActionButton>}
         </div>
       </aside>
     </div>
