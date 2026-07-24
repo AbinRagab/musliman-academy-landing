@@ -1,0 +1,131 @@
+import { supabase } from '../../lib/supabaseClient';
+import { fetchLeads } from './leadsService';
+
+export type TrialResult = 'recommended' | 'needs_follow_up' | 'not_suitable' | 'no_show';
+
+export type TrialFeedbackPayload = {
+  leadId?: string | null;
+  recitationLevel: string;
+  tajweedLevel: string;
+  arabicLevel: string;
+  engagement: string;
+  recommendation: string;
+  notes: string;
+  result: TrialResult;
+};
+
+function requireSupabase() {
+  if (!supabase) {
+    throw new Error('Supabase is not configured for this environment.');
+  }
+
+  return supabase;
+}
+
+async function getCurrentUserId() {
+  const client = requireSupabase();
+  const { data } = await client.auth.getSession();
+  return data.session?.user.id || null;
+}
+
+export async function fetchTrials(filters: { teacherId?: string; status?: string } = {}) {
+  const client = requireSupabase();
+  let query = client.from('free_trials').select('*').order('trial_date', { ascending: true });
+
+  if (filters.teacherId) {
+    query = query.eq('teacher_id', filters.teacherId);
+  }
+
+  if (filters.status) {
+    query = query.eq('status', filters.status);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw error;
+  }
+
+  return data || [];
+}
+
+export async function fetchTeacherTrials(teacherProfileId?: string | null) {
+  if (!teacherProfileId) {
+    teacherProfileId = await getCurrentUserId();
+  }
+
+  if (!teacherProfileId) {
+    return [];
+  }
+
+  const trials = await fetchTrials({ teacherId: teacherProfileId });
+  const leadIds = trials.map((trial) => trial.lead_id).filter(Boolean);
+  const leads = leadIds.length ? await fetchLeads() : [];
+
+  return trials.map((trial) => ({
+    ...trial,
+    lead: leads.find((lead) => lead.id === trial.lead_id),
+  }));
+}
+
+export async function updateTrialStatus(trialId: string, status: string, leadId?: string | null) {
+  const client = requireSupabase();
+  const { data, error } = await client.from('free_trials').update({ status }).eq('id', trialId).select('*').single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (leadId) {
+    await client.from('lead_activity_logs').insert({
+      lead_id: leadId,
+      action_type: status === 'no_show' ? 'trial_no_show' : 'trial_status_changed',
+      description: `Trial marked ${status}.`,
+      new_value: status,
+      created_by: await getCurrentUserId(),
+    });
+  }
+
+  return data;
+}
+
+export async function submitTrialFeedback(trialId: string, payload: TrialFeedbackPayload) {
+  const client = requireSupabase();
+  const status = payload.result === 'no_show' ? 'no_show' : 'completed';
+  const teacherFeedback = [
+    `Recitation / reading level: ${payload.recitationLevel}`,
+    `Tajweed level: ${payload.tajweedLevel}`,
+    `Arabic level: ${payload.arabicLevel}`,
+    `Engagement: ${payload.engagement}`,
+    `Recommendation: ${payload.recommendation}`,
+    `Notes: ${payload.notes}`,
+  ].join('\n');
+
+  const { data, error } = await client
+    .from('free_trials')
+    .update({
+      status,
+      result: payload.result,
+      teacher_feedback: teacherFeedback,
+    })
+    .eq('id', trialId)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (payload.leadId) {
+    await client.from('leads').update({ status: status === 'completed' ? 'trial_completed' : 'no_response' }).eq('id', payload.leadId);
+    await client.from('lead_activity_logs').insert({
+      lead_id: payload.leadId,
+      action_type: status === 'completed' ? 'trial_completed' : 'trial_no_show',
+      description: `Teacher submitted trial feedback: ${payload.result}.`,
+      new_value: payload.result,
+      created_by: await getCurrentUserId(),
+    });
+  }
+
+  return data;
+}

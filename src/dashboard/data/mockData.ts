@@ -123,3 +123,74 @@ export const freeTrials = [
   { student: 'Hana Smith', program: 'Arabic Language', dateTime: 'Saturday, 11:00 AM' },
   { student: 'Ibrahim Lee', program: 'Teacher Training', dateTime: 'Sunday, 07:00 PM' },
 ];
+
+export const adminLeads = [
+  { name: 'Musa Patel', contact: '+44 7700 900112', program: 'Quran Reading', source: 'Website Trial Form', owner: 'Admissions Team', status: 'new', nextFollowUp: 'Today 06:00 PM' },
+  { name: 'Hana Smith', contact: '+1 202 555 0184', program: 'Arabic Language', source: 'WhatsApp', owner: 'Omar Khaled', status: 'contacted', nextFollowUp: 'Tomorrow 11:30 AM' },
+  { name: 'Ibrahim Lee', contact: '+61 421 555 014', program: 'Teacher Training', source: 'Referral', owner: 'Ahmed Hassan', status: 'trial_scheduled', nextFollowUp: 'Sat 07:00 PM' },
+  { name: 'Amina Khan', contact: '+49 151 555 019', program: 'Tajweed', source: 'Instagram', owner: 'Admissions Team', status: 'follow_up_later', nextFollowUp: 'Mon 03:00 PM' },
+];
+
+export const adminStudents = [
+  { name: 'Yusuf Ahmed', program: 'Quran Reading', teacher: 'Ust. Maryam Ali', level: 'Level 3', attendance: '96%', status: 'active', nextClass: 'Mon 05:00 PM' },
+  { name: 'Lina Omar', program: 'Arabic Language', teacher: 'Sh. Omar Khaled', level: 'Beginner', attendance: '91%', status: 'active', nextClass: 'Today 10:00 AM' },
+  { name: 'Adam Khan', program: 'Tajweed', teacher: 'Ust. Aisha Noor', level: 'Tajweed 1', attendance: '88%', status: 'active', nextClass: 'Today 01:30 PM' },
+  { name: 'Noor Hassan', program: 'Islamic Studies', teacher: 'Ust. Fatima Zaid', level: 'Level 2', attendance: '94%', status: 'pending', nextClass: 'Today 06:00 PM' },
+];
+
+export const adminTeachers = [
+  { name: 'Ust. Maryam Ali', specialization: 'Quran Reading, Tajweed', students: 42, trials: 4, availability: 'Weekdays evenings', status: 'active' },
+  { name: 'Sh. Omar Khaled', specialization: 'Arabic Language', students: 35, trials: 3, availability: 'Morning and weekends', status: 'active' },
+  { name: 'Ust. Aisha Noor', specialization: 'Tajweed, Memorization', students: 29, trials: 2, availability: 'Flexible', status: 'active' },
+  { name: 'Ust. Fatima Zaid', specialization: 'Islamic Studies', students: 24, trials: 1, availability: 'Evenings', status: 'pending' },
+];
+
+export const adminPayments = [
+  { student: 'Yusuf Ahmed', program: 'Quran Reading', packageName: '12 Sessions', amount: '$120', status: 'paid', nextDue: 'Aug 01, 2026' },
+  { student: 'Lina Omar', program: 'Arabic Language', packageName: '8 Sessions', amount: '$88', status: 'pending', nextDue: 'Jul 28, 2026' },
+  { student: 'Adam Khan', program: 'Tajweed', packageName: 'Monthly', amount: '$95', status: 'overdue', nextDue: 'Jul 18, 2026' },
+  { student: 'Noor Hassan', program: 'Islamic Studies', packageName: 'Trial Conversion', amount: '$65', status: 'paid', nextDue: 'Aug 10, 2026' },
+];
+
+export const adminReports = [
+  { report: 'Enrollment Funnel', owner: 'Admissions', period: 'July 2026', status: 'completed', metric: '68% conversion' },
+  { report: 'Attendance Health', owner: 'Academic Manager', period: 'Weekly', status: 'completed', metric: '94% attendance' },
+  { report: 'Teacher Capacity', owner: 'Operations', period: 'Next 14 days', status: 'scheduled', metric: '82% utilized' },
+  { report: 'Revenue Summary', owner: 'Finance', period: 'July 2026', status: 'pending', metric: '$18.4k billed' },
+];
+
+export const rolePermissionMatrix = [
+  { area: 'Dashboard access', superAdmin: true, admin: true, teacher: true, student: true, admissions: true, finance: true, viewer: true },
+  { area: 'Leads CRM', superAdmin: true, admin: true, teacher: false, student: false, admissions: true, finance: false, viewer: true },
+  { area: 'Trial classes', superAdmin: true, admin: true, teacher: true, student: false, admissions: true, finance: false, viewer: true },
+  { area: 'Students', superAdmin: true, admin: true, teacher: true, student: false, admissions: true, finance: false, viewer: true },
+  { area: 'Teachers', superAdmin: true, admin: true, teacher: false, student: false, admissions: false, finance: false, viewer: true },
+  { area: 'Attendance', superAdmin: true, admin: true, teacher: true, student: true, admissions: false, finance: false, viewer: true },
+  { area: 'Payments', superAdmin: true, admin: true, teacher: false, student: true, admissions: false, finance: true, viewer: true },
+  { area: 'Reports', superAdmin: true, admin: true, teacher: true, student: false, admissions: true, finance: true, viewer: true },
+  { area: 'Settings', superAdmin: true, admin: true, teacher: false, student: false, admissions: false, finance: false, viewer: false },
+  { area: 'User management', superAdmin: true, admin: true, teacher: false, student: false, admissions: false, finance: false, viewer: false },
+];
+
+export const teacherPerformance = [
+  { label: 'Attendance completion', value: 92 },
+  { label: 'Average student progress', value: 78 },
+  { label: 'Evaluation completion', value: 84 },
+];
+
+export const studentAttendanceHistory = [
+  { date: 'Jul 22, 2026', className: 'Quran Reading', teacher: 'Ust. Maryam Ali', status: 'present', notes: 'Strong fluency in revision.' },
+  { date: 'Jul 20, 2026', className: 'Tajweed Practice', teacher: 'Ust. Maryam Ali', status: 'late', notes: 'Joined 8 minutes late.' },
+  { date: 'Jul 17, 2026', className: 'Arabic Basics', teacher: 'Sh. Omar Khaled', status: 'present', notes: 'Completed vocabulary review.' },
+  { date: 'Jul 15, 2026', className: 'Quran Reading', teacher: 'Ust. Maryam Ali', status: 'absent', notes: 'Parent informed absence.' },
+];
+
+export const studentProgressTopics = [
+  { topic: 'Madd letters review', score: 'Excellent', feedback: 'Clear improvement in elongation timing.' },
+  { topic: 'Surah Al-Mulk revision', score: 'Good', feedback: 'Needs daily repetition for fluency.' },
+  { topic: 'Arabic reading practice', score: 'In progress', feedback: 'Letter joining is improving steadily.' },
+];
+
+export const studentPaymentSummary = [
+  { packageName: 'Quran Reading - 12 Sessions', status: 'paid', nextDue: 'Aug 01, 2026', remaining: '7 sessions' },
+];

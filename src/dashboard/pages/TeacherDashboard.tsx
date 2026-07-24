@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
+import TeacherTrialCard from '../components/TeacherTrialCard';
+import TrialFeedbackModal from '../components/TrialFeedbackModal';
+import Toast, { type ToastMessage } from '../components/Toast';
+import { submitTrialFeedback, updateTrialStatus, fetchTeacherTrials } from '../services/trialsService';
 import {
   attendanceStudents,
   freeTrials,
@@ -31,6 +35,15 @@ function Stars({ count }: { count: number }) {
 
 export default function TeacherDashboard() {
   const [evaluationStudent, setEvaluationStudent] = useState<EvaluationRow | null>(null);
+  const [teacherTrials, setTeacherTrials] = useState<Array<Record<string, unknown>>>([]);
+  const [trialFeedback, setTrialFeedback] = useState<Record<string, unknown> | null>(null);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
+
+  useEffect(() => {
+    fetchTeacherTrials()
+      .then((trials) => setTeacherTrials(trials as Array<Record<string, unknown>>))
+      .catch(() => setTeacherTrials([]));
+  }, []);
 
   const scheduleColumns: Array<DataTableColumn<ScheduleRow>> = [
     { header: 'Time', accessor: 'time' },
@@ -65,6 +78,7 @@ export default function TeacherDashboard() {
 
   return (
     <div className="dashboard-page">
+      <Toast toast={toast} onClose={() => setToast(null)} />
       <div className="dashboard-page-header">
         <div>
           <span className="dashboard-eyebrow">Teacher Workspace</span>
@@ -118,9 +132,39 @@ export default function TeacherDashboard() {
         </SectionCard>
 
         <SectionCard title="Upcoming Free Trials">
-          <DataTable columns={freeTrialColumns} rows={freeTrials} getRowKey={(row) => row.student} />
+          {teacherTrials.length > 0 ? (
+            <div className="teacher-trials-list">
+              {teacherTrials.map((trial) => (
+                <TeacherTrialCard
+                  key={String(trial.id)}
+                  trial={trial as never}
+                  onFeedback={() => setTrialFeedback(trial)}
+                  onNoShow={async () => {
+                    await updateTrialStatus(String(trial.id), 'no_show', trial.lead_id ? String(trial.lead_id) : null);
+                    setToast({ type: 'success', message: 'Trial marked no show.' });
+                    setTeacherTrials(await fetchTeacherTrials() as Array<Record<string, unknown>>);
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <DataTable columns={freeTrialColumns} rows={freeTrials} getRowKey={(row) => row.student} />
+          )}
         </SectionCard>
       </div>
+
+      {trialFeedback && (
+        <TrialFeedbackModal
+          title={String((trialFeedback.lead as { full_name?: string } | undefined)?.full_name || 'Trial student')}
+          onClose={() => setTrialFeedback(null)}
+          onSave={async (payload) => {
+            await submitTrialFeedback(String(trialFeedback.id), { ...payload, leadId: trialFeedback.lead_id ? String(trialFeedback.lead_id) : null });
+            setTrialFeedback(null);
+            setToast({ type: 'success', message: 'Trial feedback submitted.' });
+            setTeacherTrials(await fetchTeacherTrials() as Array<Record<string, unknown>>);
+          }}
+        />
+      )}
 
       {evaluationStudent && (
         <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Evaluate ${evaluationStudent.student}`}>

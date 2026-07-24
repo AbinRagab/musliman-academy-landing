@@ -8,6 +8,7 @@ import './styles.css';
 import Icon, { IconName } from './components/Icon';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import Logo from './components/Logo';
+import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
 import DashboardRoutes from './dashboard/DashboardRoutes';
 import {
   contact,
@@ -552,6 +553,26 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
       };
 
     try {
+      await submitWebsiteLeadToCrm({
+        full_name: leadData.name,
+        whatsapp: leadData.whatsapp,
+        country: leadData.country,
+        student_age: leadData.age || undefined,
+        program: leadData.program || (isTraining ? 'Teacher Training' : undefined),
+        preferred_time: leadData.preferredTime,
+        message: leadData.message,
+        source: 'website',
+        form_type: isTraining ? 'teacher_training' : 'free_trial',
+      });
+
+      setSubmittedLead(leadData);
+    } catch (error) {
+      setSubmitError(t('booking.validation.submitError'));
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -560,10 +581,10 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
         },
         body: JSON.stringify(leadData),
       });
-
-      setSubmittedLead(leadData);
-    } catch (error) {
-      setSubmitError(t('booking.validation.submitError'));
+    } catch (sheetError) {
+      if (import.meta.env.DEV) {
+        console.warn('Google Sheet backup submission failed:', sheetError);
+      }
     } finally {
       setIsSubmitting(false);
     }
