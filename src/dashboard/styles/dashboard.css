@@ -5244,3 +5244,249 @@
     flex-direction: column;
   }
 }
+
+.dashboard-page--student-record {
+  gap: 18px;
+}
+
+.student-record-summary {
+  display: grid;
+  gap: 18px;
+}
+
+.student-record-summary__identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.student-record-summary__identity h2 {
+  margin: 0 0 4px;
+  color: var(--dashboard-ink);
+  font-size: 1.35rem;
+}
+
+.student-record-summary__identity p {
+  margin: 0 0 8px;
+  color: var(--dashboard-muted);
+  font-weight: 750;
+}
+
+.dashboard-stats-grid--record {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.student-record-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  overflow-x: auto;
+  background: var(--dashboard-white);
+  border: 1px solid var(--dashboard-line);
+  border-radius: 16px;
+  box-shadow: var(--dashboard-shadow);
+}
+
+.student-record-tabs button {
+  min-height: 36px;
+  padding: 7px 12px;
+  color: var(--dashboard-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 850;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  border-radius: 11px;
+  cursor: pointer;
+}
+
+.student-record-tabs button.is-active {
+  color: var(--dashboard-white);
+  background: var(--dashboard-midnight);
+}
+
+.student-record-sections {
+  display: grid;
+  gap: 14px;
+}
+
+.student-record-section .dashboard-card__header {
+  align-items: center;
+}
+
+.student-owner-badge {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  padding: 5px 9px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  white-space: nowrap;
+  border-radius: 999px;
+}
+
+.student-owner-badge--admin {
+  color: var(--dashboard-white);
+  background: var(--dashboard-midnight);
+}
+
+.student-owner-badge--teacher {
+  color: #174a77;
+  background: rgba(23, 74, 119, 0.11);
+  border: 1px solid rgba(23, 74, 119, 0.18);
+}
+
+.student-owner-badge--finance {
+  color: #5a3278;
+  background: rgba(90, 50, 120, 0.11);
+  border: 1px solid rgba(90, 50, 120, 0.18);
+}
+
+.student-owner-badge--student {
+  color: #0f6841;
+  background: rgba(15, 104, 65, 0.11);
+  border: 1px solid rgba(15, 104, 65, 0.18);
+}
+
+.student-owner-badge--system {
+  color: #7a461a;
+  background: rgba(184, 115, 51, 0.12);
+  border: 1px solid rgba(184, 115, 51, 0.22);
+}
+
+.student-record-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.student-record-fields label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 12px;
+  background: #fbfaf7;
+  border: 1px solid var(--dashboard-line);
+  border-radius: 13px;
+}
+
+.student-record-fields label > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--dashboard-muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.student-record-fields em {
+  color: var(--dashboard-copper);
+  font-style: normal;
+  font-size: 0.7rem;
+}
+
+.student-record-fields strong {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  color: var(--dashboard-ink);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.student-record-fields input,
+.student-record-fields textarea {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  color: var(--dashboard-ink);
+  font: inherit;
+  font-size: 0.86rem;
+  background: var(--dashboard-white);
+  border: 1px solid var(--dashboard-line);
+  border-radius: 10px;
+}
+
+.student-record-fields textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.student-record-readonly {
+  margin: 12px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.dashboard-modal__panel--wide {
+  width: min(96vw, 920px);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.convert-student-form {
+  gap: 14px;
+}
+
+.convert-student-form .dashboard-card {
+  padding: 16px;
+  box-shadow: none;
+}
+
+.convert-readonly-grid,
+.convert-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.convert-readonly-grid span {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 10px 11px;
+  color: var(--dashboard-muted);
+  font-size: 0.75rem;
+  font-weight: 850;
+  background: #fbfaf7;
+  border: 1px solid var(--dashboard-line);
+  border-radius: 11px;
+}
+
+.convert-readonly-grid strong {
+  color: var(--dashboard-ink);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.convert-form-grid label {
+  min-width: 0;
+}
+
+.convert-form-grid__wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1050px) {
+  .dashboard-stats-grid--record,
+  .student-record-fields,
+  .convert-readonly-grid,
+  .convert-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .dashboard-stats-grid--record,
+  .student-record-fields,
+  .convert-readonly-grid,
+  .convert-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-record-summary__identity {
+    align-items: flex-start;
+  }
+}

@@ -12,6 +12,7 @@ import LeadsCRMPage from './pages/LeadsCRMPage';
 import LoginPage from './pages/LoginPage';
 import StudentSectionPage from './pages/StudentSectionPage';
 import StudentPortal from './pages/StudentPortal';
+import StudentRecordPage from './pages/StudentRecordPage';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherSectionPage from './pages/TeacherSectionPage';
 import type { DashboardRole } from './data/mockData';
@@ -75,6 +76,8 @@ export default function DashboardRoutes() {
         />
         <Route path="admin/leads" element={<ProtectedLayout allowedRoles={['super_admin', 'admin', 'admissions', 'academic_manager']} layoutRole="admin"><LeadsCRMPage /></ProtectedLayout>} />
         <Route path="admin/students" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="students" /></ProtectedLayout>} />
+        <Route path="admin/students/:studentId" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><StudentRecordPage portalRole="admin" /></ProtectedLayout>} />
+        <Route path="admin/students/:studentId/payments" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><StudentRecordPage portalRole="admin" initialTab="payments" /></ProtectedLayout>} />
         <Route path="admin/teachers" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="teachers" /></ProtectedLayout>} />
         <Route path="admin/free-trials" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="free-trials" /></ProtectedLayout>} />
         <Route path="admin/classes" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="classes" /></ProtectedLayout>} />
@@ -99,7 +102,7 @@ export default function DashboardRoutes() {
         <Route path="student/progress" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="progress" /></ProtectedLayout>} />
         <Route path="student/messages" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="messages" /></ProtectedLayout>} />
         <Route path="student/payments" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="payments" /></ProtectedLayout>} />
-        <Route path="student/profile" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="profile" /></ProtectedLayout>} />
+        <Route path="student/profile" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentRecordPage portalRole="student" /></ProtectedLayout>} />
         <Route path="student/settings" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="settings" /></ProtectedLayout>} />
         <Route path="student/:section" element={<ProtectedRoute allowedRoles={studentRoles}><ComingSoon role="student" /></ProtectedRoute>} />
         <Route
@@ -111,6 +114,7 @@ export default function DashboardRoutes() {
           )}
         />
         <Route path="teacher/students" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="students" /></ProtectedLayout>} />
+        <Route path="teacher/students/:studentId" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><StudentRecordPage portalRole="teacher" /></ProtectedLayout>} />
         <Route path="teacher/free-trials" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="free-trials" /></ProtectedLayout>} />
         <Route path="teacher/schedule" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="classes" /></ProtectedLayout>} />
         <Route path="teacher/classes" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="classes" /></ProtectedLayout>} />

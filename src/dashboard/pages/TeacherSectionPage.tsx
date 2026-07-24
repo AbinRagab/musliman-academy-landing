@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
 import DashboardPageHeader from '../components/DashboardPageHeader';
@@ -70,6 +71,7 @@ function TeacherTable({ rows, columns }: { rows: GenericRow[]; columns: Array<Da
 }
 
 const studentRows = teacherStudents.map((student) => ({
+  id: `mock-${student.student.toLowerCase().replace(/\s+/g, '-')}`,
   student: student.student,
   program: student.level.includes('Tajweed') ? 'Tajweed' : 'Quran Reading',
   level: student.level,
@@ -254,7 +256,14 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       { header: 'Next Class', accessor: 'nextClass' },
       { header: 'Attendance Rate', accessor: 'attendance' },
       { header: 'Progress', accessor: 'progress' },
-      { header: 'Action', accessor: () => <ActionButton variant="ghost">Open Detail</ActionButton> },
+      {
+        header: 'Action',
+        accessor: (row) => (
+          <Link className="dashboard-action dashboard-action--ghost" to={`/dashboard/teacher/students/${row.id || 'mock-yusuf'}`}>
+            Open Record
+          </Link>
+        ),
+      },
     ];
 
   return (

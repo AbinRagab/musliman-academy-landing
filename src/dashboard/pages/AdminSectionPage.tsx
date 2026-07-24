@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
 import DashboardPageHeader from '../components/DashboardPageHeader';
@@ -82,6 +83,15 @@ const actionColumn: DataTableColumn<GenericRow> = {
   accessor: () => <ActionButton variant="ghost">Review</ActionButton>,
 };
 
+const studentRecordActionColumn: DataTableColumn<GenericRow> = {
+  header: 'Actions',
+  accessor: (row) => (
+    <Link className="dashboard-action dashboard-action--ghost" to={`/dashboard/admin/students/${row.id || 'mock-yusuf'}`}>
+      Open Record
+    </Link>
+  ),
+};
+
 const config: Record<AdminSection, {
   eyebrow: string;
   title: string;
@@ -132,7 +142,7 @@ const config: Record<AdminSection, {
       { header: 'Attendance', accessor: 'attendance' },
       statusColumn('status'),
       { header: 'Next Class', accessor: 'nextClass' },
-      actionColumn,
+      studentRecordActionColumn,
     ],
   },
   teachers: {
