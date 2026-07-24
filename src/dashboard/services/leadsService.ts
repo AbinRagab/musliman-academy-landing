@@ -266,7 +266,7 @@ export async function createLead(payload: CreateLeadPayload) {
 
 export async function updateLeadStatus(leadId: string, status: LeadStatus, oldStatus?: string) {
   const client = requireSupabase();
-  const payload: Partial<LeadRecord> = { status };
+  const payload: Partial<LeadRecord> = { status, updated_at: new Date().toISOString() };
 
   if (status === 'lost') {
     payload.lost_reason = 'Marked lost from CRM action.';
@@ -278,7 +278,14 @@ export async function updateLeadStatus(leadId: string, status: LeadStatus, oldSt
     throw error;
   }
 
-  await addActivity(leadId, status === 'lost' ? 'lost' : 'status_changed', `Lead status changed to ${status}.`, oldStatus, status);
+  try {
+    await addActivity(leadId, status === 'lost' ? 'lost' : 'status_changed', `Lead moved from ${oldStatus || 'unknown'} to ${status}.`, oldStatus, status);
+  } catch (activityError) {
+    if (import.meta.env.DEV) {
+      console.error('Lead status activity log failed:', activityError);
+    }
+  }
+
   return data as LeadRecord;
 }
 

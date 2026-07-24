@@ -17,6 +17,7 @@ import ScheduleTrialModal from '../components/ScheduleTrialModal';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import Toast, { type ToastMessage } from '../components/Toast';
+import { useAuth, type AuthRole } from '../auth/AuthProvider';
 import { adminLeads } from '../data/mockData';
 import {
   addLeadNote,
@@ -55,6 +56,21 @@ const statusOptions: Array<{ value: LeadStatus | 'all'; label: string }> = [
   { value: 'enrolled', label: 'Enrolled' },
   { value: 'lost', label: 'Lost' },
 ];
+
+const statusLabels: Record<LeadStatus, string> = {
+  new: 'New',
+  contacted: 'Contacted',
+  no_response: 'No Response',
+  follow_up_later: 'Follow-up Later',
+  trial_scheduled: 'Trial Scheduled',
+  trial_completed: 'Trial Completed',
+  enrolled: 'Enrolled',
+  lost: 'Lost',
+};
+
+const leadManagerRoles: AuthRole[] = ['super_admin', 'admin', 'admissions', 'academic_manager'];
+const teacherTrainingStatuses: LeadStatus[] = ['new', 'contacted', 'follow_up_later', 'lost'];
+const studentPipelineStatuses: LeadStatus[] = ['new', 'contacted', 'no_response', 'follow_up_later', 'trial_scheduled', 'trial_completed', 'lost'];
 
 function mockLeads(): LeadRecord[] {
   return adminLeads.map((lead, index) => ({
@@ -175,6 +191,7 @@ function LeadActions({
 }
 
 export default function LeadsCRMPage() {
+  const { role } = useAuth();
   const [leads, setLeads] = useState<LeadRecord[]>([]);
   const [programs, setPrograms] = useState<ProgramOption[]>([]);
   const [owners, setOwners] = useState<OwnerOption[]>([]);
@@ -206,6 +223,7 @@ export default function LeadsCRMPage() {
   const [lostLead, setLostLead] = useState<LeadRecord | null>(null);
   const [addLeadOpen, setAddLeadOpen] = useState(false);
   const [view, setView] = useState<'pipeline' | 'table'>('pipeline');
+  const canDragLeads = role ? leadManagerRoles.includes(role) : false;
 
   async function loadLeads() {
     setLoading(true);
@@ -349,6 +367,58 @@ export default function LeadsCRMPage() {
     await loadLeads();
   }
 
+  async function handlePipelineMove(lead: LeadRecord, status: LeadStatus) {
+    if (!canDragLeads || lead.status === status) {
+      return;
+    }
+
+    if (status === 'enrolled' && !lead.converted_student_id) {
+      setToast({ type: 'error', message: 'Convert this lead to a student before marking it as enrolled.' });
+      return;
+    }
+
+    if (lead.lead_type === 'teacher_training' && !teacherTrainingStatuses.includes(status)) {
+      setToast({ type: 'error', message: 'Teacher training leads follow a separate review flow.' });
+      return;
+    }
+
+    if ((lead.lead_type || 'student') === 'student' && status !== 'enrolled' && !studentPipelineStatuses.includes(status)) {
+      setToast({ type: 'error', message: 'This status is not available for student leads.' });
+      return;
+    }
+
+    const previousLeads = leads;
+    const oldStatus = lead.status;
+    const movedLead = { ...lead, status, updated_at: new Date().toISOString() };
+
+    setLeads((current) => current.map((item) => (item.id === lead.id ? movedLead : item)));
+    if (selectedLead?.id === lead.id) {
+      setSelectedLead(movedLead);
+    }
+
+    try {
+      if (!usingMockFallback && !lead.id.startsWith('mock-')) {
+        const updated = await updateLeadStatus(lead.id, status, oldStatus);
+        setLeads((current) => current.map((item) => (item.id === lead.id ? { ...item, ...updated } : item)));
+        if (selectedLead?.id === lead.id) {
+          setSelectedLead((current) => (current ? { ...current, ...updated } : current));
+        }
+      }
+
+      setToast({ type: 'success', message: `Lead moved to ${statusLabels[status]}.` });
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error('Lead drag status update failed:', error);
+      }
+
+      setLeads(previousLeads);
+      if (selectedLead?.id === lead.id) {
+        setSelectedLead(previousLeads.find((item) => item.id === lead.id) || lead);
+      }
+      setToast({ type: 'error', message: 'Could not update lead status. Please try again.' });
+    }
+  }
+
   async function handleFollowUpSave(dateTime: string, note: string) {
     if (!followUpLead) return;
 
@@ -486,7 +556,13 @@ export default function LeadsCRMPage() {
         {loading && <div className="dashboard-loading-state">Loading admissions pipeline...</div>}
         {!loading && filteredLeads.length === 0 && <EmptyState title="No leads found" description="New website form submissions and manually added leads will appear here." />}
         {!loading && filteredLeads.length > 0 && view === 'pipeline' && (
-          <LeadKanbanBoard leads={filteredLeads} onOpenLead={openLead} onQuickStatus={(lead) => handleStatusChange(lead, lead.status === 'new' ? 'contacted' : 'follow_up_later')} />
+          <LeadKanbanBoard
+            leads={filteredLeads}
+            canDrag={canDragLeads}
+            onMoveLead={handlePipelineMove}
+            onOpenLead={openLead}
+            onQuickStatus={(lead) => handleStatusChange(lead, lead.status === 'new' ? 'contacted' : 'follow_up_later')}
+          />
         )}
         {!loading && filteredLeads.length > 0 && view === 'table' && (
           <DataTable className="lead-crm-table-wrap" tableClassName="lead-crm-table" columns={tableColumns} rows={filteredLeads} getRowKey={(row) => row.id} />
