@@ -70,7 +70,7 @@ serve(async (req) => {
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
   if (!supabaseUrl || !serviceRoleKey) {
-    return jsonResponse({ error: 'Create user function is missing required Supabase secrets.', code: 'missing_secrets' }, 500);
+    return jsonResponse({ error: 'Create user function is missing required Supabase Edge Function environment variables.', code: 'missing_edge_env' }, 500);
   }
 
   const authorization = req.headers.get('Authorization') || '';

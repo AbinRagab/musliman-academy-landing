@@ -73,7 +73,7 @@ serve(async (req) => {
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
   if (!supabaseUrl || !serviceRoleKey) {
-    return errorResponse('Lead submission function is missing required Supabase secrets.', 500);
+    return errorResponse('Lead submission function is missing required Supabase Edge Function environment variables.', 500);
   }
 
   let payload: SubmitLeadPayload;

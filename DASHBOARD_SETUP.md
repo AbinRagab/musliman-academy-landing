@@ -121,17 +121,18 @@ supabase login
 supabase link --project-ref your-project-ref
 ```
 
-Set function secrets. Use the same project URL and the service role key from Supabase Project Settings -> API:
+Supabase Edge Functions automatically provide these reserved environment variables at runtime:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+Do not set these with `supabase secrets set`; the Supabase CLI rejects reserved `SUPABASE_` secret names. The Edge Functions read the default values directly with `Deno.env.get(...)`.
+
+Deploy the account creation function:
 
 ```bash
-npx supabase secrets set SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
-npx supabase secrets set SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
-```
-
-Deploy the function:
-
-```bash
-supabase functions deploy create-user
+npx supabase functions deploy create-user
 ```
 
 Deploy the public website lead submission function:
