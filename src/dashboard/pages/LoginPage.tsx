@@ -57,16 +57,16 @@ export default function LoginPage() {
         <div className="dashboard-login-brand-panel__content">
           <img src="/assets/musliman-logo-dark-bg-transparent.png" alt="Musliman Academy" />
           <div className="dashboard-login-welcome">
-            <span>Welcome Back,</span>
-            <h1>Admin</h1>
-            <p>Sign in to your Musliman Academy dashboard to manage leads, students, payments, classes and grow our community.</p>
+            <span>Welcome to</span>
+            <h1>Musliman Academy Portal</h1>
+            <p>Sign in to access your personalized Musliman Academy portal whether you are a student, teacher, or academy team member.</p>
           </div>
           <div className="dashboard-login-features">
             {[
-              ['users', 'Leads', 'Track and manage new leads'],
-              ['graduationCap', 'Students', 'Manage enrollments and progress'],
-              ['document', 'Payments', 'Monitor transactions and invoices'],
-              ['chart', 'Reports', 'Insights to help you make better decisions'],
+              ['student', 'Students', 'View your classes, progress, attendance, and learning journey.'],
+              ['graduationCap', 'Teachers', 'Manage assigned students, free trials, attendance, and evaluations.'],
+              ['chart', 'Academy Team', 'Track leads, trials, students, payments, and reports.'],
+              ['shieldCheck', 'Secure Access', 'Each user sees only the tools and information related to their role.'],
             ].map(([icon, title, description]) => (
               <article key={title} className="dashboard-login-feature">
                 <span><Icon name={icon} size={20} /></span>
@@ -93,7 +93,7 @@ export default function LoginPage() {
           <img className="dashboard-login-card__mobile-logo" src="/assets/musliman-logo-light-bg-transparent.png" alt="Musliman Academy" />
           <span className="dashboard-eyebrow">Secure Academy Access</span>
           <h1 id="dashboard-login-title">Sign In</h1>
-          <p>Enter your credentials to access your dashboard</p>
+          <p>Use your Musliman Academy account to access your role-based dashboard.</p>
 
           <form className="dashboard-form dashboard-login-form" onSubmit={handleSubmit}>
             <label className="dashboard-login-field">
@@ -152,7 +152,7 @@ export default function LoginPage() {
           </form>
 
           <div className="dashboard-login-divider"><span>or</span></div>
-          <p className="dashboard-login-admin-note">Need access? <button type="button">Contact Admin</button></p>
+          <p className="dashboard-login-admin-note">Need access? <button type="button">Contact the Academy Team</button></p>
         </section>
 
         <p className="dashboard-login-security"><Icon name="shieldCheck" size={16} /> Secure login&nbsp; Your data is protected</p>
