@@ -1,6 +1,7 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState, type ReactNode } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import ActionMenu from '../components/ActionMenu';
 import AssignTeacherModal from '../components/AssignTeacherModal';
 import ConvertLeadModal from '../components/ConvertLeadModal';
 import DashboardPageHeader from '../components/DashboardPageHeader';
@@ -30,12 +31,14 @@ import {
   fetchPrograms,
   fetchTeacherOptions,
   scheduleFreeTrial,
+  updateLead,
   updateLeadStatus,
   type LeadActivity,
   type LeadRecord,
   type LeadStatus,
   type LeadType,
   type TeacherOption,
+  type UpdateLeadPayload,
 } from '../services/leadsService';
 
 type ProgramOption = { id: string; name: string; slug: string };
@@ -104,9 +107,27 @@ function isDueToday(value?: string | null) {
   return new Date(value).toDateString() === new Date().toDateString();
 }
 
+function CompactCell({
+  primary,
+  secondary,
+  children,
+}: {
+  primary?: string | null;
+  secondary?: string | null;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="lead-table-cell">
+      {children || <strong>{primary || '-'}</strong>}
+      {secondary && <span>{secondary}</span>}
+    </div>
+  );
+}
+
 function LeadActions({
   lead,
   onDetails,
+  onEdit,
   onStatus,
   onOwner,
   onTeacher,
@@ -117,6 +138,7 @@ function LeadActions({
 }: {
   lead: LeadRecord;
   onDetails: () => void;
+  onEdit: () => void;
   onStatus: (status: LeadStatus) => void;
   onOwner: () => void;
   onTeacher: () => void;
@@ -128,29 +150,27 @@ function LeadActions({
   const isTeacherTraining = lead.lead_type === 'teacher_training';
 
   return (
-    <details className="dashboard-actions-menu">
-      <summary aria-label={`Actions for ${lead.full_name}`}><Icon name="moreVertical" size={18} /></summary>
-      <div className="dashboard-actions-menu__content dashboard-actions-menu__content--wide">
-        <button type="button" onClick={onDetails}>View Details</button>
-        <button type="button" onClick={() => onStatus('contacted')}>Mark Contacted</button>
-        <button type="button" onClick={onOwner}>Assign Owner</button>
-        {isTeacherTraining ? (
-          <>
-            <button type="button" onClick={onDetails}>Review Application</button>
-            <button type="button" onClick={onOwner}>Assign Reviewer</button>
-            <button type="button" onClick={onFollowUp}>Contact Applicant</button>
-          </>
-        ) : (
-          <>
-            <button type="button" onClick={onTeacher}>Assign Teacher</button>
-            <button type="button" onClick={onTrial}>Schedule Trial</button>
-            <button type="button" onClick={onFollowUp}>Add Follow-up</button>
-            <button type="button" onClick={onConvert}>Convert to Student</button>
-          </>
-        )}
-        <button type="button" onClick={onLost}>Mark Lost</button>
-      </div>
-    </details>
+    <ActionMenu
+      label={`Actions for ${lead.full_name}`}
+      items={[
+        { label: 'View Details', onClick: onDetails },
+        { label: 'Edit Lead', onClick: onEdit },
+        { label: 'Mark Contacted', onClick: () => onStatus('contacted') },
+        { label: isTeacherTraining ? 'Assign Reviewer' : 'Assign Owner', onClick: onOwner },
+        ...(isTeacherTraining
+          ? [
+            { label: 'Review Application', onClick: onDetails },
+            { label: 'Contact Applicant', onClick: onFollowUp },
+          ]
+          : [
+            { label: 'Assign Teacher', onClick: onTeacher },
+            { label: 'Schedule Trial', onClick: onTrial },
+            { label: 'Add Follow-up', onClick: onFollowUp },
+            { label: 'Convert to Student', onClick: onConvert },
+          ]),
+        { label: 'Mark Lost', onClick: onLost, danger: true },
+      ]}
+    />
   );
 }
 
@@ -174,6 +194,8 @@ export default function LeadsCRMPage() {
   const [dateTo, setDateTo] = useState('');
   const [followUpToday, setFollowUpToday] = useState(false);
   const [selectedLead, setSelectedLead] = useState<LeadRecord | null>(null);
+  const [drawerMode, setDrawerMode] = useState<'view' | 'edit'>('view');
+  const [savingLead, setSavingLead] = useState(false);
   const [teacherLead, setTeacherLead] = useState<LeadRecord | null>(null);
   const [selectedTeacherId, setSelectedTeacherId] = useState('');
   const [ownerLead, setOwnerLead] = useState<LeadRecord | null>(null);
@@ -216,8 +238,9 @@ export default function LeadsCRMPage() {
     loadLeads();
   }, []);
 
-  async function openLead(lead: LeadRecord) {
+  async function openLead(lead: LeadRecord, mode: 'view' | 'edit' = 'view') {
     setSelectedLead(lead);
+    setDrawerMode(mode);
 
     if (lead.id.startsWith('mock-')) {
       setActivities([]);
@@ -228,6 +251,46 @@ export default function LeadsCRMPage() {
       setActivities(await fetchLeadActivity(lead.id));
     } catch {
       setActivities([]);
+    }
+  }
+
+  async function handleLeadSave(payload: UpdateLeadPayload) {
+    if (!selectedLead) {
+      return;
+    }
+
+    setSavingLead(true);
+
+    try {
+      if (usingMockFallback || selectedLead.id.startsWith('mock-')) {
+        const updated = {
+          ...selectedLead,
+          ...payload,
+          programName: payload.program_name || selectedLead.programName,
+          assignedOwnerName: owners.find((owner) => owner.id === payload.assigned_to)?.full_name || selectedLead.assignedOwnerName,
+          assignedTeacherName: teachers.find((teacher) => teacher.id === payload.assigned_teacher_id)?.full_name || selectedLead.assignedTeacherName,
+          updated_at: new Date().toISOString(),
+        } as LeadRecord;
+
+        setLeads((current) => current.map((lead) => lead.id === selectedLead.id ? updated : lead));
+        setSelectedLead(updated);
+      } else {
+        const updated = await updateLead(selectedLead.id, payload);
+        setSelectedLead(updated);
+        await loadLeads();
+        setActivities(await fetchLeadActivity(selectedLead.id));
+      }
+
+      setDrawerMode('view');
+      setToast({ type: 'success', message: 'Lead updated successfully.' });
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error('Lead update failed:', error);
+      }
+
+      setToast({ type: 'error', message: 'Lead could not be updated.' });
+    } finally {
+      setSavingLead(false);
     }
   }
 
@@ -315,24 +378,35 @@ export default function LeadsCRMPage() {
   }
 
   const tableColumns: Array<DataTableColumn<LeadRecord>> = [
-    { header: 'Lead Name', accessor: 'full_name' },
-    { header: 'WhatsApp', accessor: (row) => row.whatsapp || '-' },
-    { header: 'Country', accessor: (row) => row.country || '-' },
-    { header: 'Program', accessor: (row) => row.programName || '-' },
-    { header: 'Form Type', accessor: (row) => row.form_type === 'teacher_training' ? 'Teacher Training' : row.form_type === 'free_trial' ? 'Free Trial' : row.form_type || '-' },
-    { header: 'Lead Type', accessor: (row) => <LeadTypeBadge type={row.lead_type} /> },
-    { header: 'Source', accessor: (row) => row.source || 'website' },
+    { header: 'Lead', accessor: (row) => <CompactCell primary={row.full_name} secondary={row.country || 'Country not set'} /> },
+    { header: 'Contact', accessor: (row) => <CompactCell primary={row.whatsapp || '-'} secondary={row.source || 'website'} /> },
+    {
+      header: 'Program',
+      accessor: (row) => (
+        <CompactCell secondary={row.form_type === 'teacher_training' ? 'Teacher Training form' : row.form_type === 'free_trial' ? 'Free Trial form' : row.form_type || undefined}>
+          <strong>{row.programName || '-'}</strong>
+          <LeadTypeBadge type={row.lead_type} />
+        </CompactCell>
+      ),
+    },
     { header: 'Status', accessor: (row) => <LeadStatusBadge status={row.status} /> },
-    { header: 'Assigned Owner', accessor: (row) => row.assignedOwnerName || 'Unassigned' },
-    { header: 'Assigned Teacher', accessor: (row) => row.lead_type === 'teacher_training' ? 'Not applicable' : row.assignedTeacherName || 'Unassigned' },
-    { header: 'Next Follow-up', accessor: (row) => formatDate(row.next_follow_up_at) },
-    { header: 'Created At', accessor: (row) => formatDate(row.created_at) },
+    {
+      header: 'Assignment',
+      accessor: (row) => (
+        <CompactCell
+          primary={row.assignedOwnerName || 'Unassigned'}
+          secondary={row.lead_type === 'teacher_training' ? 'Reviewer' : row.assignedTeacherName || 'No teacher'}
+        />
+      ),
+    },
+    { header: 'Dates', accessor: (row) => <CompactCell primary={formatDate(row.next_follow_up_at)} secondary={`Created ${formatDate(row.created_at)}`} /> },
     {
       header: 'Actions',
       accessor: (row) => (
         <LeadActions
           lead={row}
-          onDetails={() => openLead(row)}
+          onDetails={() => openLead(row, 'view')}
+          onEdit={() => openLead(row, 'edit')}
           onStatus={(status) => handleStatusChange(row, status)}
           onOwner={() => { setOwnerLead(row); setSelectedOwnerId(row.assigned_to || owners[0]?.id || ''); }}
           onTeacher={() => { setTeacherLead(row); setSelectedTeacherId(row.assigned_teacher_id || teachers[0]?.id || ''); }}
@@ -415,7 +489,7 @@ export default function LeadsCRMPage() {
           <LeadKanbanBoard leads={filteredLeads} onOpenLead={openLead} onQuickStatus={(lead) => handleStatusChange(lead, lead.status === 'new' ? 'contacted' : 'follow_up_later')} />
         )}
         {!loading && filteredLeads.length > 0 && view === 'table' && (
-          <DataTable columns={tableColumns} rows={filteredLeads} getRowKey={(row) => row.id} />
+          <DataTable className="lead-crm-table-wrap" tableClassName="lead-crm-table" columns={tableColumns} rows={filteredLeads} getRowKey={(row) => row.id} />
         )}
       </SectionCard>
 
@@ -423,7 +497,14 @@ export default function LeadsCRMPage() {
         <LeadDetailDrawer
           lead={selectedLead}
           activities={activities}
+          mode={drawerMode}
+          programs={programs}
+          owners={owners}
+          teachers={teachers}
+          saving={savingLead}
           onClose={() => setSelectedLead(null)}
+          onEdit={() => setDrawerMode('edit')}
+          onSave={handleLeadSave}
           onAddFollowUp={() => setFollowUpLead(selectedLead)}
           onAssignOwner={() => { setOwnerLead(selectedLead); setSelectedOwnerId(selectedLead.assigned_to || owners[0]?.id || ''); }}
           onAssignTeacher={() => { setTeacherLead(selectedLead); setSelectedTeacherId(selectedLead.assigned_teacher_id || teachers[0]?.id || ''); }}

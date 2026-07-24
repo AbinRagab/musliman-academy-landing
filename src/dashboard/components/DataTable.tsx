@@ -9,12 +9,14 @@ type DataTableProps<T> = {
   columns: Array<DataTableColumn<T>>;
   rows: T[];
   getRowKey: (row: T, index: number) => string;
+  className?: string;
+  tableClassName?: string;
 };
 
-export default function DataTable<T>({ columns, rows, getRowKey }: DataTableProps<T>) {
+export default function DataTable<T>({ columns, rows, getRowKey, className = '', tableClassName = '' }: DataTableProps<T>) {
   return (
-    <div className="dashboard-table-wrap">
-      <table className="dashboard-table">
+    <div className={`dashboard-table-wrap ${className}`.trim()}>
+      <table className={`dashboard-table ${tableClassName}`.trim()}>
         <thead>
           <tr>
             {columns.map((column) => (

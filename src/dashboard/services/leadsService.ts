@@ -90,6 +90,25 @@ export type CreateLeadPayload = {
   lead_type?: LeadType;
 };
 
+export type UpdateLeadPayload = Partial<{
+  full_name: string;
+  whatsapp: string | null;
+  country: string | null;
+  student_age: string | null;
+  program_id: string | null;
+  program_name: string | null;
+  preferred_time: string | null;
+  message: string | null;
+  source: string | null;
+  form_type: string | null;
+  lead_type: LeadType;
+  status: LeadStatus;
+  assigned_to: string | null;
+  assigned_teacher_id: string | null;
+  next_follow_up_at: string | null;
+  notes: string | null;
+}>;
+
 export type ScheduleTrialPayload = {
   leadId: string;
   teacherId: string;
@@ -261,6 +280,24 @@ export async function updateLeadStatus(leadId: string, status: LeadStatus, oldSt
 
   await addActivity(leadId, status === 'lost' ? 'lost' : 'status_changed', `Lead status changed to ${status}.`, oldStatus, status);
   return data as LeadRecord;
+}
+
+export async function updateLead(leadId: string, payload: UpdateLeadPayload) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from('leads')
+    .update(payload)
+    .eq('id', leadId)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  await addActivity(leadId, 'updated', 'Lead details updated.');
+  const [hydrated] = await hydrateLeads([data as LeadRecord]);
+  return hydrated;
 }
 
 export async function assignLeadOwner(leadId: string, ownerId: string | null) {
