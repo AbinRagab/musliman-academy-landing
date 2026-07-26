@@ -5787,6 +5787,18 @@
   border-radius: 8px;
 }
 
+.student-form-error {
+  margin: 0;
+  padding: 10px 12px;
+  color: #9b2c2c;
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.45;
+  background: #fde9e9;
+  border: 1px solid rgba(155, 44, 44, 0.16);
+  border-radius: 8px;
+}
+
 .student-skills-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }

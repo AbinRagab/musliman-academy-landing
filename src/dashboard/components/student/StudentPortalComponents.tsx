@@ -243,11 +243,13 @@ export function HomeworkCard({
   onUpload,
   onViewInstructions,
   onViewFeedback,
+  onViewFile,
 }: {
   homework: StudentHomeworkItem;
   onUpload: (homework: StudentHomeworkItem) => void;
   onViewInstructions: (homework: StudentHomeworkItem) => void;
   onViewFeedback: (homework: StudentHomeworkItem) => void;
+  onViewFile?: (homework: StudentHomeworkItem) => void;
 }) {
   return (
     <article className="student-homework-card">
@@ -262,6 +264,8 @@ export function HomeworkCard({
       <div className="student-info-grid student-info-grid--compact">
         <span>Due date <strong>{homework.dueDate}</strong></span>
         <span>Submission <strong>{homework.submittedAt || 'Not submitted'}</strong></span>
+        <span>File <strong>{homework.fileName || 'No file uploaded'}</strong></span>
+        <span>Size <strong>{homework.fileSize ? `${(homework.fileSize / 1024 / 1024).toFixed(1)} MB` : '-'}</strong></span>
       </div>
       {homework.teacherFeedback && <div className="student-feedback-note">{homework.teacherFeedback}</div>}
       <div className="student-card-actions">
@@ -279,6 +283,12 @@ export function HomeworkCard({
           <ActionButton variant="secondary" onClick={() => onViewFeedback(homework)}>
             <Icon name="message" size={16} />
             View Feedback
+          </ActionButton>
+        )}
+        {(homework.filePath || homework.submissionUrl) && onViewFile && (
+          <ActionButton variant="secondary" onClick={() => onViewFile(homework)}>
+            <Icon name="eye" size={16} />
+            View File
           </ActionButton>
         )}
         {homework.attachmentUrl && (

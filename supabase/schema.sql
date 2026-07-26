@@ -225,6 +225,10 @@ create table if not exists public.homework_submissions (
   student_id uuid references public.students(id),
   class_id uuid references public.classes(id),
   file_url text,
+  file_path text,
+  file_name text,
+  file_type text,
+  file_size bigint,
   notes text,
   status text default 'submitted',
   teacher_feedback text,
@@ -246,6 +250,8 @@ create index if not exists evaluations_student_id_idx on public.evaluations(stud
 create index if not exists payments_student_id_idx on public.payments(student_id);
 create index if not exists messages_sender_id_idx on public.messages(sender_id);
 create index if not exists messages_receiver_id_idx on public.messages(receiver_id);
+create index if not exists homework_submissions_class_id_idx on public.homework_submissions(class_id);
+create index if not exists homework_submissions_file_path_idx on public.homework_submissions(file_path);
 
 create or replace function public.set_updated_at()
 returns trigger

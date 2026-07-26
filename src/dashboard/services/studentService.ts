@@ -67,6 +67,7 @@ export type StudentTrial = {
 
 export type StudentHomeworkItem = {
   id: string;
+  classId?: string;
   title: string;
   relatedClass: string;
   teacher: string;
@@ -75,6 +76,11 @@ export type StudentHomeworkItem = {
   status: 'pending' | 'submitted' | 'reviewed' | 'overdue';
   attachmentUrl?: string | null;
   submissionUrl?: string | null;
+  filePath?: string | null;
+  fileName?: string | null;
+  fileType?: string | null;
+  fileSize?: number | null;
+  notes?: string | null;
   submittedAt?: string;
   teacherFeedback?: string;
 };
@@ -315,6 +321,7 @@ const mockTrial: StudentTrial = {
 const mockHomework: StudentHomeworkItem[] = [
   {
     id: 'hw-1',
+    classId: 'class-1',
     title: 'Surah Al-Mulk audio revision',
     relatedClass: 'Quran Reading - Level 3',
     teacher: 'Ust. Maryam Ali',
@@ -325,6 +332,7 @@ const mockHomework: StudentHomeworkItem[] = [
   },
   {
     id: 'hw-2',
+    classId: 'class-4',
     title: 'Madd timing practice',
     relatedClass: 'Madd Letters Review',
     teacher: 'Ust. Maryam Ali',
@@ -332,10 +340,13 @@ const mockHomework: StudentHomeworkItem[] = [
     instructions: 'Mark Madd letters in the provided ayat and read aloud twice.',
     status: 'submitted',
     submittedAt: 'Jul 24, 2026',
+    fileName: 'madd-timing-audio.mp3',
+    fileSize: 2400000,
     submissionUrl: 'https://example.com/submissions/madd-audio',
   },
   {
     id: 'hw-3',
+    classId: 'class-6',
     title: 'Arabic joining worksheet',
     relatedClass: 'Arabic Reading Practice',
     teacher: 'Sh. Omar Khaled',
@@ -343,10 +354,13 @@ const mockHomework: StudentHomeworkItem[] = [
     instructions: 'Complete the letter joining worksheet and upload a clear photo.',
     status: 'reviewed',
     submittedAt: 'Jul 18, 2026',
+    fileName: 'arabic-joining-worksheet.jpg',
+    fileSize: 860000,
     teacherFeedback: 'Good accuracy. Keep practicing letter spacing.',
   },
   {
     id: 'hw-4',
+    classId: 'class-3',
     title: 'Short vowel drill',
     relatedClass: 'Arabic Basics',
     teacher: 'Sh. Omar Khaled',
@@ -522,6 +536,7 @@ export function getHomeworkForClass(classSession: StudentClassSession, homeworkI
     id: `class-homework-${classSession.id}`,
     title: `${classSession.title} homework`,
     relatedClass: classSession.title,
+    classId: classSession.id,
     teacher: classSession.teacher,
     dueDate: classSession.date,
     instructions: classSession.homeworkAssigned,
