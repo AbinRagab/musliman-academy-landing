@@ -35,7 +35,10 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
       </div>
       <label className="dashboard-topbar-search">
         <Icon name="search" size={17} />
-        <input type="search" placeholder="Search students, classes, leads..." />
+        <input
+          type="search"
+          placeholder={role === 'student' ? 'Search classes, homework, messages...' : 'Search students, classes, leads...'}
+        />
       </label>
       <div className="dashboard-topbar__actions">
         <button className="dashboard-notification-button" type="button" aria-label="Notifications">

@@ -10,9 +10,18 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminSectionPage from './pages/AdminSectionPage';
 import LeadsCRMPage from './pages/LeadsCRMPage';
 import LoginPage from './pages/LoginPage';
-import StudentSectionPage from './pages/StudentSectionPage';
-import StudentPortal from './pages/StudentPortal';
+import StudentAttendance from './pages/StudentAttendance';
+import StudentClasses from './pages/StudentClasses';
+import StudentDashboard from './pages/StudentDashboard';
+import StudentFreeTrial from './pages/StudentFreeTrial';
+import StudentHomework from './pages/StudentHomework';
+import StudentMessages from './pages/StudentMessages';
+import StudentPayments from './pages/StudentPayments';
+import StudentProfile from './pages/StudentProfile';
+import StudentProgress from './pages/StudentProgress';
 import StudentRecordPage from './pages/StudentRecordPage';
+import StudentSchedule from './pages/StudentSchedule';
+import StudentSettings from './pages/StudentSettings';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherSectionPage from './pages/TeacherSectionPage';
 import type { DashboardRole } from './data/mockData';
@@ -90,20 +99,20 @@ export default function DashboardRoutes() {
           path="student"
           element={(
             <ProtectedLayout allowedRoles={studentRoles} layoutRole="student">
-              <StudentPortal />
+              <StudentDashboard />
             </ProtectedLayout>
           )}
         />
-        <Route path="student/schedule" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="schedule" /></ProtectedLayout>} />
-        <Route path="student/classes" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="classes" /></ProtectedLayout>} />
-        <Route path="student/free-trial" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="free-trial" /></ProtectedLayout>} />
-        <Route path="student/attendance" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="attendance" /></ProtectedLayout>} />
-        <Route path="student/homework" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="homework" /></ProtectedLayout>} />
-        <Route path="student/progress" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="progress" /></ProtectedLayout>} />
-        <Route path="student/messages" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="messages" /></ProtectedLayout>} />
-        <Route path="student/payments" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="payments" /></ProtectedLayout>} />
-        <Route path="student/profile" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentRecordPage portalRole="student" /></ProtectedLayout>} />
-        <Route path="student/settings" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSectionPage section="settings" /></ProtectedLayout>} />
+        <Route path="student/schedule" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSchedule /></ProtectedLayout>} />
+        <Route path="student/classes" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentClasses /></ProtectedLayout>} />
+        <Route path="student/free-trial" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentFreeTrial /></ProtectedLayout>} />
+        <Route path="student/attendance" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentAttendance /></ProtectedLayout>} />
+        <Route path="student/homework" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentHomework /></ProtectedLayout>} />
+        <Route path="student/progress" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentProgress /></ProtectedLayout>} />
+        <Route path="student/messages" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentMessages /></ProtectedLayout>} />
+        <Route path="student/payments" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentPayments /></ProtectedLayout>} />
+        <Route path="student/profile" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentProfile /></ProtectedLayout>} />
+        <Route path="student/settings" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSettings /></ProtectedLayout>} />
         <Route path="student/:section" element={<ProtectedRoute allowedRoles={studentRoles}><ComingSoon role="student" /></ProtectedRoute>} />
         <Route
           path="teacher"

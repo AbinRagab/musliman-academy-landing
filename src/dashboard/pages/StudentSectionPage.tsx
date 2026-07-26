@@ -501,7 +501,7 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
               />
               <ActionButton variant="secondary">
                 <Icon name="send" size={16} />
-                Reply placeholder
+                Reply
               </ActionButton>
             </div>
           </SectionCard>
@@ -604,7 +604,7 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
 
           <SectionCard title="Privacy & Security">
             <div className="student-security-list">
-              {['Change password', 'Two-factor authentication placeholder', 'Active sessions placeholder', 'Sign out from all devices placeholder'].map((item) => (
+              {['Change password', 'Two-factor authentication coming soon', 'Active sessions coming soon', 'Sign out from all devices coming soon'].map((item) => (
                 <button key={item} type="button">
                   <Icon name={item.includes('password') ? 'lock' : item.includes('sessions') ? 'laptop' : 'shieldCheck'} size={17} />
                   <span>{item}</span>

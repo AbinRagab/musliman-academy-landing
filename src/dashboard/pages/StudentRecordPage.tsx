@@ -207,9 +207,17 @@ export default function StudentRecordPage({
         title="Student Record"
         subtitle="Central role-based record for personal data, academic setup, teacher input, payments, messages, and preferences."
         action={(
-          <ActionButton variant="secondary">
-            <Icon name="shieldCheck" size={17} />
-            Role-based access
+          <ActionButton
+            variant="secondary"
+            onClick={() => setToast({
+              type: 'info',
+              message: portalRole === 'student'
+                ? 'Contact update requests are sent to the academy team. Academic, attendance, evaluation, and payment fields remain view-only.'
+                : 'Role-based access is active for this student record.',
+            })}
+          >
+            <Icon name={portalRole === 'student' ? 'send' : 'shieldCheck'} size={17} />
+            {portalRole === 'student' ? 'Request Update' : 'Role-based access'}
           </ActionButton>
         )}
       />

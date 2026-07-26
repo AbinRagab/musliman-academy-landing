@@ -84,7 +84,7 @@ export default function StudentPortal() {
       </div>
 
       <div className="dashboard-grid dashboard-grid--student">
-        <SectionCard title="Weekly Timetable" subtitle="Mock class schedule for this week">
+        <SectionCard title="Weekly Timetable" subtitle="Class schedule for this week">
           <DataTable columns={timetableColumns} rows={studentTimetable} getRowKey={(row) => `${row.time}-${row.className}`} />
         </SectionCard>
 

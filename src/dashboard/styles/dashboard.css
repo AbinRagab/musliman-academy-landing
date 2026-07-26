@@ -1676,7 +1676,17 @@
   background: rgba(6, 24, 45, 0.62);
 }
 
+.dashboard-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
 .dashboard-modal__panel {
+  position: relative;
+  z-index: 1;
   width: min(100%, 620px);
   max-height: min(760px, 92vh);
   padding: 22px;
@@ -1689,6 +1699,42 @@
 
 .dashboard-modal__panel--small {
   width: min(100%, 440px);
+}
+
+.dashboard-modal__header,
+.dashboard-modal__footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.dashboard-modal__header {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--dashboard-line);
+}
+
+.dashboard-modal__header h2 {
+  margin: 0;
+  color: var(--dashboard-ink);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.dashboard-modal__header p {
+  margin: 6px 0 0;
+  color: var(--dashboard-muted);
+  line-height: 1.45;
+}
+
+.dashboard-modal__body {
+  display: grid;
+  gap: 14px;
+  padding: 16px 0 0;
+}
+
+.dashboard-modal__footer {
+  justify-content: flex-end;
+  padding-top: 16px;
 }
 
 .dashboard-profile-details {
@@ -5488,5 +5534,412 @@
 
   .student-record-summary__identity {
     align-items: flex-start;
+  }
+}
+
+.student-hero-banner {
+  align-items: center;
+}
+
+.student-next-class-card {
+  background:
+    linear-gradient(135deg, rgba(184, 115, 51, 0.08), transparent 42%),
+    var(--dashboard-white);
+}
+
+.student-next-class-card--compact {
+  box-shadow: 0 12px 28px rgba(11, 31, 58, 0.07);
+}
+
+.student-next-class {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.student-next-class h3,
+.student-payment-package h3,
+.student-class-list-card h3,
+.student-homework-card h3,
+.student-topic-list h3 {
+  margin: 0;
+  color: var(--dashboard-ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.25;
+}
+
+.student-next-class p,
+.student-next-class span,
+.student-class-list-card p,
+.student-homework-card p,
+.student-topic-list p,
+.student-modal-copy {
+  margin: 6px 0 0;
+  color: var(--dashboard-muted);
+  line-height: 1.55;
+}
+
+.student-next-class span {
+  display: inline-flex;
+  margin-top: 8px;
+  font-weight: 800;
+}
+
+.student-next-class--empty {
+  align-items: flex-start;
+}
+
+.student-timetable-preview,
+.student-week-grid,
+.student-skills-grid,
+.student-topic-list,
+.student-card-list,
+.student-progress-stack,
+.student-recommendation-list,
+.student-checklist {
+  display: grid;
+  gap: 12px;
+}
+
+.student-timetable-preview {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.student-timetable-preview article,
+.student-week-grid article,
+.student-class-list-card,
+.student-homework-card,
+.student-skill-card,
+.student-topic-list article,
+.student-recommendation-list article,
+.student-empty-state {
+  padding: 14px;
+  background: #fbfaf7;
+  border: 1px solid var(--dashboard-line);
+  border-radius: 8px;
+}
+
+.student-timetable-preview span,
+.student-week-grid h3,
+.student-class-date span,
+.student-homework-card__header p,
+.student-topic-list article > div p,
+.student-recommendation-list span {
+  color: var(--dashboard-muted);
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.student-timetable-preview strong {
+  display: block;
+  margin: 5px 0;
+  color: var(--dashboard-copper);
+  font-size: 1.05rem;
+}
+
+.student-timetable-preview p,
+.student-timetable-preview small {
+  margin: 0;
+  color: var(--dashboard-muted);
+  line-height: 1.45;
+}
+
+.student-timetable-preview p {
+  color: var(--dashboard-ink);
+  font-weight: 850;
+}
+
+.student-progress-summary .dashboard-progress-facts {
+  display: grid;
+  gap: 8px;
+}
+
+.student-quick-links button {
+  cursor: pointer;
+}
+
+.student-week-grid {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.student-week-grid article {
+  min-height: 156px;
+}
+
+.student-week-grid h3 {
+  margin: 0 0 10px;
+  color: var(--dashboard-ink);
+}
+
+.student-week-grid article > div {
+  display: grid;
+  gap: 3px;
+  padding: 9px;
+  background: var(--dashboard-white);
+  border: 1px solid rgba(11, 31, 58, 0.08);
+  border-radius: 8px;
+}
+
+.student-week-grid strong {
+  color: var(--dashboard-copper);
+}
+
+.student-week-grid span,
+.student-week-grid small,
+.student-week-grid p {
+  color: var(--dashboard-muted);
+  line-height: 1.35;
+}
+
+.student-class-list-card {
+  display: grid;
+  gap: 12px;
+}
+
+.student-class-list-card__main,
+.student-homework-card__header,
+.student-skill-card > div,
+.student-payment-package,
+.student-topic-list article {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.student-class-date {
+  display: grid;
+  place-items: center;
+  flex: 0 0 78px;
+  min-height: 72px;
+  color: var(--dashboard-white);
+  text-align: center;
+  background: linear-gradient(135deg, var(--dashboard-midnight), #12345a);
+  border-radius: 8px;
+}
+
+.student-class-date strong {
+  font-size: 1.25rem;
+}
+
+.student-class-date span {
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.72rem;
+}
+
+.student-meta-row,
+.student-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.student-meta-row {
+  margin-top: 10px;
+}
+
+.student-meta-row > span:not(.dashboard-status) {
+  color: var(--dashboard-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.student-class-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.student-class-summary-grid span {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  color: var(--dashboard-muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+  background: var(--dashboard-white);
+  border: 1px solid rgba(11, 31, 58, 0.08);
+  border-radius: 8px;
+}
+
+.student-class-summary-grid strong {
+  color: var(--dashboard-ink);
+  line-height: 1.35;
+}
+
+.student-homework-card {
+  display: grid;
+  gap: 12px;
+}
+
+.student-info-grid--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.student-feedback-note {
+  padding: 12px;
+  color: var(--dashboard-ink);
+  line-height: 1.55;
+  background: rgba(184, 115, 51, 0.08);
+  border: 1px solid rgba(184, 115, 51, 0.18);
+  border-radius: 8px;
+}
+
+.student-skills-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.student-skill-card {
+  display: grid;
+  gap: 10px;
+}
+
+.student-skill-card strong,
+.student-skill-card span {
+  color: var(--dashboard-ink);
+  font-weight: 900;
+}
+
+.student-recommendation-list article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 10px;
+}
+
+.student-recommendation-list svg {
+  color: var(--dashboard-copper);
+  grid-row: span 2;
+}
+
+.student-recommendation-list p {
+  margin: 0;
+  color: var(--dashboard-ink);
+  line-height: 1.5;
+}
+
+.student-topic-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) auto minmax(0, 1fr);
+  align-items: center;
+}
+
+.student-payment-package {
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.student-payment-package p {
+  margin: 6px 0 0;
+  color: var(--dashboard-muted);
+}
+
+.student-payment-meter {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  color: var(--dashboard-midnight);
+  background:
+    radial-gradient(circle closest-side, var(--dashboard-white) 70%, transparent 72%),
+    conic-gradient(var(--dashboard-copper) var(--sessions-left), rgba(11, 31, 58, 0.08) 0);
+  border-radius: 50%;
+}
+
+.student-payment-meter span {
+  color: var(--dashboard-ink);
+  font-size: 1.35rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.student-payment-meter small {
+  color: var(--dashboard-muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.student-checklist span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  color: var(--dashboard-ink);
+  font-weight: 800;
+  background: #fbfaf7;
+  border: 1px solid var(--dashboard-line);
+  border-radius: 8px;
+}
+
+.student-checklist svg {
+  color: var(--dashboard-copper);
+}
+
+.student-empty-state {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  text-align: center;
+}
+
+.student-empty-state svg {
+  color: var(--dashboard-copper);
+}
+
+.student-empty-state h3 {
+  margin: 6px 0 0;
+  color: var(--dashboard-ink);
+}
+
+.student-empty-state p {
+  max-width: 440px;
+  margin: 0;
+  color: var(--dashboard-muted);
+  line-height: 1.55;
+}
+
+.student-settings-actions {
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+}
+
+@media (max-width: 1180px) {
+  .student-timetable-preview,
+  .student-week-grid,
+  .student-skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .student-topic-list article {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .student-next-class,
+  .student-class-list-card__main,
+  .student-homework-card__header,
+  .student-payment-package {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .student-timetable-preview,
+  .student-week-grid,
+  .student-class-summary-grid,
+  .student-skills-grid,
+  .student-info-grid--compact {
+    grid-template-columns: 1fr;
+  }
+
+  .student-card-actions .dashboard-action,
+  .student-next-class .dashboard-action {
+    width: 100%;
+  }
+
+  .dashboard-modal__panel {
+    width: 100%;
+    max-height: 90vh;
   }
 }
