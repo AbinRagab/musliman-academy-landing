@@ -23,6 +23,7 @@ export type HomeworkSubmissionFile = {
   id: string;
   student_id: string;
   class_id: string;
+  uploaded_by: string | null;
   file_path: string | null;
   file_name: string | null;
   file_type: string | null;
@@ -78,13 +79,19 @@ export async function uploadHomeworkFile(studentId: string, classId: string, fil
   const client = requireSupabase();
   validateHomeworkFile(file);
 
+  const { data: userData, error: userError } = await client.auth.getUser();
+  const userId = userData.user?.id;
+
+  if (userError || !userId) {
+    throw new Error('You must be signed in to upload homework.');
+  }
+
   const safeFileName = sanitizeFileName(file.name);
-  const objectPath = `${studentId}/${classId}/${Date.now()}-${safeFileName}`;
-  const fullPath = `${HOMEWORK_BUCKET}/${objectPath}`;
+  const filePath = `${userId}/${studentId}/${classId}/${Date.now()}-${safeFileName}`;
 
   const { error: uploadError } = await client.storage
     .from(HOMEWORK_BUCKET)
-    .upload(objectPath, file, {
+    .upload(filePath, file, {
       cacheControl: '3600',
       upsert: false,
       contentType: file.type || undefined,
@@ -99,7 +106,8 @@ export async function uploadHomeworkFile(studentId: string, classId: string, fil
     .insert({
       student_id: studentId,
       class_id: classId,
-      file_path: fullPath,
+      uploaded_by: userId,
+      file_path: filePath,
       file_name: file.name,
       file_type: file.type || getFileExtension(file.name),
       file_size: file.size,
@@ -110,7 +118,7 @@ export async function uploadHomeworkFile(studentId: string, classId: string, fil
     .single<HomeworkSubmissionFile>();
 
   if (insertError) {
-    await client.storage.from(HOMEWORK_BUCKET).remove([objectPath]);
+    await client.storage.from(HOMEWORK_BUCKET).remove([filePath]);
     throw insertError;
   }
 
@@ -189,7 +197,7 @@ export async function listStudentHomeworkFiles(studentId?: string) {
 
   const { data, error } = await client
     .from('homework_submissions')
-    .select('id, student_id, class_id, file_path, file_name, file_type, file_size, notes, status, teacher_feedback, created_at')
+    .select('id, student_id, class_id, uploaded_by, file_path, file_name, file_type, file_size, notes, status, teacher_feedback, created_at')
     .eq('student_id', resolvedStudentId)
     .order('created_at', { ascending: false })
     .returns<HomeworkSubmissionFile[]>();

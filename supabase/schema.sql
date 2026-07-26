@@ -224,6 +224,7 @@ create table if not exists public.homework_submissions (
   id uuid primary key default gen_random_uuid(),
   student_id uuid references public.students(id),
   class_id uuid references public.classes(id),
+  uploaded_by uuid references auth.users(id),
   file_url text,
   file_path text,
   file_name text,
@@ -252,6 +253,7 @@ create index if not exists messages_sender_id_idx on public.messages(sender_id);
 create index if not exists messages_receiver_id_idx on public.messages(receiver_id);
 create index if not exists homework_submissions_class_id_idx on public.homework_submissions(class_id);
 create index if not exists homework_submissions_file_path_idx on public.homework_submissions(file_path);
+create index if not exists homework_submissions_uploaded_by_idx on public.homework_submissions(uploaded_by);
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -461,16 +463,18 @@ create policy "Users can send messages" on public.messages
   for insert with check (sender_id = auth.uid());
 
 drop policy if exists "Students can view own homework submissions" on public.homework_submissions;
-create policy "Students can view own homework submissions" on public.homework_submissions
-  for select using (exists (select 1 from public.students s where s.id = homework_submissions.student_id and s.profile_id = auth.uid()));
+drop policy if exists "Authenticated users view own homework submissions" on public.homework_submissions;
+create policy "Authenticated users view own homework submissions" on public.homework_submissions
+  for select to authenticated using (uploaded_by = auth.uid());
 
 drop policy if exists "Teachers can view assigned homework submissions" on public.homework_submissions;
 create policy "Teachers can view assigned homework submissions" on public.homework_submissions
   for select using (exists (select 1 from public.classes c where c.id = homework_submissions.class_id and c.teacher_id = auth.uid()));
 
 drop policy if exists "Students can submit homework" on public.homework_submissions;
-create policy "Students can submit homework" on public.homework_submissions
-  for insert with check (exists (select 1 from public.students s where s.id = homework_submissions.student_id and s.profile_id = auth.uid()));
+drop policy if exists "Authenticated users insert own homework submissions" on public.homework_submissions;
+create policy "Authenticated users insert own homework submissions" on public.homework_submissions
+  for insert to authenticated with check (uploaded_by = auth.uid());
 
 drop policy if exists "Admin roles can manage homework submissions" on public.homework_submissions;
 create policy "Admin roles can manage homework submissions" on public.homework_submissions
