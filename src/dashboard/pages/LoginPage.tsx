@@ -12,7 +12,7 @@ type LocationState = {
 };
 
 export default function LoginPage() {
-  const { signIn, user, role, loading, isConfigured } = useAuth();
+  const { signIn, user, role, isReady, isConfigured } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState('');
@@ -27,7 +27,7 @@ export default function LoginPage() {
     return <SupabaseSetupPage />;
   }
 
-  if (!loading && user && role) {
+  if (isReady && user && role) {
     return <Navigate to={getDashboardPath(role)} replace />;
   }
 

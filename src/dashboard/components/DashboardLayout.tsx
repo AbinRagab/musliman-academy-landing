@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 import type { DashboardRole } from '../data/mockData';
 import '../styles/dashboard.css';
 import Sidebar from './Sidebar';
@@ -6,7 +7,7 @@ import Topbar from './Topbar';
 
 type DashboardLayoutProps = {
   role: DashboardRole;
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 export default function DashboardLayout({ role, children }: DashboardLayoutProps) {
@@ -17,7 +18,7 @@ export default function DashboardLayout({ role, children }: DashboardLayoutProps
       <Sidebar role={role} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="dashboard-main">
         <Topbar role={role} onOpenSidebar={() => setSidebarOpen(true)} />
-        <main className="dashboard-content">{children}</main>
+        <main className="dashboard-content">{children || <Outlet />}</main>
       </div>
     </div>
   );

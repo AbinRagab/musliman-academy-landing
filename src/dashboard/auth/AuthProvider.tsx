@@ -4,10 +4,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
-import type { User } from '@supabase/supabase-js';
+import type { Session, User } from '@supabase/supabase-js';
 import { isSupabaseConfigured, supabase } from '../../lib/supabaseClient';
 
 export type AuthRole =
@@ -39,11 +40,18 @@ type SignInResult = {
   redirectTo: string;
 };
 
+type AuthStatus = 'initializing' | 'authenticated' | 'unauthenticated' | 'error';
+
 type AuthContextValue = {
   user: User | null;
+  session: Session | null;
   profile: UserProfile | null;
   role: AuthRole | null;
   loading: boolean;
+  isAuthLoading: boolean;
+  isProfileLoading: boolean;
+  isReady: boolean;
+  status: AuthStatus;
   isConfigured: boolean;
   signIn: (email: string, password: string) => Promise<SignInResult>;
   signOut: () => Promise<void>;
@@ -98,69 +106,156 @@ export function getDashboardLayoutRole(role: AuthRole | null | undefined) {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [role, setRole] = useState<AuthRole | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isProfileLoading, setIsProfileLoading] = useState(false);
+  const [hasCompletedInitialCheck, setHasCompletedInitialCheck] = useState(false);
+  const [status, setStatus] = useState<AuthStatus>('initializing');
+  const currentUserIdRef = useRef<string | null>(null);
+  const profileRef = useRef<UserProfile | null>(null);
+  const profileUserIdRef = useRef<string | null>(null);
+  const inFlightProfileRef = useRef<{ userId: string; promise: Promise<UserProfile | null> } | null>(null);
 
-  const loadProfile = useCallback(async (activeUser: User | null) => {
+  const clearProfile = useCallback(() => {
+    profileRef.current = null;
+    profileUserIdRef.current = null;
+    inFlightProfileRef.current = null;
+    setProfile(null);
+    setRole(null);
+  }, []);
+
+  const loadProfile = useCallback(async (activeUser: User | null, options?: { force?: boolean }) => {
     if (!activeUser || !supabase) {
-      setProfile(null);
-      setRole(null);
+      clearProfile();
       return null;
     }
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', activeUser.id)
-      .maybeSingle<UserProfile>();
+    const force = options?.force ?? false;
 
-    if (error) {
-      setProfile(null);
-      setRole(null);
-      throw error;
+    if (!force && profileRef.current && profileUserIdRef.current === activeUser.id) {
+      return profileRef.current;
     }
 
-    setProfile(data);
-    setRole(data?.role || null);
-    return data;
-  }, []);
+    if (!force && inFlightProfileRef.current?.userId === activeUser.id) {
+      return inFlightProfileRef.current.promise;
+    }
 
-  const refreshProfile = useCallback(async () => loadProfile(user), [loadProfile, user]);
+    setIsProfileLoading(true);
+
+    const profilePromise = (async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', activeUser.id)
+        .maybeSingle<UserProfile>();
+
+      if (error) {
+        throw error;
+      }
+
+      if (currentUserIdRef.current === activeUser.id) {
+        profileRef.current = data;
+        profileUserIdRef.current = data ? activeUser.id : null;
+        setProfile(data);
+        setRole(data?.role || null);
+      }
+
+      return data;
+    })()
+      .catch((error: unknown) => {
+        if (currentUserIdRef.current === activeUser.id) {
+          clearProfile();
+          setStatus('error');
+        }
+
+        throw error;
+      })
+      .finally(() => {
+        if (inFlightProfileRef.current?.promise === profilePromise) {
+          inFlightProfileRef.current = null;
+        }
+
+        setIsProfileLoading(false);
+      });
+
+    inFlightProfileRef.current = { userId: activeUser.id, promise: profilePromise };
+
+    return profilePromise;
+  }, [clearProfile]);
+
+  const refreshProfile = useCallback(async () => loadProfile(user, { force: true }), [loadProfile, user]);
 
   useEffect(() => {
     let mounted = true;
+    let initialSessionHandled = false;
+
+    function applySignedOutState() {
+      currentUserIdRef.current = null;
+      setSession(null);
+      setUser(null);
+      clearProfile();
+      setStatus('unauthenticated');
+    }
+
+    async function applySession(nextSession: Session | null, options?: { forceProfile?: boolean }) {
+      const nextUser = nextSession?.user || null;
+
+      setSession(nextSession);
+      setUser(nextUser);
+      currentUserIdRef.current = nextUser?.id || null;
+
+      if (!nextUser) {
+        clearProfile();
+        setStatus('unauthenticated');
+        return;
+      }
+
+      const nextProfile = await loadProfile(nextUser, { force: options?.forceProfile });
+
+      if (mounted && currentUserIdRef.current === nextUser.id) {
+        setStatus(nextProfile ? 'authenticated' : 'error');
+      }
+    }
 
     async function initializeAuth() {
       if (!supabase) {
         if (mounted) {
-          setLoading(false);
+          applySignedOutState();
+          setIsAuthLoading(false);
+          setHasCompletedInitialCheck(true);
         }
         return;
       }
 
-      const { data, error } = await supabase.auth.getSession();
-
-      if (!mounted) {
-        return;
-      }
-
-      if (error || !data.session?.user) {
-        setUser(null);
-        setProfile(null);
-        setRole(null);
-        setLoading(false);
-        return;
-      }
-
-      setUser(data.session.user);
+      setIsAuthLoading(true);
 
       try {
-        await loadProfile(data.session.user);
-      } finally {
+        const { data, error } = await supabase.auth.getSession();
+
+        if (!mounted) {
+          return;
+        }
+
+        if (error) {
+          applySignedOutState();
+          setStatus('error');
+          return;
+        }
+
+        await applySession(data.session);
+      } catch {
         if (mounted) {
-          setLoading(false);
+          setStatus('error');
+        }
+      } finally {
+        initialSessionHandled = true;
+
+        if (mounted) {
+          setIsAuthLoading(false);
+          setHasCompletedInitialCheck(true);
         }
       }
     }
@@ -173,24 +268,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
     }
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      const nextUser = session?.user || null;
-      setUser(nextUser);
-      setLoading(true);
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      if (!mounted) {
+        return;
+      }
 
-      loadProfile(nextUser)
+      if (event === 'INITIAL_SESSION' && !initialSessionHandled) {
+        return;
+      }
+
+      const nextUser = nextSession?.user || null;
+      const isSameUser = currentUserIdRef.current === (nextUser?.id || null);
+
+      setSession(nextSession);
+      setUser(nextUser);
+      currentUserIdRef.current = nextUser?.id || null;
+
+      if (!nextUser) {
+        clearProfile();
+        setStatus('unauthenticated');
+        setHasCompletedInitialCheck(true);
+        return;
+      }
+
+      if (isSameUser && profileRef.current) {
+        setStatus('authenticated');
+        setHasCompletedInitialCheck(true);
+        return;
+      }
+
+      if (!isSameUser) {
+        clearProfile();
+      }
+
+      loadProfile(nextUser, { force: !isSameUser })
         .catch(() => {
-          setProfile(null);
-          setRole(null);
+          if (currentUserIdRef.current === nextUser.id) {
+            clearProfile();
+            setStatus('error');
+          }
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          if (currentUserIdRef.current === nextUser.id) {
+            setHasCompletedInitialCheck(true);
+          }
+        });
     });
 
     return () => {
       mounted = false;
       authListener.subscription.unsubscribe();
     };
-  }, [loadProfile]);
+  }, [clearProfile, loadProfile]);
 
   const signIn = useCallback(async (email: string, password: string) => {
     if (!supabase) {
@@ -207,9 +336,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error('Sign in succeeded but no user was returned.');
     }
 
+    setSession(data.session);
     setUser(data.user);
-    const nextProfile = await loadProfile(data.user);
+    currentUserIdRef.current = data.user.id;
+    const nextProfile = await loadProfile(data.user, { force: profileUserIdRef.current !== data.user.id });
     const nextRole = nextProfile?.role || null;
+    setStatus(nextProfile ? 'authenticated' : 'error');
+    setHasCompletedInitialCheck(true);
 
     return {
       user: data.user,
@@ -221,28 +354,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(async () => {
     if (!supabase) {
+      setSession(null);
       setUser(null);
-      setProfile(null);
-      setRole(null);
+      currentUserIdRef.current = null;
+      clearProfile();
+      setStatus('unauthenticated');
       return;
     }
 
     await supabase.auth.signOut();
+    setSession(null);
     setUser(null);
-    setProfile(null);
-    setRole(null);
-  }, []);
+    currentUserIdRef.current = null;
+    clearProfile();
+    setStatus('unauthenticated');
+    setHasCompletedInitialCheck(true);
+  }, [clearProfile]);
+
+  const isReady = hasCompletedInitialCheck;
+  const loading = !isReady;
 
   const value = useMemo<AuthContextValue>(() => ({
     user,
+    session,
     profile,
     role,
     loading,
+    isAuthLoading,
+    isProfileLoading,
+    isReady,
+    status,
     isConfigured: isSupabaseConfigured,
     signIn,
     signOut,
     refreshProfile,
-  }), [loading, profile, refreshProfile, role, signIn, signOut, user]);
+  }), [isAuthLoading, isProfileLoading, isReady, loading, profile, refreshProfile, role, session, signIn, signOut, status, user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

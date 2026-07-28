@@ -12,14 +12,14 @@ export default function ProtectedRoute({
   allowedRoles: AuthRole[];
   children: ReactNode;
 }) {
-  const { user, role, loading, isConfigured } = useAuth();
+  const { user, role, isReady, isConfigured } = useAuth();
   const location = useLocation();
 
   if (!isConfigured) {
     return <SupabaseSetupPage />;
   }
 
-  if (loading) {
+  if (!isReady) {
     return (
       <div className="dashboard-auth-screen">
         <div className="dashboard-auth-card dashboard-auth-card--compact">

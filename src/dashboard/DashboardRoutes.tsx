@@ -29,13 +29,11 @@ import './styles/dashboard.css';
 
 function ComingSoon({ role }: { role: DashboardRole }) {
   return (
-    <DashboardLayout role={role}>
-      <EmptyState
-        title="Dashboard section coming soon"
-        description="This phase uses mock data for the main role dashboards and account control center. The navigation is ready for the next implementation pass."
-        action={<ActionButton variant="secondary">Mock UI Phase</ActionButton>}
-      />
-    </DashboardLayout>
+    <EmptyState
+      title="Dashboard section coming soon"
+      description={`This ${role} dashboard section is ready for the next implementation pass.`}
+      action={<ActionButton variant="secondary">Mock UI Phase</ActionButton>}
+    />
   );
 }
 
@@ -45,18 +43,30 @@ function DashboardIndex() {
   return <Navigate to={getDashboardPath(role)} replace />;
 }
 
-function ProtectedLayout({
+function ProtectedDashboardShell({
   allowedRoles,
   layoutRole,
-  children,
 }: {
   allowedRoles: AuthRole[];
   layoutRole: DashboardRole;
+}) {
+  return (
+    <ProtectedRoute allowedRoles={allowedRoles}>
+      <DashboardLayout role={layoutRole} />
+    </ProtectedRoute>
+  );
+}
+
+function ProtectedPage({
+  allowedRoles,
+  children,
+}: {
+  allowedRoles: AuthRole[];
   children: ReactNode;
 }) {
   return (
     <ProtectedRoute allowedRoles={allowedRoles}>
-      <DashboardLayout role={layoutRole}>{children}</DashboardLayout>
+      {children}
     </ProtectedRoute>
   );
 }
@@ -67,73 +77,51 @@ export default function DashboardRoutes() {
       <Routes>
         <Route index element={<ProtectedRoute allowedRoles={[...adminAreaRoles, ...teacherRoles, ...studentRoles]}><DashboardIndex /></ProtectedRoute>} />
         <Route path="login" element={<LoginPage />} />
-        <Route
-          path="admin"
-          element={(
-            <ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin">
-              <AdminDashboard />
-            </ProtectedLayout>
-          )}
-        />
-        <Route
-          path="admin/accounts"
-          element={(
-            <ProtectedLayout allowedRoles={accountsRoles} layoutRole="admin">
-              <AccountsRolesPage />
-            </ProtectedLayout>
-          )}
-        />
-        <Route path="admin/leads" element={<ProtectedLayout allowedRoles={['super_admin', 'admin', 'admissions', 'academic_manager']} layoutRole="admin"><LeadsCRMPage /></ProtectedLayout>} />
-        <Route path="admin/students" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="students" /></ProtectedLayout>} />
-        <Route path="admin/students/:studentId" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><StudentRecordPage portalRole="admin" /></ProtectedLayout>} />
-        <Route path="admin/students/:studentId/payments" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><StudentRecordPage portalRole="admin" initialTab="payments" /></ProtectedLayout>} />
-        <Route path="admin/teachers" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="teachers" /></ProtectedLayout>} />
-        <Route path="admin/free-trials" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="free-trials" /></ProtectedLayout>} />
-        <Route path="admin/classes" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="classes" /></ProtectedLayout>} />
-        <Route path="admin/attendance" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="attendance" /></ProtectedLayout>} />
-        <Route path="admin/payments" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="payments" /></ProtectedLayout>} />
-        <Route path="admin/reports" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="reports" /></ProtectedLayout>} />
-        <Route path="admin/settings" element={<ProtectedLayout allowedRoles={adminAreaRoles} layoutRole="admin"><AdminSectionPage section="settings" /></ProtectedLayout>} />
-        <Route path="admin/:section" element={<ProtectedRoute allowedRoles={adminAreaRoles}><ComingSoon role="admin" /></ProtectedRoute>} />
-        <Route
-          path="student"
-          element={(
-            <ProtectedLayout allowedRoles={studentRoles} layoutRole="student">
-              <StudentDashboard />
-            </ProtectedLayout>
-          )}
-        />
-        <Route path="student/schedule" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSchedule /></ProtectedLayout>} />
-        <Route path="student/classes" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentClasses /></ProtectedLayout>} />
-        <Route path="student/free-trial" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentFreeTrial /></ProtectedLayout>} />
-        <Route path="student/attendance" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentAttendance /></ProtectedLayout>} />
-        <Route path="student/homework" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentHomework /></ProtectedLayout>} />
-        <Route path="student/progress" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentProgress /></ProtectedLayout>} />
-        <Route path="student/messages" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentMessages /></ProtectedLayout>} />
-        <Route path="student/payments" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentPayments /></ProtectedLayout>} />
-        <Route path="student/profile" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentProfile /></ProtectedLayout>} />
-        <Route path="student/settings" element={<ProtectedLayout allowedRoles={studentRoles} layoutRole="student"><StudentSettings /></ProtectedLayout>} />
-        <Route path="student/:section" element={<ProtectedRoute allowedRoles={studentRoles}><ComingSoon role="student" /></ProtectedRoute>} />
-        <Route
-          path="teacher"
-          element={(
-            <ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher">
-              <TeacherDashboard />
-            </ProtectedLayout>
-          )}
-        />
-        <Route path="teacher/students" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="students" /></ProtectedLayout>} />
-        <Route path="teacher/students/:studentId" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><StudentRecordPage portalRole="teacher" /></ProtectedLayout>} />
-        <Route path="teacher/free-trials" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="free-trials" /></ProtectedLayout>} />
-        <Route path="teacher/schedule" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="classes" /></ProtectedLayout>} />
-        <Route path="teacher/classes" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="classes" /></ProtectedLayout>} />
-        <Route path="teacher/attendance" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="attendance" /></ProtectedLayout>} />
-        <Route path="teacher/evaluations" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="evaluations" /></ProtectedLayout>} />
-        <Route path="teacher/reports" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="reports" /></ProtectedLayout>} />
-        <Route path="teacher/messages" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="messages" /></ProtectedLayout>} />
-        <Route path="teacher/profile" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="profile" /></ProtectedLayout>} />
-        <Route path="teacher/settings" element={<ProtectedLayout allowedRoles={teacherRoles} layoutRole="teacher"><TeacherSectionPage section="settings" /></ProtectedLayout>} />
-        <Route path="teacher/:section" element={<ProtectedRoute allowedRoles={teacherRoles}><ComingSoon role="teacher" /></ProtectedRoute>} />
+        <Route path="admin" element={<ProtectedDashboardShell allowedRoles={adminAreaRoles} layoutRole="admin" />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="accounts" element={<ProtectedPage allowedRoles={accountsRoles}><AccountsRolesPage /></ProtectedPage>} />
+          <Route path="leads" element={<ProtectedPage allowedRoles={['super_admin', 'admin', 'admissions', 'academic_manager']}><LeadsCRMPage /></ProtectedPage>} />
+          <Route path="students" element={<AdminSectionPage section="students" />} />
+          <Route path="students/:studentId" element={<StudentRecordPage portalRole="admin" />} />
+          <Route path="students/:studentId/payments" element={<StudentRecordPage portalRole="admin" initialTab="payments" />} />
+          <Route path="teachers" element={<AdminSectionPage section="teachers" />} />
+          <Route path="free-trials" element={<AdminSectionPage section="free-trials" />} />
+          <Route path="classes" element={<AdminSectionPage section="classes" />} />
+          <Route path="attendance" element={<AdminSectionPage section="attendance" />} />
+          <Route path="payments" element={<AdminSectionPage section="payments" />} />
+          <Route path="reports" element={<AdminSectionPage section="reports" />} />
+          <Route path="settings" element={<AdminSectionPage section="settings" />} />
+          <Route path=":section" element={<ComingSoon role="admin" />} />
+        </Route>
+        <Route path="student" element={<ProtectedDashboardShell allowedRoles={studentRoles} layoutRole="student" />}>
+          <Route index element={<StudentDashboard />} />
+          <Route path="schedule" element={<StudentSchedule />} />
+          <Route path="classes" element={<StudentClasses />} />
+          <Route path="free-trial" element={<StudentFreeTrial />} />
+          <Route path="attendance" element={<StudentAttendance />} />
+          <Route path="homework" element={<StudentHomework />} />
+          <Route path="progress" element={<StudentProgress />} />
+          <Route path="messages" element={<StudentMessages />} />
+          <Route path="payments" element={<StudentPayments />} />
+          <Route path="profile" element={<StudentProfile />} />
+          <Route path="settings" element={<StudentSettings />} />
+          <Route path=":section" element={<ComingSoon role="student" />} />
+        </Route>
+        <Route path="teacher" element={<ProtectedDashboardShell allowedRoles={teacherRoles} layoutRole="teacher" />}>
+          <Route index element={<TeacherDashboard />} />
+          <Route path="students" element={<TeacherSectionPage section="students" />} />
+          <Route path="students/:studentId" element={<StudentRecordPage portalRole="teacher" />} />
+          <Route path="free-trials" element={<TeacherSectionPage section="free-trials" />} />
+          <Route path="schedule" element={<TeacherSectionPage section="classes" />} />
+          <Route path="classes" element={<TeacherSectionPage section="classes" />} />
+          <Route path="attendance" element={<TeacherSectionPage section="attendance" />} />
+          <Route path="evaluations" element={<TeacherSectionPage section="evaluations" />} />
+          <Route path="reports" element={<TeacherSectionPage section="reports" />} />
+          <Route path="messages" element={<TeacherSectionPage section="messages" />} />
+          <Route path="profile" element={<TeacherSectionPage section="profile" />} />
+          <Route path="settings" element={<TeacherSectionPage section="settings" />} />
+          <Route path=":section" element={<ComingSoon role="teacher" />} />
+        </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </AuthProvider>
