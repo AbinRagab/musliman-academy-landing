@@ -106,6 +106,7 @@ export type UpdateLeadPayload = Partial<{
   assigned_to: string | null;
   assigned_teacher_id: string | null;
   next_follow_up_at: string | null;
+  lost_reason: string | null;
   notes: string | null;
 }>;
 

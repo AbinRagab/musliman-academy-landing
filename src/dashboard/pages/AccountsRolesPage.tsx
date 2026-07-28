@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import Icon from '../../components/Icon';
+import { supabase } from '../../lib/supabaseClient';
 import { accountsRoles, type AuthRole } from '../auth/AuthProvider';
 import { useAuth } from '../auth/AuthProvider';
 import AccessDeniedPage from './AccessDeniedPage';
@@ -241,7 +242,7 @@ export default function AccountsRolesPage() {
               setSelectedRole(row.role === 'super_admin' ? 'admin' : row.role as CreateAccountPayload['role']);
           }}
           onToggleStatus={() => handleStatusChange(row)}
-          onResetPassword={() => setToast({ type: 'info', message: 'Password reset flow will be added in the next phase.' })}
+          onResetPassword={() => handleResetPassword(row)}
         />
       ),
     },
@@ -327,6 +328,26 @@ export default function AccountsRolesPage() {
       setToast({ type: 'success', message: 'Role updated successfully.' });
     } catch (roleError) {
       setToast({ type: 'error', message: roleError instanceof Error ? roleError.message : 'Unable to update role.' });
+    }
+  }
+
+  async function handleResetPassword(profile: ProfileRow) {
+    if (!supabase) {
+      setToast({ type: 'error', message: 'Supabase is not configured for password reset emails.' });
+      return;
+    }
+
+    try {
+      const redirectTo = `${window.location.origin}/dashboard/login`;
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(profile.email, { redirectTo });
+
+      if (resetError) {
+        throw resetError;
+      }
+
+      setToast({ type: 'success', message: `Password reset email sent to ${profile.email}.` });
+    } catch (resetError) {
+      setToast({ type: 'error', message: resetError instanceof Error ? resetError.message : 'Unable to send password reset email.' });
     }
   }
 

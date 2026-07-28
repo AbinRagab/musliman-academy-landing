@@ -2105,6 +2105,10 @@
     grid-template-columns: 1fr;
   }
 
+  .admin-settings-panel {
+    grid-template-columns: 1fr;
+  }
+
   .lead-toolbar .dashboard-filters {
     grid-template-columns: 1fr;
   }
@@ -2553,6 +2557,89 @@
 
 .dashboard-table td {
   font-size: 0.88rem;
+}
+
+.admin-detail-cell {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.admin-detail-cell strong,
+.admin-detail-cell span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-detail-cell strong {
+  color: var(--dashboard-ink);
+  font-weight: 820;
+}
+
+.admin-detail-cell span {
+  color: var(--dashboard-muted);
+  font-size: 0.78rem;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(11, 31, 58, 0.08);
+  border-radius: 8px;
+}
+
+.admin-tabs button {
+  min-height: 36px;
+  padding: 8px 12px;
+  color: var(--dashboard-muted);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-tabs button:hover,
+.admin-tabs button.is-active {
+  color: var(--dashboard-midnight);
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(11, 31, 58, 0.08);
+}
+
+.admin-settings-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-settings-panel label {
+  display: grid;
+  gap: 7px;
+  color: var(--dashboard-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.admin-settings-panel input,
+.admin-settings-panel select {
+  min-height: 40px;
+  padding: 9px 11px;
+  color: var(--dashboard-ink);
+  font: inherit;
+  background: #ffffff;
+  border: 1px solid rgba(11, 31, 58, 0.12);
+  border-radius: 8px;
+}
+
+.admin-settings-panel .dashboard-form-actions {
+  grid-column: 1 / -1;
 }
 
 .dashboard-actions-menu summary {

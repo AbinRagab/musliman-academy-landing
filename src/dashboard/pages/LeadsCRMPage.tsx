@@ -93,7 +93,7 @@ function mockLeads(): LeadRecord[] {
     assigned_teacher_id: null,
     last_contact_at: null,
     next_follow_up_at: new Date(Date.now() + (index + 1) * 86400000).toISOString(),
-    notes: 'Mock CRM note for dashboard preview.',
+    notes: 'Admissions note for dashboard preview.',
     lead_priority: 'normal',
     lost_reason: null,
     converted_student_id: null,
@@ -123,6 +123,37 @@ function isDueToday(value?: string | null) {
   }
 
   return new Date(value).toDateString() === new Date().toDateString();
+}
+
+function csvEscape(value: unknown) {
+  const text = String(value ?? '').replace(/\r?\n/g, ' ');
+  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function exportLeadRows(rows: LeadRecord[]) {
+  const keys: Array<keyof LeadRecord> = [
+    'full_name',
+    'whatsapp',
+    'country',
+    'programName',
+    'source',
+    'status',
+    'assignedOwnerName',
+    'assignedTeacherName',
+    'next_follow_up_at',
+    'created_at',
+  ];
+  const csv = [
+    keys.join(','),
+    ...rows.map((row) => keys.map((key) => csvEscape(row[key])).join(',')),
+  ].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `musliman-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 function CompactCell({
@@ -223,6 +254,7 @@ export default function LeadsCRMPage() {
   const [followUpLead, setFollowUpLead] = useState<LeadRecord | null>(null);
   const [convertLead, setConvertLead] = useState<LeadRecord | null>(null);
   const [lostLead, setLostLead] = useState<LeadRecord | null>(null);
+  const [lostReason, setLostReason] = useState('');
   const [addLeadOpen, setAddLeadOpen] = useState(false);
   const [view, setView] = useState<'pipeline' | 'table'>(() => {
     if (typeof window === 'undefined') {
@@ -258,7 +290,7 @@ export default function LeadsCRMPage() {
       }
       setLeads(mockLeads());
       setUsingMockFallback(true);
-      setToast({ type: 'error', message: 'Live leads could not be loaded. Showing mock CRM data for layout review.' });
+      setToast({ type: 'error', message: 'Live leads could not be loaded. Showing local admissions records.' });
     } finally {
       setLoading(false);
     }
@@ -418,7 +450,7 @@ export default function LeadsCRMPage() {
   async function handleStatusChange(lead: LeadRecord, status: LeadStatus) {
     if (usingMockFallback) {
       setLeads((current) => current.map((item) => item.id === lead.id ? { ...item, status } : item));
-      setToast({ type: 'success', message: 'Mock lead status updated.' });
+      setToast({ type: 'success', message: 'Lead status updated locally.' });
       return;
     }
 
@@ -507,6 +539,31 @@ export default function LeadsCRMPage() {
     setToast({ type: 'success', message: 'Lead note added.' });
   }
 
+  async function handleMarkLost() {
+    if (!lostLead) return;
+
+    if (!lostReason.trim()) {
+      setToast({ type: 'error', message: 'Add a lost reason before closing the lead.' });
+      return;
+    }
+
+    if (usingMockFallback || lostLead.id.startsWith('mock-')) {
+      setLeads((current) => current.map((lead) => (
+        lead.id === lostLead.id
+          ? { ...lead, status: 'lost', lost_reason: lostReason.trim(), updated_at: new Date().toISOString() }
+          : lead
+      )));
+      setToast({ type: 'success', message: 'Lead marked lost locally.' });
+    } else {
+      await updateLead(lostLead.id, { status: 'lost', lost_reason: lostReason.trim() });
+      setToast({ type: 'success', message: 'Lead marked lost.' });
+      await loadLeads();
+    }
+
+    setLostLead(null);
+    setLostReason('');
+  }
+
   const tableColumns: Array<DataTableColumn<LeadRecord>> = [
     { header: 'Lead', accessor: (row) => <CompactCell primary={row.full_name} secondary={row.country || 'Country not set'} /> },
     { header: 'Contact', accessor: (row) => <CompactCell primary={row.whatsapp || '-'} secondary={row.source || 'website'} /> },
@@ -580,7 +637,7 @@ export default function LeadsCRMPage() {
         action={(
           <div className="dashboard-page-actions">
             <ActionButton variant="copper" onClick={() => setAddLeadOpen(true)}><Icon name="plus" size={18} /> Add Lead</ActionButton>
-            <ActionButton variant="secondary"><Icon name="download" size={18} /> Export</ActionButton>
+            <ActionButton variant="secondary" onClick={() => exportLeadRows(sortedLeads)}><Icon name="download" size={18} /> Export Leads</ActionButton>
             <ActionButton variant="secondary" onClick={loadLeads}><Icon name="shieldCheck" size={18} /> Refresh</ActionButton>
           </div>
         )}
@@ -701,7 +758,21 @@ export default function LeadsCRMPage() {
         <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Mark ${lostLead.full_name} lost`}>
           <div className="dashboard-modal__panel dashboard-modal__panel--small">
             <div className="dashboard-card__header"><div><h2>Mark Lost</h2><p>This closes the lead without enrollment.</p></div></div>
-            <div className="dashboard-form-actions"><ActionButton variant="danger" onClick={async () => { await handleStatusChange(lostLead, 'lost'); setLostLead(null); }}>Confirm Mark Lost</ActionButton><ActionButton variant="secondary" onClick={() => setLostLead(null)}>Cancel</ActionButton></div>
+            <div className="dashboard-form">
+              <label>
+                <span>Lost reason</span>
+                <textarea
+                  rows={3}
+                  value={lostReason}
+                  onChange={(event) => setLostReason(event.target.value)}
+                  placeholder="Budget, timing, no response, chose another academy..."
+                />
+              </label>
+              <div className="dashboard-form-actions">
+                <ActionButton variant="danger" onClick={handleMarkLost}>Confirm Mark Lost</ActionButton>
+                <ActionButton variant="secondary" onClick={() => { setLostLead(null); setLostReason(''); }}>Cancel</ActionButton>
+              </div>
+            </div>
           </div>
         </div>
       )}
