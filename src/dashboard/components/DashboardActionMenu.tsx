@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import Icon from '../../components/Icon';
 import ActionButton from './ActionButton';
@@ -70,17 +70,31 @@ export default function DashboardActionMenu({
     }
 
     const rect = button.getBoundingClientRect();
-    const menuWidth = 220;
-    const menuHeight = Math.min(380, menuActions.length * 38 + 16);
-    const top = rect.bottom + menuHeight + 8 > window.innerHeight
-      ? Math.max(12, rect.top - menuHeight - 8)
-      : rect.bottom + 8;
-    const left = align === 'left'
-      ? Math.min(window.innerWidth - menuWidth - 12, Math.max(12, rect.left))
-      : Math.min(window.innerWidth - menuWidth - 12, Math.max(12, rect.right - menuWidth));
+    const menuRect = menuRef.current?.getBoundingClientRect();
+    const menuWidth = menuRect?.width || 220;
+    const menuHeight = menuRect?.height || Math.min(380, menuActions.length * 38 + 16);
+    const margin = 12;
+    const gap = 8;
+
+    let top = rect.bottom + gap;
+    if (top + menuHeight > window.innerHeight - margin) {
+      top = Math.max(margin, rect.top - menuHeight - gap);
+    }
+
+    const preferredLeft = align === 'left' ? rect.left : rect.right - menuWidth;
+    const left = Math.min(
+      window.innerWidth - menuWidth - margin,
+      Math.max(margin, preferredLeft),
+    );
 
     setPosition({ top, left });
   }
+
+  useLayoutEffect(() => {
+    if (open) {
+      updatePosition();
+    }
+  }, [align, menuActions.length, open]);
 
   useEffect(() => {
     if (!open) {
@@ -126,7 +140,7 @@ export default function DashboardActionMenu({
     ? createPortal(
       <div
         ref={menuRef}
-        className="dashboard-action-dropdown"
+        className="dashboard-action-menu-dropdown"
         style={{ top: position.top, left: position.left }}
         role="menu"
       >
@@ -134,7 +148,7 @@ export default function DashboardActionMenu({
           <button
             key={action.label}
             type="button"
-            className={action.danger ? 'is-danger' : ''}
+            className={`dashboard-action-menu-item ${action.danger ? 'danger' : ''}`.trim()}
             disabled={action.disabled}
             role="menuitem"
             onClick={() => {
@@ -167,7 +181,7 @@ export default function DashboardActionMenu({
       {menuActions.length > 0 && (
         <button
           ref={buttonRef}
-          className="dashboard-action-menu__trigger"
+          className={`dashboard-action-menu__trigger ${open ? 'is-open' : ''}`.trim()}
           type="button"
           aria-label={label}
           aria-haspopup="menu"

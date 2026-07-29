@@ -1,3 +1,12 @@
+:root {
+  --z-sidebar: 100;
+  --z-topbar: 200;
+  --z-dropdown: 9999;
+  --z-drawer: 10000;
+  --z-modal: 11000;
+  --z-toast: 12000;
+}
+
 .dashboard-shell {
   --dashboard-midnight: #0b1f3a;
   --dashboard-midnight-deep: #06182d;
@@ -28,7 +37,7 @@
 .dashboard-sidebar {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: var(--z-sidebar);
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -139,7 +148,7 @@
 .dashboard-topbar {
   position: sticky;
   top: 0;
-  z-index: 15;
+  z-index: var(--z-topbar);
   display: flex;
   align-items: center;
   gap: 18px;
@@ -1669,7 +1678,7 @@
 .dashboard-modal {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: var(--z-modal);
   display: grid;
   place-items: center;
   padding: 20px;
@@ -1740,7 +1749,7 @@
 .dashboard-drawer {
   position: fixed;
   inset: 0;
-  z-index: 70;
+  z-index: var(--z-drawer);
 }
 
 .dashboard-drawer__backdrop {
@@ -2155,7 +2164,7 @@
   position: fixed;
   top: 18px;
   right: 18px;
-  z-index: 80;
+  z-index: var(--z-toast);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -6297,7 +6306,7 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  z-index: 55;
+  z-index: var(--z-dropdown);
   display: grid;
   width: 220px;
   min-width: 220px;
@@ -6368,71 +6377,75 @@
 
 .dashboard-action-menu__trigger {
   display: inline-grid;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   place-items: center;
-  color: var(--dashboard-midnight);
-  background: var(--dashboard-white);
-  border: 1px solid rgba(11, 31, 58, 0.1);
+  color: #0B1F3A;
+  background: #FFFFFF;
+  border: 1px solid rgba(11, 31, 58, 0.12);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.dashboard-action-menu__trigger:hover,
+.dashboard-action-menu__trigger.is-open {
+  color: #0B1F3A;
+  background: #F8F7F3;
+  border-color: #B87333;
+  box-shadow: 0 8px 22px rgba(184, 115, 51, 0.16);
+}
+
+.dashboard-action-menu-dropdown {
+  position: fixed;
+  z-index: var(--z-dropdown);
+  display: grid;
+  min-width: 220px;
+  max-width: min(92vw, 260px);
+  padding: 8px;
+  background: #FFFFFF;
+  border: 1px solid rgba(11, 31, 58, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 18px 45px rgba(11, 31, 58, 0.18);
+  opacity: 1;
+  backdrop-filter: none;
+}
+
+.dashboard-action-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 38px;
+  padding: 9px 12px;
+  color: #0B1F3A;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  background: transparent;
+  border: none;
   border-radius: 10px;
   cursor: pointer;
 }
 
-.dashboard-action-menu__trigger:hover {
-  color: var(--dashboard-copper);
-  background: #fbfaf7;
-  border-color: rgba(184, 115, 51, 0.24);
+.dashboard-action-menu-item:hover {
+  color: #B87333;
+  background: #F8F7F3;
 }
 
-.dashboard-action-dropdown {
-  position: fixed;
-  z-index: 1000;
-  display: grid;
-  width: 220px;
-  min-width: 200px;
-  max-width: min(92vw, 260px);
-  padding: 8px;
-  background: var(--dashboard-white);
-  border: 1px solid rgba(11, 31, 58, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 18px 44px rgba(11, 31, 58, 0.16);
-}
-
-.dashboard-action-dropdown button {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  min-height: 38px;
-  padding: 8px 10px;
-  color: var(--dashboard-ink);
-  font: inherit;
-  font-size: 0.84rem;
-  font-weight: 750;
-  text-align: left;
-  background: transparent;
-  border: 0;
-  border-radius: 9px;
-  cursor: pointer;
-}
-
-.dashboard-action-dropdown button:hover {
-  color: var(--dashboard-midnight);
-  background: var(--dashboard-off-white);
-}
-
-.dashboard-action-dropdown button:disabled {
+.dashboard-action-menu-item:disabled {
   color: var(--dashboard-muted);
   cursor: not-allowed;
   opacity: 0.62;
 }
 
-.dashboard-action-dropdown button.is-danger {
-  color: #9f2f24;
+.dashboard-action-menu-item.danger {
+  color: #B42318;
 }
 
-.dashboard-action-dropdown button.is-danger:hover {
-  color: #842018;
-  background: rgba(180, 35, 24, 0.08);
+.dashboard-action-menu-item.danger:hover {
+  color: #B42318;
+  background: #FEF3F2;
 }
 
 .dashboard-table {
