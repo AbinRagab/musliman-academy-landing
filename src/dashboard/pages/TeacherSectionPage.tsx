@@ -13,6 +13,7 @@ import StatusBadge from '../components/StatusBadge';
 import TeacherTrialCard from '../components/TeacherTrialCard';
 import TrialFeedbackModal from '../components/TrialFeedbackModal';
 import Toast, { type ToastMessage } from '../components/Toast';
+import { updateTeacherSessionCheckin, type TeacherCheckinAction } from '../services/teacherCheckinService';
 import {
   freeTrials,
   studentEvaluations,
@@ -190,10 +191,36 @@ const messageThreads: MessageThread[] = [
 ];
 
 function notifyMissingMeeting(setToast: (toast: ToastMessage) => void) {
-  setToast({ type: 'info', message: 'Meeting link is not available yet. Ask admin if the class is due soon.' });
+  setToast({ type: 'info', message: 'Meeting link is not available. Please contact the academy team.' });
 }
 
-function joinClass(classItem: ClassRow, setToast: (toast: ToastMessage) => void) {
+function getScheduledStartAt(dateTime: string) {
+  const normalized = dateTime.replace(/^Today\s+/i, new Date().toDateString() + ' ');
+  const parsed = new Date(normalized);
+  return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+}
+
+async function updateClassCheckin(classItem: ClassRow, action: TeacherCheckinAction, setToast: (toast: ToastMessage) => void) {
+  await updateTeacherSessionCheckin({
+    classId: classItem.id,
+    scheduledStartAt: getScheduledStartAt(classItem.dateTime),
+    action,
+    notes: `${action} from teacher ${classItem.status.toLowerCase()} workflow`,
+  });
+
+  const messageByAction: Record<TeacherCheckinAction, string> = {
+    ready: 'Teacher readiness recorded for this class.',
+    joined: 'Join time recorded for this class.',
+    live: 'Class marked live.',
+    completed: 'Class ended. Please submit attendance and class report.',
+  };
+
+  setToast({ type: action === 'completed' ? 'info' : 'success', message: messageByAction[action] });
+}
+
+async function joinClass(classItem: ClassRow, setToast: (toast: ToastMessage) => void) {
+  await updateClassCheckin(classItem, 'joined', setToast);
+
   if (classItem.meetingLink) {
     window.open(classItem.meetingLink, '_blank', 'noopener,noreferrer');
     return;
@@ -479,7 +506,9 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         header: 'Action',
         accessor: (row) => (
           <CompactActions>
+            <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'ready', setToast)}>I am Ready</ActionButton>
             <ActionButton variant="ghost" onClick={() => joinClass(row, setToast)}>Join Class</ActionButton>
+            {row.status === 'Live' && <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'live', setToast)}>Start Class</ActionButton>}
             <ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: `${row.student}: ${row.notes}` })}>View Details</ActionButton>
             <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
             <ActionButton variant="ghost" onClick={() => setReportModal(row)}>Add Class Report</ActionButton>
@@ -503,7 +532,11 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                 <strong>{row.student}</strong>
                 <p>{row.program} - {row.platform}</p>
                 <StatusBadge label={row.status} />
-                <div className="teacher-action-row"><ActionButton variant="ghost" onClick={() => joinClass(row, setToast)}>Join Class</ActionButton><ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: `${row.student}: ${row.notes}` })}>View Details</ActionButton></div>
+                <div className="teacher-action-row">
+                  <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'ready', setToast)}>I am Ready</ActionButton>
+                  <ActionButton variant="ghost" onClick={() => joinClass(row, setToast)}>Join Class</ActionButton>
+                  <ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: `${row.student}: ${row.notes}` })}>View Details</ActionButton>
+                </div>
               </article>
             ))}
           </div>
@@ -534,7 +567,10 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         header: 'Action',
         accessor: (row) => (
           <CompactActions>
+            {['Live', 'Upcoming', 'Scheduled'].includes(row.status) && <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'ready', setToast)}>I am Ready</ActionButton>}
             {['Live', 'Upcoming'].includes(row.status) && <ActionButton variant="ghost" onClick={() => joinClass(row, setToast)}>Join Class</ActionButton>}
+            {row.status === 'Live' && <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'live', setToast)}>Start Class</ActionButton>}
+            {row.status === 'Live' && <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'completed', setToast)}>End Class</ActionButton>}
             {row.reportStatus === 'Submitted' ? <ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: row.notes })}>View Report</ActionButton> : <ActionButton variant="ghost" onClick={() => setReportModal(row)}>Add Report</ActionButton>}
             <ActionButton variant="ghost" onClick={() => setReportModal(row)}>Set Homework</ActionButton>
             <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>

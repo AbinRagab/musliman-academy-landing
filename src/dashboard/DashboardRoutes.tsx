@@ -6,6 +6,7 @@ import DashboardLayout from './components/DashboardLayout';
 import EmptyState from './components/EmptyState';
 import ActionButton from './components/ActionButton';
 import AccountsRolesPage from './pages/AccountsRolesPage';
+import AdminCompliancePage from './pages/AdminCompliancePage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminSectionPage from './pages/AdminSectionPage';
 import LeadsCRMPage from './pages/LeadsCRMPage';
@@ -88,6 +89,7 @@ export default function DashboardRoutes() {
           <Route path="free-trials" element={<AdminSectionPage section="free-trials" />} />
           <Route path="classes" element={<AdminSectionPage section="classes" />} />
           <Route path="attendance" element={<AdminSectionPage section="attendance" />} />
+          <Route path="compliance" element={<AdminCompliancePage />} />
           <Route path="payments" element={<AdminSectionPage section="payments" />} />
           <Route path="reports" element={<AdminSectionPage section="reports" />} />
           <Route path="settings" element={<AdminSectionPage section="settings" />} />

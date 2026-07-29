@@ -6065,6 +6065,116 @@
   border-radius: 50%;
 }
 
+.dashboard-notification-menu {
+  position: relative;
+}
+
+.dashboard-notification-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 50;
+  width: min(92vw, 380px);
+  overflow: hidden;
+  background: var(--dashboard-white);
+  border: 1px solid var(--dashboard-line);
+  border-radius: 8px;
+  box-shadow: 0 18px 46px rgba(11, 31, 58, 0.16);
+}
+
+.dashboard-notification-dropdown__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--dashboard-line);
+}
+
+.dashboard-notification-dropdown__header strong {
+  color: var(--dashboard-midnight);
+}
+
+.dashboard-notification-dropdown__header button {
+  color: var(--dashboard-copper);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.dashboard-notification-dropdown__header button:disabled {
+  color: var(--dashboard-muted);
+  cursor: not-allowed;
+}
+
+.dashboard-notification-list {
+  display: grid;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.dashboard-notification-item {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  padding: 12px 14px;
+  color: var(--dashboard-ink);
+  text-align: left;
+  background: var(--dashboard-white);
+  border: 0;
+  border-bottom: 1px solid var(--dashboard-line);
+  cursor: pointer;
+}
+
+.dashboard-notification-item:hover,
+.dashboard-notification-item.is-unread {
+  background: #fbfaf7;
+}
+
+.dashboard-notification-item span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+}
+
+.dashboard-notification-item p {
+  margin: 0;
+  color: var(--dashboard-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.dashboard-notification-item small,
+.dashboard-notification-empty {
+  color: var(--dashboard-muted);
+  font-size: 0.76rem;
+}
+
+.dashboard-notification-empty {
+  padding: 18px 14px;
+}
+
+.dashboard-notification-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  background: var(--dashboard-copper);
+  border-radius: 50%;
+}
+
+.dashboard-notification-dot--alert,
+.dashboard-notification-dot--warning {
+  background: #b42318;
+}
+
+.dashboard-notification-dot--payment {
+  background: #0b7a46;
+}
+
 .student-payment-meter span {
   color: var(--dashboard-ink);
   font-size: 1.35rem;

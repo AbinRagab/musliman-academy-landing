@@ -9,6 +9,7 @@ import StatusBadge from '../components/StatusBadge';
 import TeacherTrialCard from '../components/TeacherTrialCard';
 import TrialFeedbackModal from '../components/TrialFeedbackModal';
 import Toast, { type ToastMessage } from '../components/Toast';
+import { updateTeacherSessionCheckin, type TeacherCheckinAction } from '../services/teacherCheckinService';
 import { submitTrialFeedback, updateTrialStatus, fetchTeacherTrials } from '../services/trialsService';
 import {
   freeTrials,
@@ -88,13 +89,11 @@ const fallbackTrials: FreeTrialFallback[] = freeTrials.map((trial, index) => ({
   status: index === 1 ? 'completed' : 'scheduled',
 }));
 
-function openMeeting(link: string | undefined, setToast: (toast: ToastMessage) => void) {
-  if (link) {
-    window.open(link, '_blank', 'noopener,noreferrer');
-    return;
-  }
-
-  setToast({ type: 'info', message: 'Meeting link is not available yet. Check the schedule details or ask admin.' });
+function getScheduledStartAt(time: string) {
+  const normalized = time.replace(/^Today\s+/i, '').trim();
+  const today = new Date();
+  const parsed = new Date(`${today.toDateString()} ${normalized}`);
+  return Number.isNaN(parsed.getTime()) ? today.toISOString() : parsed.toISOString();
 }
 
 function EvaluationModal({ evaluation, onClose }: { evaluation: EvaluationRow; onClose: () => void }) {
@@ -204,6 +203,35 @@ export default function TeacherDashboard() {
     [],
   );
 
+  async function handleCheckinAction(classItem: TeacherClass, action: TeacherCheckinAction) {
+    await updateTeacherSessionCheckin({
+      classId: classItem.id,
+      scheduledStartAt: getScheduledStartAt(classItem.time),
+      action,
+      notes: `${action} from teacher dashboard`,
+    });
+
+    const messageByAction: Record<TeacherCheckinAction, string> = {
+      ready: 'Teacher readiness recorded for this class.',
+      joined: 'Join time recorded for this class.',
+      live: 'Class marked live.',
+      completed: 'Class ended. Please submit attendance and class report.',
+    };
+
+    setToast({ type: action === 'completed' ? 'info' : 'success', message: messageByAction[action] });
+  }
+
+  async function handleJoinClass(classItem: TeacherClass) {
+    await handleCheckinAction(classItem, 'joined');
+
+    if (classItem.meetingLink) {
+      window.open(classItem.meetingLink, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    setToast({ type: 'info', message: 'Meeting link is not available. Please contact the academy team.' });
+  }
+
   const scheduleColumns: Array<DataTableColumn<TeacherClass>> = [
     { header: 'Time', accessor: 'time' },
     { header: 'Student', accessor: 'student' },
@@ -214,7 +242,8 @@ export default function TeacherDashboard() {
       header: 'Action',
       accessor: (row) => (
         <div className="dashboard-table-actions dashboard-table-actions--wrap">
-          <ActionButton variant="ghost" onClick={() => openMeeting(row.meetingLink, setToast)}>Join Class</ActionButton>
+          <ActionButton variant="ghost" onClick={() => handleCheckinAction(row, 'ready')}>I am Ready</ActionButton>
+          <ActionButton variant="ghost" onClick={() => handleJoinClass(row)}>Join Class</ActionButton>
           <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
           <ActionButton variant="ghost" onClick={() => setReportClass(row)}>Add Class Report</ActionButton>
         </div>
@@ -291,7 +320,10 @@ export default function TeacherDashboard() {
             <span><strong>Attendance</strong>{nextClass.attendanceStatus}</span>
           </div>
           <div className="teacher-action-row">
-            <ActionButton variant="copper" onClick={() => openMeeting(nextClass.meetingLink, setToast)}><Icon name="video" size={16} />Join Class</ActionButton>
+            <ActionButton variant="secondary" onClick={() => handleCheckinAction(nextClass, 'ready')}>I am Ready</ActionButton>
+            <ActionButton variant="copper" onClick={() => handleJoinClass(nextClass)}><Icon name="video" size={16} />Join Class</ActionButton>
+            <ActionButton variant="secondary" onClick={() => handleCheckinAction(nextClass, 'live')}>Start Class</ActionButton>
+            <ActionButton variant="secondary" onClick={() => handleCheckinAction(nextClass, 'completed')}>End Class</ActionButton>
             <ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
             <ActionButton variant="secondary" onClick={() => setReportClass(nextClass)}>Add Class Report</ActionButton>
           </div>

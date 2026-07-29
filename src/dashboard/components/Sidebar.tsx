@@ -17,6 +17,7 @@ const linksByRole: Record<DashboardRole, SidebarLink[]> = {
     { label: 'Trial Classes', path: '/dashboard/admin/free-trials', icon: 'gift' },
     { label: 'Classes', path: '/dashboard/admin/classes', icon: 'calendar' },
     { label: 'Attendance', path: '/dashboard/admin/attendance', icon: 'clipboard' },
+    { label: 'Compliance', path: '/dashboard/admin/compliance', icon: 'shieldCheck' },
     { label: 'Reports', path: '/dashboard/admin/reports', icon: 'report' },
     { label: 'Accounts & Roles', path: '/dashboard/admin/accounts', icon: 'shieldCheck' },
     { label: 'Payments', path: '/dashboard/admin/payments', icon: 'award' },
