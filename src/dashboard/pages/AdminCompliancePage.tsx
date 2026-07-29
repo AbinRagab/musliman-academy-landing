@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import DashboardDrawer from '../components/DashboardDrawer';
 import DashboardPageHeader from '../components/DashboardPageHeader';
 import DashboardSkeleton from '../components/DashboardSkeleton';
@@ -81,12 +82,15 @@ export default function AdminCompliancePage() {
     {
       header: 'Actions',
       accessor: (row) => (
-        <div className="dashboard-table-actions dashboard-table-actions--wrap">
-          <ActionButton variant="ghost" onClick={() => notify(`Reminder queued for ${row.teacher}.`)}>Send Reminder Now</ActionButton>
-          <ActionButton variant="ghost" onClick={() => notify(`Teacher contact workflow opened for ${row.teacher}.`)}>Contact Teacher</ActionButton>
-          <ActionButton variant="ghost" onClick={() => setSelectedCheckin(row)}>View Logs</ActionButton>
-          <ActionButton variant="ghost" onClick={() => notify(`Warning form prepared for ${row.teacher}.`)}>Create Warning</ActionButton>
-        </div>
+        <DashboardActionMenu
+          primaryAction={{ label: 'View Logs', onClick: () => setSelectedCheckin(row) }}
+          actions={[
+            { label: 'Send Reminder Now', onClick: () => notify(`Reminder queued for ${row.teacher}.`) },
+            { label: 'Contact Teacher', onClick: () => notify(`Teacher contact workflow opened for ${row.teacher}.`) },
+            { label: 'Create Warning', onClick: () => notify(`Warning form prepared for ${row.teacher}.`) },
+            { label: 'Mark Excused', onClick: () => notify(`${row.teacher} marked excused for review.`) },
+          ]}
+        />
       ),
     },
   ];
@@ -102,12 +106,15 @@ export default function AdminCompliancePage() {
     {
       header: 'Actions',
       accessor: (row) => (
-        <div className="dashboard-table-actions dashboard-table-actions--wrap">
-          <ActionButton variant="ghost" onClick={() => setSelectedWarning(row)}>View Warning</ActionButton>
-          <ActionButton variant="ghost" onClick={() => handleWarning(row, 'approved')}>Approve Warning</ActionButton>
-          <ActionButton variant="ghost" onClick={() => handleWarning(row, 'excused')}>Mark Excused</ActionButton>
-          <ActionButton variant="ghost" onClick={() => handleWarning(row, 'resolved')}>Resolve</ActionButton>
-        </div>
+        <DashboardActionMenu
+          primaryAction={{ label: 'View Warning', onClick: () => setSelectedWarning(row) }}
+          actions={[
+            { label: 'Approve Warning', onClick: () => handleWarning(row, 'approved') },
+            { label: 'Mark Excused', onClick: () => handleWarning(row, 'excused') },
+            { label: 'Resolve', onClick: () => handleWarning(row, 'resolved') },
+            { label: 'Cancel Warning', onClick: () => handleWarning(row, 'cancelled'), danger: true },
+          ]}
+        />
       ),
     },
   ];

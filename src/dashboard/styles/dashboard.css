@@ -6344,6 +6344,132 @@
   background: rgba(184, 115, 51, 0.09);
 }
 
+.dashboard-action-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.dashboard-action-menu__primary.dashboard-action {
+  min-height: 34px;
+  padding: 7px 11px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.dashboard-action-menu--sm .dashboard-action-menu__primary.dashboard-action {
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 0.76rem;
+}
+
+.dashboard-action-menu__trigger {
+  display: inline-grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  color: var(--dashboard-midnight);
+  background: var(--dashboard-white);
+  border: 1px solid rgba(11, 31, 58, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.dashboard-action-menu__trigger:hover {
+  color: var(--dashboard-copper);
+  background: #fbfaf7;
+  border-color: rgba(184, 115, 51, 0.24);
+}
+
+.dashboard-action-dropdown {
+  position: fixed;
+  z-index: 1000;
+  display: grid;
+  width: 220px;
+  min-width: 200px;
+  max-width: min(92vw, 260px);
+  padding: 8px;
+  background: var(--dashboard-white);
+  border: 1px solid rgba(11, 31, 58, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 18px 44px rgba(11, 31, 58, 0.16);
+}
+
+.dashboard-action-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  padding: 8px 10px;
+  color: var(--dashboard-ink);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 750;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.dashboard-action-dropdown button:hover {
+  color: var(--dashboard-midnight);
+  background: var(--dashboard-off-white);
+}
+
+.dashboard-action-dropdown button:disabled {
+  color: var(--dashboard-muted);
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.dashboard-action-dropdown button.is-danger {
+  color: #9f2f24;
+}
+
+.dashboard-action-dropdown button.is-danger:hover {
+  color: #842018;
+  background: rgba(180, 35, 24, 0.08);
+}
+
+.dashboard-table {
+  width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  overflow: hidden;
+  max-width: 260px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-table td:has(.dashboard-action-menu),
+.dashboard-table th:last-child {
+  overflow: visible;
+  width: 180px;
+}
+
+.dashboard-table-wrap {
+  max-width: 100%;
+  overflow-x: visible;
+}
+
+html,
+body,
+#root,
+.dashboard-shell,
+.dashboard-main,
+.dashboard-content {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 @media (max-width: 1120px) {
   .topbar-account-text small {
     display: none;

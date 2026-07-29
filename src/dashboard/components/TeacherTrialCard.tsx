@@ -1,5 +1,5 @@
 import Icon from '../../components/Icon';
-import ActionButton from './ActionButton';
+import DashboardActionMenu from './DashboardActionMenu';
 import StatusBadge from './StatusBadge';
 
 export default function TeacherTrialCard({
@@ -23,6 +23,15 @@ export default function TeacherTrialCard({
 }) {
   const normalizedStatus = (trial.status || 'scheduled').toLowerCase();
   const feedbackSubmitted = Boolean(trial.teacher_feedback) || normalizedStatus === 'completed';
+  const canJoin = Boolean(trial.meeting_link) && ['scheduled', 'live'].includes(normalizedStatus);
+  const primaryLabel = normalizedStatus === 'scheduled'
+    ? 'View Trial'
+    : feedbackSubmitted
+      ? 'View Feedback'
+      : normalizedStatus === 'no_show'
+        ? 'Add Note'
+        : 'Add Trial Feedback';
+  const primaryAction = normalizedStatus === 'scheduled' ? () => onDetails?.() : onFeedback;
 
   return (
     <article className="teacher-trial-card">
@@ -36,16 +45,19 @@ export default function TeacherTrialCard({
       </div>
       <StatusBadge label={trial.status || 'scheduled'} />
       <div className="teacher-trial-card__actions">
-        <ActionButton variant="ghost" onClick={onDetails}>View Trial</ActionButton>
-        {trial.meeting_link && ['scheduled', 'live'].includes(normalizedStatus) && (
-          <a className="dashboard-action dashboard-action--secondary" href={trial.meeting_link} target="_blank" rel="noreferrer">Join Trial</a>
-        )}
-        {feedbackSubmitted ? (
-          <ActionButton variant="secondary" onClick={onFeedback}>View Feedback</ActionButton>
-        ) : (
-          <ActionButton variant="copper" onClick={onFeedback}>{normalizedStatus === 'no_show' ? 'Add Note' : 'Add Trial Feedback'}</ActionButton>
-        )}
-        {normalizedStatus !== 'no_show' && !feedbackSubmitted && <ActionButton variant="danger" onClick={onNoShow}>Notify Admin: No Show</ActionButton>}
+        <DashboardActionMenu
+          primaryAction={{ label: primaryLabel, onClick: primaryAction }}
+          actions={[
+            {
+              label: 'Join Trial',
+              hidden: !canJoin,
+              onClick: () => window.open(trial.meeting_link || '', '_blank', 'noopener,noreferrer'),
+            },
+            { label: 'View Trial', onClick: () => onDetails?.(), hidden: normalizedStatus === 'scheduled' || !onDetails },
+            { label: feedbackSubmitted ? 'View Feedback' : 'Add Trial Feedback', onClick: onFeedback, hidden: primaryLabel === 'View Feedback' || primaryLabel === 'Add Trial Feedback' },
+            { label: 'Notify Admin No Show', onClick: onNoShow, danger: true, hidden: normalizedStatus === 'no_show' || feedbackSubmitted },
+          ]}
+        />
       </div>
     </article>
   );

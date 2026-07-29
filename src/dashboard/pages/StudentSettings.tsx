@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import SectionCard from '../components/SectionCard';
 import {
   ComingSoonModal,
@@ -62,8 +63,12 @@ export default function StudentSettings() {
             <label><span>Email</span><input value={settings.email} onChange={(event) => setSettings((current) => ({ ...current, email: event.target.value }))} /></label>
             <label><span>WhatsApp</span><input value={settings.whatsapp} onChange={(event) => setSettings((current) => ({ ...current, whatsapp: event.target.value }))} /></label>
             <div className="student-card-actions">
-              <ActionButton variant="secondary" onClick={() => setComingSoon('Change Password')}><Icon name="lock" size={16} />Change Password</ActionButton>
-              <ActionButton variant="ghost" onClick={() => setComingSoon('Request Contact Update')}><Icon name="send" size={16} />Request Contact Update</ActionButton>
+              <DashboardActionMenu
+                primaryAction={{ label: 'Change Password', icon: <Icon name="lock" size={15} />, onClick: () => setComingSoon('Change Password') }}
+                actions={[
+                  { label: 'Request Contact Update', icon: <Icon name="send" size={15} />, onClick: () => setComingSoon('Request Contact Update') },
+                ]}
+              />
             </div>
           </div>
         </SectionCard>

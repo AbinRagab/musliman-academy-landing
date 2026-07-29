@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import DashboardSkeleton from '../components/DashboardSkeleton';
 import SectionCard from '../components/SectionCard';
 import StatusBadge from '../components/StatusBadge';
@@ -82,14 +83,16 @@ export default function StudentFreeTrial() {
               <span><Icon name="check" size={16} /> Parent may stay nearby for setup.</span>
             </div>
             <div className="student-card-actions">
-              <ActionButton onClick={() => trial.meetingLink ? openExternalLink(trial.meetingLink) : setCompose({ to: 'Academy Team', subject: 'Trial meeting link request' })}>
-                <Icon name="video" size={16} />
-                {trial.meetingLink ? 'Join Trial' : 'Request Trial Link'}
-              </ActionButton>
-              <ActionButton variant="secondary" onClick={() => setCompose({ to: 'Academy Team', subject: 'Trial support request' })}>
-                <Icon name="whatsapp" size={16} />
-                WhatsApp / Contact Support
-              </ActionButton>
+              <DashboardActionMenu
+                primaryAction={{
+                  label: trial.meetingLink ? 'Join Trial' : 'Request Trial Link',
+                  icon: <Icon name="video" size={15} />,
+                  onClick: () => trial.meetingLink ? openExternalLink(trial.meetingLink) : setCompose({ to: 'Academy Team', subject: 'Trial meeting link request' }),
+                }}
+                actions={[
+                  { label: 'Contact Academy Team', icon: <Icon name="support" size={15} />, onClick: () => setCompose({ to: 'Academy Team', subject: 'Trial support request' }) },
+                ]}
+              />
             </div>
           </SectionCard>
         )}
@@ -102,14 +105,13 @@ export default function StudentFreeTrial() {
               <span>Recommendation <strong>{trial.recommendation}</strong></span>
             </div>
             <div className="student-card-actions">
-              <ActionButton variant="secondary" onClick={() => setFeedbackOpen(true)}>
-                <Icon name="eye" size={16} />
-                View Feedback
-              </ActionButton>
-              <ActionButton onClick={() => setCompose({ to: 'Academy Team', subject: 'Complete enrollment' })}>
-                <Icon name="checkCircle" size={16} />
-                Complete Enrollment
-              </ActionButton>
+              <DashboardActionMenu
+                primaryAction={{ label: 'Complete Enrollment', icon: <Icon name="checkCircle" size={15} />, onClick: () => setCompose({ to: 'Academy Team', subject: 'Complete enrollment' }) }}
+                actions={[
+                  { label: 'View Feedback', icon: <Icon name="eye" size={15} />, onClick: () => setFeedbackOpen(true) },
+                  { label: 'Contact Academy Team', icon: <Icon name="support" size={15} />, onClick: () => setCompose({ to: 'Academy Team', subject: 'Enrollment question' }) },
+                ]}
+              />
             </div>
           </SectionCard>
         )}

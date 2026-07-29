@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useMemo, useState, type ReactNode } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
 import DashboardSkeleton from '../components/DashboardSkeleton';
-import ActionMenu from '../components/ActionMenu';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import AssignTeacherModal from '../components/AssignTeacherModal';
 import ConvertLeadModal from '../components/ConvertLeadModal';
 import DashboardPageHeader from '../components/DashboardPageHeader';
@@ -198,12 +198,24 @@ function LeadActions({
   onConvert: () => void;
 }) {
   const isTeacherTraining = lead.lead_type === 'teacher_training';
+  const primaryLabel = lead.status === 'trial_scheduled'
+    ? 'View Trial'
+    : lead.status === 'trial_completed'
+      ? 'Convert to Student'
+      : 'View Details';
+  const primaryAction = lead.status === 'trial_completed' && !isTeacherTraining
+    ? onConvert
+    : onDetails;
 
   return (
-    <ActionMenu
+    <DashboardActionMenu
       label={`Actions for ${lead.full_name}`}
-      items={[
-        { label: 'View Details', onClick: onDetails },
+      primaryAction={{
+        label: primaryLabel,
+        onClick: primaryAction,
+        variant: lead.status === 'trial_completed' && !isTeacherTraining ? 'primary' : 'secondary',
+      }}
+      actions={[
         { label: 'Edit Lead', onClick: onEdit },
         { label: 'Mark Contacted', onClick: () => onStatus('contacted') },
         { label: isTeacherTraining ? 'Assign Reviewer' : 'Assign Owner', onClick: onOwner },
@@ -216,7 +228,7 @@ function LeadActions({
             { label: 'Assign Teacher', onClick: onTeacher },
             { label: 'Schedule Trial', onClick: onTrial },
             { label: 'Add Follow-up', onClick: onFollowUp },
-            { label: 'Convert to Student', onClick: onConvert },
+            { label: 'Convert to Student', onClick: onConvert, hidden: lead.status === 'trial_completed' },
           ]),
         { label: 'Mark Lost', onClick: onLost, danger: true },
       ]}

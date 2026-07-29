@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import SectionCard from '../components/SectionCard';
 import {
   ComposeMessageModal,
@@ -76,10 +77,14 @@ export default function StudentMessages() {
 
       <SectionCard title="Quick Actions">
         <div className="student-quick-actions">
-          <ActionButton variant="secondary" onClick={() => setCompose({ to: 'Teacher', subject: 'Question for teacher' })}><Icon name="teacher" size={16} />Message Teacher</ActionButton>
-          <ActionButton variant="secondary" onClick={() => setCompose({ to: 'Academy Team', subject: 'Academy support request' })}><Icon name="support" size={16} />Contact Academy Team</ActionButton>
-          <ActionButton variant="secondary" onClick={() => setCompose({ to: 'Scheduling Team', subject: 'Schedule question' })}><Icon name="calendar" size={16} />Ask about Schedule</ActionButton>
-          <ActionButton variant="secondary" onClick={() => setCompose({ to: 'Finance Team', subject: 'Payment question' })}><Icon name="award" size={16} />Ask about Payment</ActionButton>
+          <DashboardActionMenu
+            primaryAction={{ label: 'Message Teacher', icon: <Icon name="teacher" size={15} />, onClick: () => setCompose({ to: 'Teacher', subject: 'Question for teacher' }) }}
+            actions={[
+              { label: 'Contact Academy Team', icon: <Icon name="support" size={15} />, onClick: () => setCompose({ to: 'Academy Team', subject: 'Academy support request' }) },
+              { label: 'Ask about Schedule', icon: <Icon name="calendar" size={15} />, onClick: () => setCompose({ to: 'Scheduling Team', subject: 'Schedule question' }) },
+              { label: 'Ask about Payment', icon: <Icon name="award" size={15} />, onClick: () => setCompose({ to: 'Finance Team', subject: 'Payment question' }) },
+            ]}
+          />
         </div>
       </SectionCard>
     </div>

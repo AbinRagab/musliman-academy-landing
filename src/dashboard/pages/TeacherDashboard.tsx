@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
@@ -241,12 +242,18 @@ export default function TeacherDashboard() {
     {
       header: 'Action',
       accessor: (row) => (
-        <div className="dashboard-table-actions dashboard-table-actions--wrap">
-          <ActionButton variant="ghost" onClick={() => handleCheckinAction(row, 'ready')}>I am Ready</ActionButton>
-          <ActionButton variant="ghost" onClick={() => handleJoinClass(row)}>Join Class</ActionButton>
-          <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
-          <ActionButton variant="ghost" onClick={() => setReportClass(row)}>Add Class Report</ActionButton>
-        </div>
+        <DashboardActionMenu
+          primaryAction={{ label: row.reportStatus === 'Needs Report' ? 'Add Report' : row.attendanceStatus === 'Pending' ? 'Mark Attendance' : 'Join Class', onClick: row.reportStatus === 'Needs Report' ? () => setReportClass(row) : row.attendanceStatus === 'Pending' ? () => navigate('/dashboard/teacher/attendance') : () => handleJoinClass(row) }}
+          actions={[
+            { label: 'I am Ready', onClick: () => handleCheckinAction(row, 'ready') },
+            { label: 'Join Class', onClick: () => handleJoinClass(row), hidden: row.reportStatus !== 'Needs Report' && row.attendanceStatus !== 'Pending' },
+            { label: 'Start Class', onClick: () => handleCheckinAction(row, 'live') },
+            { label: 'End Class', onClick: () => handleCheckinAction(row, 'completed') },
+            { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance'), hidden: row.attendanceStatus === 'Pending' },
+            { label: 'Add Class Report', onClick: () => setReportClass(row), hidden: row.reportStatus === 'Needs Report' },
+            { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${row.student}: ${row.program} at ${row.time}.` }) },
+          ]}
+        />
       ),
     },
   ];
@@ -260,10 +267,25 @@ export default function TeacherDashboard() {
     {
       header: 'Action',
       accessor: (row) => (
-        <div className="dashboard-table-actions dashboard-table-actions--wrap">
-          <ActionButton variant="ghost" onClick={() => navigate(`/dashboard/teacher/students/${row.id}`)}>Open Record</ActionButton>
-          <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/messages')}>Message via Academy</ActionButton>
-        </div>
+        <DashboardActionMenu
+          primaryAction={{ label: 'Open Record', onClick: () => navigate(`/dashboard/teacher/students/${row.id}`) }}
+          actions={[
+            { label: 'View Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
+            {
+              label: 'Add Evaluation',
+              onClick: () => setEvaluationStudent({
+                ...(studentEvaluations[0] || { recitation: 0, tajweed: 0, understanding: 0 }),
+                id: row.id,
+                student: row.student,
+                program: row.program,
+                relatedClass: row.nextClass,
+                status: 'ready',
+              }),
+            },
+            { label: 'Add Class Note', onClick: () => setReportClass(todaysClasses.find((classItem) => classItem.student === row.student) || todaysClasses[0]) },
+            { label: 'Message via Academy', onClick: () => navigate('/dashboard/teacher/messages') },
+          ]}
+        />
       ),
     },
   ];
@@ -284,10 +306,14 @@ export default function TeacherDashboard() {
     {
       header: 'Action',
       accessor: (row) => (
-        <div className="dashboard-table-actions dashboard-table-actions--wrap">
-          <ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: `Trial details opened for ${row.student}.` })}>View Trial</ActionButton>
-          <ActionButton variant="copper" onClick={() => setTrialFeedback(row)}>Add Trial Feedback</ActionButton>
-        </div>
+        <DashboardActionMenu
+          primaryAction={{ label: row.status === 'completed' ? 'View Feedback' : 'View Trial', onClick: row.status === 'completed' ? () => setTrialFeedback(row) : () => setToast({ type: 'info', message: `Trial details opened for ${row.student}.` }) }}
+          actions={[
+            { label: 'Join Trial', onClick: () => setToast({ type: 'info', message: 'Meeting link is not available. Please contact the academy team.' }), hidden: row.status !== 'scheduled' },
+            { label: 'Add Trial Feedback', onClick: () => setTrialFeedback(row), hidden: row.status === 'completed' },
+            { label: 'Message Admin', onClick: () => navigate('/dashboard/teacher/messages') },
+          ]}
+        />
       ),
     },
   ];
@@ -320,12 +346,17 @@ export default function TeacherDashboard() {
             <span><strong>Attendance</strong>{nextClass.attendanceStatus}</span>
           </div>
           <div className="teacher-action-row">
-            <ActionButton variant="secondary" onClick={() => handleCheckinAction(nextClass, 'ready')}>I am Ready</ActionButton>
-            <ActionButton variant="copper" onClick={() => handleJoinClass(nextClass)}><Icon name="video" size={16} />Join Class</ActionButton>
-            <ActionButton variant="secondary" onClick={() => handleCheckinAction(nextClass, 'live')}>Start Class</ActionButton>
-            <ActionButton variant="secondary" onClick={() => handleCheckinAction(nextClass, 'completed')}>End Class</ActionButton>
-            <ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
-            <ActionButton variant="secondary" onClick={() => setReportClass(nextClass)}>Add Class Report</ActionButton>
+            <DashboardActionMenu
+              primaryAction={{ label: 'Join Class', icon: <Icon name="video" size={16} />, onClick: () => handleJoinClass(nextClass) }}
+              actions={[
+                { label: 'I am Ready', onClick: () => handleCheckinAction(nextClass, 'ready') },
+                { label: 'Start Class', onClick: () => handleCheckinAction(nextClass, 'live') },
+                { label: 'End Class', onClick: () => handleCheckinAction(nextClass, 'completed') },
+                { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
+                { label: 'Add Class Report', onClick: () => setReportClass(nextClass) },
+                { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${nextClass.student}: ${nextClass.program} at ${nextClass.time}.` }) },
+              ]}
+            />
           </div>
         </div>
       </SectionCard>

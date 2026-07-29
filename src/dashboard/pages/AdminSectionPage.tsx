@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
-import ActionMenu, { type ActionMenuItem } from '../components/ActionMenu';
+import DashboardActionMenu, { type DashboardMenuAction, type DashboardPrimaryAction } from '../components/DashboardActionMenu';
 import DashboardPageHeader from '../components/DashboardPageHeader';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import EmptyState from '../components/EmptyState';
@@ -211,10 +211,20 @@ const statusColumn = (key = 'status'): DataTableColumn<GenericRow> => ({
   accessor: (row) => <StatusBadge label={String(row[key] || '-')} tone={statusTone(String(row[key] || ''))} />,
 });
 
-function createActionsColumn(label: string, getItems: (row: GenericRow) => ActionMenuItem[]): DataTableColumn<GenericRow> {
+function createActionsColumn(
+  label: string,
+  getPrimary: (row: GenericRow) => DashboardPrimaryAction,
+  getItems: (row: GenericRow) => DashboardMenuAction[],
+): DataTableColumn<GenericRow> {
   return {
     header: 'Actions',
-    accessor: (row) => <ActionMenu label={`${label} actions`} items={getItems(row)} />,
+    accessor: (row) => (
+      <DashboardActionMenu
+        label={`${label} actions`}
+        primaryAction={getPrimary(row)}
+        actions={getItems(row)}
+      />
+    ),
   };
 }
 
@@ -642,47 +652,81 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
   const rows = useMemo(() => buildRows(section, studentRows), [section, studentRows]);
   const stats = useMemo(() => buildStats(section, rows), [rows, section]);
 
-  const actions = (row: GenericRow): ActionMenuItem[] => {
+  const primaryAction = (row: GenericRow): DashboardPrimaryAction => {
+    const openDrawer = () => setSelectedRow(row);
+
+    if (section === 'students') {
+      return { label: 'Open Record', onClick: () => navigate(`/dashboard/admin/students/${row.id}`), variant: 'primary' };
+    }
+
+    if (section === 'teachers') {
+      return { label: 'View Profile', onClick: openDrawer, variant: 'primary' };
+    }
+
+    if (section === 'free-trials') {
+      return { label: 'Review Trial', onClick: openDrawer, variant: 'primary' };
+    }
+
+    if (section === 'classes') {
+      return { label: 'Class Details', onClick: openDrawer, variant: 'primary' };
+    }
+
+    if (section === 'attendance') {
+      return { label: 'Review Attendance', onClick: openDrawer, variant: 'primary' };
+    }
+
+    if (section === 'payments') {
+      return { label: paymentActionLabel(row), onClick: openDrawer, variant: row.status === 'overdue' ? 'danger' : 'primary' };
+    }
+
+    if (section === 'reports') {
+      return { label: reportActionLabel(row), onClick: openDrawer, variant: 'primary' };
+    }
+
+    return { label: 'Edit Permissions', onClick: openDrawer, variant: 'primary' };
+  };
+
+  const actions = (row: GenericRow): DashboardMenuAction[] => {
     const openDrawer = () => setSelectedRow(row);
 
     if (section === 'students') {
       return [
-        { label: 'Open Record', onClick: () => navigate(`/dashboard/admin/students/${row.id}`) },
         { label: 'Complete Setup', onClick: openDrawer, disabled: Boolean(row.setupReady) },
         { label: 'Assign Teacher', onClick: () => notify('Assign Teacher drawer is prepared for live teacher assignment.') },
         { label: 'Set Schedule', onClick: () => notify('Set Schedule action is prepared for class scheduling.') },
         { label: 'Update Level', onClick: () => notify('Update Level action is prepared for placement updates.') },
+        { label: 'View Attendance', onClick: openDrawer },
+        { label: 'View Payments', onClick: openDrawer },
         { label: 'Deactivate Student', onClick: () => notify('Deactivate Student action is prepared for status updates.'), danger: true },
       ];
     }
 
     if (section === 'teachers') {
       return [
-        { label: 'View Profile', onClick: openDrawer },
         { label: 'Edit Academic Profile', onClick: openDrawer },
         { label: 'Update Availability', onClick: () => notify('Teacher availability action prepared.') },
         { label: 'View Assigned Students', onClick: openDrawer },
         { label: 'View Trials', onClick: openDrawer },
+        { label: 'View Documents', onClick: openDrawer },
         { label: String(row.status) === 'active' ? 'Deactivate' : 'Activate', onClick: () => notify('Teacher status action prepared.'), danger: row.status === 'active' },
       ];
     }
 
     if (section === 'free-trials') {
       return [
-        { label: 'View Trial Details', onClick: openDrawer },
         { label: 'Assign Teacher', onClick: openDrawer },
-        { label: 'Schedule Trial', onClick: openDrawer },
         { label: 'Reschedule Trial', onClick: () => notify('Reschedule Trial action prepared.') },
+        { label: 'Open Meeting', onClick: () => notify('Meeting link action prepared.') },
         { label: 'Send Reminder', onClick: () => notify('Reminder action prepared for communication integration.') },
         { label: 'Mark Completed', onClick: () => notify('Trial completion action prepared.') },
         { label: 'Mark No Show', onClick: () => notify('No-show action prepared.'), danger: true },
+        { label: 'View Feedback', onClick: openDrawer },
         { label: 'Convert to Student', onClick: openDrawer },
       ];
     }
 
     if (section === 'classes') {
       return [
-        { label: 'Class Details', onClick: openDrawer },
         { label: 'Open Meeting', onClick: () => notify('Meeting link action prepared.') },
         { label: 'View Attendance', onClick: openDrawer },
         { label: 'View Teacher Report', onClick: openDrawer },
@@ -694,7 +738,6 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
     if (section === 'attendance') {
       return [
-        { label: 'View Attendance Details', onClick: openDrawer },
         { label: 'Confirm Attendance', onClick: () => notify('Attendance confirmed.') },
         { label: 'Request Correction', onClick: () => notify('Correction request prepared.') },
         { label: 'Contact Parent', onClick: () => notify('Parent contact action prepared.') },
@@ -704,7 +747,6 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
     if (section === 'payments') {
       return [
-        { label: paymentActionLabel(row), onClick: openDrawer },
         { label: 'Create Invoice', onClick: () => notify('Invoice creation action prepared.') },
         { label: 'View Invoice', onClick: openDrawer },
         { label: 'Download Receipt', onClick: () => notify('Receipt export prepared.'), disabled: row.status !== 'paid' },
@@ -717,14 +759,12 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
     if (section === 'reports') {
       return [
-        { label: reportActionLabel(row), onClick: openDrawer },
         { label: 'Export Report', onClick: () => exportRows('reports', [row]) },
         { label: 'Schedule Report', onClick: () => notify('Report scheduling action prepared.') },
       ];
     }
 
     return [
-      { label: 'Edit Permissions', onClick: openDrawer },
       { label: 'Configure Notifications', onClick: () => setActiveSettingsTab('Notifications') },
       { label: 'Configure Timezone', onClick: () => setActiveSettingsTab('Schedule Defaults') },
     ];
@@ -737,10 +777,9 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         { header: 'Program', accessor: 'program' },
         { header: 'Teacher', accessor: 'teacher' },
         { header: 'Level', accessor: 'level' },
-        { header: 'Attendance', accessor: 'attendance' },
         statusColumn(),
         { header: 'Next Class', accessor: 'nextClass' },
-        createActionsColumn('Student', actions),
+        createActionsColumn('Student', primaryAction, actions),
       ];
     }
 
@@ -752,7 +791,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         { header: 'Trials', accessor: 'trials' },
         { header: 'Availability', accessor: 'availability' },
         statusColumn(),
-        createActionsColumn('Teacher', actions),
+        createActionsColumn('Teacher', primaryAction, actions),
       ];
     }
 
@@ -762,9 +801,8 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         { header: 'Program', accessor: 'program' },
         { header: 'Date/time', accessor: 'dateTime' },
         { header: 'Teacher', accessor: 'teacher' },
-        { header: 'Parent WhatsApp', accessor: 'whatsapp' },
         statusColumn(),
-        createActionsColumn('Trial', actions),
+        createActionsColumn('Trial', primaryAction, actions),
       ];
     }
 
@@ -774,11 +812,9 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         { header: 'Class', accessor: 'className' },
         { header: 'Teacher', accessor: 'teacher' },
         { header: 'Students', accessor: 'students' },
-        { header: 'Attendance submitted?', accessor: (row) => <StatusBadge label={String(row.attendanceSubmitted)} tone={statusTone(String(row.attendanceSubmitted))} /> },
-        { header: 'Homework set?', accessor: (row) => <StatusBadge label={String(row.homeworkSet)} tone={statusTone(String(row.homeworkSet))} /> },
         { header: 'Teacher report?', accessor: (row) => <StatusBadge label={String(row.reportSubmitted)} tone={statusTone(String(row.reportSubmitted))} /> },
         statusColumn(),
-        createActionsColumn('Class', actions),
+        createActionsColumn('Class', primaryAction, actions),
       ];
     }
 
@@ -790,7 +826,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         { header: 'Class', accessor: 'className' },
         statusColumn(),
         { header: 'Parent Follow-up', accessor: (row) => (row.status === 'absent' || row.status === 'late' ? <StatusBadge label="Needs parent follow-up" tone="warning" /> : 'Not required') },
-        createActionsColumn('Attendance', actions),
+        createActionsColumn('Attendance', primaryAction, actions),
       ];
     }
 
@@ -802,10 +838,9 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         { header: 'Amount', accessor: 'amount' },
         { header: 'Currency', accessor: 'currency' },
         statusColumn(),
-        { header: 'Paid Date', accessor: 'paidDate' },
         { header: 'Next Due', accessor: 'nextDue' },
         { header: 'Remaining Sessions', accessor: 'remainingSessions' },
-        createActionsColumn('Payment', actions),
+        createActionsColumn('Payment', primaryAction, actions),
       ];
     }
 
@@ -817,8 +852,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         { header: 'Period', accessor: 'period' },
         statusColumn(),
         { header: 'Metric', accessor: 'metric' },
-        { header: 'Export', accessor: 'exportFormat' },
-        createActionsColumn('Report', actions),
+        createActionsColumn('Report', primaryAction, actions),
       ];
     }
 
@@ -829,7 +863,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       { header: 'Teacher', accessor: (row) => <StatusBadge label={row.teacher ? 'enabled' : 'disabled'} tone={row.teacher ? 'success' : 'neutral'} /> },
       { header: 'Student', accessor: (row) => <StatusBadge label={row.student ? 'enabled' : 'disabled'} tone={row.student ? 'success' : 'neutral'} /> },
       { header: 'Finance', accessor: (row) => <StatusBadge label={row.finance ? 'enabled' : 'disabled'} tone={row.finance ? 'success' : 'neutral'} /> },
-      createActionsColumn('Permission', actions),
+      createActionsColumn('Permission', primaryAction, actions),
     ];
   }, [section, navigate, rows]);
 

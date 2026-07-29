@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import Icon from '../../../components/Icon';
 import ActionButton from '../ActionButton';
+import DashboardActionMenu from '../DashboardActionMenu';
 import DashboardPageHeader from '../DashboardPageHeader';
 import SectionCard from '../SectionCard';
 import StatCard from '../StatCard';
@@ -172,6 +173,11 @@ export function ClassListCard({
   const canJoin = (session.status === 'scheduled' || session.status === 'live') && Boolean(session.meetingLink);
   const isUpcoming = session.status === 'scheduled' || session.status === 'live';
   const completed = session.status === 'completed';
+  const joinSession = () => {
+    if (!openExternalLink(session.meetingLink)) {
+      onMeetingLinkUnavailable?.(session);
+    }
+  };
 
   return (
     <article className="student-class-list-card">
@@ -198,41 +204,20 @@ export function ClassListCard({
         </div>
       )}
       <div className="student-card-actions">
-        {isUpcoming && (
-          <ActionButton
-            variant={canJoin ? 'primary' : 'secondary'}
-            onClick={() => {
-              if (!openExternalLink(session.meetingLink)) {
-                onMeetingLinkUnavailable?.(session);
-              }
-            }}
-          >
-            <Icon name="video" size={16} />
-            Join Class
-          </ActionButton>
-        )}
-        {completed && (
-          <ActionButton variant="secondary" onClick={() => onViewDetails(session)}>
-            <Icon name="book" size={16} />
-            View Summary
-          </ActionButton>
-        )}
-        {session.homeworkAssigned && onViewHomework && (
-          <ActionButton variant="secondary" onClick={() => onViewHomework(session)}>
-            <Icon name="document" size={16} />
-            View Homework
-          </ActionButton>
-        )}
-        <ActionButton variant="ghost" onClick={() => onViewDetails(session)}>
-          <Icon name="eye" size={16} />
-          View Details
-        </ActionButton>
-        {variant === 'history' && onReportIssue && (
-          <ActionButton variant="ghost" onClick={() => onReportIssue(session)}>
-            <Icon name="question" size={16} />
-            Report Issue
-          </ActionButton>
-        )}
+        <DashboardActionMenu
+          primaryAction={{
+            label: isUpcoming ? 'Join Class' : completed ? 'View Lesson Summary' : 'View Details',
+            icon: <Icon name={isUpcoming ? 'video' : 'eye'} size={15} />,
+            onClick: isUpcoming ? joinSession : () => onViewDetails(session),
+            variant: canJoin || !isUpcoming ? 'primary' : 'secondary',
+          }}
+          actions={[
+            { label: 'View Details', icon: <Icon name="eye" size={15} />, onClick: () => onViewDetails(session), hidden: !isUpcoming && !completed },
+            { label: 'View Homework', icon: <Icon name="document" size={15} />, onClick: () => onViewHomework?.(session), hidden: !session.homeworkAssigned || !onViewHomework },
+            { label: 'Request Reschedule', icon: <Icon name="calendar" size={15} />, onClick: () => onReportIssue?.(session), hidden: variant !== 'schedule' || !onReportIssue },
+            { label: 'Report Issue', icon: <Icon name="question" size={15} />, onClick: () => onReportIssue?.(session), hidden: variant !== 'history' || !onReportIssue },
+          ]}
+        />
       </div>
     </article>
   );
@@ -251,6 +236,9 @@ export function HomeworkCard({
   onViewFeedback: (homework: StudentHomeworkItem) => void;
   onViewFile?: (homework: StudentHomeworkItem) => void;
 }) {
+  const needsUpload = homework.status === 'pending' || homework.status === 'overdue';
+  const hasFile = Boolean(homework.filePath || homework.submissionUrl);
+
   return (
     <article className="student-homework-card">
       <div className="student-homework-card__header">
@@ -269,34 +257,19 @@ export function HomeworkCard({
       </div>
       {homework.teacherFeedback && <div className="student-feedback-note">{homework.teacherFeedback}</div>}
       <div className="student-card-actions">
-        {(homework.status === 'pending' || homework.status === 'overdue') && (
-          <ActionButton onClick={() => onUpload(homework)}>
-            <Icon name="document" size={16} />
-            Upload Homework
-          </ActionButton>
-        )}
-        <ActionButton variant="secondary" onClick={() => onViewInstructions(homework)}>
-          <Icon name="eye" size={16} />
-          View Instructions
-        </ActionButton>
-        {homework.teacherFeedback && (
-          <ActionButton variant="secondary" onClick={() => onViewFeedback(homework)}>
-            <Icon name="message" size={16} />
-            View Feedback
-          </ActionButton>
-        )}
-        {(homework.filePath || homework.submissionUrl) && onViewFile && (
-          <ActionButton variant="secondary" onClick={() => onViewFile(homework)}>
-            <Icon name="eye" size={16} />
-            View File
-          </ActionButton>
-        )}
-        {homework.attachmentUrl && (
-          <ActionButton variant="ghost" onClick={() => openExternalLink(homework.attachmentUrl)}>
-            <Icon name="download" size={16} />
-            Download Attachment
-          </ActionButton>
-        )}
+        <DashboardActionMenu
+          primaryAction={{
+            label: needsUpload ? 'Upload Homework' : homework.teacherFeedback ? 'View Feedback' : 'View Instructions',
+            icon: <Icon name={needsUpload ? 'document' : homework.teacherFeedback ? 'message' : 'eye'} size={15} />,
+            onClick: needsUpload ? () => onUpload(homework) : homework.teacherFeedback ? () => onViewFeedback(homework) : () => onViewInstructions(homework),
+          }}
+          actions={[
+            { label: 'View Instructions', icon: <Icon name="eye" size={15} />, onClick: () => onViewInstructions(homework), hidden: !needsUpload && !homework.teacherFeedback },
+            { label: 'View Feedback', icon: <Icon name="message" size={15} />, onClick: () => onViewFeedback(homework), hidden: !homework.teacherFeedback || !needsUpload },
+            { label: 'View Submitted File', icon: <Icon name="eye" size={15} />, onClick: () => onViewFile?.(homework), hidden: !hasFile || !onViewFile },
+            { label: 'Download Attachment', icon: <Icon name="download" size={15} />, onClick: () => openExternalLink(homework.attachmentUrl), hidden: !homework.attachmentUrl },
+          ]}
+        />
       </div>
     </article>
   );
@@ -459,18 +432,14 @@ export function PaymentSummaryCard({ payment, onContact }: { payment: StudentPay
         <span>Payment method <strong>{payment.method}</strong></span>
       </div>
       <div className="student-card-actions">
-        <ActionButton variant="secondary" onClick={() => payment.invoiceUrl ? openExternalLink(payment.invoiceUrl) : onContact()}>
-          <Icon name="eye" size={16} />
-          View Invoice
-        </ActionButton>
-        <ActionButton variant="secondary" onClick={() => payment.receiptUrl ? openExternalLink(payment.receiptUrl) : onContact()}>
-          <Icon name="download" size={16} />
-          Download Receipt
-        </ActionButton>
-        <ActionButton onClick={onContact}>
-          <Icon name="support" size={16} />
-          Contact Finance
-        </ActionButton>
+        <DashboardActionMenu
+          primaryAction={{ label: 'Contact Finance', icon: <Icon name="support" size={15} />, onClick: onContact }}
+          actions={[
+            { label: 'View Invoice', icon: <Icon name="eye" size={15} />, onClick: () => payment.invoiceUrl ? openExternalLink(payment.invoiceUrl) : onContact() },
+            { label: 'Download Receipt', icon: <Icon name="download" size={15} />, onClick: () => payment.receiptUrl ? openExternalLink(payment.receiptUrl) : onContact() },
+            { label: 'Contact Academy to Pay', icon: <Icon name="support" size={15} />, onClick: onContact, hidden: payment.status === 'paid' },
+          ]}
+        />
       </div>
     </SectionCard>
   );

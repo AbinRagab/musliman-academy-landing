@@ -5,7 +5,7 @@ import { accountsRoles, type AuthRole } from '../auth/AuthProvider';
 import { useAuth } from '../auth/AuthProvider';
 import AccessDeniedPage from './AccessDeniedPage';
 import ActionButton from '../components/ActionButton';
-import ActionMenu from '../components/ActionMenu';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import DashboardSkeleton from '../components/DashboardSkeleton';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import EmptyState from '../components/EmptyState';
@@ -150,10 +150,10 @@ function AccountActionsMenu({
   onResetPassword: () => void;
 }) {
   return (
-    <ActionMenu
+    <DashboardActionMenu
       label={`Actions for ${profile.full_name}`}
-      items={[
-        { label: 'View Profile', onClick: onView },
+      primaryAction={{ label: 'View Profile', onClick: onView }}
+      actions={[
         { label: 'Change Role', onClick: onChangeRole, disabled: profile.role === 'super_admin' },
         { label: profile.status === 'active' ? 'Deactivate' : 'Activate', onClick: onToggleStatus },
         { label: 'Reset Password', onClick: onResetPassword },

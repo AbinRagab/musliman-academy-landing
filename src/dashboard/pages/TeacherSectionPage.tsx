@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import DashboardPageHeader from '../components/DashboardPageHeader';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import EvaluationCard from '../components/EvaluationCard';
@@ -229,10 +230,6 @@ async function joinClass(classItem: ClassRow, setToast: (toast: ToastMessage) =>
   notifyMissingMeeting(setToast);
 }
 
-function CompactActions({ children }: { children: React.ReactNode }) {
-  return <div className="dashboard-table-actions dashboard-table-actions--wrap">{children}</div>;
-}
-
 function TeacherEvaluationModal({ evaluation, onClose }: { evaluation: EvaluationRow; onClose: () => void }) {
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Evaluate ${evaluation.student}`}>
@@ -380,19 +377,20 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
     { header: 'Program', accessor: 'program' },
     { header: 'Level', accessor: 'level' },
     { header: 'Next Class', accessor: 'nextClass' },
-    { header: 'Attendance Rate', accessor: 'attendance' },
     { header: 'Progress', accessor: 'progress' },
     { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
     {
       header: 'Action',
       accessor: (row) => (
-        <CompactActions>
-          <Link className="dashboard-action dashboard-action--ghost" to={`/dashboard/teacher/students/${row.id}`}>Open Record</Link>
-          <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>View Attendance</ActionButton>
-          <ActionButton variant="ghost" onClick={() => setEvaluationModal({ id: row.id, student: row.student, program: row.program, relatedClass: row.nextClass, status: 'ready' })}>Add Evaluation</ActionButton>
-          <ActionButton variant="ghost" onClick={() => setReportModal(classRows.find((classItem) => classItem.student === row.student) || classRows[0])}>Add Class Note</ActionButton>
-          <ActionButton variant="ghost" onClick={() => setComposeOpen(true)}>Message via Academy</ActionButton>
-        </CompactActions>
+        <DashboardActionMenu
+          primaryAction={{ label: 'Open Record', onClick: () => navigate(`/dashboard/teacher/students/${row.id}`) }}
+          actions={[
+            { label: 'View Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
+            { label: 'Add Evaluation', onClick: () => setEvaluationModal({ id: row.id, student: row.student, program: row.program, relatedClass: row.nextClass, status: 'ready' }) },
+            { label: 'Add Class Note', onClick: () => setReportModal(classRows.find((classItem) => classItem.student === row.student) || classRows[0]) },
+            { label: 'Message via Academy', onClick: () => setComposeOpen(true) },
+          ]}
+        />
       ),
     },
   ];
@@ -441,10 +439,18 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                   <div className="teacher-trial-card__meta"><span><Icon name="calendar" size={15} /> {trial.dateTime}</span><span><Icon name="shieldCheck" size={15} /> Parent contact via academy</span></div>
                   <StatusBadge label={trial.status} />
                   <div className="teacher-trial-card__actions">
-                    <ActionButton variant="ghost" onClick={() => setTrialDetails(trial)}>View Trial</ActionButton>
-                    {trial.status === 'scheduled' && <ActionButton variant="secondary" onClick={() => notifyMissingMeeting(setToast)}>Join Trial</ActionButton>}
-                    {trial.status === 'completed' ? <ActionButton variant="secondary" onClick={() => setTrialFeedback(trial)}>View Feedback</ActionButton> : <ActionButton variant="copper" onClick={() => setTrialFeedback(trial)}>{trial.status === 'no_show' ? 'Add Note' : 'Add Trial Feedback'}</ActionButton>}
-                    {trial.status === 'no_show' && <ActionButton variant="ghost" onClick={() => setToast({ type: 'success', message: 'Admin notified about trial note.' })}>Notify Admin</ActionButton>}
+                    <DashboardActionMenu
+                      primaryAction={{
+                        label: trial.status === 'completed' ? 'View Feedback' : trial.status === 'no_show' ? 'Add Note' : 'View Trial',
+                        onClick: trial.status === 'completed' || trial.status === 'no_show' ? () => setTrialFeedback(trial) : () => setTrialDetails(trial),
+                      }}
+                      actions={[
+                        { label: 'Join Trial', onClick: () => notifyMissingMeeting(setToast), hidden: trial.status !== 'scheduled' },
+                        { label: 'Add Trial Feedback', onClick: () => setTrialFeedback(trial), hidden: trial.status === 'completed' || trial.status === 'no_show' },
+                        { label: 'Message Admin', onClick: () => setComposeOpen(true) },
+                        { label: 'Notify Admin No Show', onClick: () => setToast({ type: 'success', message: 'Admin notified about trial note.' }), hidden: trial.status !== 'no_show' },
+                      ]}
+                    />
                   </div>
                 </article>
               ))}
@@ -505,14 +511,17 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       {
         header: 'Action',
         accessor: (row) => (
-          <CompactActions>
-            <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'ready', setToast)}>I am Ready</ActionButton>
-            <ActionButton variant="ghost" onClick={() => joinClass(row, setToast)}>Join Class</ActionButton>
-            {row.status === 'Live' && <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'live', setToast)}>Start Class</ActionButton>}
-            <ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: `${row.student}: ${row.notes}` })}>View Details</ActionButton>
-            <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
-            <ActionButton variant="ghost" onClick={() => setReportModal(row)}>Add Class Report</ActionButton>
-          </CompactActions>
+          <DashboardActionMenu
+            primaryAction={{ label: 'Join Class', onClick: () => joinClass(row, setToast) }}
+            actions={[
+              { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast) },
+              { label: 'Start Class', onClick: () => updateClassCheckin(row, 'live', setToast), hidden: row.status !== 'Live' },
+              { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.status !== 'Live' },
+              { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
+              { label: 'Add Class Report', onClick: () => setReportModal(row) },
+              { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${row.student}: ${row.notes}` }) },
+            ]}
+          />
         ),
       },
     ];
@@ -533,9 +542,15 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                 <p>{row.program} - {row.platform}</p>
                 <StatusBadge label={row.status} />
                 <div className="teacher-action-row">
-                  <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'ready', setToast)}>I am Ready</ActionButton>
-                  <ActionButton variant="ghost" onClick={() => joinClass(row, setToast)}>Join Class</ActionButton>
-                  <ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: `${row.student}: ${row.notes}` })}>View Details</ActionButton>
+                  <DashboardActionMenu
+                    primaryAction={{ label: 'Join Class', onClick: () => joinClass(row, setToast) }}
+                    actions={[
+                      { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast) },
+                      { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${row.student}: ${row.notes}` }) },
+                      { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
+                      { label: 'Add Class Report', onClick: () => setReportModal(row) },
+                    ]}
+                  />
                 </div>
               </article>
             ))}
@@ -560,22 +575,25 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       { header: 'Date/time', accessor: 'dateTime' },
       { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
       { header: 'Attendance', accessor: 'attendanceStatus' },
-      { header: 'Lesson Covered', accessor: 'lessonCovered' },
-      { header: 'Homework', accessor: 'homeworkAssigned' },
       { header: 'Report', accessor: 'reportStatus' },
       {
         header: 'Action',
         accessor: (row) => (
-          <CompactActions>
-            {['Live', 'Upcoming', 'Scheduled'].includes(row.status) && <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'ready', setToast)}>I am Ready</ActionButton>}
-            {['Live', 'Upcoming'].includes(row.status) && <ActionButton variant="ghost" onClick={() => joinClass(row, setToast)}>Join Class</ActionButton>}
-            {row.status === 'Live' && <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'live', setToast)}>Start Class</ActionButton>}
-            {row.status === 'Live' && <ActionButton variant="ghost" onClick={() => updateClassCheckin(row, 'completed', setToast)}>End Class</ActionButton>}
-            {row.reportStatus === 'Submitted' ? <ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: row.notes })}>View Report</ActionButton> : <ActionButton variant="ghost" onClick={() => setReportModal(row)}>Add Report</ActionButton>}
-            <ActionButton variant="ghost" onClick={() => setReportModal(row)}>Set Homework</ActionButton>
-            <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
-            <ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: `${row.student}: ${row.notes}` })}>View Class Details</ActionButton>
-          </CompactActions>
+          <DashboardActionMenu
+            primaryAction={{
+              label: ['Live', 'Upcoming'].includes(row.status) ? 'Join Class' : row.reportStatus === 'Needs Report' ? 'Add Report' : 'View Details',
+              onClick: ['Live', 'Upcoming'].includes(row.status) ? () => joinClass(row, setToast) : row.reportStatus === 'Needs Report' ? () => setReportModal(row) : () => setToast({ type: 'info', message: `${row.student}: ${row.notes}` }),
+            }}
+            actions={[
+              { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast), hidden: !['Live', 'Upcoming', 'Scheduled'].includes(row.status) },
+              { label: 'Start Class', onClick: () => updateClassCheckin(row, 'live', setToast), hidden: row.status !== 'Live' },
+              { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.status !== 'Live' },
+              { label: row.reportStatus === 'Submitted' ? 'View Report' : 'Add Report', onClick: row.reportStatus === 'Submitted' ? () => setToast({ type: 'info', message: row.notes }) : () => setReportModal(row), hidden: row.reportStatus === 'Needs Report' },
+              { label: 'Set Homework', onClick: () => setReportModal(row) },
+              { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
+              { label: 'View Class Details', onClick: () => setToast({ type: 'info', message: `${row.student}: ${row.notes}` }) },
+            ]}
+          />
         ),
       },
     ];
@@ -703,9 +721,17 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           </SectionCard>
           <SectionCard title="Message Thread">
             <div className="student-message-detail">
-              <div className="student-message-detail__header"><div><span>{selectedThread.from}</span><h2>{selectedThread.subject}</h2><p>{selectedThread.student} - {selectedThread.relatedClass}</p></div><ActionButton variant="ghost" onClick={() => setComposeOpen(true)}>Reply</ActionButton></div>
+              <div className="student-message-detail__header">
+                <div><span>{selectedThread.from}</span><h2>{selectedThread.subject}</h2><p>{selectedThread.student} - {selectedThread.relatedClass}</p></div>
+                <DashboardActionMenu
+                  primaryAction={{ label: 'Reply', onClick: () => setComposeOpen(true) }}
+                  actions={[
+                    { label: 'Message Admin', onClick: () => setComposeOpen(true) },
+                    { label: 'Send Parent Note for Admin Review', onClick: () => setComposeOpen(true) },
+                  ]}
+                />
+              </div>
               <p>{selectedThread.preview}</p>
-              <div className="teacher-action-row"><ActionButton variant="secondary" onClick={() => setComposeOpen(true)}>Message Admin</ActionButton><ActionButton variant="secondary" onClick={() => setComposeOpen(true)}>Send Parent Note for Admin Review</ActionButton></div>
             </div>
           </SectionCard>
         </div>

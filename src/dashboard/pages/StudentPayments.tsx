@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import SectionCard from '../components/SectionCard';
 import StatusBadge from '../components/StatusBadge';
@@ -81,18 +82,18 @@ export default function StudentPayments() {
 
       <SectionCard title="Payment Actions">
         <div className="student-card-actions">
-          <ActionButton variant="secondary" onClick={() => setCompose({ to: 'Finance Team', subject: 'Invoice request' })}>
-            <Icon name="eye" size={16} />
-            View Invoice
-          </ActionButton>
-          <ActionButton variant="secondary" onClick={() => setCompose({ to: 'Finance Team', subject: 'Receipt request' })}>
-            <Icon name="download" size={16} />
-            Download Receipt
-          </ActionButton>
-          <ActionButton onClick={() => setCompose({ to: 'Academy Team', subject: 'Payment arrangement request' })}>
-            <Icon name="support" size={16} />
-            Contact Academy Team to Pay
-          </ActionButton>
+          <DashboardActionMenu
+            primaryAction={{
+              label: 'Contact Academy to Pay',
+              icon: <Icon name="support" size={15} />,
+              onClick: () => setCompose({ to: 'Academy Team', subject: 'Payment arrangement request' }),
+            }}
+            actions={[
+              { label: 'View Invoice', icon: <Icon name="eye" size={15} />, onClick: () => setCompose({ to: 'Finance Team', subject: 'Invoice request' }) },
+              { label: 'Download Receipt', icon: <Icon name="download" size={15} />, onClick: () => setCompose({ to: 'Finance Team', subject: 'Receipt request' }) },
+              { label: 'Contact Finance', icon: <Icon name="support" size={15} />, onClick: () => setCompose({ to: 'Finance Team', subject: 'Payment support request' }) },
+            ]}
+          />
         </div>
       </SectionCard>
     </div>

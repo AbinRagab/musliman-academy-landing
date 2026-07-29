@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
 import CalendarMiniCard from '../components/CalendarMiniCard';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import DashboardDrawer from '../components/DashboardDrawer';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import SectionCard from '../components/SectionCard';
@@ -74,10 +75,14 @@ export default function AdminDashboard() {
     {
       header: 'Actions',
       accessor: (row) => (
-        <div className="dashboard-table-actions dashboard-table-actions--wrap">
-          <ActionButton variant="ghost" onClick={() => setSelectedClass(row)}>Class Details</ActionButton>
-          <ActionButton variant="ghost" onClick={() => openMeetingLink(row.meeting, notify)}>Open Meeting</ActionButton>
-        </div>
+        <DashboardActionMenu
+          primaryAction={{ label: 'Class Details', onClick: () => setSelectedClass(row) }}
+          actions={[
+            { label: 'Open Meeting', onClick: () => openMeetingLink(row.meeting, notify) },
+            { label: 'View Attendance', onClick: () => navigate('/dashboard/admin/attendance') },
+            { label: 'View Teacher Report', onClick: () => setSelectedClass(row) },
+          ]}
+        />
       ),
     },
   ];

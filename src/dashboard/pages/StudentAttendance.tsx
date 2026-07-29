@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardActionMenu from '../components/DashboardActionMenu';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import SectionCard from '../components/SectionCard';
 import {
@@ -44,7 +44,7 @@ export default function StudentAttendance() {
     { header: 'Teacher', accessor: 'teacher' },
     { header: 'Status', accessor: (row) => <AttendanceBadge status={row.status} /> },
     { header: 'Notes', accessor: 'notes' },
-    { header: 'Action', accessor: (row) => <ActionButton variant="ghost" onClick={() => setIssueRecord(row)}>Report Issue</ActionButton> },
+    { header: 'Action', accessor: (row) => <DashboardActionMenu actions={[{ label: 'Report Issue', onClick: () => setIssueRecord(row) }]} /> },
   ];
 
   return (

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Icon from '../../../components/Icon';
 import ActionButton from '../ActionButton';
+import DashboardActionMenu from '../DashboardActionMenu';
 import StatusBadge from '../StatusBadge';
 import {
   openExternalLink,
@@ -36,18 +37,18 @@ export default function HomeworkDetailsModal({
             </div>
             <p className="student-modal-copy">{homework.instructions}</p>
             <div className="student-card-actions">
-              {homework.attachmentUrl && (
-                <ActionButton variant="secondary" onClick={() => openExternalLink(homework.attachmentUrl)}>
-                  <Icon name="download" size={16} />
-                  Download Attachment
-                </ActionButton>
-              )}
-              {(homework.status === 'pending' || homework.status === 'overdue') && (
-                <ActionButton onClick={() => setIsUploadOpen(true)}>
-                  <Icon name="document" size={16} />
-                  Upload Homework
-                </ActionButton>
-              )}
+              <DashboardActionMenu
+                primaryAction={{
+                  label: homework.status === 'pending' || homework.status === 'overdue' ? 'Upload Homework' : 'Download Attachment',
+                  icon: <Icon name={homework.status === 'pending' || homework.status === 'overdue' ? 'document' : 'download'} size={15} />,
+                  onClick: homework.status === 'pending' || homework.status === 'overdue' ? () => setIsUploadOpen(true) : () => openExternalLink(homework.attachmentUrl),
+                  disabled: !(homework.status === 'pending' || homework.status === 'overdue') && !homework.attachmentUrl,
+                }}
+                actions={[
+                  { label: 'Download Attachment', icon: <Icon name="download" size={15} />, onClick: () => openExternalLink(homework.attachmentUrl), hidden: !homework.attachmentUrl || homework.status === 'pending' || homework.status === 'overdue' },
+                  { label: 'Upload Homework', icon: <Icon name="document" size={15} />, onClick: () => setIsUploadOpen(true), hidden: !(homework.status === 'pending' || homework.status === 'overdue') },
+                ]}
+              />
             </div>
           </>
         ) : (
