@@ -3152,7 +3152,7 @@
     flex-direction: column;
     height: 100vh;
     min-width: 0;
-    margin-left: var(--dashboard-sidebar-width);
+    margin-left: 0;
     overflow: hidden;
   }
 
@@ -4095,7 +4095,7 @@
   }
 
   .dashboard-main {
-    margin-left: var(--dashboard-sidebar-width);
+    margin-left: 0;
   }
 
   .dashboard-sidebar__brand {
@@ -6793,7 +6793,6 @@ body,
 }
 
 .dashboard-shell {
-  grid-template-columns: 260px minmax(0, 1fr);
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
@@ -6808,7 +6807,7 @@ body,
 
 .dashboard-content {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1240px;
   min-width: 0;
   margin: 0 auto;
   padding: 24px;
@@ -7159,5 +7158,216 @@ body,
 
   .teacher-compact-row .dashboard-status {
     justify-self: start;
+  }
+}
+
+/* Viewport-safe dashboard shell sizing */
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.dashboard-shell {
+  display: flex;
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.dashboard-sidebar {
+  flex: 0 0 260px;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+}
+
+.dashboard-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  max-width: calc(100vw - 260px);
+  margin-left: 0;
+  overflow-x: hidden;
+}
+
+.dashboard-topbar {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.dashboard-topbar-search {
+  flex: 1 1 360px;
+  max-width: 520px;
+  min-width: 0;
+  margin-left: 0;
+}
+
+.dashboard-topbar__actions,
+.topbar-account-menu,
+.topbar-account-menu__account {
+  flex-shrink: 0;
+}
+
+.dashboard-content {
+  width: 100%;
+  max-width: 1240px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.dashboard-card,
+.dashboard-table-card,
+.dashboard-section,
+.dashboard-stat {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.dashboard-stat > div:last-child {
+  min-width: 0;
+}
+
+.dashboard-stat span,
+.dashboard-stat strong,
+.dashboard-stat small {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-stats-grid,
+.dashboard-stats-grid--teacher,
+.dashboard-stats-grid--accounts,
+.dashboard-stats-grid--leads,
+.dashboard-stats-grid--record {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dashboard-table-card,
+.dashboard-table-wrapper,
+.dashboard-table-wrap,
+.dashboard-table {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.teacher-dashboard-grid,
+.teacher-dashboard-middle-grid,
+.dashboard-grid--teacher,
+.dashboard-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 901px) {
+  .dashboard-sidebar {
+    position: sticky;
+    inset: auto;
+    top: 0;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transform: none;
+  }
+
+  .dashboard-main {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: calc(100vw - 260px);
+    margin-left: 0;
+    overflow: hidden;
+  }
+
+  .dashboard-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 1200px) {
+  .dashboard-stats-grid,
+  .dashboard-stats-grid--teacher,
+  .dashboard-stats-grid--accounts,
+  .dashboard-stats-grid--leads,
+  .dashboard-stats-grid--record {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1100px) {
+  .teacher-dashboard-grid,
+  .teacher-dashboard-middle-grid,
+  .dashboard-grid--teacher,
+  .dashboard-grid--two {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-shell {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .dashboard-sidebar {
+    position: fixed;
+    flex-basis: auto;
+    width: min(86vw, 300px);
+    min-width: 0;
+    max-width: min(86vw, 300px);
+  }
+
+  .dashboard-main {
+    max-width: 100%;
+    width: 100%;
+    height: 100vh;
+    margin-left: 0;
+  }
+
+  .dashboard-content {
+    max-width: 100%;
+    padding: 18px 14px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-stats-grid,
+  .dashboard-stats-grid--teacher,
+  .dashboard-stats-grid--accounts,
+  .dashboard-stats-grid--leads,
+  .dashboard-stats-grid--record {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-topbar-search {
+    flex-basis: auto;
+    max-width: 100%;
   }
 }
