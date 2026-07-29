@@ -2,7 +2,6 @@ import { supabase } from '../../lib/supabaseClient';
 import {
   getUpcomingClasses,
   resolveCurrentStudentProfile,
-  studentPortalMock,
   type StudentClassSession,
 } from './studentService';
 
@@ -17,9 +16,9 @@ function normalizeClassStatus(status?: string | null): StudentClassSession['stat
 export async function fetchStudentClassesData() {
   if (!supabase) {
     return {
-      profile: studentPortalMock.profile,
-      classes: studentPortalMock.classes,
-      upcomingClasses: getUpcomingClasses(studentPortalMock.classes),
+      profile: await resolveCurrentStudentProfile(),
+      classes: [] as StudentClassSession[],
+      upcomingClasses: [] as StudentClassSession[],
     };
   }
 
@@ -35,8 +34,8 @@ export async function fetchStudentClassesData() {
     if (error || !data?.length) {
       return {
         profile,
-        classes: studentPortalMock.classes,
-        upcomingClasses: getUpcomingClasses(studentPortalMock.classes),
+        classes: [] as StudentClassSession[],
+        upcomingClasses: [] as StudentClassSession[],
       };
     }
 
@@ -55,20 +54,23 @@ export async function fetchStudentClassesData() {
 
       return {
         id: session.id,
-        title: session.lesson_title || `${program} - ${profile.level}`,
+        title: session.class_title || session.lesson_title || program,
         program,
         level: profile.level,
         teacher: session.teacher_id ? teacherById.get(session.teacher_id) || profile.teacher : profile.teacher,
-        date: session.class_date || 'Date pending',
-        time: session.start_time || 'Time pending',
-        endTime: session.end_time,
-        timezone: profile.timezone,
-        platform: session.meeting_link ? 'Online classroom' : 'Link pending',
-        meetingLink: session.meeting_link,
+        date: formatDate(session.scheduled_start_at || session.class_date),
+        time: formatTime(session.scheduled_start_at || session.start_time),
+        endTime: formatTime(session.scheduled_end_at || session.end_time),
+        timezone: session.timezone || profile.timezone,
+        platform: session.platform || (session.meeting_link ? 'Online classroom' : 'Meeting link pending'),
+        meetingLink: session.meeting_link || null,
         status: normalizeClassStatus(session.status),
-        attendanceStatus: session.status === 'student_absent' ? 'absent' : session.status === 'completed' ? 'present' : 'pending',
-        lessonCovered: session.lesson_covered || undefined,
+        attendanceStatus: normalizeAttendanceStatus(session.attendance_status || (session.status === 'student_absent' ? 'absent' : null)),
+        lessonCovered: session.lesson_notes || session.lesson_covered || undefined,
         homeworkAssigned: session.homework || undefined,
+        teacherNotes: session.teacher_notes || undefined,
+        materialsLink: session.materials_link || null,
+        recordingLink: session.recording_link || null,
       };
     });
 
@@ -79,11 +81,48 @@ export async function fetchStudentClassesData() {
     };
   } catch {
     return {
-      profile: studentPortalMock.profile,
-      classes: studentPortalMock.classes,
-      upcomingClasses: getUpcomingClasses(studentPortalMock.classes),
+      profile: await resolveCurrentStudentProfile(),
+      classes: [] as StudentClassSession[],
+      upcomingClasses: [] as StudentClassSession[],
     };
   }
+}
+
+function normalizeAttendanceStatus(status?: string | null): StudentClassSession['attendanceStatus'] {
+  if (status === 'present' || status === 'absent' || status === 'late' || status === 'excused' || status === 'cancelled') {
+    return status;
+  }
+
+  return 'pending';
+}
+
+function formatDate(value?: string | null) {
+  if (!value) {
+    return 'Not scheduled';
+  }
+
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime())
+    ? value
+    : parsed.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function formatTime(value?: string | null) {
+  if (!value) {
+    return 'Time pending';
+  }
+
+  if (/^\d{2}:\d{2}/.test(value)) {
+    const [hours, minutes] = value.split(':').map(Number);
+    const parsed = new Date();
+    parsed.setHours(hours, minutes, 0, 0);
+    return parsed.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime())
+    ? value
+    : parsed.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 }
 
 export async function submitRescheduleRequest(payload: { classId: string; preferredDateTime: string; reason: string }) {

@@ -13,82 +13,11 @@ import Toast, { type ToastMessage } from '../components/Toast';
 import { updateTeacherSessionCheckin, type TeacherCheckinAction } from '../services/teacherCheckinService';
 import { submitTrialFeedback, updateTrialStatus, fetchTeacherTrials } from '../services/trialsService';
 import {
-  freeTrials,
-  studentEvaluations,
-  teacherSchedule,
-  teacherStats,
-  teacherStudents,
-} from '../data/mockData';
-
-type TeacherClass = {
-  id: string;
-  time: string;
-  student: string;
-  program: string;
-  status: string;
-  platform: string;
-  meetingLink?: string;
-  reportStatus: string;
-  attendanceStatus: string;
-};
-
-type TeacherStudent = {
-  id: string;
-  student: string;
-  program: string;
-  level: string;
-  nextClass: string;
-  attendance: string;
-  progress: string;
-  status: string;
-};
-
-type EvaluationRow = (typeof studentEvaluations)[number] & {
-  id: string;
-  program: string;
-  relatedClass: string;
-};
-
-type FreeTrialFallback = {
-  id: string;
-  student: string;
-  program: string;
-  dateTime: string;
-  status: string;
-};
-
-const todaysClasses: TeacherClass[] = teacherSchedule.map((item, index) => ({
-  id: `class-${index}`,
-  ...item,
-  platform: index === 1 ? 'Zoom classroom' : 'Google Meet',
-  meetingLink: index === 1 ? 'https://meet.google.com/' : undefined,
-  reportStatus: item.status === 'Completed' ? 'Needs Report' : 'Not Due',
-  attendanceStatus: item.status === 'Completed' ? 'Pending' : 'Not Started',
-}));
-
-const assignedStudents: TeacherStudent[] = teacherStudents.map((student, index) => ({
-  id: index === 0 ? 'mock-yusuf' : `teacher-student-${index}`,
-  student: student.student,
-  program: student.level.includes('Tajweed') ? 'Tajweed' : student.level === 'Beginner' ? 'Arabic Language' : 'Quran Reading',
-  level: student.level,
-  nextClass: student.nextClass,
-  attendance: student.attendance,
-  progress: student.attendance === '88%' ? 'Needs support' : 'On track',
-  status: student.attendance === '88%' ? 'needs support' : 'active',
-}));
-
-const evaluationQueue: EvaluationRow[] = studentEvaluations.map((evaluation, index) => ({
-  ...evaluation,
-  id: `evaluation-${index}`,
-  program: index === 1 ? 'Arabic Language' : 'Quran Reading',
-  relatedClass: index === 0 ? 'Quran Reading - Jul 28' : 'Today class',
-}));
-
-const fallbackTrials: FreeTrialFallback[] = freeTrials.map((trial, index) => ({
-  id: `trial-${index}`,
-  ...trial,
-  status: index === 1 ? 'completed' : 'scheduled',
-}));
+  fetchTeacherDashboardData,
+  type TeacherDashboardClass as TeacherClass,
+  type TeacherDashboardData,
+  type TeacherDashboardEvaluation as EvaluationRow,
+} from '../services/teacherDashboardService';
 
 function getScheduledStartAt(time: string) {
   const normalized = time.replace(/^Today\s+/i, '').trim();
@@ -187,6 +116,7 @@ function ClassReportModal({ classItem, onClose }: { classItem: TeacherClass; onC
 
 export default function TeacherDashboard() {
   const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState<TeacherDashboardData | null>(null);
   const [evaluationStudent, setEvaluationStudent] = useState<EvaluationRow | null>(null);
   const [reportClass, setReportClass] = useState<TeacherClass | null>(null);
   const [teacherTrials, setTeacherTrials] = useState<Array<Record<string, unknown>>>([]);
@@ -194,20 +124,37 @@ export default function TeacherDashboard() {
   const [toast, setToast] = useState<ToastMessage | null>(null);
 
   useEffect(() => {
+    fetchTeacherDashboardData()
+      .then(setDashboardData)
+      .catch(() => setDashboardData({
+        stats: [
+          { label: 'Assigned Students', value: 0, trend: 'Active assigned records', icon: 'student' },
+          { label: "Today's Classes", value: 0, trend: 'Scheduled for today', icon: 'calendar' },
+          { label: 'Upcoming Free Trials', value: 0, trend: 'Assigned trials', icon: 'gift' },
+          { label: 'Pending Evaluations', value: 0, trend: 'Awaiting teacher submission', icon: 'chart' },
+        ],
+        todaysClasses: [],
+        assignedStudents: [],
+        evaluationQueue: [],
+      }));
     fetchTeacherTrials()
       .then((trials) => setTeacherTrials(trials as Array<Record<string, unknown>>))
       .catch(() => setTeacherTrials([]));
   }, []);
 
+  const teacherStats = dashboardData?.stats || [];
+  const todaysClasses = dashboardData?.todaysClasses || [];
+  const assignedStudents = dashboardData?.assignedStudents || [];
+  const evaluationQueue = dashboardData?.evaluationQueue || [];
   const nextClass = useMemo(
-    () => todaysClasses.find((classItem) => ['Live', 'Upcoming'].includes(classItem.status)) || todaysClasses[0],
-    [],
+    () => todaysClasses.find((classItem) => ['live', 'scheduled', 'upcoming'].includes(classItem.status.toLowerCase())) || todaysClasses[0] || null,
+    [todaysClasses],
   );
 
   async function handleCheckinAction(classItem: TeacherClass, action: TeacherCheckinAction) {
     await updateTeacherSessionCheckin({
       classId: classItem.id,
-      scheduledStartAt: getScheduledStartAt(classItem.time),
+      scheduledStartAt: classItem.scheduledStartAt || getScheduledStartAt(classItem.time),
       action,
       notes: `${action} from teacher dashboard`,
     });
@@ -274,31 +221,40 @@ export default function TeacherDashboard() {
       </div>
 
       <SectionCard className="teacher-next-class-card">
-        <div className="teacher-next-class">
-          <div>
+        {nextClass ? (
+          <div className="teacher-next-class">
+            <div>
+              <span className="dashboard-eyebrow">Next Class</span>
+              <h2>{nextClass.student}</h2>
+              <p>{nextClass.program} - {nextClass.time}</p>
+            </div>
+            <div className="teacher-next-class__details">
+              <span><strong>Status</strong><StatusBadge label={nextClass.status} /></span>
+              <span><strong>Meeting platform</strong>{nextClass.platform}</span>
+              <span><strong>Attendance</strong>{nextClass.attendanceStatus}</span>
+            </div>
+            <div className="teacher-action-row">
+              <DashboardActionMenu
+                primaryAction={{ label: 'Join Class', icon: <Icon name="video" size={16} />, onClick: () => handleJoinClass(nextClass) }}
+                actions={[
+                  { label: 'I am Ready', onClick: () => handleCheckinAction(nextClass, 'ready') },
+                  { label: 'Start Class', onClick: () => handleCheckinAction(nextClass, 'live') },
+                  { label: 'End Class', onClick: () => handleCheckinAction(nextClass, 'completed') },
+                  { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
+                  { label: 'Add Class Report', onClick: () => setReportClass(nextClass) },
+                  { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${nextClass.student}: ${nextClass.program} at ${nextClass.time}.` }) },
+                ]}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="teacher-empty-card">
             <span className="dashboard-eyebrow">Next Class</span>
-            <h2>{nextClass.student}</h2>
-            <p>{nextClass.program} - {nextClass.time}</p>
+            <h2>No classes assigned for today</h2>
+            <p>Assigned classes from Supabase will appear here when scheduled.</p>
+            <ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/schedule')}>Open Schedule</ActionButton>
           </div>
-          <div className="teacher-next-class__details">
-            <span><strong>Status</strong><StatusBadge label={nextClass.status} /></span>
-            <span><strong>Meeting platform</strong>{nextClass.platform}</span>
-            <span><strong>Attendance</strong>{nextClass.attendanceStatus}</span>
-          </div>
-          <div className="teacher-action-row">
-            <DashboardActionMenu
-              primaryAction={{ label: 'Join Class', icon: <Icon name="video" size={16} />, onClick: () => handleJoinClass(nextClass) }}
-              actions={[
-                { label: 'I am Ready', onClick: () => handleCheckinAction(nextClass, 'ready') },
-                { label: 'Start Class', onClick: () => handleCheckinAction(nextClass, 'live') },
-                { label: 'End Class', onClick: () => handleCheckinAction(nextClass, 'completed') },
-                { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
-                { label: 'Add Class Report', onClick: () => setReportClass(nextClass) },
-                { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${nextClass.student}: ${nextClass.program} at ${nextClass.time}.` }) },
-              ]}
-            />
-          </div>
-        </div>
+        )}
       </SectionCard>
 
       <div className="dashboard-stats-grid dashboard-stats-grid--teacher">
@@ -314,6 +270,7 @@ export default function TeacherDashboard() {
       <div className="dashboard-grid dashboard-grid--teacher teacher-dashboard-middle-grid">
         <SectionCard title="My Students Needing Attention" subtitle="Assigned students with support signals.">
           <div className="teacher-compact-list">
+            {assignedStudents.length === 0 && <p className="dashboard-empty-copy">No assigned students yet.</p>}
             {assignedStudents.filter((student) => student.progress === 'Needs support' || student.nextClass.includes('Today')).map((student) => (
               <article className="teacher-compact-row" key={student.id}>
                 <div className="teacher-compact-row__main">
@@ -328,11 +285,13 @@ export default function TeacherDashboard() {
                     {
                       label: 'Add Evaluation',
                       onClick: () => setEvaluationStudent({
-                        ...(studentEvaluations[0] || { recitation: 0, tajweed: 0, understanding: 0 }),
                         id: student.id,
                         student: student.student,
                         program: student.program,
                         relatedClass: student.nextClass,
+                        recitation: 0,
+                        tajweed: 0,
+                        understanding: 0,
                         status: 'ready',
                       }),
                     },
@@ -346,6 +305,7 @@ export default function TeacherDashboard() {
 
         <SectionCard title="Attendance to Submit" subtitle="Class attendance awaiting submission.">
           <div className="teacher-task-list">
+            {todaysClasses.filter((classItem) => classItem.attendanceStatus === 'Pending').length === 0 && <p className="dashboard-empty-copy">No attendance records are pending.</p>}
             {todaysClasses.filter((classItem) => classItem.attendanceStatus === 'Pending').map((classItem) => (
               <article key={classItem.id}>
                 <div>
@@ -362,6 +322,7 @@ export default function TeacherDashboard() {
       <div className="dashboard-grid dashboard-grid--two">
         <SectionCard title="Pending Evaluations" subtitle="Academic evaluations ready for teacher input.">
           <div className="teacher-compact-list">
+            {evaluationQueue.length === 0 && <p className="dashboard-empty-copy">No pending evaluations.</p>}
             {evaluationQueue.map((evaluation) => (
               <article className="teacher-compact-row" key={evaluation.id}>
                 <div className="teacher-compact-row__main">
@@ -399,25 +360,7 @@ export default function TeacherDashboard() {
               ))}
             </div>
           ) : (
-            <div className="teacher-compact-list">
-              {fallbackTrials.map((trial) => (
-                <article className="teacher-compact-row" key={trial.id}>
-                  <div className="teacher-compact-row__main">
-                    <strong className="truncate-text">{trial.student}</strong>
-                    <span className="truncate-text">{trial.program} - {trial.dateTime}</span>
-                  </div>
-                  <StatusBadge label={trial.status} />
-                  <DashboardActionMenu
-                    primaryAction={{ label: trial.status === 'completed' ? 'View Feedback' : 'View Trial', onClick: trial.status === 'completed' ? () => setTrialFeedback(trial) : () => setToast({ type: 'info', message: `Trial details opened for ${trial.student}.` }) }}
-                    actions={[
-                      { label: 'Join Trial', onClick: () => setToast({ type: 'info', message: 'Meeting link is not available. Please contact the academy team.' }), hidden: trial.status !== 'scheduled' },
-                      { label: 'Add Trial Feedback', onClick: () => setTrialFeedback(trial), hidden: trial.status === 'completed' },
-                      { label: 'Message Admin', onClick: () => navigate('/dashboard/teacher/messages') },
-                    ]}
-                  />
-                </article>
-              ))}
-            </div>
+            <p className="dashboard-empty-copy">No free trials assigned.</p>
           )}
         </SectionCard>
       </div>

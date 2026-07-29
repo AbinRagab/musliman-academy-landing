@@ -3,7 +3,6 @@ import { fetchStudentClassesData } from './studentClassesService';
 import { listStudentHomeworkFiles, uploadHomeworkFile } from './storageService';
 import {
   resolveCurrentStudentProfile,
-  studentPortalMock,
   type StudentClassSession,
   type StudentHomeworkItem,
 } from './studentService';
@@ -20,9 +19,10 @@ export function getHomeworkSummary(homework: StudentHomeworkItem[]) {
 
 export async function fetchStudentHomeworkData() {
   if (!isSupabaseConfigured) {
+    const homework: StudentHomeworkItem[] = [];
     return {
-      homework: studentPortalMock.homework,
-      summary: getHomeworkSummary(studentPortalMock.homework),
+      homework,
+      summary: getHomeworkSummary(homework),
       submissions: [],
     };
   }
@@ -80,14 +80,15 @@ export async function fetchStudentHomeworkData() {
     const homework = Array.from(homeworkByClassId.values());
 
     return {
-      homework: homework.length ? homework : studentPortalMock.homework,
-      summary: getHomeworkSummary(homework.length ? homework : studentPortalMock.homework),
+      homework,
+      summary: getHomeworkSummary(homework),
       submissions,
     };
   } catch {
+    const homework: StudentHomeworkItem[] = [];
     return {
-      homework: studentPortalMock.homework,
-      summary: getHomeworkSummary(studentPortalMock.homework),
+      homework,
+      summary: getHomeworkSummary(homework),
       submissions: [],
     };
   }

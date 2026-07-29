@@ -69,79 +69,11 @@ export type ComplianceDashboardData = {
 };
 
 const fallbackData: ComplianceDashboardData = {
-  checkins: [
-    {
-      id: 'fallback-checkin-1',
-      className: 'Quran Reading - Level 3',
-      teacher: 'Ust. Maryam Ali',
-      student: 'Yusuf Ahmed',
-      scheduledTime: 'Today 05:00 PM',
-      teacherReady: 'ready',
-      joined: 'joined',
-      attendanceSubmitted: 'submitted',
-      reportSubmitted: 'needs report',
-      status: 'joined',
-    },
-    {
-      id: 'fallback-checkin-2',
-      className: 'Arabic Foundations',
-      teacher: 'Sh. Omar Khaled',
-      student: 'Lina Omar',
-      scheduledTime: 'Today 06:30 PM',
-      teacherReady: 'pending',
-      joined: 'pending',
-      attendanceSubmitted: 'pending',
-      reportSubmitted: 'pending',
-      status: 'scheduled',
-    },
-  ],
-  warnings: [
-    {
-      id: 'fallback-warning-1',
-      teacher: 'Ust. Aisha Noor',
-      warningType: 'missing_class_report',
-      className: 'Tajweed Practice',
-      reason: 'Class report was not submitted before end-of-day review.',
-      date: 'Jul 29, 2026',
-      status: 'pending_review',
-      severity: 'medium',
-    },
-  ],
-  rules: [
-    {
-      id: 'fallback-rule-1',
-      ruleName: 'Default Teacher Compliance',
-      lateGraceMinutes: 5,
-      noShowAfterMinutes: 10,
-      maxWarnings: 3,
-      periodDays: 30,
-      actionAfterLimit: 'flag_for_review',
-      isActive: true,
-    },
-  ],
-  templates: [
-    {
-      id: 'fallback-template-1',
-      templateKey: 'teacher_class_reminder_10_min',
-      channel: 'in_app',
-      title: 'Class reminder',
-      body: 'Assalamu Alaikum {{teacher_name}}, you have a class at {{class_time}}.',
-      whatsappTemplateName: 'teacher_class_reminder_10_min',
-      isActive: true,
-    },
-  ],
-  logs: [
-    {
-      id: 'fallback-log-1',
-      recipient: 'Admin Team',
-      channel: 'in_app',
-      templateKey: 'admin_teacher_missing_alert',
-      provider: 'in_app',
-      status: 'sent',
-      errorMessage: '-',
-      sentAt: 'Today',
-    },
-  ],
+  checkins: [],
+  warnings: [],
+  rules: [],
+  templates: [],
+  logs: [],
   providerStatus: {
     emailConfigured: false,
     whatsappConfigured: false,
@@ -226,8 +158,8 @@ export async function fetchComplianceDashboardData(): Promise<ComplianceDashboar
 }
 
 export async function saveComplianceRule(rule: ComplianceRuleRow) {
-  if (!supabase || rule.id.startsWith('fallback')) {
-    return { success: true };
+  if (!supabase) {
+    return { success: false };
   }
 
   const { error } = await supabase.from('teacher_compliance_rules').update({
@@ -248,8 +180,8 @@ export async function saveComplianceRule(rule: ComplianceRuleRow) {
 }
 
 export async function saveNotificationTemplate(template: NotificationTemplateRow) {
-  if (!supabase || template.id.startsWith('fallback')) {
-    return { success: true };
+  if (!supabase) {
+    return { success: false };
   }
 
   const { error } = await supabase.from('notification_templates').update({
@@ -268,7 +200,7 @@ export async function saveNotificationTemplate(template: NotificationTemplateRow
 
 export async function runTeacherComplianceCheck() {
   if (!supabase) {
-    return { success: true, fallback: true };
+    return { success: false };
   }
 
   const { data, error } = await supabase.functions.invoke('teacher-compliance-check', { body: {} });
@@ -282,7 +214,7 @@ export async function runTeacherComplianceCheck() {
 
 export async function sendTestNotification(channel: 'in_app' | 'email' | 'whatsapp') {
   if (!supabase) {
-    return { success: true, fallback: true };
+    return { success: false };
   }
 
   const { data, error } = await supabase.functions.invoke('send-test-notification', {
@@ -297,8 +229,8 @@ export async function sendTestNotification(channel: 'in_app' | 'email' | 'whatsa
 }
 
 export async function updateWarningStatus(warningId: string, status: string, resolutionNote?: string) {
-  if (!supabase || warningId.startsWith('fallback')) {
-    return { success: true };
+  if (!supabase) {
+    return { success: false };
   }
 
   const { error } = await supabase.from('teacher_warnings').update({

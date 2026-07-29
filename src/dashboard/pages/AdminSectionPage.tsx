@@ -277,7 +277,7 @@ function buildRows(section: AdminSection, studentRows: GenericRow[] | null): Gen
       whatsapp: '+20 100 000 0000',
       program: trial.program,
       dateTime: trial.dateTime,
-      teacher: index === 0 ? 'Ust. Maryam Ali' : index === 1 ? 'Sh. Omar Khaled' : 'Teacher unassigned',
+      teacher: 'Teacher unassigned',
       meetingLink: index === 2 ? 'Pending' : 'Zoom link ready',
       status: index === 2 ? 'pending' : 'scheduled',
       result: 'Awaiting trial',
@@ -597,19 +597,19 @@ function buildStats(section: AdminSection, rows: GenericRow[]) {
 
   if (section === 'reports') {
     return [
-      { label: 'Report Areas', value: reportTabs.length, trend: 'Admissions to finance', icon: 'chart' },
+      { label: 'Report Records', value: total, trend: 'Calculated from Supabase records', icon: 'chart' },
       { label: 'Completed', value: active, trend: 'Ready to view', icon: 'checkCircle' },
       { label: 'Scheduled', value: pending, trend: 'Recurring reports', icon: 'clock' },
-      { label: 'Exports', value: 'CSV', trend: 'PDF later', icon: 'download' },
+      { label: 'Exports', value: rows.length ? 'CSV' : 0, trend: 'Current filtered rows', icon: 'download' },
     ];
   }
 
   if (section === 'settings') {
     return [
-      { label: 'Programs', value: 9, trend: 'Active catalog', icon: 'book' },
-      { label: 'Roles', value: 8, trend: 'Access levels', icon: 'shieldCheck' },
-      { label: 'Notifications', value: 14, trend: 'Templates ready', icon: 'message' },
-      { label: 'Timezone', value: 'UTC+2', trend: 'Academy default', icon: 'clock' },
+      { label: 'Permission Rows', value: rows.length, trend: 'Loaded from settings data', icon: 'shieldCheck' },
+      { label: 'Enabled Areas', value: active, trend: 'Active permission areas', icon: 'checkCircle' },
+      { label: 'Pending Setup', value: pending, trend: 'Settings requiring action', icon: 'clock' },
+      { label: 'Attention', value: risk, trend: 'Settings requiring review', icon: 'message' },
     ];
   }
 
@@ -870,6 +870,9 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
   const visibleRows = section === 'reports'
     ? rows.filter((row) => row.category === activeReportTab)
     : rows;
+  const visibleActive = visibleRows.filter((row) => ['active', 'present', 'paid', 'completed'].includes(String(row.status).toLowerCase())).length;
+  const visiblePending = visibleRows.filter((row) => ['pending', 'setup pending', 'scheduled', 'late'].includes(String(row.status).toLowerCase())).length;
+  const visibleRisk = visibleRows.filter((row) => ['absent', 'overdue', 'cancelled'].includes(String(row.status).toLowerCase())).length;
 
   return (
     <div className="dashboard-page dashboard-page--management">
@@ -938,11 +941,15 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
           {section === 'reports' && (
             <SectionCard title="Health Snapshot" subtitle={`${activeReportTab} report signals`}>
-              <div className="dashboard-insight-list">
-                <ProgressBar value={68} label="Enrollment funnel" />
-                <ProgressBar value={94} label="Attendance health" />
-                <ProgressBar value={82} label="Teacher utilization" />
-              </div>
+              {visibleRows.length ? (
+                <div className="dashboard-insight-list">
+                  <ProgressBar value={Math.round((visibleActive / visibleRows.length) * 100)} label="Completed report records" />
+                  <ProgressBar value={Math.round((visiblePending / visibleRows.length) * 100)} label="Pending report records" />
+                  <ProgressBar value={Math.round((visibleRisk / visibleRows.length) * 100)} label="Records requiring attention" />
+                </div>
+              ) : (
+                <EmptyState title="No report data yet" description="Supabase report records will appear here when available." />
+              )}
             </SectionCard>
           )}
         </div>

@@ -53,101 +53,37 @@ const scheduleItems = studentTimetable.map((item) => ({
 }));
 
 const studentDetails = {
-  id: 'STU-2026-0142',
+  id: '',
   name: studentProfile.name,
-  initials: 'YA',
-  age: '11',
-  country: 'Egypt',
-  status: 'active',
-  parentName: 'Ahmed Hassan',
-  parentWhatsapp: '+20 100 000 0000',
-  parentEmail: 'parent.yusuf@example.com',
-  preferredContact: 'WhatsApp',
-  currentProgram: 'Quran Reading',
-  currentLevel: 'Level 3',
-  learningGoal: 'Improve Quran fluency and apply core Tajweed rules confidently.',
-  startDate: 'Apr 08, 2026',
+  initials: 'ST',
+  age: '',
+  country: '',
+  status: 'No student record',
+  parentName: '',
+  parentWhatsapp: '',
+  parentEmail: '',
+  preferredContact: 'Academy messages',
+  currentProgram: studentProfile.course,
+  currentLevel: 'Level not set',
+  learningGoal: '',
+  startDate: '',
   assignedTeacher: studentProfile.teacher,
-  scheduleNotes: 'Evening sessions after school with short revision homework.',
-  classDays: 'Monday, Wednesday, Saturday',
-  classTime: '05:00 PM',
-  timezone: 'Africa/Cairo',
-  nextClassDate: 'Jul 27, 2026',
-  meetingPlatform: 'Zoom classroom',
-  trialDate: 'Mar 28, 2026',
+  scheduleNotes: '',
+  classDays: 'Schedule pending',
+  classTime: 'Time pending',
+  timezone: 'Timezone not set',
+  nextClassDate: 'Schedule pending',
+  meetingPlatform: 'Meeting link pending',
+  trialDate: 'Not scheduled',
   trialTeacher: studentProfile.teacher,
-  trialResult: 'Recommended to enroll',
-  enrollmentDate: 'Apr 08, 2026',
-  preferredClassTime: 'Evening',
-  whatsappReminders: 'Enabled',
-  languagePreference: 'English with Arabic terms',
+  trialResult: 'No trial record',
+  enrollmentDate: '',
+  preferredClassTime: '',
+  whatsappReminders: 'Not set',
+  languagePreference: 'Not set',
 };
 
-const studentMessages: StudentMessage[] = [
-  {
-    id: 'msg-1',
-    sender: 'Ust. Maryam Ali',
-    role: 'Teacher',
-    category: 'Teacher',
-    subject: 'Strong recitation progress',
-    preview: 'Yusuf showed clear improvement in Madd timing during the latest revision.',
-    body: 'Assalamu Alaikum. Yusuf showed clear improvement in Madd timing during the latest revision. Please revise Surah Al-Mulk verses 1-5 before the next class and keep the same slow, careful pace.',
-    dateTime: 'Today, 04:20 PM',
-    unread: true,
-    relatedClass: 'Quran Reading',
-    program: 'Quran Reading Level 3',
-  },
-  {
-    id: 'msg-2',
-    sender: 'Academy Scheduling',
-    role: 'Admin',
-    category: 'Class Updates',
-    subject: 'Saturday class time confirmed',
-    preview: 'Your Saturday Arabic Basics class remains scheduled for 10:00 AM Cairo time.',
-    body: 'Your Saturday Arabic Basics class remains scheduled for 10:00 AM Cairo time. The classroom link will remain available from the student portal before class starts.',
-    dateTime: 'Yesterday, 09:10 AM',
-    unread: false,
-    relatedClass: 'Arabic Basics',
-    program: 'Arabic Language',
-  },
-  {
-    id: 'msg-3',
-    sender: 'Homework Center',
-    role: 'Teacher',
-    category: 'Homework',
-    subject: 'Homework reminder',
-    preview: 'Please upload the short audio revision before Wednesday class.',
-    body: 'Please upload the short audio revision before Wednesday class. A 2-minute recording is enough, focused on clear pronunciation and steady rhythm.',
-    dateTime: 'Jul 23, 2026',
-    unread: true,
-    relatedClass: 'Tajweed Practice',
-    program: 'Tajweed',
-  },
-  {
-    id: 'msg-4',
-    sender: 'Finance Team',
-    role: 'Payments',
-    category: 'Payments',
-    subject: 'Package renewal reminder',
-    preview: 'Your current package has 4 sessions remaining.',
-    body: 'Your current package has 4 sessions remaining. You can contact the academy team if you would like to renew early or adjust the package.',
-    dateTime: 'Jul 21, 2026',
-    unread: false,
-    program: 'Quran Reading Level 3',
-  },
-  {
-    id: 'msg-5',
-    sender: 'Musliman Academy',
-    role: 'Admin',
-    category: 'Admin',
-    subject: 'Monthly progress summary',
-    preview: 'Your monthly progress summary is ready for parent review.',
-    body: 'Your monthly progress summary is ready for parent review. Attendance remains strong and lesson completion is on track for Level 3.',
-    dateTime: 'Jul 20, 2026',
-    unread: false,
-    program: 'Quran Reading Level 3',
-  },
-];
+const studentMessages: StudentMessage[] = [];
 
 const messageTabs = ['All', 'Teacher', 'Admin', 'Payments', 'Class Updates', 'Homework'] as const;
 type MessageTab = (typeof messageTabs)[number];
@@ -280,10 +216,10 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
         )}
         {header}
         <div className="dashboard-stats-grid">
-          <StatCard label="Upcoming Classes" value="3" trend="This week" icon="calendar" />
-          <StatCard label="Teacher" value="Maryam" trend={studentProfile.teacher} icon="teacher" />
+          <StatCard label="Upcoming Classes" value={scheduleItems.length} trend="This week" icon="calendar" />
+          <StatCard label="Teacher" value="Unassigned" trend={studentProfile.teacher} icon="teacher" />
           <StatCard label="Attendance Rate" value={studentProfile.attendanceRate} trend="Excellent consistency" icon="clipboard" />
-          <StatCard label="Current Level" value="Level 3" trend={studentProfile.currentCourse} icon="quran" />
+          <StatCard label="Current Level" value={studentDetails.currentLevel} trend={studentProfile.currentCourse} icon="quran" />
         </div>
         <SectionCard title="Upcoming Sessions">
           <ScheduleCard items={scheduleItems} onViewDetails={(item) => setScheduleDetails(item)} />
@@ -675,9 +611,9 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
         {header}
         <SectionCard title="Trial / Enrollment Status">
           <div className="dashboard-grid dashboard-grid--three">
-            <StatCard label="Trial Status" value="Completed" trend="Recommended to enroll" icon="gift" />
-            <StatCard label="Assigned Teacher" value="Maryam" trend={studentProfile.teacher} icon="teacher" />
-            <StatCard label="Program" value="Quran" trend={studentProfile.currentCourse} icon="quran" />
+            <StatCard label="Trial Status" value={studentDetails.trialResult} trend="Enrollment flow" icon="gift" />
+            <StatCard label="Assigned Teacher" value="Unassigned" trend={studentProfile.teacher} icon="teacher" />
+            <StatCard label="Program" value={studentProfile.course} trend={studentProfile.currentCourse} icon="quran" />
           </div>
         </SectionCard>
       </div>

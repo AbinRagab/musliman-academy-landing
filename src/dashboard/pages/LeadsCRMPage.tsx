@@ -19,7 +19,6 @@ import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import Toast, { type ToastMessage } from '../components/Toast';
 import { useAuth, type AuthRole } from '../auth/AuthProvider';
-import { adminLeads } from '../data/mockData';
 import {
   addLeadNote,
   addLeadFollowUp,
@@ -74,37 +73,6 @@ const teacherTrainingStatuses: LeadStatus[] = ['new', 'contacted', 'follow_up_la
 const studentPipelineStatuses: LeadStatus[] = ['new', 'contacted', 'no_response', 'follow_up_later', 'trial_scheduled', 'trial_completed', 'lost'];
 const pageSizeOptions = [25, 50, 100];
 type LeadsSortKey = 'created_desc' | 'created_asc' | 'follow_up_asc' | 'name_asc' | 'status_asc';
-
-function mockLeads(): LeadRecord[] {
-  return adminLeads.map((lead, index) => ({
-    id: `mock-${index}`,
-    full_name: lead.name,
-    whatsapp: lead.contact,
-    country: index === 0 ? 'United Kingdom' : index === 1 ? 'United States' : 'Australia',
-    student_age: index === 2 ? 'Adult' : 'Child',
-    program_id: null,
-    program_name: lead.program,
-    preferred_time: 'Evening',
-    message: 'Interested in a structured online learning path.',
-    source: lead.source,
-    form_type: lead.program === 'Teacher Training' ? 'teacher_training' : 'free_trial',
-    lead_type: lead.program === 'Teacher Training' ? 'teacher_training' : 'student',
-    status: lead.status as LeadStatus,
-    assigned_to: null,
-    assigned_teacher_id: null,
-    last_contact_at: null,
-    next_follow_up_at: new Date(Date.now() + (index + 1) * 86400000).toISOString(),
-    notes: 'Admissions note for dashboard preview.',
-    lead_priority: 'normal',
-    lost_reason: null,
-    converted_student_id: null,
-    created_at: new Date(Date.now() - index * 86400000).toISOString(),
-    updated_at: new Date().toISOString(),
-    programName: lead.program,
-    assignedOwnerName: lead.owner,
-    assignedTeacherName: index === 2 ? 'Ust. Maryam Ali' : 'Unassigned',
-  }));
-}
 
 function formatDate(value?: string | null) {
   if (!value) {
@@ -301,9 +269,12 @@ export default function LeadsCRMPage() {
       if (import.meta.env.DEV) {
         console.error('Leads CRM load failed:', error);
       }
-      setLeads(mockLeads());
-      setUsingMockFallback(true);
-      setToast({ type: 'error', message: 'Live leads could not be loaded. Showing local admissions records.' });
+      setLeads([]);
+      setPrograms([]);
+      setOwners([]);
+      setTeachers([]);
+      setUsingMockFallback(false);
+      setToast({ type: 'error', message: 'Live leads could not be loaded. No lead records are displayed.' });
     } finally {
       setLoading(false);
     }
@@ -323,11 +294,6 @@ export default function LeadsCRMPage() {
     setSelectedLead(lead);
     setDrawerMode(mode);
 
-    if (lead.id.startsWith('mock-')) {
-      setActivities([]);
-      return;
-    }
-
     try {
       setActivities(await fetchLeadActivity(lead.id));
     } catch {
@@ -343,24 +309,10 @@ export default function LeadsCRMPage() {
     setSavingLead(true);
 
     try {
-      if (usingMockFallback || selectedLead.id.startsWith('mock-')) {
-        const updated = {
-          ...selectedLead,
-          ...payload,
-          programName: payload.program_name || selectedLead.programName,
-          assignedOwnerName: owners.find((owner) => owner.id === payload.assigned_to)?.full_name || selectedLead.assignedOwnerName,
-          assignedTeacherName: teachers.find((teacher) => teacher.id === payload.assigned_teacher_id)?.full_name || selectedLead.assignedTeacherName,
-          updated_at: new Date().toISOString(),
-        } as LeadRecord;
-
-        setLeads((current) => current.map((lead) => lead.id === selectedLead.id ? updated : lead));
-        setSelectedLead(updated);
-      } else {
-        const updated = await updateLead(selectedLead.id, payload);
-        setSelectedLead(updated);
-        await loadLeads();
-        setActivities(await fetchLeadActivity(selectedLead.id));
-      }
+      const updated = await updateLead(selectedLead.id, payload);
+      setSelectedLead(updated);
+      await loadLeads();
+      setActivities(await fetchLeadActivity(selectedLead.id));
 
       setDrawerMode('view');
       setToast({ type: 'success', message: 'Lead updated successfully.' });
@@ -502,7 +454,7 @@ export default function LeadsCRMPage() {
     }
 
     try {
-      if (!usingMockFallback && !lead.id.startsWith('mock-')) {
+    if (!usingMockFallback) {
         const updated = await updateLeadStatus(lead.id, status, oldStatus);
         setLeads((current) => current.map((item) => (item.id === lead.id ? { ...item, ...updated } : item)));
         if (selectedLead?.id === lead.id) {
@@ -560,7 +512,7 @@ export default function LeadsCRMPage() {
       return;
     }
 
-    if (usingMockFallback || lostLead.id.startsWith('mock-')) {
+    if (usingMockFallback) {
       setLeads((current) => current.map((lead) => (
         lead.id === lostLead.id
           ? { ...lead, status: 'lost', lost_reason: lostReason.trim(), updated_at: new Date().toISOString() }

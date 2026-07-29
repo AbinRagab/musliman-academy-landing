@@ -8,7 +8,7 @@ import {
   StudentModal,
   StudentPageHeader,
 } from '../components/student/StudentPortalComponents';
-import { fetchStudentDashboardData, saveStudentSettings, studentPortalMock, type StudentSettings as StudentSettingsData } from '../services/studentService';
+import { emptyStudentSettings, fetchStudentDashboardData, saveStudentSettings, type StudentSettings as StudentSettingsData } from '../services/studentService';
 
 function SettingToggle({ label, description, enabled, name }: { label: string; description: string; enabled: boolean; name: string }) {
   return (
@@ -23,14 +23,14 @@ function SettingToggle({ label, description, enabled, name }: { label: string; d
 }
 
 export default function StudentSettings() {
-  const [settings, setSettings] = useState<StudentSettingsData>(studentPortalMock.settings);
+  const [settings, setSettings] = useState<StudentSettingsData>(emptyStudentSettings);
   const [saved, setSaved] = useState(false);
   const [comingSoon, setComingSoon] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStudentDashboardData().then((data) => {
       setSettings({
-        ...studentPortalMock.settings,
+        ...emptyStudentSettings,
         displayName: data.profile.name,
         email: data.profile.parentEmail,
         whatsapp: data.profile.parentWhatsapp,

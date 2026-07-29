@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
@@ -10,40 +10,7 @@ import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
 import Toast, { type ToastMessage } from '../components/Toast';
-import { academyOperations, recentClasses } from '../data/mockData';
-
-type RecentClass = (typeof recentClasses)[number] & {
-  meeting: string;
-  attendanceSubmitted: string;
-  teacherReport: string;
-  homeworkSet: string;
-};
-
-const operationStats = [
-  { label: 'New Leads', value: 12, trend: 'Admissions queue', icon: 'phone' },
-  { label: 'Trials Scheduled', value: 19, trend: 'Next 7 days', icon: 'gift' },
-  { label: 'Active Students', value: 428, trend: 'Enrolled learners', icon: 'users' },
-  { label: 'Today Classes', value: 84, trend: 'Live schedule', icon: 'calendar' },
-  { label: 'Pending Payments', value: 24, trend: 'Finance follow-up', icon: 'award' },
-  { label: 'Attendance Issues', value: 7, trend: 'Needs review', icon: 'clipboard' },
-  { label: 'Pending Reports', value: 11, trend: 'Teacher reports', icon: 'report' },
-  { label: 'Upcoming Trials', value: 5, trend: 'Next 48 hours', icon: 'clock' },
-];
-
-const operationalClasses: RecentClass[] = recentClasses.map((classItem, index) => ({
-  ...classItem,
-  meeting: index === 0 ? 'Zoom classroom' : 'Google Meet',
-  attendanceSubmitted: index === 0 ? 'submitted' : 'pending',
-  teacherReport: index === 0 ? 'submitted' : 'needs report',
-  homeworkSet: index === 2 ? 'pending' : 'set',
-}));
-
-const recentActivity = [
-  { title: 'Website lead received', meta: 'Admissions pipeline - Quran Reading', icon: 'phone' },
-  { title: 'Trial feedback submitted', meta: 'Teacher feedback ready for admin review', icon: 'gift' },
-  { title: 'Attendance correction requested', meta: 'Late record needs teacher confirmation', icon: 'clipboard' },
-  { title: 'Payment follow-up queued', meta: 'Overdue package renewal', icon: 'award' },
-];
+import { fetchAdminDashboardData, type AdminDashboardClass as RecentClass, type AdminDashboardData } from '../services/adminDashboardService';
 
 function openMeetingLink(meeting: string, notify: (message: string) => void) {
   if (meeting.toLowerCase().includes('zoom') || meeting.toLowerCase().includes('meet')) {
@@ -56,8 +23,18 @@ function openMeetingLink(meeting: string, notify: (message: string) => void) {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState<AdminDashboardData | null>(null);
   const [selectedClass, setSelectedClass] = useState<RecentClass | null>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
+
+  useEffect(() => {
+    fetchAdminDashboardData().then(setDashboardData).catch(() => setDashboardData({
+      stats: [],
+      health: [],
+      recentActivity: [],
+      todayClasses: [],
+    }));
+  }, []);
 
   function notify(message: string, type: ToastMessage['type'] = 'info') {
     setToast({ type, message });
@@ -112,7 +89,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="dashboard-stats-grid dashboard-stats-grid--accounts">
-        {operationStats.map((stat) => (
+        {(dashboardData?.stats || []).map((stat) => (
           <StatCard key={stat.label} {...stat} />
         ))}
       </div>
@@ -120,7 +97,7 @@ export default function AdminDashboard() {
       <div className="dashboard-grid dashboard-grid--two">
         <SectionCard title="Operational Health" subtitle="Current academy workflow signals">
           <div className="dashboard-metric-list">
-            {academyOperations.map((item) => (
+            {(dashboardData?.health || []).map((item) => (
               <div className="dashboard-metric" key={item.title}>
                 <span>{item.title}</span>
                 <strong>{item.value}</strong>
@@ -132,7 +109,8 @@ export default function AdminDashboard() {
 
         <SectionCard title="Recent Activity" subtitle="Latest workflow updates">
           <div className="teacher-task-list">
-            {recentActivity.map((item) => (
+            {(dashboardData?.recentActivity || []).length === 0 && <p className="dashboard-empty-copy">No recent activity logged yet.</p>}
+            {(dashboardData?.recentActivity || []).map((item) => (
               <article key={item.title}>
                 <Icon name={item.icon} size={18} />
                 <div>
@@ -174,7 +152,9 @@ export default function AdminDashboard() {
       </div>
 
       <SectionCard title="Today Classes" subtitle="Scheduled classes with attendance, reports, homework, and status">
-        <DataTable columns={classColumns} rows={operationalClasses} getRowKey={(row) => `${row.time}-${row.className}`} />
+        {(dashboardData?.todayClasses || []).length === 0
+          ? <p className="dashboard-empty-copy">No classes scheduled for today.</p>
+          : <DataTable columns={classColumns} rows={dashboardData?.todayClasses || []} getRowKey={(row) => row.id} />}
       </SectionCard>
 
       {selectedClass && (

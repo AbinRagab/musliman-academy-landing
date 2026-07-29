@@ -85,16 +85,16 @@ export function canEditStudentField(role: AuthRole | null | undefined, field: St
   return Boolean(role && field.editableBy.includes(role));
 }
 
-const mockStudentRecord: StudentRecord = {
-  id: 'mock-yusuf',
-  name: 'Yusuf Ahmed',
-  status: 'active',
-  program: 'Quran Reading',
-  level: 'Level 3',
-  teacher: 'Ust. Maryam Ali',
-  nextClass: 'Mon 05:00 PM',
-  attendanceRate: '96%',
-  progressPercentage: '74%',
+const emptyStudentRecord: StudentRecord = {
+  id: '',
+  name: 'Student record',
+  status: 'No record',
+  program: 'Program not assigned',
+  level: 'Level not set',
+  teacher: 'Unassigned',
+  nextClass: 'Schedule pending',
+  attendanceRate: '0%',
+  progressPercentage: '0%',
   sections: {
     overview: [
       {
@@ -103,11 +103,11 @@ const mockStudentRecord: StudentRecord = {
         owner: 'System',
         description: 'Calculated overview from enrollment, classes, attendance, evaluations, and payments.',
         fields: [
-          { key: 'attendance_rate', label: 'Attendance rate', value: '96%', owner: 'System', editableBy: systemRoles },
-          { key: 'completed_lessons', label: 'Completed lessons', value: '31', owner: 'System', editableBy: systemRoles },
-          { key: 'progress_percentage', label: 'Progress percentage', value: '74%', owner: 'System', editableBy: systemRoles },
-          { key: 'next_class_date', label: 'Next class date', value: 'Jul 27, 2026', owner: 'System', editableBy: systemRoles },
-          { key: 'payment_status', label: 'Payment status', value: 'Paid', owner: 'System', editableBy: systemRoles },
+          { key: 'attendance_rate', label: 'Attendance rate', value: '0%', owner: 'System', editableBy: systemRoles },
+          { key: 'completed_lessons', label: 'Completed lessons', value: '0', owner: 'System', editableBy: systemRoles },
+          { key: 'progress_percentage', label: 'Progress percentage', value: '0%', owner: 'System', editableBy: systemRoles },
+          { key: 'next_class_date', label: 'Next class date', value: 'Schedule pending', owner: 'System', editableBy: systemRoles },
+          { key: 'payment_status', label: 'Payment status', value: 'No payment record', owner: 'System', editableBy: systemRoles },
         ],
       },
     ],
@@ -118,12 +118,12 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Admin',
         description: 'Admin or Admissions manages personal data gathered from lead review and parent contact.',
         fields: [
-          { key: 'student_name', label: 'Student name', value: 'Yusuf Ahmed', owner: 'Admin', editableBy: adminRoles },
-          { key: 'parent_name', label: 'Parent name', value: 'Ahmed Hassan', owner: 'Admin', editableBy: adminRoles },
-          { key: 'parent_whatsapp', label: 'Parent WhatsApp', value: '+20 100 000 0000', owner: 'Admin', editableBy: adminRoles },
-          { key: 'parent_email', label: 'Parent email', value: 'parent.yusuf@example.com', owner: 'Admin', editableBy: adminRoles },
-          { key: 'country', label: 'Country', value: 'Egypt', owner: 'Admin', editableBy: adminRoles },
-          { key: 'age', label: 'Age', value: '11', owner: 'Admin', editableBy: adminRoles },
+          { key: 'student_name', label: 'Student name', value: '', owner: 'Admin', editableBy: adminRoles },
+          { key: 'parent_name', label: 'Parent name', value: '', owner: 'Admin', editableBy: adminRoles },
+          { key: 'parent_whatsapp', label: 'Parent WhatsApp', value: '', owner: 'Admin', editableBy: adminRoles },
+          { key: 'parent_email', label: 'Parent email', value: '', owner: 'Admin', editableBy: adminRoles },
+          { key: 'country', label: 'Country', value: '', owner: 'Admin', editableBy: adminRoles },
+          { key: 'age', label: 'Age', value: '', owner: 'Admin', editableBy: adminRoles },
         ],
       },
     ],
@@ -134,15 +134,15 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Admin',
         description: 'Admin approves final level, schedule, teacher assignment, meeting link, and enrollment settings.',
         fields: [
-          { key: 'current_program', label: 'Current program', value: 'Quran Reading', owner: 'Admin', editableBy: adminRoles },
-          { key: 'approved_level', label: 'Approved level', value: 'Level 3', owner: 'Admin', editableBy: adminRoles },
-          { key: 'assigned_teacher', label: 'Assigned teacher', value: 'Ust. Maryam Ali', owner: 'Admin', editableBy: adminRoles },
-          { key: 'schedule_days', label: 'Schedule days', value: 'Monday, Wednesday, Saturday', owner: 'Admin', editableBy: adminRoles },
-          { key: 'class_time', label: 'Class time', value: '05:00 PM', owner: 'Admin', editableBy: adminRoles },
-          { key: 'timezone', label: 'Timezone', value: 'Africa/Cairo', owner: 'Admin', editableBy: adminRoles },
-          { key: 'start_date', label: 'Start date', value: 'Apr 08, 2026', owner: 'Admin', editableBy: adminRoles, input: 'date' },
-          { key: 'meeting_link', label: 'Meeting link', value: 'Available before class', owner: 'Admin', editableBy: adminRoles },
-          { key: 'schedule_notes', label: 'Schedule notes', value: 'Evening sessions after school.', owner: 'Admin', editableBy: adminRoles, input: 'textarea' },
+          { key: 'current_program', label: 'Current program', value: 'Program not assigned', owner: 'Admin', editableBy: adminRoles },
+          { key: 'approved_level', label: 'Approved level', value: 'Level not set', owner: 'Admin', editableBy: adminRoles },
+          { key: 'assigned_teacher', label: 'Assigned teacher', value: 'Unassigned', owner: 'Admin', editableBy: adminRoles },
+          { key: 'schedule_days', label: 'Schedule days', value: 'Schedule pending', owner: 'Admin', editableBy: adminRoles },
+          { key: 'class_time', label: 'Class time', value: 'Time pending', owner: 'Admin', editableBy: adminRoles },
+          { key: 'timezone', label: 'Timezone', value: 'Timezone pending', owner: 'Admin', editableBy: adminRoles },
+          { key: 'start_date', label: 'Start date', value: '', owner: 'Admin', editableBy: adminRoles, input: 'date' },
+          { key: 'meeting_link', label: 'Meeting link', value: 'Meeting link pending', owner: 'Admin', editableBy: adminRoles },
+          { key: 'schedule_notes', label: 'Schedule notes', value: '', owner: 'Admin', editableBy: adminRoles, input: 'textarea' },
         ],
       },
     ],
@@ -153,14 +153,14 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Teacher',
         description: 'Teacher records educational assessment for assigned trial/student only. Admin can view and approve final level.',
         fields: [
-          { key: 'reading_level', label: 'Reading level', value: 'Intermediate', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'tajweed_level', label: 'Tajweed level', value: 'Level 2', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'arabic_level', label: 'Arabic level', value: 'Beginner', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'student_engagement', label: 'Student engagement', value: 'Excellent', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'recommended_level', label: 'Recommended level', value: 'Level 3', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'teacher_feedback', label: 'Teacher feedback', value: 'Good reading confidence; needs steady Tajweed revision.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
-          { key: 'recommendation', label: 'Recommendation', value: 'Recommended to enroll', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'trial_result', label: 'Trial result', value: 'completed', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'reading_level', label: 'Reading level', value: 'Not recorded', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'tajweed_level', label: 'Tajweed level', value: 'Not recorded', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'arabic_level', label: 'Arabic level', value: 'Not recorded', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'student_engagement', label: 'Student engagement', value: 'Not recorded', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'recommended_level', label: 'Recommended level', value: 'Not set', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'teacher_feedback', label: 'Teacher feedback', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'recommendation', label: 'Recommendation', value: 'No recommendation yet', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'trial_result', label: 'Trial result', value: 'No trial result', owner: 'Teacher', editableBy: teacherEditRoles },
         ],
       },
     ],
@@ -171,10 +171,10 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Teacher',
         description: 'Teacher records lesson coverage, class report notes, and next lesson planning for assigned students.',
         fields: [
-          { key: 'lesson_covered', label: 'Lesson covered', value: 'Madd letters review', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'class_notes', label: 'Class notes', value: 'Strong pace and careful repetition.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
-          { key: 'participation', label: 'Student participation', value: 'Excellent', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'next_lesson_plan', label: 'Next lesson plan', value: 'Apply Madd rules in Surah Al-Mulk.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'lesson_covered', label: 'Lesson covered', value: 'No lesson report yet', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'class_notes', label: 'Class notes', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'participation', label: 'Student participation', value: 'Not recorded', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'next_lesson_plan', label: 'Next lesson plan', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
         ],
       },
     ],
@@ -185,9 +185,9 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Teacher',
         description: 'Teacher marks attendance for assigned classes only.',
         fields: [
-          { key: 'attendance', label: 'Attendance', value: 'present', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'attendance_note', label: 'Attendance note', value: 'Present and on time.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
-          { key: 'attendance_rate', label: 'Attendance rate', value: '96%', owner: 'System', editableBy: systemRoles },
+          { key: 'attendance', label: 'Attendance', value: 'No attendance records', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'attendance_note', label: 'Attendance note', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'attendance_rate', label: 'Attendance rate', value: '0%', owner: 'System', editableBy: systemRoles },
         ],
       },
     ],
@@ -198,9 +198,9 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Teacher',
         description: 'Teacher sets homework notes and review feedback.',
         fields: [
-          { key: 'homework', label: 'Homework assigned', value: 'Upload two-minute revision audio.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
-          { key: 'homework_feedback', label: 'Homework feedback', value: 'Audio submission reviewed; repeat ayat 1-5.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
-          { key: 'homework_status', label: 'Homework status', value: 'Reviewed', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'homework', label: 'Homework assigned', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'homework_feedback', label: 'Homework feedback', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'homework_status', label: 'Homework status', value: 'No homework records', owner: 'Teacher', editableBy: teacherEditRoles },
         ],
       },
     ],
@@ -211,12 +211,12 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Teacher',
         description: 'Teacher adds evaluation scores and recommendations. System derives progress metrics.',
         fields: [
-          { key: 'recitation_rating', label: 'Recitation rating', value: '5/5', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'tajweed_rating', label: 'Tajweed rating', value: '4/5', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'understanding_rating', label: 'Understanding rating', value: '5/5', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'behavior_rating', label: 'Behavior / engagement rating', value: '5/5', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'progress_notes', label: 'Progress notes', value: 'Continue slow recitation practice.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
-          { key: 'teacher_recommendation', label: 'Teacher recommendation', value: 'Ready for next lesson unit.', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'recitation_rating', label: 'Recitation rating', value: 'Not scored', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'tajweed_rating', label: 'Tajweed rating', value: 'Not scored', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'understanding_rating', label: 'Understanding rating', value: 'Not scored', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'behavior_rating', label: 'Behavior / engagement rating', value: 'Not scored', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'progress_notes', label: 'Progress notes', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'teacher_recommendation', label: 'Teacher recommendation', value: 'No recommendation yet', owner: 'Teacher', editableBy: teacherEditRoles },
         ],
       },
     ],
@@ -227,8 +227,8 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Teacher',
         description: 'Private teacher notes for academic follow-up and academy review.',
         fields: [
-          { key: 'teacher_note', label: 'Teacher note', value: 'Needs revision on elongation timing.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
-          { key: 'support_needed', label: 'Support needed', value: 'Extra five-minute revision drill.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'teacher_note', label: 'Teacher note', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'support_needed', label: 'Support needed', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
         ],
       },
     ],
@@ -239,9 +239,9 @@ const mockStudentRecord: StudentRecord = {
         owner: 'System',
         description: 'Progress summary calculated from attendance, homework, evaluations, and class reports.',
         fields: [
-          { key: 'progress_percentage', label: 'Progress percentage', value: '74%', owner: 'System', editableBy: systemRoles },
-          { key: 'current_focus', label: 'Current focus', value: 'Madd timing and fluency', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'next_milestone', label: 'Next milestone', value: 'Stable fluency in Surah Al-Mulk revision', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'progress_percentage', label: 'Progress percentage', value: '0%', owner: 'System', editableBy: systemRoles },
+          { key: 'current_focus', label: 'Current focus', value: 'No focus area recorded', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'next_milestone', label: 'Next milestone', value: 'No milestone recorded', owner: 'Teacher', editableBy: teacherEditRoles },
         ],
       },
     ],
@@ -252,15 +252,15 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Finance',
         description: 'Finance edits package, payment status, payment dates, cost, revenue, and invoice notes only.',
         fields: [
-          { key: 'package', label: 'Package', value: '12 Sessions', owner: 'Finance', editableBy: financeEditRoles },
-          { key: 'currency', label: 'Currency', value: 'USD', owner: 'Finance', editableBy: financeEditRoles },
-          { key: 'amount', label: 'Amount', value: '$120', owner: 'Finance', editableBy: financeEditRoles },
-          { key: 'payment_status', label: 'Payment status', value: 'paid', owner: 'Finance', editableBy: financeEditRoles },
-          { key: 'payment_date', label: 'Payment date', value: 'Jul 01, 2026', owner: 'Finance', editableBy: financeEditRoles },
-          { key: 'next_due_date', label: 'Next due date', value: 'Aug 01, 2026', owner: 'Finance', editableBy: financeEditRoles },
-          { key: 'teacher_cost', label: 'Teacher cost', value: '$54', owner: 'Finance', editableBy: financeEditRoles },
-          { key: 'net_revenue', label: 'Net revenue', value: '$66', owner: 'Finance', editableBy: financeEditRoles },
-          { key: 'invoice_notes', label: 'Invoice notes', value: 'Monthly renewal reminder scheduled.', owner: 'Finance', editableBy: financeEditRoles, input: 'textarea' },
+          { key: 'package', label: 'Package', value: 'No package record', owner: 'Finance', editableBy: financeEditRoles },
+          { key: 'currency', label: 'Currency', value: '', owner: 'Finance', editableBy: financeEditRoles },
+          { key: 'amount', label: 'Amount', value: '0', owner: 'Finance', editableBy: financeEditRoles },
+          { key: 'payment_status', label: 'Payment status', value: 'No payment record', owner: 'Finance', editableBy: financeEditRoles },
+          { key: 'payment_date', label: 'Payment date', value: '', owner: 'Finance', editableBy: financeEditRoles },
+          { key: 'next_due_date', label: 'Next due date', value: '', owner: 'Finance', editableBy: financeEditRoles },
+          { key: 'teacher_cost', label: 'Teacher cost', value: '0', owner: 'Finance', editableBy: financeEditRoles },
+          { key: 'net_revenue', label: 'Net revenue', value: '0', owner: 'Finance', editableBy: financeEditRoles },
+          { key: 'invoice_notes', label: 'Invoice notes', value: '', owner: 'Finance', editableBy: financeEditRoles, input: 'textarea' },
         ],
       },
     ],
@@ -271,9 +271,9 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Admin',
         description: 'Admin and teachers add internal notes; students view approved messages.',
         fields: [
-          { key: 'admin_note', label: 'Admin note', value: 'Parent prefers WhatsApp updates.', owner: 'Admin', editableBy: adminRoles, input: 'textarea' },
-          { key: 'teacher_note', label: 'Teacher note', value: 'Needs revision on elongation timing.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
-          { key: 'last_message', label: 'Last message', value: 'Homework reminder sent Jul 23.', owner: 'System', editableBy: systemRoles },
+          { key: 'admin_note', label: 'Admin note', value: '', owner: 'Admin', editableBy: adminRoles, input: 'textarea' },
+          { key: 'teacher_note', label: 'Teacher note', value: '', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'last_message', label: 'Last message', value: 'No messages recorded', owner: 'System', editableBy: systemRoles },
         ],
       },
     ],
@@ -284,10 +284,10 @@ const mockStudentRecord: StudentRecord = {
         owner: 'Student',
         description: 'Student/parent can edit limited preferences or request contact updates.',
         fields: [
-          { key: 'preferred_contact_method', label: 'Preferred contact method', value: 'WhatsApp', owner: 'Student', editableBy: studentEditRoles },
-          { key: 'notification_preferences', label: 'Notification preferences', value: 'Class and homework reminders enabled', owner: 'Student', editableBy: studentEditRoles },
-          { key: 'language_preference', label: 'Language preference', value: 'English with Arabic terms', owner: 'Student', editableBy: studentEditRoles },
-          { key: 'timezone', label: 'Timezone', value: 'Africa/Cairo', owner: 'Student', editableBy: studentEditRoles },
+          { key: 'preferred_contact_method', label: 'Preferred contact method', value: 'Academy messages', owner: 'Student', editableBy: studentEditRoles },
+          { key: 'notification_preferences', label: 'Notification preferences', value: 'Default academy notifications', owner: 'Student', editableBy: studentEditRoles },
+          { key: 'language_preference', label: 'Language preference', value: 'Not set', owner: 'Student', editableBy: studentEditRoles },
+          { key: 'timezone', label: 'Timezone', value: 'Not set', owner: 'Student', editableBy: studentEditRoles },
           { key: 'whatsapp_update_request', label: 'WhatsApp update request', value: 'No open request', owner: 'Student', editableBy: studentEditRoles },
         ],
       },
@@ -337,8 +337,8 @@ export async function fetchStudentManagementRows() {
 }
 
 export async function fetchStudentRecord(studentId?: string | null) {
-  if (!studentId || studentId.startsWith('mock')) {
-    return mockStudentRecord;
+  if (!studentId) {
+    return emptyStudentRecord;
   }
 
   const client = requireSupabase();
@@ -349,18 +349,18 @@ export async function fetchStudentRecord(studentId?: string | null) {
     .maybeSingle();
 
   if (error || !data) {
-    return mockStudentRecord;
+    return emptyStudentRecord;
   }
 
   return {
-    ...mockStudentRecord,
+    ...emptyStudentRecord,
     id: data.id,
-    name: data.student_name || mockStudentRecord.name,
-    status: data.status || mockStudentRecord.status,
-    level: data.level || mockStudentRecord.level,
+    name: data.student_name || emptyStudentRecord.name,
+    status: data.status || emptyStudentRecord.status,
+    level: data.level || emptyStudentRecord.level,
     sections: {
-      ...mockStudentRecord.sections,
-      personal: mockStudentRecord.sections.personal.map((section) => ({
+      ...emptyStudentRecord.sections,
+      personal: emptyStudentRecord.sections.personal.map((section) => ({
         ...section,
         fields: section.fields.map((field) => {
           const valueByKey: Record<string, string | null | undefined> = {
@@ -379,10 +379,6 @@ export async function fetchStudentRecord(studentId?: string | null) {
 }
 
 export async function updateStudentPersonalInfo(studentId: string, payload: Record<string, string>) {
-  if (studentId.startsWith('mock')) {
-    return { success: true, payload };
-  }
-
   const client = requireSupabase();
   const updatePayload = {
     student_name: payload.student_name,
@@ -401,10 +397,6 @@ export async function updateStudentPersonalInfo(studentId: string, payload: Reco
 }
 
 export async function updateStudentAcademicSetup(studentId: string, payload: Record<string, string>) {
-  if (studentId.startsWith('mock')) {
-    return { success: true, payload };
-  }
-
   const client = requireSupabase();
   const updatePayload = {
     level: payload.approved_level,

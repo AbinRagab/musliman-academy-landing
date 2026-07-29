@@ -101,48 +101,20 @@ const students: StudentRow[] = teacherStudents.map((student, index) => ({
   status: student.attendance === '88%' ? 'needs support' : 'active',
 }));
 
-const classRows: ClassRow[] = [
-  ...teacherSchedule.map((item, index) => ({
-    id: `class-${index}`,
-    student: item.student,
-    program: item.program,
-    dateTime: `Today ${item.time}`,
-    status: item.status,
-    platform: index === 1 ? 'Zoom classroom' : 'Google Meet',
-    meetingLink: index === 1 ? 'https://meet.google.com/' : undefined,
-    attendanceStatus: item.status === 'Completed' ? 'Pending' : 'Not Started',
-    lessonCovered: item.status === 'Completed' ? 'Madd letters revision' : 'Planned lesson',
-    homeworkAssigned: item.status === 'Completed' ? 'Revision audio upload' : 'Set after class',
-    reportStatus: item.status === 'Completed' ? 'Needs Report' : 'Not Due',
-    notes: item.status === 'Completed' ? 'Class completed; report pending.' : 'Prepare class materials.',
-  })),
-  {
-    id: 'class-history-1',
-    student: 'Yusuf Ahmed',
-    program: 'Quran Reading',
-    dateTime: 'Jul 27, 2026 05:00 PM',
-    status: 'Completed',
-    platform: 'Zoom classroom',
-    attendanceStatus: 'Submitted',
-    lessonCovered: 'Surah Al-Mulk fluency',
-    homeworkAssigned: 'Repeat ayat 1-5',
-    reportStatus: 'Submitted',
-    notes: 'Progressing steadily.',
-  },
-  {
-    id: 'class-cancelled-1',
-    student: 'Noor Hassan',
-    program: 'Islamic Studies',
-    dateTime: 'Jul 26, 2026 06:00 PM',
-    status: 'Cancelled',
-    platform: 'Google Meet',
-    attendanceStatus: 'Not Required',
-    lessonCovered: '-',
-    homeworkAssigned: '-',
-    reportStatus: 'Not Required',
-    notes: 'Rescheduled by admin.',
-  },
-];
+const classRows: ClassRow[] = teacherSchedule.map((item, index) => ({
+  id: `class-${index}`,
+  student: item.student,
+  program: item.program,
+  dateTime: `Today ${item.time}`,
+  status: item.status,
+  platform: 'Meeting link pending',
+  meetingLink: undefined,
+  attendanceStatus: item.status === 'Completed' ? 'Pending' : 'Not Started',
+  lessonCovered: item.status === 'Completed' ? 'Lesson report pending' : 'Planned lesson',
+  homeworkAssigned: item.status === 'Completed' ? 'Homework pending' : 'Set after class',
+  reportStatus: item.status === 'Completed' ? 'Needs Report' : 'Not Due',
+  notes: '',
+}));
 
 const evaluationRows: EvaluationRow[] = studentEvaluations.map((item, index) => ({
   id: `evaluation-${index}`,
@@ -158,38 +130,10 @@ const trialRows: TrialRow[] = freeTrials.map((trial, index) => ({
   program: trial.program,
   dateTime: trial.dateTime,
   status: index === 1 ? 'completed' : index === 2 ? 'no_show' : 'scheduled',
-  adminOwner: index === 2 ? 'Admissions Team' : 'Omar Khaled',
+  adminOwner: 'Admissions Team',
 }));
 
-const messageThreads: MessageThread[] = [
-  {
-    id: 'msg-1',
-    from: 'Academic Manager',
-    subject: 'Revision support needed',
-    student: 'Adam Khan',
-    relatedClass: 'Tajweed - Today 01:30 PM',
-    unread: true,
-    preview: 'Please add a short support note after today class.',
-  },
-  {
-    id: 'msg-2',
-    from: 'Parent note via Academy',
-    subject: 'Schedule confirmation',
-    student: 'Lina Omar',
-    relatedClass: 'Arabic Language - Today 10:00 AM',
-    unread: false,
-    preview: 'Family confirmed class time and requested homework reminder.',
-  },
-  {
-    id: 'msg-3',
-    from: 'Admissions',
-    subject: 'Trial feedback request',
-    student: 'Musa Patel',
-    relatedClass: 'Trial class',
-    unread: true,
-    preview: 'Please submit trial feedback after the assigned session.',
-  },
-];
+const messageThreads: MessageThread[] = [];
 
 function notifyMissingMeeting(setToast: (toast: ToastMessage) => void) {
   setToast({ type: 'info', message: 'Meeting link is not available. Please contact the academy team.' });
@@ -387,7 +331,18 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           actions={[
             { label: 'View Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
             { label: 'Add Evaluation', onClick: () => setEvaluationModal({ id: row.id, student: row.student, program: row.program, relatedClass: row.nextClass, status: 'ready' }) },
-            { label: 'Add Class Note', onClick: () => setReportModal(classRows.find((classItem) => classItem.student === row.student) || classRows[0]) },
+            {
+              label: 'Add Class Note',
+              onClick: () => {
+                const relatedClass = classRows.find((classItem) => classItem.student === row.student) || classRows[0];
+                if (relatedClass) {
+                  setReportModal(relatedClass);
+                  return;
+                }
+
+                setToast({ type: 'info', message: 'No class record is available for this student yet.' });
+              },
+            },
             { label: 'Message via Academy', onClick: () => setComposeOpen(true) },
           ]}
         />
@@ -620,27 +575,33 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <Toast toast={toast} onClose={() => setToast(null)} />
         {commonHeader}
         <SectionCard title="Class Attendance" subtitle="Based on submitted attendance records.">
-          <form className="dashboard-form">
-            <div className="teacher-form-grid">
-              <label><span>Class</span><select value={selectedClassId} onChange={(event) => setSelectedClassId(event.target.value)}>{classRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.student} - {classItem.dateTime}</option>)}</select></label>
-              <label><span>Date</span><input type="date" defaultValue="2026-07-29" /></label>
-            </div>
-            <div className="dashboard-attendance-list">
-              {[selectedClass.student].map((student) => (
-                <div className="dashboard-attendance-row dashboard-attendance-row--expanded" key={student}>
-                  <span>{student}</span>
-                  {['Present', 'Absent', 'Late', 'Excused'].map((status) => <label key={status}><input type="radio" name={`attendance-${student}`} defaultChecked={status === 'Present'} /> {status}</label>)}
-                  <input placeholder="Attendance note" />
-                  <StatusBadge label={selectedClass.attendanceStatus === 'Submitted' ? 'submitted' : 'pending'} />
-                </div>
-              ))}
-            </div>
-            <div className="dashboard-form-actions"><ActionButton variant="copper" onClick={() => setToast({ type: 'success', message: 'Attendance saved.' })}>Save Attendance</ActionButton></div>
-          </form>
+          {selectedClass ? (
+            <form className="dashboard-form">
+              <div className="teacher-form-grid">
+                <label><span>Class</span><select value={selectedClassId} onChange={(event) => setSelectedClassId(event.target.value)}>{classRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.student} - {classItem.dateTime}</option>)}</select></label>
+                <label><span>Date</span><input type="date" /></label>
+              </div>
+              <div className="dashboard-attendance-list">
+                {[selectedClass.student].map((student) => (
+                  <div className="dashboard-attendance-row dashboard-attendance-row--expanded" key={student}>
+                    <span>{student}</span>
+                    {['Present', 'Absent', 'Late', 'Excused'].map((status) => <label key={status}><input type="radio" name={`attendance-${student}`} defaultChecked={status === 'Present'} /> {status}</label>)}
+                    <input placeholder="Attendance note" />
+                    <StatusBadge label={selectedClass.attendanceStatus === 'Submitted' ? 'submitted' : 'pending'} />
+                  </div>
+                ))}
+              </div>
+              <div className="dashboard-form-actions"><ActionButton variant="copper" onClick={() => setToast({ type: 'success', message: 'Attendance saved.' })}>Save Attendance</ActionButton></div>
+            </form>
+          ) : (
+            <p className="dashboard-empty-copy">No assigned classes need attendance.</p>
+          )}
         </SectionCard>
         <SectionCard title="Completion Health">
           <div className="dashboard-insight-list">
-            {teacherPerformance.map((item) => <EvaluationCard key={item.label} title={item.label} score={item.value} note="Based on submitted attendance records." />)}
+            {teacherPerformance.length
+              ? teacherPerformance.map((item) => <EvaluationCard key={item.label} title={item.label} score={item.value} note="Based on submitted attendance records." />)
+              : <p className="dashboard-empty-copy">No attendance completion metrics yet.</p>}
           </div>
         </SectionCard>
       </div>
@@ -677,18 +638,18 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         {commonHeader}
         <div className="dashboard-stats-grid dashboard-stats-grid--teacher">
           {[
-            { label: 'Classes This Week', value: 18, trend: '42 this month', icon: 'calendar' },
-            { label: 'Attendance Completion', value: '92%', trend: '3 pending', icon: 'clipboard' },
-            { label: 'Evaluation Completion', value: '84%', trend: '11 pending', icon: 'chart' },
-            { label: 'Trial Feedback', value: '80%', trend: '1 due today', icon: 'gift' },
+            { label: 'Classes This Week', value: classRows.length, trend: 'Assigned class records', icon: 'calendar' },
+            { label: 'Attendance Completion', value: '0%', trend: 'Calculated from submitted attendance', icon: 'clipboard' },
+            { label: 'Evaluation Completion', value: '0%', trend: 'Calculated from evaluations', icon: 'chart' },
+            { label: 'Trial Feedback', value: `${teacherTrials.length}`, trend: 'Assigned trial records', icon: 'gift' },
           ].map((stat) => <StatCard key={stat.label} {...stat} />)}
         </div>
         <div className="dashboard-grid dashboard-grid--two">
           <SectionCard title="Teacher Performance">
             <div className="dashboard-insight-list">
-              <EvaluationCard title="Students needing support" score={25} note="One assigned student is below attendance or progress target." />
-              <EvaluationCard title="Homework reviewed" score={88} note="Most assigned homework has teacher review recorded." />
-              <EvaluationCard title="Average student progress" score={78} note="Calculated from submitted evaluations and class notes." />
+              {teacherPerformance.length
+                ? teacherPerformance.map((item) => <EvaluationCard key={item.label} title={item.label} score={item.value} note="Calculated from submitted records." />)
+                : <p className="dashboard-empty-copy">No performance metrics yet.</p>}
             </div>
           </SectionCard>
           <SectionCard title="Report Actions">
@@ -716,23 +677,28 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <div className="dashboard-grid dashboard-grid--two student-messages-layout">
           <SectionCard title="Inbox">
             <div className="student-messages-list">
-              {messageThreads.map((thread) => <button className={`student-message-card ${thread.id === selectedThread.id ? 'is-selected' : ''}`} type="button" key={thread.id}><div><strong>{thread.from}</strong>{thread.unread && <StatusBadge label="new" />}</div><h3>{thread.subject}</h3><p>{thread.preview}</p><footer><span>{thread.student}</span><small>{thread.relatedClass}</small></footer></button>)}
+              {messageThreads.length === 0 && <p className="dashboard-empty-copy">No messages yet.</p>}
+              {messageThreads.map((thread) => <button className={`student-message-card ${selectedThread && thread.id === selectedThread.id ? 'is-selected' : ''}`} type="button" key={thread.id}><div><strong>{thread.from}</strong>{thread.unread && <StatusBadge label="new" />}</div><h3>{thread.subject}</h3><p>{thread.preview}</p><footer><span>{thread.student}</span><small>{thread.relatedClass}</small></footer></button>)}
             </div>
           </SectionCard>
           <SectionCard title="Message Thread">
-            <div className="student-message-detail">
-              <div className="student-message-detail__header">
-                <div><span>{selectedThread.from}</span><h2>{selectedThread.subject}</h2><p>{selectedThread.student} - {selectedThread.relatedClass}</p></div>
-                <DashboardActionMenu
-                  primaryAction={{ label: 'Reply', onClick: () => setComposeOpen(true) }}
-                  actions={[
-                    { label: 'Message Admin', onClick: () => setComposeOpen(true) },
-                    { label: 'Send Parent Note for Admin Review', onClick: () => setComposeOpen(true) },
-                  ]}
-                />
+            {selectedThread ? (
+              <div className="student-message-detail">
+                <div className="student-message-detail__header">
+                  <div><span>{selectedThread.from}</span><h2>{selectedThread.subject}</h2><p>{selectedThread.student} - {selectedThread.relatedClass}</p></div>
+                  <DashboardActionMenu
+                    primaryAction={{ label: 'Reply', onClick: () => setComposeOpen(true) }}
+                    actions={[
+                      { label: 'Message Admin', onClick: () => setComposeOpen(true) },
+                      { label: 'Send Parent Note for Admin Review', onClick: () => setComposeOpen(true) },
+                    ]}
+                  />
+                </div>
+                <p>{selectedThread.preview}</p>
               </div>
-              <p>{selectedThread.preview}</p>
-            </div>
+            ) : (
+              <p className="dashboard-empty-copy">Select a message when one is available.</p>
+            )}
           </SectionCard>
         </div>
         {composeOpen && <ComposeModal onClose={() => { setComposeOpen(false); setToast({ type: 'success', message: 'Message sent.' }); }} />}
@@ -745,11 +711,11 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       <div className="dashboard-page dashboard-page--management">
         {commonHeader}
         <div className="dashboard-grid dashboard-grid--two student-profile-layout">
-          <ProfilePanel name="Ust. Maryam Ali" subtitle="Quran Reading, Tajweed, Arabic foundations" role="teacher" status="active" items={[{ label: 'Languages', value: 'Arabic, English' }, { label: 'Availability', value: 'Weekday evenings' }, { label: 'Assigned students', value: '38' }, { label: 'Current load', value: '82%' }, { label: 'Completed classes', value: '214' }, { label: 'Average rating', value: '4.8/5' }]} />
+          <ProfilePanel name="Teacher Profile" subtitle="Academic profile will load from Supabase teacher records." role="teacher" status="No profile data" items={[{ label: 'Languages', value: 'Not set' }, { label: 'Availability', value: 'Not set' }, { label: 'Assigned students', value: String(students.length) }, { label: 'Current load', value: '0%' }, { label: 'Completed classes', value: String(classRows.filter((classItem) => classItem.status === 'Completed').length) }, { label: 'Average rating', value: 'No rating yet' }]} />
           <SectionCard title="Academic Profile">
             <form className="dashboard-form">
-              <label><span>Bio</span><textarea rows={4} defaultValue="Quran and Tajweed teacher focused on careful recitation, revision discipline, and age-appropriate lesson structure." /></label>
-              <label><span>Language preferences</span><input defaultValue="Arabic, English" /></label>
+              <label><span>Bio</span><textarea rows={4} placeholder="Add or request a teacher bio update." /></label>
+              <label><span>Language preferences</span><input placeholder="Not set" /></label>
               <label><span>Profile photo</span><input type="file" /></label>
               <div className="teacher-checklist">
                 <span><Icon name="certificate" size={16} />Ijazah document on file</span>
