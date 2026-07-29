@@ -9,6 +9,8 @@ export type TrialFeedbackPayload = {
   tajweedLevel: string;
   arabicLevel: string;
   engagement: string;
+  recommendedLevel?: string;
+  teacherFeedback?: string;
   recommendation: string;
   notes: string;
   result: TrialResult;
@@ -97,9 +99,11 @@ export async function submitTrialFeedback(trialId: string, payload: TrialFeedbac
     `Tajweed level: ${payload.tajweedLevel}`,
     `Arabic level: ${payload.arabicLevel}`,
     `Engagement: ${payload.engagement}`,
+    payload.recommendedLevel ? `Recommended level: ${payload.recommendedLevel}` : '',
+    payload.teacherFeedback ? `Teacher feedback: ${payload.teacherFeedback}` : '',
     `Recommendation: ${payload.recommendation}`,
     `Notes: ${payload.notes}`,
-  ].join('\n');
+  ].filter(Boolean).join('\n');
 
   const { data, error } = await client
     .from('free_trials')

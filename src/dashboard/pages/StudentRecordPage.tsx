@@ -121,7 +121,7 @@ export default function StudentRecordPage({
     }
 
     if (portalRole === 'teacher') {
-      return studentRecordTabs.filter((tab) => ['overview', 'trial', 'classes', 'evaluations', 'messages'].includes(tab.id));
+      return studentRecordTabs.filter((tab) => ['overview', 'classes', 'attendance', 'homework', 'evaluations', 'teacher-notes', 'progress'].includes(tab.id));
     }
 
     return studentRecordTabs;
@@ -170,13 +170,14 @@ export default function StudentRecordPage({
         recommendation: payload.recommendation || '',
         result: payload.trial_result || '',
       });
-    } else if (section.owner === 'Teacher' && activeTab === 'classes') {
+    } else if (section.owner === 'Teacher' && activeTab === 'attendance') {
       await markAttendance({ studentId: currentRecord.id, status: 'present', notes: payload.class_notes });
+    } else if (section.owner === 'Teacher' && ['classes', 'homework', 'teacher-notes'].includes(activeTab)) {
       await addClassReport({
         studentId: currentRecord.id,
         lessonCovered: payload.lesson_covered || '',
         homework: payload.homework,
-        classNotes: payload.class_notes,
+        classNotes: payload.class_notes || payload.teacher_note || payload.homework_feedback,
         participation: payload.participation,
         nextLessonPlan: payload.next_lesson_plan,
       });

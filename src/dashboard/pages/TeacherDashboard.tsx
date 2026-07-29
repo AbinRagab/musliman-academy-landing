@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
@@ -10,7 +11,6 @@ import TrialFeedbackModal from '../components/TrialFeedbackModal';
 import Toast, { type ToastMessage } from '../components/Toast';
 import { submitTrialFeedback, updateTrialStatus, fetchTeacherTrials } from '../services/trialsService';
 import {
-  attendanceStudents,
   freeTrials,
   studentEvaluations,
   teacherSchedule,
@@ -18,23 +18,177 @@ import {
   teacherStudents,
 } from '../data/mockData';
 
-type ScheduleRow = (typeof teacherSchedule)[number];
-type StudentRow = (typeof teacherStudents)[number];
-type EvaluationRow = (typeof studentEvaluations)[number];
-type FreeTrialRow = (typeof freeTrials)[number];
+type TeacherClass = {
+  id: string;
+  time: string;
+  student: string;
+  program: string;
+  status: string;
+  platform: string;
+  meetingLink?: string;
+  reportStatus: string;
+  attendanceStatus: string;
+};
 
-function Stars({ count }: { count: number }) {
+type TeacherStudent = {
+  id: string;
+  student: string;
+  program: string;
+  level: string;
+  nextClass: string;
+  attendance: string;
+  progress: string;
+  status: string;
+};
+
+type EvaluationRow = (typeof studentEvaluations)[number] & {
+  id: string;
+  program: string;
+  relatedClass: string;
+};
+
+type FreeTrialFallback = {
+  id: string;
+  student: string;
+  program: string;
+  dateTime: string;
+  status: string;
+};
+
+const todaysClasses: TeacherClass[] = teacherSchedule.map((item, index) => ({
+  id: `class-${index}`,
+  ...item,
+  platform: index === 1 ? 'Zoom classroom' : 'Google Meet',
+  meetingLink: index === 1 ? 'https://meet.google.com/' : undefined,
+  reportStatus: item.status === 'Completed' ? 'Needs Report' : 'Not Due',
+  attendanceStatus: item.status === 'Completed' ? 'Pending' : 'Not Started',
+}));
+
+const assignedStudents: TeacherStudent[] = teacherStudents.map((student, index) => ({
+  id: index === 0 ? 'mock-yusuf' : `teacher-student-${index}`,
+  student: student.student,
+  program: student.level.includes('Tajweed') ? 'Tajweed' : student.level === 'Beginner' ? 'Arabic Language' : 'Quran Reading',
+  level: student.level,
+  nextClass: student.nextClass,
+  attendance: student.attendance,
+  progress: student.attendance === '88%' ? 'Needs support' : 'On track',
+  status: student.attendance === '88%' ? 'needs support' : 'active',
+}));
+
+const evaluationQueue: EvaluationRow[] = studentEvaluations.map((evaluation, index) => ({
+  ...evaluation,
+  id: `evaluation-${index}`,
+  program: index === 1 ? 'Arabic Language' : 'Quran Reading',
+  relatedClass: index === 0 ? 'Quran Reading - Jul 28' : 'Today class',
+}));
+
+const fallbackTrials: FreeTrialFallback[] = freeTrials.map((trial, index) => ({
+  id: `trial-${index}`,
+  ...trial,
+  status: index === 1 ? 'completed' : 'scheduled',
+}));
+
+function openMeeting(link: string | undefined, setToast: (toast: ToastMessage) => void) {
+  if (link) {
+    window.open(link, '_blank', 'noopener,noreferrer');
+    return;
+  }
+
+  setToast({ type: 'info', message: 'Meeting link is not available yet. Check the schedule details or ask admin.' });
+}
+
+function EvaluationModal({ evaluation, onClose }: { evaluation: EvaluationRow; onClose: () => void }) {
   return (
-    <span className="dashboard-stars" aria-label={`${count} stars`}>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Icon key={index} name="star" size={15} className={index < count ? 'is-filled' : ''} />
-      ))}
-    </span>
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Evaluate ${evaluation.student}`}>
+      <div className="dashboard-modal__panel dashboard-modal__panel--wide">
+        <div className="dashboard-card__header">
+          <div>
+            <h2>{evaluation.student}</h2>
+            <p>{evaluation.program} - {evaluation.relatedClass}</p>
+          </div>
+          <button type="button" className="dashboard-icon-button" aria-label="Close evaluation" onClick={onClose}>
+            <Icon name="x" />
+          </button>
+        </div>
+        <form className="dashboard-form">
+          <div className="teacher-form-grid">
+            {[
+              'Reading accuracy',
+              'Tajweed',
+              'Memorization',
+              'Understanding',
+              'Participation',
+              'Homework commitment',
+              'Behavior',
+            ].map((label) => (
+              <label key={label}>
+                <span>{label}</span>
+                <input type="range" min="1" max="5" defaultValue="4" />
+              </label>
+            ))}
+            <label>
+              <span>Evaluation date</span>
+              <input type="date" defaultValue="2026-07-29" />
+            </label>
+            <label className="teacher-form-grid__wide">
+              <span>Strengths</span>
+              <textarea rows={3} placeholder="Record strengths from recent classes." />
+            </label>
+            <label className="teacher-form-grid__wide">
+              <span>Needs improvement</span>
+              <textarea rows={3} placeholder="Record revision or support needs." />
+            </label>
+            <label className="teacher-form-grid__wide">
+              <span>Teacher recommendation</span>
+              <textarea rows={3} placeholder="Recommend next focus, level change, or admin review." />
+            </label>
+            <label className="teacher-form-grid__wide">
+              <span>Next focus</span>
+              <textarea rows={2} placeholder="Define the next lesson focus." />
+            </label>
+          </div>
+          <div className="dashboard-form-actions">
+            <ActionButton variant="secondary" onClick={onClose}>Save Draft</ActionButton>
+            <ActionButton variant="copper" onClick={onClose}>Submit Evaluation</ActionButton>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function ClassReportModal({ classItem, onClose }: { classItem: TeacherClass; onClose: () => void }) {
+  return (
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Class report for ${classItem.student}`}>
+      <div className="dashboard-modal__panel">
+        <div className="dashboard-card__header">
+          <div>
+            <h2>Add Class Report</h2>
+            <p>{classItem.student} - {classItem.program}</p>
+          </div>
+          <button type="button" className="dashboard-icon-button" aria-label="Close report" onClick={onClose}>
+            <Icon name="x" />
+          </button>
+        </div>
+        <form className="dashboard-form">
+          <label><span>Lesson covered</span><input placeholder="Example: Madd letters review" /></label>
+          <label><span>Homework assigned</span><textarea rows={3} placeholder="Describe homework for the next session." /></label>
+          <label><span>Class notes</span><textarea rows={4} placeholder="Summarize class outcome and support needs." /></label>
+          <label><span>Next lesson plan</span><textarea rows={3} placeholder="Define the next teaching plan." /></label>
+          <div className="dashboard-form-actions">
+            <ActionButton variant="copper" onClick={onClose}>Save Class Report</ActionButton>
+            <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
 
 export default function TeacherDashboard() {
+  const navigate = useNavigate();
   const [evaluationStudent, setEvaluationStudent] = useState<EvaluationRow | null>(null);
+  const [reportClass, setReportClass] = useState<TeacherClass | null>(null);
   const [teacherTrials, setTeacherTrials] = useState<Array<Record<string, unknown>>>([]);
   const [trialFeedback, setTrialFeedback] = useState<Record<string, unknown> | null>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
@@ -45,119 +199,174 @@ export default function TeacherDashboard() {
       .catch(() => setTeacherTrials([]));
   }, []);
 
-  const scheduleColumns: Array<DataTableColumn<ScheduleRow>> = [
+  const nextClass = useMemo(
+    () => todaysClasses.find((classItem) => ['Live', 'Upcoming'].includes(classItem.status)) || todaysClasses[0],
+    [],
+  );
+
+  const scheduleColumns: Array<DataTableColumn<TeacherClass>> = [
     { header: 'Time', accessor: 'time' },
     { header: 'Student', accessor: 'student' },
     { header: 'Program', accessor: 'program' },
     { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
-    { header: 'Join', accessor: () => <ActionButton variant="ghost">Join</ActionButton> },
+    { header: 'Platform', accessor: 'platform' },
+    {
+      header: 'Action',
+      accessor: (row) => (
+        <div className="dashboard-table-actions dashboard-table-actions--wrap">
+          <ActionButton variant="ghost" onClick={() => openMeeting(row.meetingLink, setToast)}>Join Class</ActionButton>
+          <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
+          <ActionButton variant="ghost" onClick={() => setReportClass(row)}>Add Class Report</ActionButton>
+        </div>
+      ),
+    },
   ];
 
-  const studentColumns: Array<DataTableColumn<StudentRow>> = [
+  const studentColumns: Array<DataTableColumn<TeacherStudent>> = [
     { header: 'Student', accessor: 'student' },
-    { header: 'Level', accessor: 'level' },
+    { header: 'Program', accessor: 'program' },
     { header: 'Next Class', accessor: 'nextClass' },
     { header: 'Attendance', accessor: 'attendance' },
+    { header: 'Progress', accessor: 'progress' },
+    {
+      header: 'Action',
+      accessor: (row) => (
+        <div className="dashboard-table-actions dashboard-table-actions--wrap">
+          <ActionButton variant="ghost" onClick={() => navigate(`/dashboard/teacher/students/${row.id}`)}>Open Record</ActionButton>
+          <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/messages')}>Message via Academy</ActionButton>
+        </div>
+      ),
+    },
   ];
 
   const evaluationColumns: Array<DataTableColumn<EvaluationRow>> = [
     { header: 'Student', accessor: 'student' },
-    { header: 'Recitation stars', accessor: (row) => <Stars count={row.recitation} /> },
-    { header: 'Tajweed stars', accessor: (row) => <Stars count={row.tajweed} /> },
-    { header: 'Understanding stars', accessor: (row) => <Stars count={row.understanding} /> },
+    { header: 'Program', accessor: 'program' },
+    { header: 'Related Class', accessor: 'relatedClass' },
     { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
     { header: 'Action', accessor: (row) => <ActionButton variant="ghost" onClick={() => setEvaluationStudent(row)}>Evaluate</ActionButton> },
   ];
 
-  const freeTrialColumns: Array<DataTableColumn<FreeTrialRow>> = [
+  const trialColumns: Array<DataTableColumn<FreeTrialFallback>> = [
     { header: 'Student', accessor: 'student' },
-    { header: 'Program', accessor: 'program' },
-    { header: 'Date/time', accessor: 'dateTime' },
-    { header: 'Contact', accessor: () => <ActionButton variant="ghost">Contact</ActionButton> },
+    { header: 'Program Interest', accessor: 'program' },
+    { header: 'Trial Time', accessor: 'dateTime' },
+    { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
+    {
+      header: 'Action',
+      accessor: (row) => (
+        <div className="dashboard-table-actions dashboard-table-actions--wrap">
+          <ActionButton variant="ghost" onClick={() => setToast({ type: 'info', message: `Trial details opened for ${row.student}.` })}>View Trial</ActionButton>
+          <ActionButton variant="copper" onClick={() => setTrialFeedback(row)}>Add Trial Feedback</ActionButton>
+        </div>
+      ),
+    },
   ];
 
   return (
-    <div className="dashboard-page">
+    <div className="dashboard-page dashboard-page--teacher-home">
       <Toast toast={toast} onClose={() => setToast(null)} />
       <div className="dashboard-page-header">
         <div>
           <span className="dashboard-eyebrow">Teacher Workspace</span>
           <h1>Teacher Dashboard</h1>
-          <p>Welcome back. Review today&apos;s classes, attendance, evaluations, and free trials.</p>
+          <p>Daily view for classes, assigned students, attendance, evaluations, trials, and academy messages.</p>
         </div>
-        <ActionButton>
+        <ActionButton onClick={() => navigate('/dashboard/teacher/schedule')}>
           <Icon name="calendar" size={18} />
           Open Schedule
         </ActionButton>
       </div>
 
-      <div className="dashboard-stats-grid">
+      <SectionCard className="teacher-next-class-card">
+        <div className="teacher-next-class">
+          <div>
+            <span className="dashboard-eyebrow">Next Class</span>
+            <h2>{nextClass.student}</h2>
+            <p>{nextClass.program} - {nextClass.time}</p>
+          </div>
+          <div className="teacher-next-class__details">
+            <span><strong>Status</strong><StatusBadge label={nextClass.status} /></span>
+            <span><strong>Meeting platform</strong>{nextClass.platform}</span>
+            <span><strong>Attendance</strong>{nextClass.attendanceStatus}</span>
+          </div>
+          <div className="teacher-action-row">
+            <ActionButton variant="copper" onClick={() => openMeeting(nextClass.meetingLink, setToast)}><Icon name="video" size={16} />Join Class</ActionButton>
+            <ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
+            <ActionButton variant="secondary" onClick={() => setReportClass(nextClass)}>Add Class Report</ActionButton>
+          </div>
+        </div>
+      </SectionCard>
+
+      <div className="dashboard-stats-grid dashboard-stats-grid--teacher">
         {teacherStats.map((stat) => (
           <StatCard key={stat.label} {...stat} />
         ))}
       </div>
 
-      <SectionCard title="Today's Schedule" subtitle="Live mock teaching schedule">
-        <DataTable columns={scheduleColumns} rows={teacherSchedule} getRowKey={(row) => `${row.time}-${row.student}`} />
+      <SectionCard title="Today's Schedule" subtitle="Classes assigned to you today." action={<ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/schedule')}>View Full Timetable</ActionButton>}>
+        <DataTable columns={scheduleColumns} rows={todaysClasses} getRowKey={(row) => row.id} />
       </SectionCard>
 
       <div className="dashboard-grid dashboard-grid--teacher">
-        <SectionCard title="My Students">
-          <DataTable columns={studentColumns} rows={teacherStudents} getRowKey={(row) => row.student} />
+        <SectionCard title="My Students Needing Attention" subtitle="Assigned students with support signals.">
+          <DataTable columns={studentColumns} rows={assignedStudents.filter((student) => student.progress === 'Needs support' || student.nextClass.includes('Today'))} getRowKey={(row) => row.id} />
         </SectionCard>
 
-        <SectionCard title="Mark Attendance">
-          <div className="dashboard-attendance-list">
-            {attendanceStudents.map((student) => (
-              <div className="dashboard-attendance-row" key={student}>
-                <span>{student}</span>
-                <label>
-                  <input type="radio" name={`attendance-${student}`} defaultChecked />
-                  Present
-                </label>
-                <label>
-                  <input type="radio" name={`attendance-${student}`} />
-                  Absent
-                </label>
-              </div>
+        <SectionCard title="Attendance to Submit" subtitle="Class attendance awaiting submission.">
+          <div className="teacher-task-list">
+            {todaysClasses.filter((classItem) => classItem.attendanceStatus === 'Pending').map((classItem) => (
+              <article key={classItem.id}>
+                <div>
+                  <strong>{classItem.student}</strong>
+                  <span>{classItem.program} - {classItem.time}</span>
+                </div>
+                <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
+              </article>
             ))}
           </div>
-          <ActionButton>Save Attendance</ActionButton>
         </SectionCard>
       </div>
 
       <div className="dashboard-grid dashboard-grid--two">
-        <SectionCard title="Student Evaluations" subtitle="Ratings are mock values for UI review">
-          <DataTable columns={evaluationColumns} rows={studentEvaluations} getRowKey={(row) => row.student} />
+        <SectionCard title="Pending Evaluations" subtitle="Academic evaluations ready for teacher input.">
+          <DataTable columns={evaluationColumns} rows={evaluationQueue} getRowKey={(row) => row.id} />
         </SectionCard>
 
-        <SectionCard title="Upcoming Free Trials">
+        <SectionCard title="Upcoming Free Trials" subtitle="Trials assigned to you. Conversion remains an admin action.">
           {teacherTrials.length > 0 ? (
             <div className="teacher-trials-list">
               {teacherTrials.map((trial) => (
                 <TeacherTrialCard
                   key={String(trial.id)}
                   trial={trial as never}
+                  onDetails={() => setToast({ type: 'info', message: 'Trial details show learner interest, meeting link, admin owner, and academy contact policy.' })}
                   onFeedback={() => setTrialFeedback(trial)}
                   onNoShow={async () => {
                     await updateTrialStatus(String(trial.id), 'no_show', trial.lead_id ? String(trial.lead_id) : null);
-                    setToast({ type: 'success', message: 'Trial marked no show.' });
+                    setToast({ type: 'success', message: 'No-show note sent to admin.' });
                     setTeacherTrials(await fetchTeacherTrials() as Array<Record<string, unknown>>);
                   }}
                 />
               ))}
             </div>
           ) : (
-            <DataTable columns={freeTrialColumns} rows={freeTrials} getRowKey={(row) => row.student} />
+            <DataTable columns={trialColumns} rows={fallbackTrials} getRowKey={(row) => row.id} />
           )}
         </SectionCard>
       </div>
 
       {trialFeedback && (
         <TrialFeedbackModal
-          title={String((trialFeedback.lead as { full_name?: string } | undefined)?.full_name || 'Trial student')}
+          title={String((trialFeedback.lead as { full_name?: string } | undefined)?.full_name || trialFeedback.student || 'Trial student')}
           onClose={() => setTrialFeedback(null)}
           onSave={async (payload) => {
+            if (String(trialFeedback.id).startsWith('trial-')) {
+              setTrialFeedback(null);
+              setToast({ type: 'success', message: 'Trial feedback saved for academy review.' });
+              return;
+            }
+
             await submitTrialFeedback(String(trialFeedback.id), { ...payload, leadId: trialFeedback.lead_id ? String(trialFeedback.lead_id) : null });
             setTrialFeedback(null);
             setToast({ type: 'success', message: 'Trial feedback submitted.' });
@@ -166,47 +375,8 @@ export default function TeacherDashboard() {
         />
       )}
 
-      {evaluationStudent && (
-        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Evaluate ${evaluationStudent.student}`}>
-          <div className="dashboard-modal__panel">
-            <div className="dashboard-card__header">
-              <div>
-                <h2>{evaluationStudent.student}</h2>
-                <p>Student evaluation</p>
-              </div>
-              <button type="button" className="dashboard-icon-button" aria-label="Close evaluation" onClick={() => setEvaluationStudent(null)}>
-                <Icon name="x" />
-              </button>
-            </div>
-            <form className="dashboard-form">
-              <label>
-                <span>Recitation rating</span>
-                <input type="range" min="1" max="5" defaultValue={evaluationStudent.recitation} />
-              </label>
-              <label>
-                <span>Tajweed rating</span>
-                <input type="range" min="1" max="5" defaultValue={evaluationStudent.tajweed} />
-              </label>
-              <label>
-                <span>Understanding rating</span>
-                <input type="range" min="1" max="5" defaultValue={evaluationStudent.understanding} />
-              </label>
-              <label>
-                <span>Progress feedback</span>
-                <textarea rows={4} placeholder="Summarize recitation progress and next lesson focus." />
-              </label>
-              <label>
-                <span>Teacher notes</span>
-                <textarea rows={3} placeholder="Private teacher notes for follow-up." />
-              </label>
-              <div className="dashboard-form-actions">
-                <ActionButton type="button" onClick={() => setEvaluationStudent(null)}>Save Evaluation</ActionButton>
-                <ActionButton type="button" variant="secondary" onClick={() => setEvaluationStudent(null)}>Cancel</ActionButton>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {evaluationStudent && <EvaluationModal evaluation={evaluationStudent} onClose={() => setEvaluationStudent(null)} />}
+      {reportClass && <ClassReportModal classItem={reportClass} onClose={() => { setReportClass(null); setToast({ type: 'success', message: 'Class report saved.' }); }} />}
     </div>
   );
 }

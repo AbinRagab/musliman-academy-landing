@@ -18,7 +18,11 @@ export type StudentRecordTab =
   | 'academic'
   | 'trial'
   | 'classes'
+  | 'attendance'
+  | 'homework'
   | 'evaluations'
+  | 'teacher-notes'
+  | 'progress'
   | 'payments'
   | 'messages'
   | 'settings';
@@ -66,8 +70,12 @@ export const studentRecordTabs: Array<{ id: StudentRecordTab; label: string }> =
   { id: 'personal', label: 'Personal & Parent Info' },
   { id: 'academic', label: 'Academic Setup' },
   { id: 'trial', label: 'Trial Feedback' },
-  { id: 'classes', label: 'Classes & Attendance' },
-  { id: 'evaluations', label: 'Evaluations & Progress' },
+  { id: 'classes', label: 'Class History' },
+  { id: 'attendance', label: 'Attendance' },
+  { id: 'homework', label: 'Homework' },
+  { id: 'evaluations', label: 'Evaluations' },
+  { id: 'teacher-notes', label: 'Teacher Notes' },
+  { id: 'progress', label: 'Progress' },
   { id: 'payments', label: 'Payments' },
   { id: 'messages', label: 'Messages / Notes' },
   { id: 'settings', label: 'Settings / Preferences' },
@@ -159,25 +167,49 @@ const mockStudentRecord: StudentRecord = {
     classes: [
       {
         id: 'class_attendance',
-        title: 'Classes & Attendance',
+        title: 'Class History',
         owner: 'Teacher',
-        description: 'Teacher marks attendance and adds class report fields for assigned students.',
+        description: 'Teacher records lesson coverage, class report notes, and next lesson planning for assigned students.',
         fields: [
-          { key: 'attendance', label: 'Attendance', value: 'present', owner: 'Teacher', editableBy: teacherEditRoles },
           { key: 'lesson_covered', label: 'Lesson covered', value: 'Madd letters review', owner: 'Teacher', editableBy: teacherEditRoles },
-          { key: 'homework', label: 'Homework', value: 'Upload two-minute revision audio.', owner: 'Teacher', editableBy: teacherEditRoles },
           { key: 'class_notes', label: 'Class notes', value: 'Strong pace and careful repetition.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
           { key: 'participation', label: 'Student participation', value: 'Excellent', owner: 'Teacher', editableBy: teacherEditRoles },
           { key: 'next_lesson_plan', label: 'Next lesson plan', value: 'Apply Madd rules in Surah Al-Mulk.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
         ],
       },
     ],
+    attendance: [
+      {
+        id: 'attendance_records',
+        title: 'Attendance',
+        owner: 'Teacher',
+        description: 'Teacher marks attendance for assigned classes only.',
+        fields: [
+          { key: 'attendance', label: 'Attendance', value: 'present', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'attendance_note', label: 'Attendance note', value: 'Present and on time.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'attendance_rate', label: 'Attendance rate', value: '96%', owner: 'System', editableBy: systemRoles },
+        ],
+      },
+    ],
+    homework: [
+      {
+        id: 'homework_notes',
+        title: 'Homework',
+        owner: 'Teacher',
+        description: 'Teacher sets homework notes and review feedback.',
+        fields: [
+          { key: 'homework', label: 'Homework assigned', value: 'Upload two-minute revision audio.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'homework_feedback', label: 'Homework feedback', value: 'Audio submission reviewed; repeat ayat 1-5.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'homework_status', label: 'Homework status', value: 'Reviewed', owner: 'Teacher', editableBy: teacherEditRoles },
+        ],
+      },
+    ],
     evaluations: [
       {
-        id: 'evaluations_progress',
-        title: 'Evaluations & Progress',
+        id: 'evaluations',
+        title: 'Evaluations',
         owner: 'Teacher',
-        description: 'Teacher adds evaluation scores and progress notes. System derives progress metrics.',
+        description: 'Teacher adds evaluation scores and recommendations. System derives progress metrics.',
         fields: [
           { key: 'recitation_rating', label: 'Recitation rating', value: '5/5', owner: 'Teacher', editableBy: teacherEditRoles },
           { key: 'tajweed_rating', label: 'Tajweed rating', value: '4/5', owner: 'Teacher', editableBy: teacherEditRoles },
@@ -185,6 +217,31 @@ const mockStudentRecord: StudentRecord = {
           { key: 'behavior_rating', label: 'Behavior / engagement rating', value: '5/5', owner: 'Teacher', editableBy: teacherEditRoles },
           { key: 'progress_notes', label: 'Progress notes', value: 'Continue slow recitation practice.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
           { key: 'teacher_recommendation', label: 'Teacher recommendation', value: 'Ready for next lesson unit.', owner: 'Teacher', editableBy: teacherEditRoles },
+        ],
+      },
+    ],
+    'teacher-notes': [
+      {
+        id: 'teacher_notes',
+        title: 'Teacher Notes',
+        owner: 'Teacher',
+        description: 'Private teacher notes for academic follow-up and academy review.',
+        fields: [
+          { key: 'teacher_note', label: 'Teacher note', value: 'Needs revision on elongation timing.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+          { key: 'support_needed', label: 'Support needed', value: 'Extra five-minute revision drill.', owner: 'Teacher', editableBy: teacherEditRoles, input: 'textarea' },
+        ],
+      },
+    ],
+    progress: [
+      {
+        id: 'progress_summary',
+        title: 'Progress',
+        owner: 'System',
+        description: 'Progress summary calculated from attendance, homework, evaluations, and class reports.',
+        fields: [
+          { key: 'progress_percentage', label: 'Progress percentage', value: '74%', owner: 'System', editableBy: systemRoles },
+          { key: 'current_focus', label: 'Current focus', value: 'Madd timing and fluency', owner: 'Teacher', editableBy: teacherEditRoles },
+          { key: 'next_milestone', label: 'Next milestone', value: 'Stable fluency in Surah Al-Mulk revision', owner: 'Teacher', editableBy: teacherEditRoles },
         ],
       },
     ],

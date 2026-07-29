@@ -32,7 +32,7 @@ function ComingSoon({ role }: { role: DashboardRole }) {
     <EmptyState
       title="Dashboard section coming soon"
       description={`This ${role} dashboard section is ready for the next implementation pass.`}
-      action={<ActionButton variant="secondary">Mock UI Phase</ActionButton>}
+      action={<ActionButton variant="secondary">Section Pending</ActionButton>}
     />
   );
 }
@@ -112,7 +112,7 @@ export default function DashboardRoutes() {
           <Route path="students" element={<TeacherSectionPage section="students" />} />
           <Route path="students/:studentId" element={<StudentRecordPage portalRole="teacher" />} />
           <Route path="free-trials" element={<TeacherSectionPage section="free-trials" />} />
-          <Route path="schedule" element={<TeacherSectionPage section="classes" />} />
+          <Route path="schedule" element={<TeacherSectionPage section="schedule" />} />
           <Route path="classes" element={<TeacherSectionPage section="classes" />} />
           <Route path="attendance" element={<TeacherSectionPage section="attendance" />} />
           <Route path="evaluations" element={<TeacherSectionPage section="evaluations" />} />

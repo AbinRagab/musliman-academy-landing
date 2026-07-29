@@ -6003,7 +6003,151 @@
   justify-content: flex-end;
 }
 
+.dashboard-page--teacher-home {
+  width: min(100%, 1440px);
+  margin: 0 auto;
+}
+
+.dashboard-stats-grid--teacher .dashboard-stat {
+  min-height: 112px;
+  padding: 16px;
+}
+
+.teacher-next-class-card {
+  background:
+    linear-gradient(135deg, rgba(184, 115, 51, 0.1), transparent 48%),
+    var(--dashboard-white);
+}
+
+.teacher-next-class {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr) auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.teacher-next-class h2 {
+  margin: 0;
+  color: var(--dashboard-ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.65rem;
+}
+
+.teacher-next-class p {
+  margin: 6px 0 0;
+  color: var(--dashboard-muted);
+}
+
+.teacher-next-class__details,
+.teacher-task-list,
+.teacher-checklist {
+  display: grid;
+  gap: 10px;
+}
+
+.teacher-next-class__details span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  color: var(--dashboard-muted);
+  background: #fbfaf7;
+  border: 1px solid var(--dashboard-line);
+  border-radius: 8px;
+}
+
+.teacher-next-class__details strong {
+  color: var(--dashboard-ink);
+}
+
+.teacher-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.teacher-task-list article,
+.teacher-checklist span,
+.teacher-checklist button,
+.teacher-week-grid article {
+  padding: 12px;
+  background: #fbfaf7;
+  border: 1px solid var(--dashboard-line);
+  border-radius: 8px;
+}
+
+.teacher-task-list article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.teacher-task-list strong,
+.teacher-week-grid strong {
+  display: block;
+  color: var(--dashboard-ink);
+}
+
+.teacher-task-list span,
+.teacher-week-grid span,
+.teacher-week-grid p {
+  color: var(--dashboard-muted);
+  line-height: 1.45;
+}
+
+.teacher-week-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.teacher-week-grid article {
+  display: grid;
+  gap: 8px;
+}
+
+.teacher-checklist span,
+.teacher-checklist button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  color: var(--dashboard-ink);
+  font: inherit;
+  font-weight: 800;
+  text-align: left;
+}
+
+.teacher-checklist button {
+  cursor: pointer;
+}
+
+.teacher-checklist svg {
+  flex: 0 0 auto;
+  color: var(--dashboard-copper);
+}
+
+.teacher-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.teacher-form-grid__wide {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 1180px) {
+  .teacher-next-class {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-week-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .student-timetable-preview,
   .student-week-grid,
   .student-skills-grid {
@@ -6016,6 +6160,21 @@
 }
 
 @media (max-width: 720px) {
+  .teacher-week-grid,
+  .teacher-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-task-list article {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .teacher-action-row .dashboard-action,
+  .teacher-task-list .dashboard-action {
+    width: 100%;
+  }
+
   .student-next-class,
   .student-class-list-card__main,
   .student-homework-card__header,
