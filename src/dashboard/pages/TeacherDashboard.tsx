@@ -258,66 +258,6 @@ export default function TeacherDashboard() {
     },
   ];
 
-  const studentColumns: Array<DataTableColumn<TeacherStudent>> = [
-    { header: 'Student', accessor: 'student' },
-    { header: 'Program', accessor: 'program' },
-    { header: 'Next Class', accessor: 'nextClass' },
-    { header: 'Attendance', accessor: 'attendance' },
-    { header: 'Progress', accessor: 'progress' },
-    {
-      header: 'Action',
-      accessor: (row) => (
-        <DashboardActionMenu
-          primaryAction={{ label: 'Open Record', onClick: () => navigate(`/dashboard/teacher/students/${row.id}`) }}
-          actions={[
-            { label: 'View Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
-            {
-              label: 'Add Evaluation',
-              onClick: () => setEvaluationStudent({
-                ...(studentEvaluations[0] || { recitation: 0, tajweed: 0, understanding: 0 }),
-                id: row.id,
-                student: row.student,
-                program: row.program,
-                relatedClass: row.nextClass,
-                status: 'ready',
-              }),
-            },
-            { label: 'Add Class Note', onClick: () => setReportClass(todaysClasses.find((classItem) => classItem.student === row.student) || todaysClasses[0]) },
-            { label: 'Message via Academy', onClick: () => navigate('/dashboard/teacher/messages') },
-          ]}
-        />
-      ),
-    },
-  ];
-
-  const evaluationColumns: Array<DataTableColumn<EvaluationRow>> = [
-    { header: 'Student', accessor: 'student' },
-    { header: 'Program', accessor: 'program' },
-    { header: 'Related Class', accessor: 'relatedClass' },
-    { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
-    { header: 'Action', accessor: (row) => <ActionButton variant="ghost" onClick={() => setEvaluationStudent(row)}>Evaluate</ActionButton> },
-  ];
-
-  const trialColumns: Array<DataTableColumn<FreeTrialFallback>> = [
-    { header: 'Student', accessor: 'student' },
-    { header: 'Program Interest', accessor: 'program' },
-    { header: 'Trial Time', accessor: 'dateTime' },
-    { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
-    {
-      header: 'Action',
-      accessor: (row) => (
-        <DashboardActionMenu
-          primaryAction={{ label: row.status === 'completed' ? 'View Feedback' : 'View Trial', onClick: row.status === 'completed' ? () => setTrialFeedback(row) : () => setToast({ type: 'info', message: `Trial details opened for ${row.student}.` }) }}
-          actions={[
-            { label: 'Join Trial', onClick: () => setToast({ type: 'info', message: 'Meeting link is not available. Please contact the academy team.' }), hidden: row.status !== 'scheduled' },
-            { label: 'Add Trial Feedback', onClick: () => setTrialFeedback(row), hidden: row.status === 'completed' },
-            { label: 'Message Admin', onClick: () => navigate('/dashboard/teacher/messages') },
-          ]}
-        />
-      ),
-    },
-  ];
-
   return (
     <div className="dashboard-page dashboard-page--teacher-home">
       <Toast toast={toast} onClose={() => setToast(null)} />
@@ -371,9 +311,37 @@ export default function TeacherDashboard() {
         <DataTable columns={scheduleColumns} rows={todaysClasses} getRowKey={(row) => row.id} />
       </SectionCard>
 
-      <div className="dashboard-grid dashboard-grid--teacher">
+      <div className="dashboard-grid dashboard-grid--teacher teacher-dashboard-middle-grid">
         <SectionCard title="My Students Needing Attention" subtitle="Assigned students with support signals.">
-          <DataTable columns={studentColumns} rows={assignedStudents.filter((student) => student.progress === 'Needs support' || student.nextClass.includes('Today'))} getRowKey={(row) => row.id} />
+          <div className="teacher-compact-list">
+            {assignedStudents.filter((student) => student.progress === 'Needs support' || student.nextClass.includes('Today')).map((student) => (
+              <article className="teacher-compact-row" key={student.id}>
+                <div className="teacher-compact-row__main">
+                  <strong className="truncate-text">{student.student}</strong>
+                  <span className="truncate-text">{student.program} - {student.nextClass}</span>
+                </div>
+                <StatusBadge label={student.progress} />
+                <DashboardActionMenu
+                  primaryAction={{ label: 'Open Record', onClick: () => navigate(`/dashboard/teacher/students/${student.id}`) }}
+                  actions={[
+                    { label: 'View Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
+                    {
+                      label: 'Add Evaluation',
+                      onClick: () => setEvaluationStudent({
+                        ...(studentEvaluations[0] || { recitation: 0, tajweed: 0, understanding: 0 }),
+                        id: student.id,
+                        student: student.student,
+                        program: student.program,
+                        relatedClass: student.nextClass,
+                        status: 'ready',
+                      }),
+                    },
+                    { label: 'Message via Academy', onClick: () => navigate('/dashboard/teacher/messages') },
+                  ]}
+                />
+              </article>
+            ))}
+          </div>
         </SectionCard>
 
         <SectionCard title="Attendance to Submit" subtitle="Class attendance awaiting submission.">
@@ -393,7 +361,24 @@ export default function TeacherDashboard() {
 
       <div className="dashboard-grid dashboard-grid--two">
         <SectionCard title="Pending Evaluations" subtitle="Academic evaluations ready for teacher input.">
-          <DataTable columns={evaluationColumns} rows={evaluationQueue} getRowKey={(row) => row.id} />
+          <div className="teacher-compact-list">
+            {evaluationQueue.map((evaluation) => (
+              <article className="teacher-compact-row" key={evaluation.id}>
+                <div className="teacher-compact-row__main">
+                  <strong className="truncate-text">{evaluation.student}</strong>
+                  <span className="truncate-text">{evaluation.program} - {evaluation.relatedClass}</span>
+                </div>
+                <StatusBadge label={evaluation.status} />
+                <DashboardActionMenu
+                  primaryAction={{ label: 'Evaluate', onClick: () => setEvaluationStudent(evaluation) }}
+                  actions={[
+                    { label: 'View Class Details', onClick: () => setToast({ type: 'info', message: evaluation.relatedClass }) },
+                    { label: 'Message via Academy', onClick: () => navigate('/dashboard/teacher/messages') },
+                  ]}
+                />
+              </article>
+            ))}
+          </div>
         </SectionCard>
 
         <SectionCard title="Upcoming Free Trials" subtitle="Trials assigned to you. Conversion remains an admin action.">
@@ -414,7 +399,25 @@ export default function TeacherDashboard() {
               ))}
             </div>
           ) : (
-            <DataTable columns={trialColumns} rows={fallbackTrials} getRowKey={(row) => row.id} />
+            <div className="teacher-compact-list">
+              {fallbackTrials.map((trial) => (
+                <article className="teacher-compact-row" key={trial.id}>
+                  <div className="teacher-compact-row__main">
+                    <strong className="truncate-text">{trial.student}</strong>
+                    <span className="truncate-text">{trial.program} - {trial.dateTime}</span>
+                  </div>
+                  <StatusBadge label={trial.status} />
+                  <DashboardActionMenu
+                    primaryAction={{ label: trial.status === 'completed' ? 'View Feedback' : 'View Trial', onClick: trial.status === 'completed' ? () => setTrialFeedback(trial) : () => setToast({ type: 'info', message: `Trial details opened for ${trial.student}.` }) }}
+                    actions={[
+                      { label: 'Join Trial', onClick: () => setToast({ type: 'info', message: 'Meeting link is not available. Please contact the academy team.' }), hidden: trial.status !== 'scheduled' },
+                      { label: 'Add Trial Feedback', onClick: () => setTrialFeedback(trial), hidden: trial.status === 'completed' },
+                      { label: 'Message Admin', onClick: () => navigate('/dashboard/teacher/messages') },
+                    ]}
+                  />
+                </article>
+              ))}
+            </div>
           )}
         </SectionCard>
       </div>
