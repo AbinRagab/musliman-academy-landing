@@ -10,7 +10,15 @@ export type ScheduleItem = {
   platform?: string;
 };
 
-export default function ScheduleCard({ items }: { items: ScheduleItem[] }) {
+export default function ScheduleCard({
+  items,
+  onViewDetails,
+  actionLabel = 'View Details',
+}: {
+  items: ScheduleItem[];
+  onViewDetails?: (item: ScheduleItem) => void;
+  actionLabel?: string;
+}) {
   return (
     <div className="dashboard-schedule-list">
       {items.map((item) => (
@@ -22,7 +30,15 @@ export default function ScheduleCard({ items }: { items: ScheduleItem[] }) {
             {item.platform && <small><Icon name="video" size={14} /> {item.platform}</small>}
           </div>
           <StatusBadge label={item.status} />
-          <ActionButton variant="secondary">Open</ActionButton>
+          <ActionButton
+            variant="secondary"
+            onClick={() => {
+              onViewDetails?.(item);
+            }}
+            disabled={!onViewDetails}
+          >
+            {actionLabel}
+          </ActionButton>
         </article>
       ))}
     </div>

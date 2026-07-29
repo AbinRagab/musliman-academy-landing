@@ -15,6 +15,12 @@ const roleRoutes: Record<DashboardRole, string> = {
   student: '/dashboard/student',
 };
 
+const searchPlaceholderByRole: Record<DashboardRole, string> = {
+  admin: 'Search students, leads, classes...',
+  teacher: 'Search my students, classes, trials...',
+  student: 'Search classes, homework, messages...',
+};
+
 export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
   const navigate = useNavigate();
   const { isConfigured, profile, role: authRole, signOut } = useAuth();
@@ -37,7 +43,7 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
         <Icon name="search" size={17} />
         <input
           type="search"
-          placeholder={role === 'student' ? 'Search classes, homework, messages...' : 'Search students, classes, leads...'}
+          placeholder={searchPlaceholderByRole[role]}
         />
       </label>
       <div className="dashboard-topbar__actions">

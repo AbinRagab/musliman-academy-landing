@@ -669,7 +669,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
     if (section === 'free-trials') {
       return [
-        { label: 'Review Trial', onClick: openDrawer },
+        { label: 'View Trial Details', onClick: openDrawer },
         { label: 'Assign Teacher', onClick: openDrawer },
         { label: 'Schedule Trial', onClick: openDrawer },
         { label: 'Reschedule Trial', onClick: () => notify('Reschedule Trial action prepared.') },
@@ -694,7 +694,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
     if (section === 'attendance') {
       return [
-        { label: 'Review Attendance', onClick: openDrawer },
+        { label: 'View Attendance Details', onClick: openDrawer },
         { label: 'Confirm Attendance', onClick: () => notify('Attendance confirmed.') },
         { label: 'Request Correction', onClick: () => notify('Correction request prepared.') },
         { label: 'Contact Parent', onClick: () => notify('Parent contact action prepared.') },

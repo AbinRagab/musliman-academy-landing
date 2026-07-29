@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardSkeleton from '../components/DashboardSkeleton';
 import SectionCard from '../components/SectionCard';
 import StatusBadge from '../components/StatusBadge';
 import { ComposeMessageModal, StudentModal, StudentPageHeader, StudentStatCard } from '../components/student/StudentPortalComponents';
@@ -19,7 +20,12 @@ export default function StudentFreeTrial() {
   }, []);
 
   if (!trial) {
-    return <div className="dashboard-loading-state">Loading trial status...</div>;
+    return (
+      <div className="dashboard-page dashboard-page--management">
+        <StudentPageHeader title="Free Trial" subtitle="Loading your trial and enrollment status." />
+        <DashboardSkeleton cards={4} rows={4} label="Loading student trial data" />
+      </div>
+    );
   }
 
   const isScheduled = trial.status === 'scheduled' || trial.status === 'rescheduled';

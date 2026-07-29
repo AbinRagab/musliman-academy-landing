@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardSkeleton from '../components/DashboardSkeleton';
 import SectionCard from '../components/SectionCard';
 import ClassDetailsModal from '../components/student/ClassDetailsModal';
 import HomeworkDetailsModal from '../components/student/HomeworkDetailsModal';
@@ -58,7 +59,12 @@ export default function StudentSchedule() {
   }, [data]);
 
   if (!data) {
-    return <div className="dashboard-loading-state">Loading schedule...</div>;
+    return (
+      <div className="dashboard-page dashboard-page--management">
+        <StudentPageHeader title="Schedule" subtitle="Loading your upcoming timetable." />
+        <DashboardSkeleton cards={4} rows={6} label="Loading student schedule data" />
+      </div>
+    );
   }
 
   const nextClass = getNextClass(data.upcomingClasses);

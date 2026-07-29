@@ -2,6 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardSkeleton from '../components/DashboardSkeleton';
 import ProgressBar from '../components/ProgressBar';
 import SectionCard from '../components/SectionCard';
 import {
@@ -45,7 +46,12 @@ export default function StudentDashboard() {
   }, []);
 
   if (!data) {
-    return <div className="dashboard-loading-state">Loading student portal...</div>;
+    return (
+      <div className="dashboard-page dashboard-page--management dashboard-page--student-dashboard">
+        <StudentPageHeader title="Student Dashboard" subtitle="Loading your class, homework, progress, and package summary." />
+        <DashboardSkeleton cards={4} rows={5} label="Loading student dashboard data" />
+      </div>
+    );
   }
 
   const nextClass = data.nextClass || getNextClass(data.upcomingClasses);

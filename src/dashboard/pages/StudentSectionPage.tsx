@@ -1,6 +1,7 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardModal from '../components/DashboardModal';
 import DashboardPageHeader from '../components/DashboardPageHeader';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import EvaluationCard from '../components/EvaluationCard';
@@ -194,6 +195,7 @@ function SettingToggle({ label, description, enabled }: { label: string; descrip
 export default function StudentSectionPage({ section }: { section: StudentSection }) {
   const [messageTab, setMessageTab] = useState<MessageTab>('All');
   const [selectedMessageId, setSelectedMessageId] = useState(studentMessages[0]?.id || '');
+  const [scheduleDetails, setScheduleDetails] = useState<{ title: string; meta: string; time: string } | null>(null);
   const filteredMessages = useMemo(() => (
     messageTab === 'All' ? studentMessages : studentMessages.filter((message) => message.category === messageTab)
   ), [messageTab]);
@@ -263,6 +265,19 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
   if (section === 'schedule' || section === 'classes') {
     return (
       <div className="dashboard-page dashboard-page--management">
+        {scheduleDetails && (
+          <DashboardModal
+            title="Class Details"
+            onClose={() => setScheduleDetails(null)}
+            footer={<ActionButton onClick={() => setScheduleDetails(null)}>Close</ActionButton>}
+          >
+            <div className="student-info-grid">
+              <span>Class <strong>{scheduleDetails.title}</strong></span>
+              <span>Time <strong>{scheduleDetails.time}</strong></span>
+              <span>Details <strong>{scheduleDetails.meta}</strong></span>
+            </div>
+          </DashboardModal>
+        )}
         {header}
         <div className="dashboard-stats-grid">
           <StatCard label="Upcoming Classes" value="3" trend="This week" icon="calendar" />
@@ -271,7 +286,7 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
           <StatCard label="Current Level" value="Level 3" trend={studentProfile.currentCourse} icon="quran" />
         </div>
         <SectionCard title="Upcoming Sessions">
-          <ScheduleCard items={scheduleItems} />
+          <ScheduleCard items={scheduleItems} onViewDetails={(item) => setScheduleDetails(item)} />
         </SectionCard>
       </div>
     );

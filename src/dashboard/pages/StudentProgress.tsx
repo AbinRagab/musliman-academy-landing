@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardSkeleton from '../components/DashboardSkeleton';
 import ProgressBar from '../components/ProgressBar';
 import SectionCard from '../components/SectionCard';
 import StatusBadge from '../components/StatusBadge';
@@ -29,7 +30,12 @@ export default function StudentProgress() {
   }, []);
 
   if (!data) {
-    return <div className="dashboard-loading-state">Loading progress...</div>;
+    return (
+      <div className="dashboard-page dashboard-page--management">
+        <StudentPageHeader title="Progress" subtitle="Loading learning progress, skill ratings, and recommendations." />
+        <DashboardSkeleton cards={4} rows={5} label="Loading student progress data" />
+      </div>
+    );
   }
 
   return (

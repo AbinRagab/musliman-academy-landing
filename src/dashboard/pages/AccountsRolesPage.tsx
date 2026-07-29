@@ -6,6 +6,7 @@ import { useAuth } from '../auth/AuthProvider';
 import AccessDeniedPage from './AccessDeniedPage';
 import ActionButton from '../components/ActionButton';
 import ActionMenu from '../components/ActionMenu';
+import DashboardSkeleton from '../components/DashboardSkeleton';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import EmptyState from '../components/EmptyState';
 import RoleBadge from '../components/RoleBadge';
@@ -415,7 +416,7 @@ export default function AccountsRolesPage() {
           </label>
         </div>
 
-        {loading && <div className="dashboard-loading-state">Loading academy accounts...</div>}
+        {loading && <DashboardSkeleton cards={4} rows={6} label="Loading academy accounts" />}
         {error && <div className="dashboard-inline-error">{error}</div>}
         {!loading && !error && filteredProfiles.length === 0 && (
           <EmptyState title="No accounts found" description="Create a dashboard account or adjust your filters." />

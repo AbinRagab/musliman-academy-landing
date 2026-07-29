@@ -1737,6 +1737,125 @@
   padding-top: 16px;
 }
 
+.dashboard-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+}
+
+.dashboard-drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 24, 45, 0.52);
+  border: 0;
+}
+
+.dashboard-drawer__panel {
+  position: absolute;
+  inset: 0 0 0 auto;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  width: min(100%, 560px);
+  height: 100%;
+  padding: 22px;
+  overflow-y: auto;
+  background: var(--dashboard-off-white);
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: -28px 0 70px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-drawer__panel--wide {
+  width: min(100%, 760px);
+}
+
+.dashboard-drawer__header,
+.dashboard-drawer__section,
+.dashboard-drawer__footer {
+  padding: 18px;
+  background: var(--dashboard-white);
+  border: 1px solid var(--dashboard-line);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(11, 31, 58, 0.06);
+}
+
+.dashboard-drawer__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.dashboard-drawer__header h2,
+.dashboard-drawer__section h3 {
+  margin: 0;
+  color: var(--dashboard-ink);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.dashboard-drawer__header p {
+  margin: 6px 0 0;
+  color: var(--dashboard-muted);
+  line-height: 1.55;
+}
+
+.dashboard-drawer__section {
+  display: grid;
+  gap: 12px;
+}
+
+.dashboard-drawer__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.dashboard-skeleton {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.dashboard-skeleton__cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dashboard-skeleton__cards span,
+.dashboard-skeleton__table span {
+  display: block;
+  min-height: 54px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(184, 115, 51, 0.12), rgba(255, 255, 255, 0)),
+    #fbfaf7;
+  background-size: 220% 100%;
+  border: 1px solid var(--dashboard-line);
+  border-radius: 8px;
+  animation: dashboard-skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.dashboard-skeleton__table {
+  display: grid;
+  gap: 9px;
+}
+
+.dashboard-skeleton__table span {
+  min-height: 42px;
+}
+
+@keyframes dashboard-skeleton-pulse {
+  from {
+    background-position: 120% 0;
+  }
+
+  to {
+    background-position: -120% 0;
+  }
+}
+
 .dashboard-profile-details {
   display: grid;
   gap: 10px;

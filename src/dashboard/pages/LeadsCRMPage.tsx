@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState, type ReactNode } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
+import DashboardSkeleton from '../components/DashboardSkeleton';
 import ActionMenu from '../components/ActionMenu';
 import AssignTeacherModal from '../components/AssignTeacherModal';
 import ConvertLeadModal from '../components/ConvertLeadModal';
@@ -670,7 +671,7 @@ export default function LeadsCRMPage() {
           </div>
         </div>
 
-        {loading && <div className="dashboard-loading-state">Loading admissions pipeline...</div>}
+        {loading && <DashboardSkeleton cards={4} rows={7} label="Loading admissions pipeline" />}
         {!loading && filteredLeads.length === 0 && <EmptyState title="No leads found" description="New website form submissions and manually added leads will appear here." />}
         {!loading && filteredLeads.length > 0 && view === 'pipeline' && (
           <LeadKanbanBoard

@@ -4,6 +4,7 @@ import Icon from '../../components/Icon';
 import { useAuth } from '../auth/AuthProvider';
 import ActionButton from '../components/ActionButton';
 import DashboardPageHeader from '../components/DashboardPageHeader';
+import DashboardSkeleton from '../components/DashboardSkeleton';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
@@ -134,7 +135,16 @@ export default function StudentRecordPage({
   }, [activeTab, visibleTabs]);
 
   if (!record) {
-    return <div className="dashboard-loading-state">Loading student record...</div>;
+    return (
+      <div className="dashboard-page dashboard-page--management dashboard-page--student-record">
+        <DashboardPageHeader
+          eyebrow={portalRole === 'teacher' ? 'TEACHER STUDENT RECORD' : portalRole === 'student' ? 'STUDENT PORTAL' : 'STUDENT MANAGEMENT'}
+          title="Student Record"
+          subtitle="Loading role-based student record sections."
+        />
+        <DashboardSkeleton cards={4} rows={6} label="Loading student record data" />
+      </div>
+    );
   }
 
   const currentRecord = record;
