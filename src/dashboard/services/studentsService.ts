@@ -344,6 +344,19 @@ function requireSupabase() {
   return supabase;
 }
 
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+async function logNonBlockingAssignmentStep(
+  label: string,
+  operation: PromiseLike<{ error: { message?: string } | null }>,
+) {
+  const { error } = await operation;
+
+  if (error && import.meta.env.DEV) {
+    console.warn(`Teacher assignment ${label} sync failed:`, error);
+  }
+}
+
 export async function fetchStudentManagementRows() {
   const client = requireSupabase();
   const { data, error } = await client
@@ -403,10 +416,19 @@ export async function fetchStudentActionLookups() {
 
 export async function assignStudentTeacher(studentId: string, teacherId: string, note?: string) {
   const client = requireSupabase();
+
+  if (!studentId || !uuidPattern.test(studentId)) {
+    throw new Error('A valid student record is required before assigning a teacher.');
+  }
+
+  if (!teacherId || !uuidPattern.test(teacherId)) {
+    throw new Error('Select a valid teacher before saving.');
+  }
+
   const operationalTeacherId = await resolveOperationalTeacherId(teacherId);
 
   if (!operationalTeacherId) {
-    throw new Error('Select a teacher before saving.');
+    throw new Error('Selected teacher is not a valid teacher record.');
   }
 
   const { data: currentStudent, error: currentStudentError } = await client
@@ -417,6 +439,10 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
 
   if (currentStudentError) {
     throw currentStudentError;
+  }
+
+  if (!currentStudent?.id) {
+    throw new Error('Student record was not found.');
   }
 
   const scheduleNotes = [
@@ -437,38 +463,94 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
     .single();
 
   if (error) {
+    if (import.meta.env.DEV) {
+      console.error('Assign teacher failed', {
+        studentId,
+        selectedTeacherId: teacherId,
+        operationalTeacherId,
+        error,
+      });
+    }
     throw error;
   }
 
-  const today = new Date().toISOString().slice(0, 10);
-  await client
-    .from('classes')
-    .update({ teacher_id: operationalTeacherId, updated_at: new Date().toISOString() })
-    .eq('student_id', studentId)
-    .gte('class_date', today)
-    .is('teacher_id', null);
+  const { data: verifiedStudent, error: verifyError } = await client
+    .from('students')
+    .select('id, assigned_teacher_id')
+    .eq('id', studentId)
+    .maybeSingle();
 
-  if (currentStudent?.lead_id) {
-    await client.from('leads').update({ assigned_teacher_id: operationalTeacherId }).eq('id', currentStudent.lead_id);
-    await client.from('free_trials').update({ teacher_id: operationalTeacherId }).eq('lead_id', currentStudent.lead_id);
+  if (verifyError) {
+    if (import.meta.env.DEV) {
+      console.error('Assign teacher verification failed', {
+        studentId,
+        selectedTeacherId: teacherId,
+        operationalTeacherId,
+        error: verifyError,
+      });
+    }
+    throw verifyError;
   }
 
-  await client.from('free_trials').update({ teacher_id: operationalTeacherId }).eq('student_id', studentId);
+  if (verifiedStudent?.assigned_teacher_id !== operationalTeacherId) {
+    if (import.meta.env.DEV) {
+      console.error('Assign teacher verification mismatch', {
+        studentId,
+        selectedTeacherId: teacherId,
+        operationalTeacherId,
+        verifiedAssignedTeacherId: verifiedStudent?.assigned_teacher_id || null,
+      });
+    }
+    throw new Error('Assignment saved but verification failed.');
+  }
 
-  const teacherProfileId = await resolveTeacherProfileId(operationalTeacherId);
-  const { error: notificationError } = teacherProfileId
-    ? await client.from('in_app_notifications').insert({
-      recipient_id: teacherProfileId,
-      title: 'New student assigned',
-      message: 'A student has been assigned to you. Please review the student record and upcoming schedule.',
-      type: 'class',
-      related_entity_type: 'student',
-      related_entity_id: studentId,
-    })
-    : { error: null };
+  const today = new Date().toISOString().slice(0, 10);
+  await logNonBlockingAssignmentStep(
+    'classes',
+    client
+      .from('classes')
+      .update({ teacher_id: operationalTeacherId, updated_at: new Date().toISOString() })
+      .eq('student_id', studentId)
+      .gte('class_date', today)
+      .is('teacher_id', null),
+  );
 
-  if (notificationError && import.meta.env.DEV) {
-    console.info('Teacher assignment notification was not created:', notificationError.message);
+  if (currentStudent?.lead_id) {
+    await logNonBlockingAssignmentStep(
+      'lead',
+      client.from('leads').update({ assigned_teacher_id: operationalTeacherId }).eq('id', currentStudent.lead_id),
+    );
+    await logNonBlockingAssignmentStep(
+      'lead free trials',
+      client.from('free_trials').update({ teacher_id: operationalTeacherId }).eq('lead_id', currentStudent.lead_id),
+    );
+  }
+
+  await logNonBlockingAssignmentStep(
+    'student free trials',
+    client.from('free_trials').update({ teacher_id: operationalTeacherId }).eq('student_id', studentId),
+  );
+
+  try {
+    const teacherProfileId = await resolveTeacherProfileId(operationalTeacherId);
+    const { error: notificationError } = teacherProfileId
+      ? await client.from('in_app_notifications').insert({
+        recipient_id: teacherProfileId,
+        title: 'New student assigned',
+        message: 'A student has been assigned to you. Please review the student record and upcoming schedule.',
+        type: 'class',
+        related_entity_type: 'student',
+        related_entity_id: studentId,
+      })
+      : { error: null };
+
+    if (notificationError && import.meta.env.DEV) {
+      console.info('Teacher assignment notification was not created:', notificationError.message);
+    }
+  } catch (notificationError) {
+    if (import.meta.env.DEV) {
+      console.info('Teacher assignment notification lookup failed:', notificationError);
+    }
   }
 
   return data;

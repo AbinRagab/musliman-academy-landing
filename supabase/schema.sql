@@ -399,6 +399,10 @@ drop policy if exists "Admin academic roles can manage students" on public.stude
 create policy "Admin academic roles can manage students" on public.students
   for all using (public.get_current_user_role() in ('super_admin', 'admin', 'academic_manager')) with check (public.get_current_user_role() in ('super_admin', 'admin', 'academic_manager'));
 
+drop policy if exists "Admin roles can update student teacher assignments" on public.students;
+create policy "Admin roles can update student teacher assignments" on public.students
+  for update using (public.get_current_user_role() in ('super_admin', 'admin', 'academic_manager', 'admissions')) with check (public.get_current_user_role() in ('super_admin', 'admin', 'academic_manager', 'admissions'));
+
 drop policy if exists "Teachers can view own teacher record" on public.teachers;
 create policy "Teachers can view own teacher record" on public.teachers
   for select using (profile_id = auth.uid());

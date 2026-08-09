@@ -947,7 +947,7 @@ function StudentActionDrawer({
             {(action === 'complete_setup' || action === 'set_schedule') && (
               <ProgramSelect label="Program" name="programId" value={String(row.programId || '')} />
             )}
-            <label><span>Teacher</span><select name="teacherId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher' || action === 'set_schedule'}><option value="">Unassigned</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}{teacher.specialization ? ` - ${teacher.specialization}` : ''}</option>)}</select></label>
+            <label><span>Teacher</span><select name="teacherId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher' || action === 'set_schedule'}><option value="">Unassigned</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}{teacher.email ? `  ${teacher.email}` : ''}</option>)}</select></label>
             {action === 'assign_teacher' && <label><span>Current program</span><input value={String(row.program)} readOnly /></label>}
           </>
         )}
@@ -1330,6 +1330,10 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       return;
     }
 
+    const submittedTeacherId = activeAction === 'assign_teacher'
+      ? String(formData.get('teacherId') || '')
+      : null;
+
     setSavingAction(true);
 
     try {
@@ -1344,7 +1348,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       }
 
       if (activeAction === 'assign_teacher') {
-        await assignStudentTeacher(String(selectedRow.id), String(formData.get('teacherId') || ''), String(formData.get('notes') || ''));
+        await assignStudentTeacher(String(selectedRow.id), submittedTeacherId || '', String(formData.get('notes') || ''));
         notify('Teacher assigned successfully.', 'success');
       }
 
@@ -1394,10 +1398,27 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error('Student action failed:', error);
+        if (activeAction === 'assign_teacher') {
+          console.error('Assign teacher failed', {
+            studentId: String(selectedRow.id),
+            selectedTeacherId: submittedTeacherId,
+            error,
+          });
+        }
+      }
+      if (activeAction === 'assign_teacher') {
+        const message = error instanceof Error ? error.message : '';
+        if (message === 'Assignment saved but verification failed.') {
+          notify(message, 'error');
+        } else if (import.meta.env.DEV && message) {
+          notify(`Failed to assign teacher: ${message}`, 'error');
+        } else {
+          notify('Failed to assign teacher. Please contact admin.', 'error');
+        }
+        return;
       }
       const errorByAction: Partial<Record<AdminActionType, string>> = {
         set_program: 'Failed to update program. Please try again.',
-        assign_teacher: 'Failed to assign teacher. Please try again.',
         complete_setup: 'Failed to update student setup. Please try again.',
         set_schedule: error instanceof Error ? error.message : 'Unable to save schedule.',
         update_level: 'Failed to update student level. Please try again.',

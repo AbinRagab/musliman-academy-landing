@@ -214,5 +214,5 @@ export async function resolveOperationalTeacherId(teacherOrProfileId: string | n
     });
   }
 
-  return teacherByProfileId?.id || teacherOrProfileId;
+  return teacherByProfileId?.id || null;
 }
