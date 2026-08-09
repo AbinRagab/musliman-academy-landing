@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
+import { getStudentDisplayName } from './displayNameUtils';
 import { applyTeacherIdFilter, getCurrentTeacherContext } from './teacherOperationsService';
 
 export type TeacherDashboardClass = {
@@ -79,16 +80,32 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
     if (!context || !teacherId) {
       return {
         ...emptyData,
-        contextError: 'Teacher profile is not connected. Please contact admin.',
+        contextError: 'Teacher record is not linked to your account. Please contact admin.',
       };
     }
 
     const today = new Date().toISOString().slice(0, 10);
     const [{ data: students }, { data: classes }, { data: trials }, { data: completedClasses }] = await Promise.all([
-      applyTeacherIdFilter(supabase.from('students').select('*'), 'assigned_teacher_id', context),
-      applyTeacherIdFilter(supabase.from('classes').select('*'), 'teacher_id', context).gte('class_date', today).lte('class_date', today),
-      applyTeacherIdFilter(supabase.from('free_trials').select('*'), 'teacher_id', context).eq('status', 'scheduled'),
-      applyTeacherIdFilter(supabase.from('classes').select('*'), 'teacher_id', context).eq('status', 'completed').order('class_date', { ascending: false }),
+      applyTeacherIdFilter(
+        supabase.from('students').select('id, student_name, program_id, level, status, assigned_teacher_id'),
+        'assigned_teacher_id',
+        context,
+      ),
+      applyTeacherIdFilter(
+        supabase.from('classes').select('id, student_id, teacher_id, program_id, class_date, start_time, meeting_link, lesson_covered, homework, status'),
+        'teacher_id',
+        context,
+      ).gte('class_date', today).lte('class_date', today),
+      applyTeacherIdFilter(
+        supabase.from('free_trials').select('id, teacher_id, status'),
+        'teacher_id',
+        context,
+      ).eq('status', 'scheduled'),
+      applyTeacherIdFilter(
+        supabase.from('classes').select('id, student_id, teacher_id, program_id, class_date, start_time, status'),
+        'teacher_id',
+        context,
+      ).eq('status', 'completed').order('class_date', { ascending: false }),
     ]);
 
     if (import.meta.env.DEV) {
@@ -135,8 +152,8 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
 
       return {
         id: classRow.id,
-        time: formatTime(classRow.scheduled_start_at || classRow.start_time),
-        student: student?.student_name || 'Student',
+        time: formatTime(classRow.start_time),
+        student: getStudentDisplayName(student),
         studentId: classRow.student_id || null,
         program,
         status,
@@ -144,15 +161,15 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
         meetingLink: classRow.meeting_link || undefined,
         reportStatus: classRow.lesson_covered || classRow.homework ? 'Submitted' : status === 'completed' ? 'Needs Report' : 'Not Due',
         attendanceStatus: attendanceClassIds.has(classRow.id) ? 'Submitted' : status === 'completed' ? 'Pending' : 'Not Started',
-        scheduledStartAt: classRow.scheduled_start_at || `${today}T${classRow.start_time || '00:00:00'}`,
+        scheduledStartAt: `${classRow.class_date || today}T${classRow.start_time || '00:00:00'}`,
       };
     });
 
     const assignedStudents = studentRows.map((student): TeacherDashboardStudent => ({
       id: student.id,
-      student: student.student_name || 'Student',
+      student: getStudentDisplayName(student),
       program: student.program_id ? programById.get(student.program_id) || 'Program not assigned' : 'Program not assigned',
-      level: student.current_level || student.level || 'Level not set',
+      level: student.level || 'Level not set',
       nextClass: nextClassLabel(todaysClasses.find((classItem) => classItem.studentId === student.id)),
       attendance: 'Calculated from attendance',
       progress: student.status === 'needs_support' ? 'Needs support' : 'On track',
@@ -169,7 +186,7 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
         id: classRow.id,
         studentId: classRow.student_id,
         classId: classRow.id,
-        student: student?.student_name || 'Student',
+        student: getStudentDisplayName(student),
         program,
         relatedClass: `${classRow.class_date || 'Class date'} ${classRow.start_time || ''}`.trim(),
         recitation: 0,
@@ -191,7 +208,10 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
       assignedStudents,
       evaluationQueue,
     };
-  } catch {
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.error('Teacher dashboard data fetch failed:', error);
+    }
     return emptyData;
   }
 }

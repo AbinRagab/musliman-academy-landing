@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
+import { getStudentDisplayName } from './displayNameUtils';
 
 export type TeacherContext = {
   authUserId: string;
@@ -142,13 +143,7 @@ export async function getCurrentTeacherContext(): Promise<TeacherContext | null>
 }
 
 export function applyTeacherIdFilter<T>(query: T, column: string, context: TeacherContext): T {
-  const ids = context.teacherLookupIds.length ? context.teacherLookupIds : [context.teacherId];
-
-  if (ids.length === 1) {
-    return (query as { eq: (column: string, value: string) => T }).eq(column, ids[0]);
-  }
-
-  return (query as { in: (column: string, values: string[]) => T }).in(column, ids);
+  return (query as { eq: (column: string, value: string) => T }).eq(column, context.teacherId);
 }
 
 export async function fetchTeacherOperationsData(): Promise<TeacherOperationsData> {
@@ -158,7 +153,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
   if (!context) {
     return {
       context: null,
-      contextError: 'Teacher profile is not connected. Please contact admin.',
+      contextError: 'Teacher record is not linked to your account. Please contact admin.',
       students: [],
       classes: [],
       evaluations: [],
@@ -244,7 +239,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
     return {
       id: classRow.id,
       studentId: classRow.student_id,
-      student: student?.student_name || 'Student',
+      student: getStudentDisplayName(student),
       programId: classRow.program_id,
       program,
       dateTime: formatClassDateTime(classRow.class_date, classRow.start_time),
@@ -268,7 +263,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
 
     return {
       id: student.id,
-      student: student.student_name || 'Student',
+      student: getStudentDisplayName(student),
       program: student.program_id ? programById.get(student.program_id) || 'Program not assigned' : 'Program not assigned',
       level: student.level || 'Level not set',
       nextClass: nextClass ? formatClassDateTime(nextClass.class_date, nextClass.start_time) : 'No class scheduled',
@@ -289,7 +284,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
         studentId: classRow.student_id,
         classId: classRow.id,
         programId: classRow.program_id,
-        student: student?.student_name || 'Student',
+        student: getStudentDisplayName(student),
         program,
         relatedClass: formatClassDateTime(classRow.class_date, classRow.start_time),
         status: 'ready',

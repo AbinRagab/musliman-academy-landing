@@ -1,5 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
+import { getStudentDisplayName } from './displayNameUtils';
 import { fetchPrograms } from './programsService';
 import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
 
@@ -380,7 +381,7 @@ export async function fetchStudentManagementRows() {
 
     return {
       id: student.id,
-      name: student.student_name,
+      name: getStudentDisplayName(student),
       programId: student.program_id,
       program: programName,
       assignedTeacherId: student.assigned_teacher_id,
@@ -449,17 +450,18 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
     currentStudent?.schedule_notes || '',
     note ? `Teacher assignment note: ${note}` : '',
   ].filter(Boolean).join('\n');
+  const assignmentPayload = {
+    assigned_teacher_id: operationalTeacherId,
+    schedule_notes: scheduleNotes || currentStudent?.schedule_notes || null,
+    status: 'active',
+    updated_at: new Date().toISOString(),
+  };
 
   const { data, error } = await client
     .from('students')
-    .update({
-      assigned_teacher_id: operationalTeacherId,
-      schedule_notes: scheduleNotes || currentStudent?.schedule_notes || null,
-      status: 'active',
-      updated_at: new Date().toISOString(),
-    })
+    .update(assignmentPayload)
     .eq('id', studentId)
-    .select('*')
+    .select('id, assigned_teacher_id, schedule_notes, status, updated_at')
     .single();
 
   if (error) {
@@ -467,6 +469,7 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
       console.error('Assign teacher failed', {
         studentId,
         selectedTeacherId: teacherId,
+        payload: assignmentPayload,
         operationalTeacherId,
         error,
       });
@@ -876,7 +879,7 @@ export async function fetchStudentRecord(studentId?: string | null) {
   return {
     ...emptyStudentRecord,
     id: data.id,
-    name: data.student_name || emptyStudentRecord.name,
+    name: getStudentDisplayName(data) || emptyStudentRecord.name,
     status: data.status || emptyStudentRecord.status,
     level: data.level || emptyStudentRecord.level,
     sections: {
