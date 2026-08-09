@@ -11,6 +11,7 @@ import ProfilePanel from '../components/ProfilePanel';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
+import TeacherLinkingDebugPanel from '../components/TeacherLinkingDebugPanel';
 import TeacherTrialCard from '../components/TeacherTrialCard';
 import TrialFeedbackModal from '../components/TrialFeedbackModal';
 import Toast, { type ToastMessage } from '../components/Toast';
@@ -376,6 +377,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       <div className="dashboard-page dashboard-page--management">
         <Toast toast={toast} onClose={() => setToast(null)} />
         {commonHeader}
+        {['students', 'schedule'].includes(section) && <TeacherLinkingDebugPanel route={`/dashboard/teacher/${section}`} />}
         <SectionCard title="Teacher profile is not connected">
           <p className="dashboard-empty-copy">{teacherContextError}</p>
         </SectionCard>
@@ -388,6 +390,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       <div className="dashboard-page dashboard-page--management">
         <Toast toast={toast} onClose={() => setToast(null)} />
         {commonHeader}
+        <TeacherLinkingDebugPanel route="/dashboard/teacher/students" />
         <FilterBar search={search} onSearchChange={setSearch}>
           <label><span>Status</span><select defaultValue="all"><option value="all">All assigned</option><option value="needs">Needs support</option><option value="active">Active</option></select></label>
         </FilterBar>
@@ -497,6 +500,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       <div className="dashboard-page dashboard-page--management">
         <Toast toast={toast} onClose={() => setToast(null)} />
         {commonHeader}
+        <TeacherLinkingDebugPanel route="/dashboard/teacher/schedule" />
         <SectionCard title="Today's Classes" subtitle="Timezone: Africa/Cairo">
           {classRows.filter((row) => row.dateTime.startsWith('Today')).length > 0 ? (
             <DataTable columns={scheduleColumns} rows={classRows.filter((row) => row.dateTime.startsWith('Today'))} getRowKey={(row) => row.id} />

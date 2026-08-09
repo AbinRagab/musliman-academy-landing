@@ -7,6 +7,7 @@ import DataTable, { type DataTableColumn } from '../components/DataTable';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
+import TeacherLinkingDebugPanel from '../components/TeacherLinkingDebugPanel';
 import TeacherTrialCard from '../components/TeacherTrialCard';
 import TrialFeedbackModal from '../components/TrialFeedbackModal';
 import Toast, { type ToastMessage } from '../components/Toast';
@@ -313,6 +314,8 @@ export default function TeacherDashboard() {
           Open Schedule
         </ActionButton>
       </div>
+
+      <TeacherLinkingDebugPanel route="/dashboard/teacher" />
 
       <SectionCard className="teacher-next-class-card">
         {contextError ? (
