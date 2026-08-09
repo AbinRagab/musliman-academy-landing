@@ -1,5 +1,6 @@
 import { FormEvent, useMemo, useState } from 'react';
 import ActionButton from './ActionButton';
+import ProgramSelect from './ProgramSelect';
 import SectionCard from './SectionCard';
 import StatusBadge from './StatusBadge';
 import type { ConvertLeadPayload, LeadRecord, TeacherOption } from '../services/leadsService';
@@ -22,6 +23,7 @@ export default function ConvertLeadModal({
     whatsapp: lead.whatsapp || '',
     country: lead.country || '',
     age: lead.student_age || '',
+    approved_program_id: lead.program_id || '',
     approved_program: lead.programName || '',
     approved_level: '',
     assigned_teacher_id: lead.assigned_teacher_id || '',
@@ -43,6 +45,7 @@ export default function ConvertLeadModal({
       form.student_name.trim()
       && form.parent_name.trim()
       && form.parent_email.trim()
+      && form.approved_program_id
       && form.approved_level.trim()
       && form.assigned_teacher_id
       && form.class_days.trim()
@@ -80,7 +83,7 @@ export default function ConvertLeadModal({
       whatsapp: form.whatsapp,
       country: form.country,
       age: form.age,
-      program_id: lead.program_id,
+      program_id: form.approved_program_id || lead.program_id,
       level: form.approved_level,
       assigned_teacher_id: form.assigned_teacher_id,
       schedule_notes: setupNotes,
@@ -121,7 +124,8 @@ export default function ConvertLeadModal({
               <label><span>WhatsApp</span><input value={form.whatsapp} onChange={(event) => setForm((current) => ({ ...current, whatsapp: event.target.value }))} /></label>
               <label><span>Country</span><input value={form.country} onChange={(event) => setForm((current) => ({ ...current, country: event.target.value }))} /></label>
               <label><span>Age</span><input value={form.age} onChange={(event) => setForm((current) => ({ ...current, age: event.target.value }))} /></label>
-              <label><span>Approved Program</span><input value={form.approved_program} onChange={(event) => setForm((current) => ({ ...current, approved_program: event.target.value }))} /></label>
+              <ProgramSelect label="Approved Program" value={form.approved_program_id} onChange={(value) => setForm((current) => ({ ...current, approved_program_id: value }))} required />
+              <label><span>Legacy program text</span><input value={form.approved_program} onChange={(event) => setForm((current) => ({ ...current, approved_program: event.target.value }))} /></label>
               <label><span>Approved Level</span><input value={form.approved_level} onChange={(event) => setForm((current) => ({ ...current, approved_level: event.target.value }))} required /></label>
               <label><span>Assigned Teacher</span><select value={form.assigned_teacher_id} onChange={(event) => setForm((current) => ({ ...current, assigned_teacher_id: event.target.value }))} required><option value="">Select teacher</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}</option>)}</select></label>
               <label><span>Class Days</span><input value={form.class_days} onChange={(event) => setForm((current) => ({ ...current, class_days: event.target.value }))} placeholder="Mon, Wed" required /></label>

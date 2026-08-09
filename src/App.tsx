@@ -10,6 +10,7 @@ import LanguageSwitcher from './components/LanguageSwitcher';
 import Logo from './components/Logo';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
 import DashboardRoutes from './dashboard/DashboardRoutes';
+import { usePrograms } from './dashboard/services/programsService';
 import {
   contact,
   countryOptions,
@@ -17,7 +18,7 @@ import {
   howSteps,
   navLinks,
   pricingData,
-  programs,
+  programs as sitePrograms,
   reasons,
   testimonials,
   trainingBadges,
@@ -433,6 +434,7 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
 
 function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
   const { t } = useTranslation();
+  const { programs: bookingPrograms, loading: programsLoading, error: programsError } = usePrograms();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedLead, setSubmittedLead] = useState<BookingLeadData | null>(null);
@@ -464,8 +466,8 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
     return value ? t(`booking.options.${group}.${value}`, { defaultValue: value }) : '';
   }
 
-  function getProgramLabel(value: string) {
-    return value ? t(`programs.items.${value}.title`, { defaultValue: value }) : '';
+  function getSelectedProgram(programId: string) {
+    return bookingPrograms.find((program) => program.id === programId);
   }
 
   function buildWhatsAppUrl(leadData: BookingLeadData) {
@@ -546,7 +548,8 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
         whatsapp: getFormValue(formData, 'whatsapp'),
         country: getFormValue(formData, 'country'),
         age: getOptionLabel('studentAge', getFormValue(formData, 'age')),
-        program: getProgramLabel(getFormValue(formData, 'program')),
+        program: getSelectedProgram(getFormValue(formData, 'program'))?.name || '',
+        programId: getFormValue(formData, 'program'),
         preferredTime: getOptionLabel('preferredTime', getFormValue(formData, 'preferredTime')),
         message: getFormValue(formData, 'message'),
         source: 'Musliman Academy Website',
@@ -567,6 +570,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
         whatsapp: leadData.whatsapp,
         country: leadData.country,
         student_age: leadData.age || undefined,
+        program_id: isTraining ? undefined : leadData.programId,
         program: isTraining ? 'Teacher Training' : leadData.program,
         preferred_time: leadData.preferredTime,
         message: crmMessage,
@@ -721,9 +725,9 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
                     </label>
                     <label>
                       <span>{t('booking.fields.program')}</span>
-                      <select name="program" defaultValue="" aria-invalid={Boolean(errors.program)}>
-                        <option value="" disabled>{t('booking.placeholders.program')}</option>
-                        {programs.map((program) => <option value={program.key} key={program.key}>{getProgramLabel(program.key)}</option>)}
+                      <select name="program" defaultValue="" aria-invalid={Boolean(errors.program)} disabled={programsLoading || Boolean(programsError) || bookingPrograms.length === 0}>
+                        <option value="" disabled>{programsLoading ? 'Loading programs...' : programsError ? 'Unable to load programs' : bookingPrograms.length ? t('booking.placeholders.program') : 'No programs found'}</option>
+                        {bookingPrograms.map((program) => <option value={program.id} key={program.id}>{program.name}</option>)}
                       </select>
                       {getFieldError('program')}
                     </label>
@@ -817,7 +821,7 @@ function ProgramsSection() {
           <p>{t('programs.description')}</p>
         </div>
         <div className="program-grid">
-          {programs.map((program) => (
+          {sitePrograms.map((program) => (
             <article className="program-card" key={program.key}>
               <span className="program-card__number">{program.number}</span>
               <div className="program-card__visual">
@@ -1477,7 +1481,7 @@ function Footer() {
         <div>
           <h3>{t('footer.programs')}</h3>
           <ul>
-            {programs.map((program) => <li key={program.key}><a href="#programs"><Icon name={program.icon} />{t(`programs.items.${program.key}.title`)}</a></li>)}
+            {sitePrograms.map((program) => <li key={program.key}><a href="#programs"><Icon name={program.icon} />{t(`programs.items.${program.key}.title`)}</a></li>)}
             <li><a href="#teacher-training"><Icon name="award" />{t('footer.teacherTraining')}</a></li>
           </ul>
         </div>

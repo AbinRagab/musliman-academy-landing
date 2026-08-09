@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ActionButton from '../components/ActionButton';
 import DashboardActionMenu from '../components/DashboardActionMenu';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
+import ProgramSelect from '../components/ProgramSelect';
 import SectionCard from '../components/SectionCard';
 import {
   AttendanceBadge,
@@ -23,7 +24,7 @@ export default function StudentAttendance() {
 
   const filteredRecords = useMemo(() => records.filter((record) => {
     const statusMatches = filters.status === 'all' || record.status === filters.status;
-    const programMatches = filters.program === 'all' || record.program === filters.program;
+    const programMatches = filters.program === 'all' || record.programId === filters.program || record.program === filters.program;
     const monthMatches = filters.month === 'all' || record.classDate.includes(filters.month);
     return statusMatches && programMatches && monthMatches;
   }), [filters, records]);
@@ -37,7 +38,6 @@ export default function StudentAttendance() {
     return { rate, present, late, absent, excused };
   }, [records]);
 
-  const programs = Array.from(new Set(records.map((record) => record.program)));
   const columns: Array<DataTableColumn<StudentAttendanceRecord>> = [
     { header: 'Class Date', accessor: 'classDate' },
     { header: 'Class', accessor: 'className' },
@@ -119,13 +119,7 @@ export default function StudentAttendance() {
               <option value="excused">Excused</option>
             </select>
           </label>
-          <label>
-            <span>Program / class</span>
-            <select value={filters.program} onChange={(event) => setFilters((current) => ({ ...current, program: event.target.value }))}>
-              <option value="all">All programs</option>
-              {programs.map((program) => <option key={program} value={program}>{program}</option>)}
-            </select>
-          </label>
+          <ProgramSelect label="Program / class" value={filters.program} onChange={(value) => setFilters((current) => ({ ...current, program: value }))} includeAllOption />
         </div>
       </SectionCard>
 

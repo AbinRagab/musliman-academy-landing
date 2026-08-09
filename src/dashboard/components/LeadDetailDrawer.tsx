@@ -5,6 +5,7 @@ import LeadStatusBadge from './LeadStatusBadge';
 import LeadTypeBadge from './LeadTypeBadge';
 import LeadTimeline from './LeadTimeline';
 import NotesBox from './NotesBox';
+import ProgramSelect from './ProgramSelect';
 import StatusBadge from './StatusBadge';
 import type { LeadActivity, LeadRecord, LeadStatus, LeadType, TeacherOption, UpdateLeadPayload } from '../services/leadsService';
 
@@ -152,10 +153,7 @@ export default function LeadDetailDrawer({
             <label><span>Country</span><input name="country" defaultValue={lead.country || ''} /></label>
             <label>
               <span>Program</span>
-              <select name="program_id" defaultValue={lead.program_id || ''}>
-                <option value="">No program selected</option>
-                {programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}
-              </select>
+              <ProgramSelect name="program_id" value={lead.program_id || ''} placeholder="Select program" />
             </label>
             <label><span>Program name</span><input name="program_name" defaultValue={lead.program_name || lead.programName || ''} /></label>
             <label>

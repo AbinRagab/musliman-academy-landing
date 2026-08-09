@@ -8,6 +8,8 @@ type SubmitLeadPayload = {
   country?: string;
   student_age?: string;
   studentAge?: string;
+  program_id?: string;
+  programId?: string;
   program?: string;
   preferred_time?: string;
   preferredTime?: string;
@@ -116,7 +118,23 @@ serve(async (req) => {
 
   let programId: string | null = null;
 
-  if (programInput) {
+  const requestedProgramId = (payload.program_id || payload.programId || '').trim();
+
+  if (requestedProgramId) {
+    const { data: program, error: programError } = await supabaseAdmin
+      .from('programs')
+      .select('id')
+      .eq('id', requestedProgramId)
+      .maybeSingle();
+
+    if (programError) {
+      console.error('Program id lookup failed:', programError);
+    }
+
+    programId = program?.id || null;
+  }
+
+  if (!programId && programInput) {
     const slug = normalizeSlug(programInput);
     const { data: programs, error: programsError } = await supabaseAdmin
       .from('programs')

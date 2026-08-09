@@ -92,6 +92,7 @@ export type StudentAttendanceRecord = {
   teacher: string;
   status: StudentAttendanceStatus;
   notes: string;
+  programId?: string | null;
   program: string;
 };
 

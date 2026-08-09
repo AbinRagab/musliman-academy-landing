@@ -63,6 +63,7 @@ export async function fetchStudentAttendanceData() {
         teacher: record.teacher_id ? teachersById.get(record.teacher_id) || 'Teacher' : 'Teacher',
         status: normalizeAttendanceStatus(record.status),
         notes: record.note || record.notes || '',
+        programId: classRecord?.program_id || null,
         program: profile.program,
       };
     });

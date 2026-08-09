@@ -328,6 +328,7 @@ as $$
 $$;
 
 alter table public.profiles enable row level security;
+alter table public.programs enable row level security;
 alter table public.leads enable row level security;
 alter table public.students enable row level security;
 alter table public.teachers enable row level security;
@@ -354,6 +355,14 @@ create policy "Users can update their own profile" on public.profiles
 drop policy if exists "Super admins can manage profiles" on public.profiles;
 create policy "Super admins can manage profiles" on public.profiles
   for all using (public.get_current_user_role() in ('super_admin', 'admin')) with check (public.get_current_user_role() in ('super_admin', 'admin'));
+
+drop policy if exists "Authenticated users can read programs" on public.programs;
+create policy "Authenticated users can read programs" on public.programs
+  for select to authenticated using (status is null or status = 'active');
+
+drop policy if exists "Public can read active programs" on public.programs;
+create policy "Public can read active programs" on public.programs
+  for select to anon using (status is null or status = 'active');
 
 drop policy if exists "Admin admissions can manage leads" on public.leads;
 create policy "Admin admissions can manage leads" on public.leads

@@ -1,5 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
+import { fetchPrograms as fetchActivePrograms } from './programsService';
 
 export type LeadStatus =
   | 'new'
@@ -439,14 +440,7 @@ export async function convertLeadToStudent(leadId: string, payload: ConvertLeadP
 }
 
 export async function fetchPrograms() {
-  const client = requireSupabase();
-  const { data, error } = await client.from('programs').select('id, name, slug').order('name');
-
-  if (error) {
-    throw error;
-  }
-
-  return data || [];
+  return fetchActivePrograms();
 }
 
 export async function fetchAssignableProfiles(roles: AuthRole[] = ['super_admin', 'admin', 'admissions', 'academic_manager']) {

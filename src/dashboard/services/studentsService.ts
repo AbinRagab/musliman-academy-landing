@@ -1,5 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
+import { fetchPrograms } from './programsService';
 
 export type StudentManagementRow = {
   id: string;
@@ -380,18 +381,14 @@ export async function fetchStudentManagementRows() {
 
 export async function fetchStudentActionLookups() {
   const client = requireSupabase();
-  const [{ data: profiles, error: profilesError }, { data: teachers }, { data: programs, error: programsError }] = await Promise.all([
+  const [{ data: profiles, error: profilesError }, { data: teachers }, programs] = await Promise.all([
     client.from('profiles').select('id, full_name, email').eq('role', 'teacher').eq('status', 'active').order('full_name'),
     client.from('teachers').select('profile_id, specialization, availability').eq('status', 'active'),
-    client.from('programs').select('id, name').eq('status', 'active').order('name'),
+    fetchPrograms(),
   ]);
 
   if (profilesError) {
     throw profilesError;
-  }
-
-  if (programsError) {
-    throw programsError;
   }
 
   const teacherByProfileId = new Map((teachers || []).map((teacher) => [teacher.profile_id, teacher]));
@@ -407,7 +404,7 @@ export async function fetchStudentActionLookups() {
         availability: teacher?.availability || null,
       } satisfies StudentActionTeacher;
     }),
-    programs: (programs || []) as StudentProgramOption[],
+    programs: programs as StudentProgramOption[],
   };
 }
 

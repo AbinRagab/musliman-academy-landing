@@ -9,6 +9,7 @@ import DataTable, { type DataTableColumn } from '../components/DataTable';
 import EmptyState from '../components/EmptyState';
 import FilterBar from '../components/FilterBar';
 import ProgressBar from '../components/ProgressBar';
+import ProgramSelect from '../components/ProgramSelect';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
@@ -37,6 +38,7 @@ import {
   type StudentPaymentRecord,
   type StudentProgramOption,
 } from '../services/studentsService';
+import { usePrograms } from '../services/programsService';
 
 type AdminSection =
   | 'leads'
@@ -206,18 +208,29 @@ function BasicTable({
   columns,
   statusFilter,
   onStatusFilterChange,
+  enableProgramFilter = false,
 }: {
   rows: GenericRow[];
   columns: Array<DataTableColumn<GenericRow>>;
   statusFilter: string;
   onStatusFilterChange: (value: string) => void;
+  enableProgramFilter?: boolean;
 }) {
   const [search, setSearch] = useState('');
+  const [programFilter, setProgramFilter] = useState('all');
+  const { programs: filterPrograms } = usePrograms();
   const statuses = useMemo(() => Array.from(new Set(rows.map((row) => String(row.status || '')).filter(Boolean))), [rows]);
+  const selectedProgramName = filterPrograms.find((program) => program.id === programFilter)?.name || '';
   const filteredRows = useMemo(() => rows.filter((row) => {
     const matchesStatus = statusFilter === 'all' || String(row.status || '').toLowerCase() === statusFilter;
-    return matchesStatus && rowMatches(row, search);
-  }), [rows, search, statusFilter]);
+    const matchesProgram = !enableProgramFilter
+      || programFilter === 'all'
+      || row.programId === programFilter
+      || row.program_id === programFilter
+      || row.program === selectedProgramName
+      || row.programName === selectedProgramName;
+    return matchesStatus && matchesProgram && rowMatches(row, search);
+  }), [enableProgramFilter, programFilter, rows, search, selectedProgramName, statusFilter]);
 
   return (
     <>
@@ -231,6 +244,7 @@ function BasicTable({
             ))}
           </select>
         </label>
+        {enableProgramFilter && <ProgramSelect label="Program" value={programFilter} onChange={setProgramFilter} includeAllOption />}
       </FilterBar>
       {filteredRows.length > 0 ? (
         <DataTable columns={columns} rows={filteredRows} getRowKey={(row, index) => String(row.id || Object.values(row)[0] || index)} />
@@ -891,7 +905,7 @@ function StudentActionDrawer({
           <>
             <label><span>Student</span><input value={String(row.name)} readOnly /></label>
             {(action === 'complete_setup' || action === 'set_schedule') && (
-              <label><span>Program</span><select name="programId" defaultValue={String(row.programId || '')}><option value="">Select program</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}</select></label>
+              <ProgramSelect label="Program" name="programId" value={String(row.programId || '')} />
             )}
             <label><span>Teacher</span><select name="teacherId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher'}><option value="">Unassigned</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}{teacher.specialization ? ` - ${teacher.specialization}` : ''}</option>)}</select></label>
             {action === 'assign_teacher' && <label><span>Current program</span><input value={String(row.program)} readOnly /></label>}
@@ -1424,7 +1438,13 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
             title={section === 'settings' ? 'Roles & Permissions' : page.title}
             subtitle={section === 'settings' ? 'Role defaults for dashboard access and operational permissions.' : `${page.title} operational records`}
           >
-            <BasicTable rows={visibleRows} columns={columns} statusFilter={statusFilter} onStatusFilterChange={setStatusFilter} />
+            <BasicTable
+              rows={visibleRows}
+              columns={columns}
+              statusFilter={statusFilter}
+              onStatusFilterChange={setStatusFilter}
+              enableProgramFilter={['students', 'free-trials', 'classes', 'attendance', 'payments'].includes(section)}
+            />
           </SectionCard>
 
           {section === 'reports' && (

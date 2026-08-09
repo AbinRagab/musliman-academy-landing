@@ -14,6 +14,7 @@ import LeadDetailDrawer from '../components/LeadDetailDrawer';
 import LeadKanbanBoard from '../components/LeadKanbanBoard';
 import LeadStatusBadge from '../components/LeadStatusBadge';
 import LeadTypeBadge from '../components/LeadTypeBadge';
+import ProgramSelect from '../components/ProgramSelect';
 import ScheduleTrialModal from '../components/ScheduleTrialModal';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
@@ -29,7 +30,6 @@ import {
   fetchAssignableProfiles,
   fetchLeadActivity,
   fetchLeads,
-  fetchPrograms,
   fetchTeacherOptions,
   scheduleFreeTrial,
   updateLead,
@@ -41,8 +41,9 @@ import {
   type TeacherOption,
   type UpdateLeadPayload,
 } from '../services/leadsService';
+import { usePrograms, type ProgramRecord } from '../services/programsService';
 
-type ProgramOption = { id: string; name: string; slug: string };
+type ProgramOption = ProgramRecord;
 type OwnerOption = { id: string; full_name: string; email: string; role: string; status: string };
 
 const statusOptions: Array<{ value: LeadStatus | 'all'; label: string }> = [
@@ -206,8 +207,8 @@ function LeadActions({
 
 export default function LeadsCRMPage() {
   const { role } = useAuth();
+  const { programs } = usePrograms();
   const [leads, setLeads] = useState<LeadRecord[]>([]);
-  const [programs, setPrograms] = useState<ProgramOption[]>([]);
   const [owners, setOwners] = useState<OwnerOption[]>([]);
   const [teachers, setTeachers] = useState<TeacherOption[]>([]);
   const [activities, setActivities] = useState<LeadActivity[]>([]);
@@ -254,14 +255,12 @@ export default function LeadsCRMPage() {
     setLoading(true);
 
     try {
-      const [leadRows, programRows, ownerRows, teacherRows] = await Promise.all([
+      const [leadRows, ownerRows, teacherRows] = await Promise.all([
         fetchLeads(),
-        fetchPrograms(),
         fetchAssignableProfiles(),
         fetchTeacherOptions(),
       ]);
       setLeads(leadRows);
-      setPrograms(programRows as ProgramOption[]);
       setOwners(ownerRows as OwnerOption[]);
       setTeachers(teacherRows);
       setUsingMockFallback(false);
@@ -270,7 +269,6 @@ export default function LeadsCRMPage() {
         console.error('Leads CRM load failed:', error);
       }
       setLeads([]);
-      setPrograms([]);
       setOwners([]);
       setTeachers([]);
       setUsingMockFallback(false);
@@ -617,7 +615,7 @@ export default function LeadsCRMPage() {
           <FilterBar search={search} onSearchChange={setSearch}>
             <label><span>Status</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as LeadStatus | 'all')}>{statusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
             <label><span>Lead Type</span><select value={leadTypeFilter} onChange={(event) => setLeadTypeFilter(event.target.value as LeadType | 'all')}><option value="all">All lead types</option><option value="student">Student</option><option value="teacher_training">Teacher Training</option></select></label>
-            <label><span>Program</span><select value={programFilter} onChange={(event) => setProgramFilter(event.target.value)}><option value="all">All programs</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}{programs.length === 0 && Array.from(new Set(leads.map((lead) => lead.programName).filter(Boolean))).map((program) => <option key={program} value={program}>{program}</option>)}</select></label>
+            <ProgramSelect label="Program" value={programFilter} onChange={setProgramFilter} includeAllOption />
             <label><span>Source</span><select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)}><option value="all">All sources</option>{sources.map((source) => <option key={source} value={source}>{source}</option>)}</select></label>
             <label><span>Owner</span><select value={ownerFilter} onChange={(event) => setOwnerFilter(event.target.value)}><option value="all">All owners</option>{owners.map((owner) => <option key={owner.id} value={owner.id}>{owner.full_name}</option>)}</select></label>
             <label><span>Teacher</span><select value={teacherFilter} onChange={(event) => setTeacherFilter(event.target.value)}><option value="all">All teachers</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}</option>)}</select></label>
@@ -704,7 +702,7 @@ export default function LeadsCRMPage() {
 
       {teacherLead && <AssignTeacherModal lead={teacherLead} teachers={teachers} selectedTeacherId={selectedTeacherId} onSelectTeacher={setSelectedTeacherId} onClose={() => setTeacherLead(null)} onSave={async () => { await assignLeadTeacher(teacherLead.id, selectedTeacherId); setTeacherLead(null); setToast({ type: 'success', message: 'Teacher assigned.' }); await loadLeads(); }} />}
       {followUpLead && <FollowUpModal lead={followUpLead} onClose={() => setFollowUpLead(null)} onSave={handleFollowUpSave} />}
-      {trialLead && <ScheduleTrialModal lead={trialLead} teachers={teachers} onClose={() => setTrialLead(null)} onSave={async (payload) => { await scheduleFreeTrial({ leadId: trialLead.id, programId: trialLead.program_id, ...payload }); setTrialLead(null); setToast({ type: 'success', message: 'Free trial scheduled.' }); await loadLeads(); }} />}
+      {trialLead && <ScheduleTrialModal lead={trialLead} teachers={teachers} onClose={() => setTrialLead(null)} onSave={async (payload) => { await scheduleFreeTrial({ leadId: trialLead.id, ...payload }); setTrialLead(null); setToast({ type: 'success', message: 'Free trial scheduled.' }); await loadLeads(); }} />}
       {convertLead && <ConvertLeadModal lead={convertLead} teachers={teachers} onClose={() => setConvertLead(null)} onSave={async (payload) => { await convertLeadToStudent(convertLead.id, payload); setConvertLead(null); setToast({ type: 'success', message: 'Lead converted to student.' }); await loadLeads(); }} />}
 
       {ownerLead && (
@@ -751,7 +749,7 @@ export default function LeadsCRMPage() {
               <label><span>WhatsApp</span><input name="whatsapp" /></label>
               <label><span>Country</span><input name="country" /></label>
               <label><span>Lead type</span><select name="lead_type" defaultValue="student"><option value="student">Student free trial</option><option value="teacher_training">Teacher training</option></select></label>
-              <label><span>Program</span><select name="program_id"><option value="">Select program</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}</select></label>
+              <ProgramSelect label="Program" name="program_id" />
               <label><span>Program name fallback</span><input name="program_name" placeholder="Used if no program is selected" /></label>
               <label><span>Preferred time</span><input name="preferred_time" /></label>
               <label><span>Message</span><textarea name="message" rows={3} /></label>

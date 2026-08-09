@@ -5,6 +5,7 @@ export type WebsiteLeadPayload = {
   whatsapp: string;
   country: string;
   student_age?: string;
+  program_id?: string;
   program?: string;
   preferred_time?: string;
   message?: string;
