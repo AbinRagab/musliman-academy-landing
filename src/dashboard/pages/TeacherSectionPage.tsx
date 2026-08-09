@@ -15,15 +15,16 @@ import TeacherTrialCard from '../components/TeacherTrialCard';
 import TrialFeedbackModal from '../components/TrialFeedbackModal';
 import Toast, { type ToastMessage } from '../components/Toast';
 import { updateTeacherSessionCheckin, type TeacherCheckinAction } from '../services/teacherCheckinService';
-import {
-  freeTrials,
-  studentEvaluations,
-  teacherPerformance,
-  teacherSchedule,
-  teacherStats,
-  teacherStudents,
-} from '../data/mockData';
 import { submitTrialFeedback, updateTrialStatus, fetchTeacherTrials } from '../services/trialsService';
+import {
+  fetchTeacherOperationsData,
+  markTeacherAttendance,
+  saveTeacherClassReport,
+  saveTeacherEvaluation,
+  type TeacherClassRow as ClassRow,
+  type TeacherEvaluationRow as EvaluationRow,
+  type TeacherStudentRow as StudentRow,
+} from '../services/teacherOperationsService';
 
 type TeacherSection =
   | 'students'
@@ -36,40 +37,6 @@ type TeacherSection =
   | 'messages'
   | 'profile'
   | 'settings';
-
-type StudentRow = {
-  id: string;
-  student: string;
-  program: string;
-  level: string;
-  nextClass: string;
-  attendance: string;
-  progress: string;
-  status: string;
-};
-
-type ClassRow = {
-  id: string;
-  student: string;
-  program: string;
-  dateTime: string;
-  status: string;
-  platform: string;
-  meetingLink?: string;
-  attendanceStatus: string;
-  lessonCovered: string;
-  homeworkAssigned: string;
-  reportStatus: string;
-  notes: string;
-};
-
-type EvaluationRow = {
-  id: string;
-  student: string;
-  program: string;
-  relatedClass: string;
-  status: string;
-};
 
 type TrialRow = {
   id: string;
@@ -89,49 +56,6 @@ type MessageThread = {
   unread: boolean;
   preview: string;
 };
-
-const students: StudentRow[] = teacherStudents.map((student, index) => ({
-  id: index === 0 ? 'mock-yusuf' : `teacher-student-${index}`,
-  student: student.student,
-  program: student.level.includes('Tajweed') ? 'Tajweed' : student.level === 'Beginner' ? 'Arabic Language' : 'Quran Reading',
-  level: student.level,
-  nextClass: student.nextClass,
-  attendance: student.attendance,
-  progress: student.attendance === '88%' ? 'Needs support' : 'On track',
-  status: student.attendance === '88%' ? 'needs support' : 'active',
-}));
-
-const classRows: ClassRow[] = teacherSchedule.map((item, index) => ({
-  id: `class-${index}`,
-  student: item.student,
-  program: item.program,
-  dateTime: `Today ${item.time}`,
-  status: item.status,
-  platform: 'Meeting link pending',
-  meetingLink: undefined,
-  attendanceStatus: item.status === 'Completed' ? 'Pending' : 'Not Started',
-  lessonCovered: item.status === 'Completed' ? 'Lesson report pending' : 'Planned lesson',
-  homeworkAssigned: item.status === 'Completed' ? 'Homework pending' : 'Set after class',
-  reportStatus: item.status === 'Completed' ? 'Needs Report' : 'Not Due',
-  notes: '',
-}));
-
-const evaluationRows: EvaluationRow[] = studentEvaluations.map((item, index) => ({
-  id: `evaluation-${index}`,
-  student: item.student,
-  program: index === 1 ? 'Arabic Language' : 'Quran Reading',
-  relatedClass: index === 0 ? 'Jul 28 class' : 'Today class',
-  status: item.status,
-}));
-
-const trialRows: TrialRow[] = freeTrials.map((trial, index) => ({
-  id: `trial-${index}`,
-  lead: trial.student,
-  program: trial.program,
-  dateTime: trial.dateTime,
-  status: index === 1 ? 'completed' : index === 2 ? 'no_show' : 'scheduled',
-  adminOwner: 'Admissions Team',
-}));
 
 const messageThreads: MessageThread[] = [];
 
@@ -174,7 +98,7 @@ async function joinClass(classItem: ClassRow, setToast: (toast: ToastMessage) =>
   notifyMissingMeeting(setToast);
 }
 
-function TeacherEvaluationModal({ evaluation, onClose }: { evaluation: EvaluationRow; onClose: () => void }) {
+function TeacherEvaluationModal({ evaluation, onClose, onSubmit }: { evaluation: EvaluationRow; onClose: () => void; onSubmit: (formData: FormData) => void }) {
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Evaluate ${evaluation.student}`}>
       <div className="dashboard-modal__panel dashboard-modal__panel--wide">
@@ -185,23 +109,23 @@ function TeacherEvaluationModal({ evaluation, onClose }: { evaluation: Evaluatio
           </div>
           <button type="button" className="dashboard-icon-button" aria-label="Close evaluation" onClick={onClose}><Icon name="x" /></button>
         </div>
-        <form className="dashboard-form">
+        <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
           <div className="teacher-form-grid">
             <label><span>Student</span><input value={evaluation.student} readOnly /></label>
             <label><span>Related class</span><input value={evaluation.relatedClass} readOnly /></label>
             <label><span>Program</span><input value={evaluation.program} readOnly /></label>
             <label><span>Evaluation date</span><input type="date" defaultValue="2026-07-29" /></label>
-            {['Reading accuracy', 'Tajweed', 'Memorization', 'Understanding', 'Participation', 'Homework commitment', 'Behavior'].map((label) => (
-              <label key={label}><span>{label}</span><input type="range" min="1" max="5" defaultValue="4" /></label>
-            ))}
-            <label className="teacher-form-grid__wide"><span>Strengths</span><textarea rows={3} /></label>
-            <label className="teacher-form-grid__wide"><span>Needs improvement</span><textarea rows={3} /></label>
-            <label className="teacher-form-grid__wide"><span>Teacher recommendation</span><textarea rows={3} /></label>
+            <label><span>Reading accuracy</span><input name="recitationRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span>Tajweed</span><input name="tajweedRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span>Understanding</span><input name="understandingRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span>Behavior</span><input name="behaviorRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label className="teacher-form-grid__wide"><span>Strengths / progress notes</span><textarea name="progressNotes" rows={3} /></label>
+            <label className="teacher-form-grid__wide"><span>Teacher recommendation</span><textarea name="recommendation" rows={3} /></label>
             <label className="teacher-form-grid__wide"><span>Next focus</span><textarea rows={2} /></label>
           </div>
           <div className="dashboard-form-actions">
             <ActionButton variant="secondary" onClick={onClose}>Save as Draft</ActionButton>
-            <ActionButton variant="copper" onClick={onClose}>Submit Evaluation</ActionButton>
+            <ActionButton type="submit" variant="copper">Submit Evaluation</ActionButton>
           </div>
         </form>
       </div>
@@ -209,7 +133,7 @@ function TeacherEvaluationModal({ evaluation, onClose }: { evaluation: Evaluatio
   );
 }
 
-function ClassReportModal({ classItem, onClose }: { classItem: ClassRow; onClose: () => void }) {
+function ClassReportModal({ classItem, onClose, onSubmit }: { classItem: ClassRow; onClose: () => void; onSubmit: (formData: FormData) => void }) {
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Report for ${classItem.student}`}>
       <div className="dashboard-modal__panel">
@@ -217,12 +141,12 @@ function ClassReportModal({ classItem, onClose }: { classItem: ClassRow; onClose
           <div><h2>Add Class Report</h2><p>{classItem.student} - {classItem.dateTime}</p></div>
           <button type="button" className="dashboard-icon-button" aria-label="Close report" onClick={onClose}><Icon name="x" /></button>
         </div>
-        <form className="dashboard-form">
-          <label><span>Lesson covered</span><input defaultValue={classItem.lessonCovered === 'Planned lesson' ? '' : classItem.lessonCovered} /></label>
-          <label><span>Homework assigned</span><textarea rows={3} defaultValue={classItem.homeworkAssigned === 'Set after class' ? '' : classItem.homeworkAssigned} /></label>
-          <label><span>Class notes</span><textarea rows={4} defaultValue={classItem.notes} /></label>
+        <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
+          <label><span>Lesson covered</span><input name="lessonCovered" defaultValue={classItem.lessonCovered === 'Planned lesson' ? '' : classItem.lessonCovered} required /></label>
+          <label><span>Homework assigned</span><textarea name="homework" rows={3} defaultValue={classItem.homeworkAssigned === 'Set after class' ? '' : classItem.homeworkAssigned} /></label>
+          <label><span>Class notes</span><textarea name="notes" rows={4} defaultValue={classItem.notes} /></label>
           <label><span>Next lesson plan</span><textarea rows={3} /></label>
-          <div className="dashboard-form-actions"><ActionButton variant="copper" onClick={onClose}>Save Class Report</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
+          <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper">Save Class Report</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
         </form>
       </div>
     </div>
@@ -252,7 +176,7 @@ function ClassDetailsModal({ classItem, onClose }: { classItem: ClassRow; onClos
   );
 }
 
-function ComposeModal({ onClose }: { onClose: () => void }) {
+function ComposeModal({ students, classRows, onClose }: { students: StudentRow[]; classRows: ClassRow[]; onClose: () => void }) {
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label="New message">
       <div className="dashboard-modal__panel">
@@ -285,15 +209,85 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
   const [teacherTrials, setTeacherTrials] = useState<Array<Record<string, unknown>>>([]);
   const [trialFeedback, setTrialFeedback] = useState<Record<string, unknown> | null>(null);
   const [trialDetails, setTrialDetails] = useState<Record<string, unknown> | TrialRow | null>(null);
-  const [selectedClassId, setSelectedClassId] = useState(classRows[0]?.id || '');
+  const [students, setStudents] = useState<StudentRow[]>([]);
+  const [classRows, setClassRows] = useState<ClassRow[]>([]);
+  const [evaluationRows, setEvaluationRows] = useState<EvaluationRow[]>([]);
+  const [loadingOperations, setLoadingOperations] = useState(true);
+  const [selectedClassId, setSelectedClassId] = useState('');
 
   useEffect(() => {
-    if (section === 'free-trials') {
-      fetchTeacherTrials()
-        .then((trials) => setTeacherTrials(trials as Array<Record<string, unknown>>))
-        .catch(() => setTeacherTrials([]));
+    loadTeacherOperations();
+
+    if (section === 'free-trials' || section === 'reports') {
+      loadTeacherTrials();
     }
   }, [section]);
+
+  async function loadTeacherOperations() {
+    setLoadingOperations(true);
+
+    try {
+      const data = await fetchTeacherOperationsData();
+      setStudents(data.students);
+      setClassRows(data.classes);
+      setEvaluationRows(data.evaluations);
+      setSelectedClassId((current) => current || data.classes[0]?.id || '');
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error('Teacher operations fetch failed:', error);
+      }
+      setStudents([]);
+      setClassRows([]);
+      setEvaluationRows([]);
+    } finally {
+      setLoadingOperations(false);
+    }
+  }
+
+  async function loadTeacherTrials() {
+    try {
+      const trials = await fetchTeacherTrials();
+      setTeacherTrials(trials as Array<Record<string, unknown>>);
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error('Teacher trials fetch failed:', error);
+      }
+      setTeacherTrials([]);
+    }
+  }
+
+  async function handleClassReportSubmit(classItem: ClassRow, formData: FormData) {
+    await saveTeacherClassReport({
+      classId: classItem.id,
+      lessonCovered: String(formData.get('lessonCovered') || ''),
+      homework: String(formData.get('homework') || ''),
+      notes: String(formData.get('notes') || ''),
+    });
+    setReportModal(null);
+    setToast({ type: 'success', message: 'Class report saved.' });
+    await loadTeacherOperations();
+  }
+
+  async function handleEvaluationSubmit(evaluation: EvaluationRow, formData: FormData) {
+    if (!evaluation.studentId) {
+      setToast({ type: 'error', message: 'This evaluation is missing a student record.' });
+      return;
+    }
+
+    await saveTeacherEvaluation({
+      studentId: evaluation.studentId,
+      classId: evaluation.classId,
+      recitationRating: Number(formData.get('recitationRating') || 4),
+      tajweedRating: Number(formData.get('tajweedRating') || 4),
+      understandingRating: Number(formData.get('understandingRating') || 4),
+      behaviorRating: Number(formData.get('behaviorRating') || 4),
+      progressNotes: String(formData.get('progressNotes') || ''),
+      recommendation: String(formData.get('recommendation') || ''),
+    });
+    setEvaluationModal(null);
+    setToast({ type: 'success', message: 'Evaluation submitted.' });
+    await loadTeacherOperations();
+  }
 
   const titleBySection: Record<TeacherSection, string> = {
     students: 'My Students',
@@ -385,10 +379,10 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <SectionCard title="Assigned Students" subtitle="Parent contact is handled through academy-approved messaging.">
           <DataTable columns={studentColumns} rows={filteredStudents} getRowKey={(row) => row.id} />
         </SectionCard>
-        {evaluationModal && <TeacherEvaluationModal evaluation={evaluationModal} onClose={() => { setEvaluationModal(null); setToast({ type: 'success', message: 'Evaluation saved.' }); }} />}
-        {reportModal && <ClassReportModal classItem={reportModal} onClose={() => { setReportModal(null); setToast({ type: 'success', message: 'Class note saved.' }); }} />}
+        {evaluationModal && <TeacherEvaluationModal evaluation={evaluationModal} onClose={() => setEvaluationModal(null)} onSubmit={(formData) => handleEvaluationSubmit(evaluationModal, formData)} />}
+        {reportModal && <ClassReportModal classItem={reportModal} onClose={() => setReportModal(null)} onSubmit={(formData) => handleClassReportSubmit(reportModal, formData)} />}
         {classDetails && <ClassDetailsModal classItem={classDetails} onClose={() => setClassDetails(null)} />}
-        {composeOpen && <ComposeModal onClose={() => { setComposeOpen(false); setToast({ type: 'success', message: 'Message sent to academy workflow.' }); }} />}
+        {composeOpen && <ComposeModal students={students} classRows={classRows} onClose={() => { setComposeOpen(false); setToast({ type: 'success', message: 'Message sent to academy workflow.' }); }} />}
       </div>
     );
   }
@@ -413,27 +407,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                     setTeacherTrials(await fetchTeacherTrials() as Array<Record<string, unknown>>);
                   }}
                 />
-              )) : trialRows.map((trial) => (
-                <article className="teacher-trial-card" key={trial.id}>
-                  <div><h3>{trial.lead}</h3><p>{trial.program}</p></div>
-                  <div className="teacher-trial-card__meta"><span><Icon name="calendar" size={15} /> {trial.dateTime}</span><span><Icon name="shieldCheck" size={15} /> Parent contact via academy</span></div>
-                  <StatusBadge label={trial.status} />
-                  <div className="teacher-trial-card__actions">
-                    <DashboardActionMenu
-                      primaryAction={{
-                        label: trial.status === 'completed' ? 'View Feedback' : trial.status === 'no_show' ? 'Add Note' : 'View Trial',
-                        onClick: trial.status === 'completed' || trial.status === 'no_show' ? () => setTrialFeedback(trial) : () => setTrialDetails(trial),
-                      }}
-                      actions={[
-                        { label: 'Join Trial', onClick: () => notifyMissingMeeting(setToast), hidden: trial.status !== 'scheduled' },
-                        { label: 'Add Trial Feedback', onClick: () => setTrialFeedback(trial), hidden: trial.status === 'completed' || trial.status === 'no_show' },
-                        { label: 'Message Admin', onClick: () => setComposeOpen(true) },
-                        { label: 'Notify Admin No Show', onClick: () => setToast({ type: 'success', message: 'Admin notified about trial note.' }), hidden: trial.status !== 'no_show' },
-                      ]}
-                    />
-                  </div>
-                </article>
-              ))}
+              )) : <p className="dashboard-empty-copy">No free trials assigned yet.</p>}
             </div>
           </SectionCard>
           <SectionCard title="Trial Feedback Checklist">
@@ -464,12 +438,6 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
             title={String((trialFeedback.lead as { full_name?: string } | undefined)?.full_name || trialFeedback.lead || 'Trial student')}
             onClose={() => setTrialFeedback(null)}
             onSave={async (payload) => {
-              if (String(trialFeedback.id).startsWith('trial-')) {
-                setTrialFeedback(null);
-                setToast({ type: 'success', message: 'Trial feedback saved for academy review.' });
-                return;
-              }
-
               await submitTrialFeedback(String(trialFeedback.id), { ...payload, leadId: trialFeedback.lead_id ? String(trialFeedback.lead_id) : null });
               setTrialFeedback(null);
               setToast({ type: 'success', message: 'Trial feedback submitted.' });
@@ -536,7 +504,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
             ))}
           </div>
         </SectionCard>
-        {reportModal && <ClassReportModal classItem={reportModal} onClose={() => { setReportModal(null); setToast({ type: 'success', message: 'Class report saved.' }); }} />}
+        {reportModal && <ClassReportModal classItem={reportModal} onClose={() => setReportModal(null)} onSubmit={(formData) => handleClassReportSubmit(reportModal, formData)} />}
         {classDetails && <ClassDetailsModal classItem={classDetails} onClose={() => setClassDetails(null)} />}
       </div>
     );
@@ -589,7 +557,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <SectionCard title="Class Records" subtitle="Schedule shows when classes happen. My Classes records what happened in class.">
           <DataTable columns={columns} rows={rowsByTab} getRowKey={(row) => row.id} />
         </SectionCard>
-        {reportModal && <ClassReportModal classItem={reportModal} onClose={() => { setReportModal(null); setToast({ type: 'success', message: 'Class record saved.' }); }} />}
+        {reportModal && <ClassReportModal classItem={reportModal} onClose={() => setReportModal(null)} onSubmit={(formData) => handleClassReportSubmit(reportModal, formData)} />}
         {classDetails && <ClassDetailsModal classItem={classDetails} onClose={() => setClassDetails(null)} />}
       </div>
     );
@@ -612,13 +580,36 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                 {[selectedClass.student].map((student) => (
                   <div className="dashboard-attendance-row dashboard-attendance-row--expanded" key={student}>
                     <span>{student}</span>
-                    {['Present', 'Absent', 'Late', 'Excused'].map((status) => <label key={status}><input type="radio" name={`attendance-${student}`} defaultChecked={status === 'Present'} /> {status}</label>)}
-                    <input placeholder="Attendance note" />
+                    {['present', 'absent', 'late', 'excused'].map((status) => <label key={status}><input type="radio" name={`attendance-${selectedClass.id}`} value={status} defaultChecked={status === 'present'} /> {status}</label>)}
+                    <input name={`attendance-note-${selectedClass.id}`} placeholder="Attendance note" />
                     <StatusBadge label={selectedClass.attendanceStatus === 'Submitted' ? 'submitted' : 'pending'} />
                   </div>
                 ))}
               </div>
-              <div className="dashboard-form-actions"><ActionButton variant="copper" onClick={() => setToast({ type: 'success', message: 'Attendance saved.' })}>Save Attendance</ActionButton></div>
+              <div className="dashboard-form-actions">
+                <ActionButton
+                  variant="copper"
+                  onClick={async () => {
+                    if (!selectedClass.studentId) {
+                      setToast({ type: 'error', message: 'This class is missing a student record.' });
+                      return;
+                    }
+
+                    const selectedStatus = document.querySelector<HTMLInputElement>(`input[name="attendance-${selectedClass.id}"]:checked`)?.value || 'present';
+                    const notes = document.querySelector<HTMLInputElement>(`input[name="attendance-note-${selectedClass.id}"]`)?.value || '';
+                    await markTeacherAttendance({
+                      classId: selectedClass.id,
+                      studentId: selectedClass.studentId,
+                      status: selectedStatus as 'present' | 'absent' | 'late' | 'excused',
+                      notes,
+                    });
+                    setToast({ type: 'success', message: 'Attendance submitted.' });
+                    await loadTeacherOperations();
+                  }}
+                >
+                  Save Attendance
+                </ActionButton>
+              </div>
             </form>
           ) : (
             <p className="dashboard-empty-copy">No assigned classes need attendance.</p>
@@ -626,9 +617,8 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         </SectionCard>
         <SectionCard title="Completion Health">
           <div className="dashboard-insight-list">
-            {teacherPerformance.length
-              ? teacherPerformance.map((item) => <EvaluationCard key={item.label} title={item.label} score={item.value} note="Based on submitted attendance records." />)
-              : <p className="dashboard-empty-copy">No attendance completion metrics yet.</p>}
+            <EvaluationCard title="Submitted attendance" score={classRows.filter((classItem) => classItem.attendanceStatus === 'Submitted').length} note="Based on attendance records linked to assigned classes." />
+            <EvaluationCard title="Pending attendance" score={classRows.filter((classItem) => classItem.attendanceStatus === 'Pending').length} note="Completed classes awaiting attendance submission." />
           </div>
         </SectionCard>
       </div>
@@ -654,7 +644,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <SectionCard title="Evaluation Queue">
           <DataTable columns={columns} rows={evaluationRows} getRowKey={(row) => row.id} />
         </SectionCard>
-        {evaluationModal && <TeacherEvaluationModal evaluation={evaluationModal} onClose={() => { setEvaluationModal(null); setToast({ type: 'success', message: 'Evaluation saved.' }); }} />}
+        {evaluationModal && <TeacherEvaluationModal evaluation={evaluationModal} onClose={() => setEvaluationModal(null)} onSubmit={(formData) => handleEvaluationSubmit(evaluationModal, formData)} />}
       </div>
     );
   }
@@ -666,17 +656,17 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <div className="dashboard-stats-grid dashboard-stats-grid--teacher">
           {[
             { label: 'Classes This Week', value: classRows.length, trend: 'Assigned class records', icon: 'calendar' },
-            { label: 'Attendance Completion', value: '0%', trend: 'Calculated from submitted attendance', icon: 'clipboard' },
-            { label: 'Evaluation Completion', value: '0%', trend: 'Calculated from evaluations', icon: 'chart' },
+            { label: 'Attendance Submitted', value: classRows.filter((classItem) => classItem.attendanceStatus === 'Submitted').length, trend: 'Linked attendance records', icon: 'clipboard' },
+            { label: 'Pending Evaluations', value: evaluationRows.length, trend: 'Completed classes awaiting evaluation', icon: 'chart' },
             { label: 'Trial Feedback', value: `${teacherTrials.length}`, trend: 'Assigned trial records', icon: 'gift' },
           ].map((stat) => <StatCard key={stat.label} {...stat} />)}
         </div>
         <div className="dashboard-grid dashboard-grid--two">
           <SectionCard title="Teacher Performance">
             <div className="dashboard-insight-list">
-              {teacherPerformance.length
-                ? teacherPerformance.map((item) => <EvaluationCard key={item.label} title={item.label} score={item.value} note="Calculated from submitted records." />)
-                : <p className="dashboard-empty-copy">No performance metrics yet.</p>}
+              <EvaluationCard title="Assigned students" score={students.length} note="Students where assigned_teacher_id matches this teacher." />
+              <EvaluationCard title="Completed classes" score={classRows.filter((classItem) => classItem.status === 'Completed').length} note="Completed class records from Supabase." />
+              <EvaluationCard title="Reports submitted" score={classRows.filter((classItem) => classItem.reportStatus === 'Submitted').length} note="Classes with lesson or homework notes saved." />
             </div>
           </SectionCard>
           <SectionCard title="Report Actions">
@@ -728,7 +718,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
             )}
           </SectionCard>
         </div>
-        {composeOpen && <ComposeModal onClose={() => { setComposeOpen(false); setToast({ type: 'success', message: 'Message sent.' }); }} />}
+        {composeOpen && <ComposeModal students={students} classRows={classRows} onClose={() => { setComposeOpen(false); setToast({ type: 'success', message: 'Message sent.' }); }} />}
       </div>
     );
   }

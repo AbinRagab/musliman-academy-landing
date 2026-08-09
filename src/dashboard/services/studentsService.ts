@@ -415,9 +415,29 @@ export async function fetchStudentActionLookups() {
 
 export async function assignStudentTeacher(studentId: string, teacherId: string, note?: string) {
   const client = requireSupabase();
+  const { data: currentStudent, error: currentStudentError } = await client
+    .from('students')
+    .select('id, lead_id, schedule_notes')
+    .eq('id', studentId)
+    .maybeSingle();
+
+  if (currentStudentError) {
+    throw currentStudentError;
+  }
+
+  const scheduleNotes = [
+    currentStudent?.schedule_notes || '',
+    note ? `Teacher assignment note: ${note}` : '',
+  ].filter(Boolean).join('\n');
+
   const { data, error } = await client
     .from('students')
-    .update({ assigned_teacher_id: teacherId, schedule_notes: note ? `Teacher assignment note: ${note}` : undefined })
+    .update({
+      assigned_teacher_id: teacherId,
+      schedule_notes: scheduleNotes || currentStudent?.schedule_notes || null,
+      status: 'active',
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', studentId)
     .select('*')
     .single();
@@ -426,7 +446,21 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
     throw error;
   }
 
-  await client.from('classes').update({ teacher_id: teacherId }).eq('student_id', studentId).is('teacher_id', null);
+  const today = new Date().toISOString().slice(0, 10);
+  await client
+    .from('classes')
+    .update({ teacher_id: teacherId, updated_at: new Date().toISOString() })
+    .eq('student_id', studentId)
+    .gte('class_date', today)
+    .is('teacher_id', null);
+
+  if (currentStudent?.lead_id) {
+    await client.from('leads').update({ assigned_teacher_id: teacherId }).eq('id', currentStudent.lead_id);
+    await client.from('free_trials').update({ teacher_id: teacherId }).eq('lead_id', currentStudent.lead_id);
+  }
+
+  await client.from('free_trials').update({ teacher_id: teacherId }).eq('student_id', studentId);
+
   const { error: notificationError } = await client.from('in_app_notifications').insert({
     recipient_id: teacherId,
     title: 'New student assigned',
@@ -511,16 +545,18 @@ export async function updateStudentSetup(studentId: string, payload: {
   }
 
   if (payload.startDate && payload.classTime) {
-    await client.from('classes').insert({
+    await client.from('classes').upsert({
       student_id: studentId,
       teacher_id: payload.teacherId || null,
       program_id: payload.programId || null,
       class_date: payload.startDate,
       start_time: payload.classTime,
+      end_time: calculateEndTime(payload.classTime, 30),
+      duration_minutes: 30,
       meeting_link: null,
       lesson_title: 'Initial scheduled class',
       status: 'scheduled',
-    });
+    }, { onConflict: 'id' });
   }
 
   return data;
@@ -549,9 +585,11 @@ export async function updateStudentSchedule(studentId: string, payload: {
   ].filter(Boolean).join('\n');
 
   const { data, error } = await client.from('students').update({
+    program_id: payload.programId || null,
     assigned_teacher_id: payload.teacherId || null,
     schedule_notes: scheduleNotes || null,
     start_date: payload.startDate || null,
+    updated_at: new Date().toISOString(),
   }).eq('id', studentId).select('*').single();
 
   if (error) {
@@ -562,17 +600,8 @@ export async function updateStudentSchedule(studentId: string, payload: {
     return data;
   }
 
-  const { error: classError } = await client.from('classes').insert({
-    student_id: studentId,
-    teacher_id: payload.teacherId || null,
-    program_id: payload.programId || null,
-    class_date: payload.startDate,
-    start_time: payload.classTime,
-    duration_minutes: payload.durationMinutes || 30,
-    meeting_link: payload.meetingLink || null,
-    lesson_title: 'Scheduled class',
-    status: 'scheduled',
-  });
+  const classRows = buildScheduledClassRows(studentId, payload);
+  const { error: classError } = await client.from('classes').insert(classRows);
 
   if (classError) {
     console.error('Schedule table insert failed:', classError);
@@ -580,6 +609,74 @@ export async function updateStudentSchedule(studentId: string, payload: {
   }
 
   return data;
+}
+
+function calculateEndTime(startTime: string, durationMinutes: number) {
+  const [hours = 0, minutes = 0] = startTime.split(':').map(Number);
+  const start = new Date();
+  start.setHours(hours, minutes, 0, 0);
+  start.setMinutes(start.getMinutes() + durationMinutes);
+  return start.toTimeString().slice(0, 8);
+}
+
+function buildScheduledClassRows(studentId: string, payload: {
+  teacherId?: string | null;
+  programId?: string | null;
+  classDays?: string;
+  classTime?: string;
+  durationMinutes?: number;
+  meetingLink?: string;
+  startDate?: string;
+  notes?: string;
+}) {
+  const durationMinutes = payload.durationMinutes || 30;
+  const startDate = payload.startDate || new Date().toISOString().slice(0, 10);
+  const classTime = payload.classTime || '00:00';
+  const scheduledDates = getUpcomingClassDates(startDate, payload.classDays);
+
+  return scheduledDates.map((classDate, index) => ({
+    student_id: studentId,
+    teacher_id: payload.teacherId || null,
+    program_id: payload.programId || null,
+    class_date: classDate,
+    start_time: classTime,
+    end_time: calculateEndTime(classTime, durationMinutes),
+    duration_minutes: durationMinutes,
+    meeting_link: payload.meetingLink || null,
+    lesson_title: index === 0 ? 'Scheduled class' : 'Recurring scheduled class',
+    lesson_covered: null,
+    homework: null,
+    status: 'scheduled',
+  }));
+}
+
+function getUpcomingClassDates(startDate: string, classDays?: string) {
+  const start = new Date(`${startDate}T00:00:00`);
+  if (Number.isNaN(start.getTime())) {
+    return [new Date().toISOString().slice(0, 10)];
+  }
+
+  const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const requestedDays = new Set((classDays || '')
+    .toLowerCase()
+    .split(/[,;/\s]+/)
+    .map((day) => day.trim())
+    .filter(Boolean));
+  const hasDayRule = requestedDays.size > 0;
+  const dates: string[] = [];
+
+  for (let offset = 0; offset < 28 && dates.length < 12; offset += 1) {
+    const candidate = new Date(start);
+    candidate.setDate(start.getDate() + offset);
+    const dayName = dayNames[candidate.getDay()];
+    const matchesRule = !hasDayRule || requestedDays.has(dayName) || requestedDays.has(dayName.slice(0, 3));
+
+    if (matchesRule) {
+      dates.push(candidate.toISOString().slice(0, 10));
+    }
+  }
+
+  return dates.length ? dates : [start.toISOString().slice(0, 10)];
 }
 
 export async function updateStudentLevel(studentId: string, level: string, note?: string) {

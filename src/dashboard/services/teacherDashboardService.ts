@@ -27,6 +27,8 @@ export type TeacherDashboardStudent = {
 
 export type TeacherDashboardEvaluation = {
   id: string;
+  studentId?: string | null;
+  classId?: string | null;
   student: string;
   program: string;
   relatedClass: string;
@@ -76,28 +78,37 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
     }
 
     const today = new Date().toISOString().slice(0, 10);
-    const [{ data: students }, { data: classes }, { data: trials }, { data: evaluations }] = await Promise.all([
+    const [{ data: students }, { data: classes }, { data: trials }, { data: completedClasses }] = await Promise.all([
       supabase.from('students').select('*').eq('assigned_teacher_id', teacherId),
       supabase.from('classes').select('*').eq('teacher_id', teacherId).gte('class_date', today).lte('class_date', today),
       supabase.from('free_trials').select('*').eq('teacher_id', teacherId).eq('status', 'scheduled'),
-      supabase.from('evaluations').select('*').eq('teacher_id', teacherId).in('status', ['ready', 'draft', 'needs_review']),
+      supabase.from('classes').select('*').eq('teacher_id', teacherId).eq('status', 'completed').order('class_date', { ascending: false }),
     ]);
 
     const studentRows = students || [];
     const classRows = classes || [];
-    const studentIds = Array.from(new Set([...studentRows.map((student) => student.id), ...classRows.map((classRow) => classRow.student_id)].filter(Boolean))) as string[];
-    const programIds = Array.from(new Set([...studentRows.map((student) => student.program_id), ...classRows.map((classRow) => classRow.program_id)].filter(Boolean))) as string[];
-    const [studentResult, programResult, attendanceResult, reportsResult] = await Promise.all([
+    const completedClassRows = completedClasses || [];
+    const studentIds = Array.from(new Set([
+      ...studentRows.map((student) => student.id),
+      ...classRows.map((classRow) => classRow.student_id),
+      ...completedClassRows.map((classRow) => classRow.student_id),
+    ].filter(Boolean))) as string[];
+    const programIds = Array.from(new Set([
+      ...studentRows.map((student) => student.program_id),
+      ...classRows.map((classRow) => classRow.program_id),
+      ...completedClassRows.map((classRow) => classRow.program_id),
+    ].filter(Boolean))) as string[];
+    const [studentResult, programResult, attendanceResult, evaluationResult] = await Promise.all([
       studentIds.length ? supabase.from('students').select('id, student_name, level, status').in('id', studentIds) : Promise.resolve({ data: [] }),
       programIds.length ? supabase.from('programs').select('id, name').in('id', programIds) : Promise.resolve({ data: [] }),
       classRows.length ? supabase.from('attendance').select('class_id, status').in('class_id', classRows.map((classRow) => classRow.id)) : Promise.resolve({ data: [] }),
-      classRows.length ? supabase.from('teacher_class_reports').select('class_id, id').in('class_id', classRows.map((classRow) => classRow.id)) : Promise.resolve({ data: [] }),
+      completedClassRows.length ? supabase.from('evaluations').select('class_id, id').in('class_id', completedClassRows.map((classRow) => classRow.id)) : Promise.resolve({ data: [] }),
     ]);
 
     const studentById = new Map((studentResult.data || []).map((student) => [student.id, student]));
     const programById = new Map((programResult.data || []).map((program) => [program.id, program.name]));
     const attendanceClassIds = new Set((attendanceResult.data || []).map((attendance) => attendance.class_id));
-    const reportClassIds = new Set((reportsResult.data || []).map((report) => report.class_id));
+    const evaluatedClassIds = new Set((evaluationResult.data || []).map((evaluation) => evaluation.class_id));
 
     const todaysClasses = classRows.map((classRow): TeacherDashboardClass => {
       const student = classRow.student_id ? studentById.get(classRow.student_id) : null;
@@ -111,9 +122,9 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
         studentId: classRow.student_id || null,
         program,
         status,
-        platform: classRow.platform || (classRow.meeting_link ? 'Online classroom' : 'Meeting link pending'),
+        platform: classRow.meeting_link ? 'Online classroom' : 'Meeting link pending',
         meetingLink: classRow.meeting_link || undefined,
-        reportStatus: reportClassIds.has(classRow.id) ? 'Submitted' : status === 'completed' ? 'Needs Report' : 'Not Due',
+        reportStatus: classRow.lesson_covered || classRow.homework ? 'Submitted' : status === 'completed' ? 'Needs Report' : 'Not Due',
         attendanceStatus: attendanceClassIds.has(classRow.id) ? 'Submitted' : status === 'completed' ? 'Pending' : 'Not Started',
         scheduledStartAt: classRow.scheduled_start_at || `${today}T${classRow.start_time || '00:00:00'}`,
       };
@@ -130,18 +141,23 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
       status: student.status || 'active',
     }));
 
-    const evaluationQueue = (evaluations || []).map((evaluation): TeacherDashboardEvaluation => {
-      const student = evaluation.student_id ? studentById.get(evaluation.student_id) : null;
+    const evaluationQueue = completedClassRows
+      .filter((classRow) => !evaluatedClassIds.has(classRow.id))
+      .map((classRow): TeacherDashboardEvaluation => {
+      const student = classRow.student_id ? studentById.get(classRow.student_id) : null;
+      const program = classRow.program_id ? programById.get(classRow.program_id) || 'Program' : 'Program';
 
       return {
-        id: evaluation.id,
+        id: classRow.id,
+        studentId: classRow.student_id,
+        classId: classRow.id,
         student: student?.student_name || 'Student',
-        program: evaluation.program_name || 'Program',
-        relatedClass: evaluation.class_id || 'Class record',
-        recitation: Number(evaluation.reading_score || evaluation.recitation || 0),
-        tajweed: Number(evaluation.tajweed_score || evaluation.tajweed || 0),
-        understanding: Number(evaluation.understanding_score || evaluation.understanding || 0),
-        status: evaluation.status || 'ready',
+        program,
+        relatedClass: `${classRow.class_date || 'Class date'} ${classRow.start_time || ''}`.trim(),
+        recitation: 0,
+        tajweed: 0,
+        understanding: 0,
+        status: 'ready',
       };
     });
 

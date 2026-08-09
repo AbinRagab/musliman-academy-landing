@@ -330,6 +330,9 @@ export async function assignLeadTeacher(leadId: string, teacherId: string | null
   }
 
   await client.from('free_trials').update({ teacher_id: teacherId }).eq('lead_id', leadId);
+  if (data.converted_student_id) {
+    await client.from('classes').update({ teacher_id: teacherId }).eq('student_id', data.converted_student_id).is('teacher_id', null);
+  }
   await addActivity(leadId, 'assigned_teacher', 'Teacher assignment updated.', null, teacherId);
   return data as LeadRecord;
 }
@@ -355,6 +358,24 @@ export async function scheduleFreeTrial(payload: ScheduleTrialPayload) {
     throw error;
   }
 
+  if (payload.trialDate && payload.trialTime) {
+    const { error: classError } = await client.from('classes').insert({
+      teacher_id: payload.teacherId,
+      program_id: payload.programId || null,
+      class_date: payload.trialDate,
+      start_time: payload.trialTime,
+      end_time: calculateEndTime(payload.trialTime, 30),
+      duration_minutes: 30,
+      meeting_link: payload.meetingLink || null,
+      lesson_title: 'Free trial class',
+      status: 'scheduled',
+    });
+
+    if (classError && import.meta.env.DEV) {
+      console.error('Free trial class session creation failed:', classError);
+    }
+  }
+
   await client
     .from('leads')
     .update({ status: 'trial_scheduled', assigned_teacher_id: payload.teacherId })
@@ -362,6 +383,14 @@ export async function scheduleFreeTrial(payload: ScheduleTrialPayload) {
 
   await addActivity(payload.leadId, 'trial_scheduled', 'Free trial scheduled.', null, `${payload.trialDate} ${payload.trialTime}`);
   return data;
+}
+
+function calculateEndTime(startTime: string, durationMinutes: number) {
+  const [hours = 0, minutes = 0] = startTime.split(':').map(Number);
+  const start = new Date();
+  start.setHours(hours, minutes, 0, 0);
+  start.setMinutes(start.getMinutes() + durationMinutes);
+  return start.toTimeString().slice(0, 8);
 }
 
 export async function addLeadNote(leadId: string, note: string) {

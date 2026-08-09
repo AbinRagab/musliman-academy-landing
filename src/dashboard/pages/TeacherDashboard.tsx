@@ -12,6 +12,7 @@ import TrialFeedbackModal from '../components/TrialFeedbackModal';
 import Toast, { type ToastMessage } from '../components/Toast';
 import { updateTeacherSessionCheckin, type TeacherCheckinAction } from '../services/teacherCheckinService';
 import { submitTrialFeedback, updateTrialStatus, fetchTeacherTrials } from '../services/trialsService';
+import { saveTeacherClassReport, saveTeacherEvaluation } from '../services/teacherOperationsService';
 import {
   fetchTeacherDashboardData,
   type TeacherDashboardClass as TeacherClass,
@@ -26,7 +27,7 @@ function getScheduledStartAt(time: string) {
   return Number.isNaN(parsed.getTime()) ? today.toISOString() : parsed.toISOString();
 }
 
-function EvaluationModal({ evaluation, onClose }: { evaluation: EvaluationRow; onClose: () => void }) {
+function EvaluationModal({ evaluation, onClose, onSubmit }: { evaluation: EvaluationRow; onClose: () => void; onSubmit: (formData: FormData) => void }) {
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Evaluate ${evaluation.student}`}>
       <div className="dashboard-modal__panel dashboard-modal__panel--wide">
@@ -39,37 +40,23 @@ function EvaluationModal({ evaluation, onClose }: { evaluation: EvaluationRow; o
             <Icon name="x" />
           </button>
         </div>
-        <form className="dashboard-form">
+        <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
           <div className="teacher-form-grid">
-            {[
-              'Reading accuracy',
-              'Tajweed',
-              'Memorization',
-              'Understanding',
-              'Participation',
-              'Homework commitment',
-              'Behavior',
-            ].map((label) => (
-              <label key={label}>
-                <span>{label}</span>
-                <input type="range" min="1" max="5" defaultValue="4" />
-              </label>
-            ))}
+            <label><span>Reading accuracy</span><input name="recitationRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span>Tajweed</span><input name="tajweedRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span>Understanding</span><input name="understandingRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span>Behavior</span><input name="behaviorRating" type="range" min="1" max="5" defaultValue="4" /></label>
             <label>
               <span>Evaluation date</span>
               <input type="date" defaultValue="2026-07-29" />
             </label>
             <label className="teacher-form-grid__wide">
-              <span>Strengths</span>
-              <textarea rows={3} placeholder="Record strengths from recent classes." />
-            </label>
-            <label className="teacher-form-grid__wide">
-              <span>Needs improvement</span>
-              <textarea rows={3} placeholder="Record revision or support needs." />
+              <span>Strengths / progress notes</span>
+              <textarea name="progressNotes" rows={3} placeholder="Record strengths from recent classes." />
             </label>
             <label className="teacher-form-grid__wide">
               <span>Teacher recommendation</span>
-              <textarea rows={3} placeholder="Recommend next focus, level change, or admin review." />
+              <textarea name="recommendation" rows={3} placeholder="Recommend next focus, level change, or admin review." />
             </label>
             <label className="teacher-form-grid__wide">
               <span>Next focus</span>
@@ -78,7 +65,7 @@ function EvaluationModal({ evaluation, onClose }: { evaluation: EvaluationRow; o
           </div>
           <div className="dashboard-form-actions">
             <ActionButton variant="secondary" onClick={onClose}>Save Draft</ActionButton>
-            <ActionButton variant="copper" onClick={onClose}>Submit Evaluation</ActionButton>
+            <ActionButton type="submit" variant="copper">Submit Evaluation</ActionButton>
           </div>
         </form>
       </div>
@@ -86,7 +73,7 @@ function EvaluationModal({ evaluation, onClose }: { evaluation: EvaluationRow; o
   );
 }
 
-function ClassReportModal({ classItem, onClose }: { classItem: TeacherClass; onClose: () => void }) {
+function ClassReportModal({ classItem, onClose, onSubmit }: { classItem: TeacherClass; onClose: () => void; onSubmit: (formData: FormData) => void }) {
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Class report for ${classItem.student}`}>
       <div className="dashboard-modal__panel">
@@ -99,13 +86,13 @@ function ClassReportModal({ classItem, onClose }: { classItem: TeacherClass; onC
             <Icon name="x" />
           </button>
         </div>
-        <form className="dashboard-form">
-          <label><span>Lesson covered</span><input placeholder="Example: Madd letters review" /></label>
-          <label><span>Homework assigned</span><textarea rows={3} placeholder="Describe homework for the next session." /></label>
-          <label><span>Class notes</span><textarea rows={4} placeholder="Summarize class outcome and support needs." /></label>
+        <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
+          <label><span>Lesson covered</span><input name="lessonCovered" placeholder="Example: Madd letters review" required /></label>
+          <label><span>Homework assigned</span><textarea name="homework" rows={3} placeholder="Describe homework for the next session." /></label>
+          <label><span>Class notes</span><textarea name="notes" rows={4} placeholder="Summarize class outcome and support needs." /></label>
           <label><span>Next lesson plan</span><textarea rows={3} placeholder="Define the next teaching plan." /></label>
           <div className="dashboard-form-actions">
-            <ActionButton variant="copper" onClick={onClose}>Save Class Report</ActionButton>
+            <ActionButton type="submit" variant="copper">Save Class Report</ActionButton>
             <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
           </div>
         </form>
@@ -247,6 +234,44 @@ export default function TeacherDashboard() {
     setToast({ type: 'info', message: 'Meeting link is not available. Please contact the academy team.' });
   }
 
+  async function refreshTeacherDashboard() {
+    const data = await fetchTeacherDashboardData();
+    setDashboardData(data);
+  }
+
+  async function handleClassReportSubmit(classItem: TeacherClass, formData: FormData) {
+    await saveTeacherClassReport({
+      classId: classItem.id,
+      lessonCovered: String(formData.get('lessonCovered') || ''),
+      homework: String(formData.get('homework') || ''),
+      notes: String(formData.get('notes') || ''),
+    });
+    setReportClass(null);
+    setToast({ type: 'success', message: 'Class report saved.' });
+    await refreshTeacherDashboard();
+  }
+
+  async function handleEvaluationSubmit(evaluation: EvaluationRow, formData: FormData) {
+    if (!evaluation.studentId) {
+      setToast({ type: 'error', message: 'This evaluation is missing a student record.' });
+      return;
+    }
+
+    await saveTeacherEvaluation({
+      studentId: evaluation.studentId,
+      classId: evaluation.classId,
+      recitationRating: Number(formData.get('recitationRating') || 4),
+      tajweedRating: Number(formData.get('tajweedRating') || 4),
+      understandingRating: Number(formData.get('understandingRating') || 4),
+      behaviorRating: Number(formData.get('behaviorRating') || 4),
+      progressNotes: String(formData.get('progressNotes') || ''),
+      recommendation: String(formData.get('recommendation') || ''),
+    });
+    setEvaluationStudent(null);
+    setToast({ type: 'success', message: 'Evaluation submitted.' });
+    await refreshTeacherDashboard();
+  }
+
   const scheduleColumns: Array<DataTableColumn<TeacherClass>> = [
     { header: 'Time', accessor: 'time' },
     { header: 'Student', accessor: 'student' },
@@ -353,6 +378,7 @@ export default function TeacherDashboard() {
                       label: 'Add Evaluation',
                       onClick: () => setEvaluationStudent({
                         id: student.id,
+                        studentId: student.id,
                         student: student.student,
                         program: student.program,
                         relatedClass: student.nextClass,
@@ -451,8 +477,8 @@ export default function TeacherDashboard() {
         />
       )}
 
-      {evaluationStudent && <EvaluationModal evaluation={evaluationStudent} onClose={() => setEvaluationStudent(null)} />}
-      {reportClass && <ClassReportModal classItem={reportClass} onClose={() => { setReportClass(null); setToast({ type: 'success', message: 'Class report saved.' }); }} />}
+      {evaluationStudent && <EvaluationModal evaluation={evaluationStudent} onClose={() => setEvaluationStudent(null)} onSubmit={(formData) => handleEvaluationSubmit(evaluationStudent, formData)} />}
+      {reportClass && <ClassReportModal classItem={reportClass} onClose={() => setReportClass(null)} onSubmit={(formData) => handleClassReportSubmit(reportClass, formData)} />}
       {detailClass && <TeacherClassDetailsModal classItem={detailClass} onClose={() => setDetailClass(null)} />}
       {detailEvaluation && <TeacherEvaluationDetailsModal evaluation={detailEvaluation} onClose={() => setDetailEvaluation(null)} />}
       {detailTrial && <TeacherTrialDetailsModal trial={detailTrial} onClose={() => setDetailTrial(null)} />}

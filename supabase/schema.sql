@@ -408,6 +408,10 @@ drop policy if exists "Teachers can view assigned classes" on public.classes;
 create policy "Teachers can view assigned classes" on public.classes
   for select using (teacher_id = auth.uid());
 
+drop policy if exists "Teachers can update assigned classes" on public.classes;
+create policy "Teachers can update assigned classes" on public.classes
+  for update using (teacher_id = auth.uid()) with check (teacher_id = auth.uid());
+
 drop policy if exists "Admin roles can view all classes" on public.classes;
 create policy "Admin roles can view all classes" on public.classes
   for select using (public.is_admin_role());
