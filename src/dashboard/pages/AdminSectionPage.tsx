@@ -978,6 +978,137 @@ function StudentActionDrawer({
   );
 }
 
+const availabilityDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+function TeacherProfileDrawer({
+  row,
+  onClose,
+  onViewStudents,
+  onViewSchedule,
+}: {
+  row: GenericRow;
+  onClose: () => void;
+  onViewStudents: () => void;
+  onViewSchedule: () => void;
+}) {
+  return (
+    <DashboardDrawer
+      title={String(row.name || 'Teacher')}
+      subtitle="Teacher profile, capacity, availability, and operational status."
+      size="md"
+      onClose={onClose}
+      footer={(
+        <>
+          <ActionButton variant="secondary" onClick={onViewStudents}>Assign Students</ActionButton>
+          <ActionButton variant="secondary" onClick={onViewSchedule}>View Schedule</ActionButton>
+          <ActionButton variant="copper" onClick={onClose}>Done</ActionButton>
+        </>
+      )}
+    >
+      <div className="admin-teacher-drawer">
+        <section className="admin-teacher-drawer__hero">
+          <div className="admin-teacher-drawer__avatar">{String(row.name || 'T').slice(0, 1).toUpperCase()}</div>
+          <div>
+            <span className="dashboard-eyebrow">TEACHER PROFILE</span>
+            <h3>{row.name}</h3>
+            <p>{row.email || 'Email not set'}</p>
+          </div>
+          <StatusBadge label={String(row.status || 'active')} tone={statusTone(String(row.status || 'active'))} />
+        </section>
+
+        <section className="admin-teacher-drawer__section">
+          <h3>Academic Profile</h3>
+          <div className="lead-summary-grid">
+            <FieldValue label="Specialization" value={row.specialization} />
+            <FieldValue label="Availability" value={row.availability} />
+            <FieldValue label="Phone" value={row.phone} />
+            <FieldValue label="Profile ID" value={row.profileId} />
+          </div>
+        </section>
+
+        <section className="admin-teacher-drawer__section">
+          <h3>Capacity</h3>
+          <div className="lead-summary-grid">
+            <FieldValue label="Assigned students" value={row.students} />
+            <FieldValue label="Upcoming classes" value={row.upcomingClasses} />
+            <FieldValue label="Assigned trials" value={row.trials} />
+            <FieldValue label="Status" value={<StatusBadge label={String(row.status || 'active')} tone={statusTone(String(row.status || 'active'))} />} />
+          </div>
+        </section>
+      </div>
+    </DashboardDrawer>
+  );
+}
+
+function TeacherAvailabilityDrawer({
+  row,
+  onClose,
+}: {
+  row: GenericRow;
+  onClose: () => void;
+}) {
+  const formId = 'teacher-availability-form';
+
+  return (
+    <DashboardDrawer
+      title="Update Availability"
+      subtitle="Set teacher weekly teaching availability."
+      size="md"
+      onClose={onClose}
+      footer={(
+        <>
+          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+          <ActionButton type="submit" form={formId} variant="copper">Save Availability</ActionButton>
+        </>
+      )}
+    >
+      <form id={formId} className="dashboard-form admin-availability-form" onSubmit={(event) => { event.preventDefault(); onClose(); }}>
+        <label>
+          <span>Teacher</span>
+          <input value={String(row.name || 'Teacher')} readOnly />
+        </label>
+        <label>
+          <span>Timezone</span>
+          <select name="timezone" defaultValue="Africa/Cairo">
+            <option value="Africa/Cairo">Africa/Cairo</option>
+            <option value="Asia/Riyadh">Asia/Riyadh</option>
+            <option value="Europe/London">Europe/London</option>
+            <option value="America/New_York">America/New_York</option>
+          </select>
+        </label>
+
+        <section className="admin-availability-form__week">
+          <div className="admin-availability-form__heading">
+            <h3>Weekly Availability</h3>
+            <p>{row.availability || 'No availability details saved yet.'}</p>
+          </div>
+
+          {availabilityDays.map((day, index) => (
+            <div className="admin-availability-day" key={day}>
+              <label className="admin-availability-day__toggle">
+                <input type="checkbox" name={`${day.toLowerCase()}Available`} defaultChecked={index < 5} />
+                <span>{day}</span>
+              </label>
+              <label>
+                <span>Start</span>
+                <input type="time" name={`${day.toLowerCase()}Start`} defaultValue="09:00" />
+              </label>
+              <label>
+                <span>End</span>
+                <input type="time" name={`${day.toLowerCase()}End`} defaultValue="17:00" />
+              </label>
+              <label className="admin-availability-day__notes">
+                <span>Notes</span>
+                <input name={`${day.toLowerCase()}Notes`} placeholder="Optional notes" />
+              </label>
+            </div>
+          ))}
+        </section>
+      </form>
+    </DashboardDrawer>
+  );
+}
+
 const pageCopy: Record<AdminSection, { eyebrow: string; title: string; subtitle: string; exportLabel: string }> = {
   leads: { eyebrow: 'LEADS CRM', title: 'Admissions Pipeline', subtitle: 'Admissions pipeline from form submission to enrollment.', exportLabel: 'Export Leads' },
   students: { eyebrow: 'STUDENT MANAGEMENT', title: 'Students', subtitle: 'Manage learner records, assignments, levels, attendance health, and class readiness.', exportLabel: 'Export Students' },
@@ -1238,7 +1369,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
     }
 
     if (section === 'teachers') {
-      return { label: 'View Profile', onClick: openDrawer, variant: 'primary' };
+      return { label: 'View Profile', onClick: () => openAction('view_details', row), variant: 'primary' };
     }
 
     if (section === 'free-trials') {
@@ -1283,11 +1414,11 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
     if (section === 'teachers') {
       return [
-        { label: 'Edit Academic Profile', onClick: openDrawer },
-        { label: 'Update Availability', onClick: openDrawer },
-        { label: 'View Assigned Students', onClick: openDrawer },
-        { label: 'View Trials', onClick: openDrawer },
-        { label: String(row.status) === 'active' ? 'Deactivate Teacher' : 'Activate Teacher', onClick: openDrawer, danger: row.status === 'active' },
+        { label: 'View Profile', onClick: () => openAction('view_details', row) },
+        { label: 'Update Availability', onClick: () => openAction('update_availability', row) },
+        { label: 'Assign Students', onClick: () => navigate('/dashboard/admin/students') },
+        { label: 'View Schedule', onClick: () => navigate('/dashboard/admin/classes') },
+        { label: 'Deactivate Teacher', onClick: openDrawer, disabled: String(row.status) !== 'active', danger: true },
       ];
     }
 
@@ -1453,7 +1584,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
   const visibleRisk = visibleRows.filter((row) => ['absent', 'overdue', 'cancelled'].includes(String(row.status).toLowerCase())).length;
 
   return (
-    <div className="dashboard-page dashboard-page--management">
+    <div className={`dashboard-page dashboard-page--management dashboard-page--${section}`}>
       <Toast toast={toast} onClose={() => setToast(null)} />
       <DashboardPageHeader
         eyebrow={page.eyebrow}
@@ -1553,6 +1684,28 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
           onClose={closeAction}
           onNavigateRecord={() => navigate(`/dashboard/admin/students/${selectedRow.id}`)}
           onSubmit={handleStudentActionSubmit}
+        />
+      )}
+
+      {selectedRow && activeAction === 'view_details' && section === 'teachers' && (
+        <TeacherProfileDrawer
+          row={selectedRow}
+          onClose={closeAction}
+          onViewStudents={() => {
+            closeAction();
+            navigate('/dashboard/admin/students');
+          }}
+          onViewSchedule={() => {
+            closeAction();
+            navigate('/dashboard/admin/classes');
+          }}
+        />
+      )}
+
+      {selectedRow && activeAction === 'update_availability' && section === 'teachers' && (
+        <TeacherAvailabilityDrawer
+          row={selectedRow}
+          onClose={closeAction}
         />
       )}
 

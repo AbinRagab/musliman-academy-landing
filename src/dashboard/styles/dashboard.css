@@ -8205,3 +8205,191 @@ body,
     padding: 4px;
   }
 }
+/* Admin Teachers action/drawer refinements */
+.dashboard-table th.actions-cell,
+.dashboard-table td.actions-cell,
+.dashboard-table td:has(.dashboard-action-menu),
+.dashboard-table th:last-child {
+  width: 170px;
+  min-width: 170px;
+  overflow: visible;
+}
+
+.dashboard-table .action-cell-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+  min-width: 150px;
+  max-width: none;
+  overflow: visible;
+}
+
+.action-cell-inner .dashboard-action-menu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dashboard-action,
+.dashboard-action-menu__primary.dashboard-action,
+.action-cell-inner .dashboard-action-menu__primary.dashboard-action {
+  white-space: nowrap;
+}
+
+.dashboard-action-menu__primary.dashboard-action,
+.action-cell-inner .dashboard-action-menu__primary.dashboard-action {
+  flex: 0 0 auto;
+  min-width: max-content;
+  max-width: none;
+  min-height: 32px;
+  height: 32px;
+  padding: 0 12px;
+  overflow: visible;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  text-overflow: clip;
+  border-radius: 10px;
+}
+
+.dashboard-action-menu__trigger,
+.action-cell-inner .dashboard-action-menu__trigger {
+  flex: 0 0 32px;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
+  border-radius: 10px;
+}
+
+.dashboard-action-menu-dropdown {
+  z-index: var(--z-dropdown);
+  min-width: 190px;
+  max-width: min(280px, calc(100vw - 24px));
+  background: #FFFFFF;
+  border: 1px solid rgba(11, 31, 58, 0.14);
+  box-shadow: 0 22px 54px rgba(11, 31, 58, 0.22);
+  opacity: 1;
+  backdrop-filter: none;
+}
+
+.dashboard-action-menu-item {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.admin-teacher-drawer,
+.admin-availability-form {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.admin-teacher-drawer__hero,
+.admin-teacher-drawer__section,
+.admin-availability-form__week {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  background: #FFFFFF;
+  border: 1px solid rgba(11, 31, 58, 0.1);
+  border-radius: 8px;
+}
+
+.admin-teacher-drawer__hero {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.admin-teacher-drawer__avatar {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  color: #FFFFFF;
+  font-weight: 800;
+  background: linear-gradient(135deg, #0B1F3A, #14375f);
+  border-radius: 12px;
+}
+
+.admin-teacher-drawer__hero h3,
+.admin-teacher-drawer__section h3,
+.admin-availability-form__heading h3 {
+  margin: 0;
+  color: #0B1F3A;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.admin-teacher-drawer__hero p,
+.admin-availability-form__heading p {
+  margin: 4px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.admin-availability-day {
+  display: grid;
+  grid-template-columns: minmax(118px, 1fr) 92px 92px minmax(120px, 1.4fr);
+  gap: 10px;
+  align-items: end;
+  padding: 10px;
+  background: #F8F7F3;
+  border: 1px solid rgba(11, 31, 58, 0.08);
+  border-radius: 8px;
+}
+
+.admin-availability-day__toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+}
+
+.admin-availability-day__toggle input {
+  width: 16px;
+  height: 16px;
+}
+
+.admin-availability-day__notes {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .dashboard-page--teachers .dashboard-mobile-record-card__actions .dashboard-action-menu__primary.dashboard-action {
+    font-size: 0;
+  }
+
+  .dashboard-page--teachers .dashboard-mobile-record-card__actions .dashboard-action-menu__primary.dashboard-action::after {
+    font-size: 13px;
+    content: 'Profile';
+  }
+
+  .admin-teacher-drawer__hero {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .admin-teacher-drawer__hero .status-badge {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .admin-availability-day {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-availability-day__toggle,
+  .admin-availability-day__notes {
+    grid-column: 1 / -1;
+  }
+}
