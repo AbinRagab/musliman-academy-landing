@@ -114,11 +114,78 @@ function ClassReportModal({ classItem, onClose }: { classItem: TeacherClass; onC
   );
 }
 
+function TeacherClassDetailsModal({ classItem, onClose }: { classItem: TeacherClass; onClose: () => void }) {
+  return (
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Class details for ${classItem.student}`}>
+      <div className="dashboard-modal__panel">
+        <div className="dashboard-card__header">
+          <div><h2>Class Details</h2><p>{classItem.student} - {classItem.program}</p></div>
+          <button type="button" className="dashboard-icon-button" aria-label="Close class details" onClick={onClose}><Icon name="x" /></button>
+        </div>
+        <div className="student-info-grid">
+          <span>Time <strong>{classItem.time}</strong></span>
+          <span>Status <strong><StatusBadge label={classItem.status} /></strong></span>
+          <span>Platform <strong>{classItem.platform}</strong></span>
+          <span>Attendance <strong>{classItem.attendanceStatus}</strong></span>
+          <span>Report <strong>{classItem.reportStatus}</strong></span>
+          <span>Meeting link <strong>{classItem.meetingLink || 'No meeting link recorded'}</strong></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TeacherEvaluationDetailsModal({ evaluation, onClose }: { evaluation: EvaluationRow; onClose: () => void }) {
+  return (
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Evaluation details for ${evaluation.student}`}>
+      <div className="dashboard-modal__panel">
+        <div className="dashboard-card__header">
+          <div><h2>Evaluation Details</h2><p>{evaluation.student} - {evaluation.program}</p></div>
+          <button type="button" className="dashboard-icon-button" aria-label="Close evaluation details" onClick={onClose}><Icon name="x" /></button>
+        </div>
+        <div className="student-info-grid">
+          <span>Related class <strong>{evaluation.relatedClass}</strong></span>
+          <span>Recitation <strong>{evaluation.recitation || 0}/5</strong></span>
+          <span>Tajweed <strong>{evaluation.tajweed || 0}/5</strong></span>
+          <span>Understanding <strong>{evaluation.understanding || 0}/5</strong></span>
+          <span>Status <strong><StatusBadge label={evaluation.status} /></strong></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TeacherTrialDetailsModal({ trial, onClose }: { trial: Record<string, unknown>; onClose: () => void }) {
+  const lead = trial.lead as { full_name?: string; whatsapp?: string | null; programName?: string } | undefined;
+
+  return (
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label="Trial details">
+      <div className="dashboard-modal__panel">
+        <div className="dashboard-card__header">
+          <div><h2>{lead?.full_name || String(trial.student || 'Trial student')}</h2><p>Assigned free trial details.</p></div>
+          <button type="button" className="dashboard-icon-button" aria-label="Close trial details" onClick={onClose}><Icon name="x" /></button>
+        </div>
+        <div className="student-info-grid">
+          <span>Program <strong>{lead?.programName || String(trial.program || 'Program not assigned')}</strong></span>
+          <span>WhatsApp <strong>{lead?.whatsapp || '-'}</strong></span>
+          <span>Date <strong>{String(trial.trial_date || 'Date pending')}</strong></span>
+          <span>Time <strong>{String(trial.trial_time || '')}</strong></span>
+          <span>Status <strong><StatusBadge label={String(trial.status || 'scheduled')} /></strong></span>
+          <span>Meeting link <strong>{String(trial.meeting_link || 'No meeting link recorded')}</strong></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function TeacherDashboard() {
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState<TeacherDashboardData | null>(null);
   const [evaluationStudent, setEvaluationStudent] = useState<EvaluationRow | null>(null);
   const [reportClass, setReportClass] = useState<TeacherClass | null>(null);
+  const [detailClass, setDetailClass] = useState<TeacherClass | null>(null);
+  const [detailEvaluation, setDetailEvaluation] = useState<EvaluationRow | null>(null);
+  const [detailTrial, setDetailTrial] = useState<Record<string, unknown> | null>(null);
   const [teacherTrials, setTeacherTrials] = useState<Array<Record<string, unknown>>>([]);
   const [trialFeedback, setTrialFeedback] = useState<Record<string, unknown> | null>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
@@ -198,7 +265,7 @@ export default function TeacherDashboard() {
             { label: 'End Class', onClick: () => handleCheckinAction(row, 'completed') },
             { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance'), hidden: row.attendanceStatus === 'Pending' },
             { label: 'Add Class Report', onClick: () => setReportClass(row), hidden: row.reportStatus === 'Needs Report' },
-            { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${row.student}: ${row.program} at ${row.time}.` }) },
+            { label: 'View Details', onClick: () => setDetailClass(row) },
           ]}
         />
       ),
@@ -242,7 +309,7 @@ export default function TeacherDashboard() {
                   { label: 'End Class', onClick: () => handleCheckinAction(nextClass, 'completed') },
                   { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
                   { label: 'Add Class Report', onClick: () => setReportClass(nextClass) },
-                  { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${nextClass.student}: ${nextClass.program} at ${nextClass.time}.` }) },
+                  { label: 'View Details', onClick: () => setDetailClass(nextClass) },
                 ]}
               />
             </div>
@@ -333,7 +400,7 @@ export default function TeacherDashboard() {
                 <DashboardActionMenu
                   primaryAction={{ label: 'Evaluate', onClick: () => setEvaluationStudent(evaluation) }}
                   actions={[
-                    { label: 'View Class Details', onClick: () => setToast({ type: 'info', message: evaluation.relatedClass }) },
+                    { label: 'View Class Details', onClick: () => setDetailEvaluation(evaluation) },
                     { label: 'Message via Academy', onClick: () => navigate('/dashboard/teacher/messages') },
                   ]}
                 />
@@ -349,7 +416,7 @@ export default function TeacherDashboard() {
                 <TeacherTrialCard
                   key={String(trial.id)}
                   trial={trial as never}
-                  onDetails={() => setToast({ type: 'info', message: 'Trial details show learner interest, meeting link, admin owner, and academy contact policy.' })}
+                  onDetails={() => setDetailTrial(trial)}
                   onFeedback={() => setTrialFeedback(trial)}
                   onNoShow={async () => {
                     await updateTrialStatus(String(trial.id), 'no_show', trial.lead_id ? String(trial.lead_id) : null);
@@ -386,6 +453,9 @@ export default function TeacherDashboard() {
 
       {evaluationStudent && <EvaluationModal evaluation={evaluationStudent} onClose={() => setEvaluationStudent(null)} />}
       {reportClass && <ClassReportModal classItem={reportClass} onClose={() => { setReportClass(null); setToast({ type: 'success', message: 'Class report saved.' }); }} />}
+      {detailClass && <TeacherClassDetailsModal classItem={detailClass} onClose={() => setDetailClass(null)} />}
+      {detailEvaluation && <TeacherEvaluationDetailsModal evaluation={detailEvaluation} onClose={() => setDetailEvaluation(null)} />}
+      {detailTrial && <TeacherTrialDetailsModal trial={detailTrial} onClose={() => setDetailTrial(null)} />}
     </div>
   );
 }

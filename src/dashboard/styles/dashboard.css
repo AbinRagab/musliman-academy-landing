@@ -1749,7 +1749,7 @@
 .dashboard-drawer {
   position: fixed;
   inset: 0;
-  z-index: var(--z-drawer);
+  z-index: calc(var(--z-drawer) + 20);
 }
 
 .dashboard-drawer__backdrop {
@@ -1763,27 +1763,43 @@
   position: absolute;
   inset: 0 0 0 auto;
   display: grid;
-  align-content: start;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 16px;
   width: min(100%, 560px);
   height: 100%;
   padding: 22px;
-  overflow-y: auto;
-  background: var(--dashboard-off-white);
-  border-left: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow: -28px 0 70px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  background: #fff;
+  border-left: 1px solid rgba(11, 31, 58, 0.12);
+  box-shadow: -32px 0 80px rgba(11, 31, 58, 0.24);
 }
 
 .dashboard-drawer__panel--wide {
   width: min(100%, 760px);
 }
 
+.dashboard-drawer__panel--sm {
+  width: min(100%, 420px);
+}
+
+.dashboard-drawer__panel--md {
+  width: min(100%, 560px);
+}
+
+.dashboard-drawer__panel--lg {
+  width: min(100%, 760px);
+}
+
+.dashboard-drawer__panel--xl {
+  width: min(100%, 960px);
+}
+
 .dashboard-drawer__header,
 .dashboard-drawer__section,
 .dashboard-drawer__footer {
   padding: 18px;
-  background: var(--dashboard-white);
-  border: 1px solid var(--dashboard-line);
+  background: #fff;
+  border: 1px solid rgba(11, 31, 58, 0.1);
   border-radius: 8px;
   box-shadow: 0 12px 28px rgba(11, 31, 58, 0.06);
 }
@@ -1808,6 +1824,15 @@
   line-height: 1.55;
 }
 
+.dashboard-drawer__body {
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding-right: 2px;
+}
+
 .dashboard-drawer__section {
   display: grid;
   gap: 12px;
@@ -1818,6 +1843,8 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 10px;
+  position: sticky;
+  bottom: 0;
 }
 
 .dashboard-skeleton {
@@ -2768,6 +2795,32 @@
 
 .admin-settings-panel .dashboard-form-actions {
   grid-column: 1 / -1;
+}
+
+.admin-action-missing-list,
+.admin-action-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-action-missing-list {
+  grid-template-columns: repeat(auto-fit, minmax(150px, max-content));
+}
+
+.admin-action-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid rgba(11, 31, 58, 0.1);
+  border-radius: 8px;
+}
+
+.admin-action-row strong,
+.admin-action-row span {
+  min-width: 0;
 }
 
 .dashboard-actions-menu summary {

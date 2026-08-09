@@ -555,10 +555,15 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
 
           <SectionCard title="Privacy & Security">
             <div className="student-security-list">
-              {['Change password', 'Two-factor authentication coming soon', 'Active sessions coming soon', 'Sign out from all devices coming soon'].map((item) => (
-                <button key={item} type="button">
-                  <Icon name={item.includes('password') ? 'lock' : item.includes('sessions') ? 'laptop' : 'shieldCheck'} size={17} />
-                  <span>{item}</span>
+              {[
+                { label: 'Change password', disabled: false },
+                { label: 'Two-factor authentication requires account setup', disabled: true },
+                { label: 'Active sessions require account setup', disabled: true },
+                { label: 'Sign out from all devices requires account setup', disabled: true },
+              ].map((item) => (
+                <button key={item.label} type="button" disabled={item.disabled}>
+                  <Icon name={item.label.includes('password') ? 'lock' : item.label.includes('sessions') ? 'laptop' : 'shieldCheck'} size={17} />
+                  <span>{item.label}</span>
                   <Icon name="chevronRight" size={16} />
                 </button>
               ))}

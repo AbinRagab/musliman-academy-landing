@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from './ActionButton';
 
@@ -16,26 +16,55 @@ export type DashboardDrawerSection = {
 };
 
 export default function DashboardDrawer({
+  open = true,
   eyebrow,
   title,
   subtitle,
-  sections,
+  children,
+  footer,
+  sections = [],
   actions = [],
   onClose,
   width = 'standard',
+  size,
 }: {
+  open?: boolean;
   eyebrow?: string;
   title: string;
   subtitle?: string;
-  sections: DashboardDrawerSection[];
+  children?: ReactNode;
+  footer?: ReactNode;
+  sections?: DashboardDrawerSection[];
   actions?: DashboardDrawerAction[];
   onClose: () => void;
   width?: 'standard' | 'wide';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }) {
+  useEffect(() => {
+    if (!open) {
+      return undefined;
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose, open]);
+
+  if (!open) {
+    return null;
+  }
+
+  const resolvedSize = size || (width === 'wide' ? 'lg' : 'md');
+
   return (
     <div className="dashboard-drawer" role="dialog" aria-modal="true" aria-label={title}>
       <button type="button" className="dashboard-drawer__backdrop" aria-label="Close drawer" onClick={onClose} />
-      <aside className={`dashboard-drawer__panel dashboard-drawer__panel--${width}`}>
+      <aside className={`dashboard-drawer__panel dashboard-drawer__panel--${width} dashboard-drawer__panel--${resolvedSize}`}>
         <header className="dashboard-drawer__header">
           <div>
             {eyebrow && <span className="dashboard-eyebrow">{eyebrow}</span>}
@@ -47,6 +76,8 @@ export default function DashboardDrawer({
           </button>
         </header>
 
+        {children && <div className="dashboard-drawer__body">{children}</div>}
+
         {sections.map((section) => (
           <section className="dashboard-drawer__section" key={section.title}>
             <h3>{section.title}</h3>
@@ -54,8 +85,9 @@ export default function DashboardDrawer({
           </section>
         ))}
 
-        {actions.length > 0 && (
+        {(footer || actions.length > 0) && (
           <footer className="dashboard-drawer__footer">
+            {footer}
             {actions.map((action) => (
               <ActionButton
                 key={action.label}

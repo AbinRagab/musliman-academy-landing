@@ -4,12 +4,50 @@ import type { AuthRole } from '../auth/AuthProvider';
 export type StudentManagementRow = {
   id: string;
   name: string;
+  programId?: string | null;
   program: string;
+  assignedTeacherId?: string | null;
   teacher: string;
   level: string;
   attendance: string;
   status: string;
   nextClass: string;
+  scheduleNotes?: string | null;
+  startDate?: string | null;
+};
+
+export type StudentActionTeacher = {
+  id: string;
+  full_name: string;
+  email?: string | null;
+  specialization?: string | null;
+  availability?: string | null;
+};
+
+export type StudentProgramOption = {
+  id: string;
+  name: string;
+};
+
+export type StudentAttendanceRecord = {
+  id: string;
+  class_id: string | null;
+  status: string;
+  notes: string | null;
+  marked_at: string | null;
+  classDate?: string | null;
+  classTime?: string | null;
+};
+
+export type StudentPaymentRecord = {
+  id: string;
+  currency: string | null;
+  amount: number | null;
+  payment_method: string | null;
+  payment_date: string | null;
+  next_due_date: string | null;
+  status: string | null;
+  notes: string | null;
 };
 
 export type StudentRecordTab =
@@ -307,7 +345,7 @@ export async function fetchStudentManagementRows() {
   const client = requireSupabase();
   const { data, error } = await client
     .from('students')
-    .select('id, student_name, program_id, assigned_teacher_id, level, status, created_at')
+    .select('id, student_name, program_id, assigned_teacher_id, level, status, schedule_notes, start_date, created_at')
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -327,13 +365,274 @@ export async function fetchStudentManagementRows() {
   return (data || []).map((student) => ({
     id: student.id,
     name: student.student_name,
+    programId: student.program_id,
     program: student.program_id ? programById.get(student.program_id) || 'Program not assigned' : 'Program not assigned',
+    assignedTeacherId: student.assigned_teacher_id,
     teacher: student.assigned_teacher_id ? teacherById.get(student.assigned_teacher_id) || 'Assigned teacher' : 'Unassigned',
     level: student.level || 'Placement pending',
     attendance: 'New',
     status: student.status || 'active',
-    nextClass: 'Schedule pending',
+    nextClass: student.start_date || 'Schedule pending',
+    scheduleNotes: student.schedule_notes,
+    startDate: student.start_date,
   })) satisfies StudentManagementRow[];
+}
+
+export async function fetchStudentActionLookups() {
+  const client = requireSupabase();
+  const [{ data: profiles, error: profilesError }, { data: teachers }, { data: programs, error: programsError }] = await Promise.all([
+    client.from('profiles').select('id, full_name, email').eq('role', 'teacher').eq('status', 'active').order('full_name'),
+    client.from('teachers').select('profile_id, specialization, availability').eq('status', 'active'),
+    client.from('programs').select('id, name').eq('status', 'active').order('name'),
+  ]);
+
+  if (profilesError) {
+    throw profilesError;
+  }
+
+  if (programsError) {
+    throw programsError;
+  }
+
+  const teacherByProfileId = new Map((teachers || []).map((teacher) => [teacher.profile_id, teacher]));
+
+  return {
+    teachers: (profiles || []).map((profile) => {
+      const teacher = teacherByProfileId.get(profile.id);
+      return {
+        id: profile.id,
+        full_name: profile.full_name,
+        email: profile.email,
+        specialization: teacher?.specialization || null,
+        availability: teacher?.availability || null,
+      } satisfies StudentActionTeacher;
+    }),
+    programs: (programs || []) as StudentProgramOption[],
+  };
+}
+
+export async function assignStudentTeacher(studentId: string, teacherId: string, note?: string) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from('students')
+    .update({ assigned_teacher_id: teacherId, schedule_notes: note ? `Teacher assignment note: ${note}` : undefined })
+    .eq('id', studentId)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  await client.from('classes').update({ teacher_id: teacherId }).eq('student_id', studentId).is('teacher_id', null);
+  const { error: notificationError } = await client.from('in_app_notifications').insert({
+    recipient_id: teacherId,
+    title: 'New student assigned',
+    message: 'A student has been assigned to you. Please review the student record and upcoming schedule.',
+    type: 'class',
+    related_entity_type: 'student',
+    related_entity_id: studentId,
+  });
+
+  if (notificationError && import.meta.env.DEV) {
+    console.info('Teacher assignment notification was not created:', notificationError.message);
+  }
+
+  return data;
+}
+
+export async function updateStudentSetup(studentId: string, payload: {
+  programId?: string | null;
+  teacherId?: string | null;
+  level?: string;
+  classDays?: string;
+  classTime?: string;
+  timezone?: string;
+  paymentStatus?: string;
+  startDate?: string;
+  notes?: string;
+}) {
+  const client = requireSupabase();
+  const scheduleNotes = [
+    payload.notes,
+    payload.classDays ? `Class days: ${payload.classDays}` : '',
+    payload.classTime ? `Class time: ${payload.classTime}` : '',
+    payload.timezone ? `Timezone: ${payload.timezone}` : '',
+    payload.paymentStatus ? `Package/payment status: ${payload.paymentStatus}` : '',
+  ].filter(Boolean).join('\n');
+  const updatePayload = {
+    program_id: payload.programId || null,
+    assigned_teacher_id: payload.teacherId || null,
+    level: payload.level || null,
+    start_date: payload.startDate || null,
+    schedule_notes: scheduleNotes || null,
+    status: 'active',
+  };
+  const { data, error } = await client.from('students').update(updatePayload).eq('id', studentId).select('*').single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (payload.startDate && payload.classTime) {
+    await client.from('classes').insert({
+      student_id: studentId,
+      teacher_id: payload.teacherId || null,
+      program_id: payload.programId || null,
+      class_date: payload.startDate,
+      start_time: payload.classTime,
+      meeting_link: null,
+      lesson_title: 'Initial scheduled class',
+      status: 'scheduled',
+    });
+  }
+
+  return data;
+}
+
+export async function updateStudentSchedule(studentId: string, payload: {
+  teacherId?: string | null;
+  programId?: string | null;
+  classDays?: string;
+  classTime?: string;
+  timezone?: string;
+  durationMinutes?: number;
+  platform?: string;
+  meetingLink?: string;
+  startDate?: string;
+  notes?: string;
+}) {
+  const client = requireSupabase();
+  const scheduleNotes = [
+    payload.notes,
+    payload.classDays ? `Class days: ${payload.classDays}` : '',
+    payload.classTime ? `Class time: ${payload.classTime}` : '',
+    payload.timezone ? `Timezone: ${payload.timezone}` : '',
+    payload.platform ? `Platform: ${payload.platform}` : '',
+    payload.meetingLink ? `Meeting link: ${payload.meetingLink}` : '',
+  ].filter(Boolean).join('\n');
+
+  const { data, error } = await client.from('students').update({
+    assigned_teacher_id: payload.teacherId || null,
+    schedule_notes: scheduleNotes || null,
+    start_date: payload.startDate || null,
+  }).eq('id', studentId).select('*').single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!payload.startDate || !payload.classTime) {
+    return data;
+  }
+
+  const { error: classError } = await client.from('classes').insert({
+    student_id: studentId,
+    teacher_id: payload.teacherId || null,
+    program_id: payload.programId || null,
+    class_date: payload.startDate,
+    start_time: payload.classTime,
+    duration_minutes: payload.durationMinutes || 30,
+    meeting_link: payload.meetingLink || null,
+    lesson_title: 'Scheduled class',
+    status: 'scheduled',
+  });
+
+  if (classError) {
+    console.error('Schedule table insert failed:', classError);
+    throw new Error('Schedule table is not configured yet.');
+  }
+
+  return data;
+}
+
+export async function updateStudentLevel(studentId: string, level: string, note?: string) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from('students')
+    .update({ level, schedule_notes: note ? `Level update note: ${note}` : undefined })
+    .eq('id', studentId)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  const { error: historyError } = await client.from('student_level_history').insert({
+    student_id: studentId,
+    new_level: level,
+    reason: note || null,
+  });
+
+  if (historyError && import.meta.env.DEV) {
+    console.info('student_level_history is not configured:', historyError.message);
+  }
+
+  return data;
+}
+
+export async function deactivateStudent(studentId: string, reason: string) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from('students')
+    .update({ status: 'inactive', schedule_notes: `Deactivation reason: ${reason}` })
+    .eq('id', studentId)
+    .select('id, profile_id')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (data.profile_id) {
+    await client.from('profiles').update({ status: 'inactive' }).eq('id', data.profile_id);
+  }
+
+  return data;
+}
+
+export async function fetchStudentAttendanceRecords(studentId: string) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from('attendance')
+    .select('id, class_id, status, notes, marked_at')
+    .eq('student_id', studentId)
+    .order('marked_at', { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  const classIds = Array.from(new Set((data || []).map((record) => record.class_id).filter(Boolean))) as string[];
+  const { data: classes } = classIds.length
+    ? await client.from('classes').select('id, class_date, start_time').in('id', classIds)
+    : { data: [] };
+  const classById = new Map((classes || []).map((classRow) => [classRow.id, classRow]));
+
+  return (data || []).map((record) => {
+    const classRow = record.class_id ? classById.get(record.class_id) : null;
+    return {
+      ...record,
+      classDate: classRow?.class_date || null,
+      classTime: classRow?.start_time || null,
+    } satisfies StudentAttendanceRecord;
+  });
+}
+
+export async function fetchStudentPaymentRecords(studentId: string) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from('payments')
+    .select('id, currency, amount, payment_method, payment_date, next_due_date, status, notes')
+    .eq('student_id', studentId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data || []) as StudentPaymentRecord[];
 }
 
 export async function fetchStudentRecord(studentId?: string | null) {

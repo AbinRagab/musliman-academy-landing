@@ -87,7 +87,7 @@ export default function AdminCompliancePage() {
           actions={[
             { label: 'Send Reminder Now', onClick: () => notify(`Reminder queued for ${row.teacher}.`) },
             { label: 'Contact Teacher', onClick: () => notify(`Teacher contact workflow opened for ${row.teacher}.`) },
-            { label: 'Create Warning', onClick: () => notify(`Warning form prepared for ${row.teacher}.`) },
+            { label: 'Create Warning requires warning form setup', onClick: () => undefined, disabled: true },
             { label: 'Mark Excused', onClick: () => notify(`${row.teacher} marked excused for review.`) },
           ]}
         />
@@ -286,8 +286,8 @@ export default function AdminCompliancePage() {
             { label: 'Cancel Warning', onClick: () => handleWarning(selectedWarning, 'cancelled') },
             { label: 'Mark Excused', onClick: () => handleWarning(selectedWarning, 'excused') },
             { label: 'Resolve', onClick: () => handleWarning(selectedWarning, 'resolved') },
-            { label: 'Suspend Account', variant: 'danger', onClick: () => notify('Suspension remains admin-controlled and follows the configured escalation rule.') },
-            { label: 'Reactivate Account', onClick: () => notify('Reactivation action prepared for admin account review.') },
+            { label: 'Suspend Account requires escalation rule', variant: 'danger', disabled: true, onClick: () => undefined },
+            { label: 'Reactivate Account requires account review', disabled: true, onClick: () => undefined },
           ]}
         />
       )}

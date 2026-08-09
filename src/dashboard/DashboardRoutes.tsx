@@ -28,12 +28,12 @@ import TeacherSectionPage from './pages/TeacherSectionPage';
 import type { DashboardRole } from './data/mockData';
 import './styles/dashboard.css';
 
-function ComingSoon({ role }: { role: DashboardRole }) {
+function SectionUnavailable({ role }: { role: DashboardRole }) {
   return (
     <EmptyState
-      title="Dashboard section coming soon"
-      description={`This ${role} dashboard section is ready for the next implementation pass.`}
-      action={<ActionButton variant="secondary">Section Pending</ActionButton>}
+      title="Dashboard section unavailable"
+      description={`This ${role} dashboard section is not enabled for the current configuration.`}
+      action={<ActionButton variant="secondary" disabled>Requires Database Setup</ActionButton>}
     />
   );
 }
@@ -93,7 +93,7 @@ export default function DashboardRoutes() {
           <Route path="payments" element={<AdminSectionPage section="payments" />} />
           <Route path="reports" element={<AdminSectionPage section="reports" />} />
           <Route path="settings" element={<AdminSectionPage section="settings" />} />
-          <Route path=":section" element={<ComingSoon role="admin" />} />
+          <Route path=":section" element={<SectionUnavailable role="admin" />} />
         </Route>
         <Route path="student" element={<ProtectedDashboardShell allowedRoles={studentRoles} layoutRole="student" />}>
           <Route index element={<StudentDashboard />} />
@@ -107,7 +107,7 @@ export default function DashboardRoutes() {
           <Route path="payments" element={<StudentPayments />} />
           <Route path="profile" element={<StudentProfile />} />
           <Route path="settings" element={<StudentSettings />} />
-          <Route path=":section" element={<ComingSoon role="student" />} />
+          <Route path=":section" element={<SectionUnavailable role="student" />} />
         </Route>
         <Route path="teacher" element={<ProtectedDashboardShell allowedRoles={teacherRoles} layoutRole="teacher" />}>
           <Route index element={<TeacherDashboard />} />
@@ -122,7 +122,7 @@ export default function DashboardRoutes() {
           <Route path="messages" element={<TeacherSectionPage section="messages" />} />
           <Route path="profile" element={<TeacherSectionPage section="profile" />} />
           <Route path="settings" element={<TeacherSectionPage section="settings" />} />
-          <Route path=":section" element={<ComingSoon role="teacher" />} />
+          <Route path=":section" element={<SectionUnavailable role="teacher" />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

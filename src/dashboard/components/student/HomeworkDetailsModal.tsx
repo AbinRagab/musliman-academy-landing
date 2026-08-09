@@ -5,9 +5,11 @@ import DashboardActionMenu from '../DashboardActionMenu';
 import StatusBadge from '../StatusBadge';
 import {
   openExternalLink,
+  resolveCurrentStudentProfile,
   type StudentClassSession,
   type StudentHomeworkItem,
 } from '../../services/studentService';
+import { uploadHomeworkSubmission } from '../../services/studentHomeworkService';
 import { EmptyState, StudentModal } from './StudentPortalComponents';
 
 export default function HomeworkDetailsModal({
@@ -20,6 +22,9 @@ export default function HomeworkDetailsModal({
   onClose: () => void;
 }) {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [uploadSuccess, setUploadSuccess] = useState('');
 
   return (
     <>
@@ -62,15 +67,59 @@ export default function HomeworkDetailsModal({
       {isUploadOpen && homework && (
         <StudentModal
           title="Upload Homework"
-          description="Homework upload is prepared. Storage submission will be connected when the backend workflow is enabled."
+          description="Upload a homework file privately to your teacher."
           onClose={() => setIsUploadOpen(false)}
-          footer={<ActionButton onClick={() => setIsUploadOpen(false)}>Close</ActionButton>}
+          footer={(
+            <>
+              <ActionButton type="submit" form="homework-details-upload-form" disabled={uploading}>{uploading ? 'Uploading' : 'Submit Homework'}</ActionButton>
+              <ActionButton variant="secondary" onClick={() => setIsUploadOpen(false)}>Close</ActionButton>
+            </>
+          )}
         >
-          <div className="student-info-grid">
-            <span>Homework <strong>{homework.title}</strong></span>
-            <span>Related class <strong>{classSession.title}</strong></span>
-          </div>
-          <p className="student-modal-copy">Use the Homework Center upload flow for now, or contact the academy team if you need help submitting this assignment.</p>
+          <form
+            id="homework-details-upload-form"
+            className="dashboard-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setUploadError('');
+              setUploadSuccess('');
+              const formData = new FormData(event.currentTarget);
+              const file = formData.get('file');
+
+              if (!(file instanceof File) || !file.name) {
+                setUploadError('Choose a homework file before submitting.');
+                return;
+              }
+
+              setUploading(true);
+              resolveCurrentStudentProfile()
+                .then((profile) => uploadHomeworkSubmission({
+                  studentId: profile.id,
+                  classId: homework.classId || classSession.id,
+                  file,
+                  note: String(formData.get('note') || ''),
+                }))
+                .then(() => {
+                  setUploadSuccess('Homework submitted successfully.');
+                })
+                .catch((error: unknown) => {
+                  setUploadError(error instanceof Error ? error.message : 'Homework upload failed. Please try again.');
+                })
+                .finally(() => setUploading(false));
+            }}
+          >
+            <div className="student-info-grid">
+              <span>Homework <strong>{homework.title}</strong></span>
+              <span>Related class <strong>{classSession.title}</strong></span>
+            </div>
+            <label>
+              <span>Upload file</span>
+              <input name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.mp3,.mp4,.doc,.docx,application/pdf,image/jpeg,image/png,audio/mpeg,video/mp4,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
+            </label>
+            <label><span>Note to teacher</span><textarea name="note" rows={4} /></label>
+            {uploadError && <p className="student-form-error">{uploadError}</p>}
+            {uploadSuccess && <p className="student-form-success">{uploadSuccess}</p>}
+          </form>
         </StudentModal>
       )}
     </>

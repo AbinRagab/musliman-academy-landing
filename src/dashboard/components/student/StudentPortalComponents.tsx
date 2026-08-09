@@ -88,15 +88,15 @@ export function EmptyState({ title, description, action }: { title: string; desc
   );
 }
 
-export function ComingSoonModal({ feature, onClose }: { feature: string; onClose: () => void }) {
+export function FeatureUnavailableModal({ feature, onClose }: { feature: string; onClose: () => void }) {
   return (
     <StudentModal
-      title={`${feature} Coming Soon`}
-      description="This area is prepared in the portal, and the academy team will enable it when the content or backend workflow is ready."
+      title={`${feature} Unavailable`}
+      description="This feature is not enabled for the current portal configuration."
       onClose={onClose}
       footer={<ActionButton onClick={onClose}>Close</ActionButton>}
     >
-      <p className="student-modal-copy">For now, contact the academy team if you need this item before it becomes available in the portal.</p>
+      <p className="student-modal-copy">Contact the academy team if this feature should be enabled for your account.</p>
     </StudentModal>
   );
 }

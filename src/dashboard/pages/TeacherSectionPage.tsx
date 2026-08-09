@@ -229,6 +229,29 @@ function ClassReportModal({ classItem, onClose }: { classItem: ClassRow; onClose
   );
 }
 
+function ClassDetailsModal({ classItem, onClose }: { classItem: ClassRow; onClose: () => void }) {
+  return (
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Class details for ${classItem.student}`}>
+      <div className="dashboard-modal__panel">
+        <div className="dashboard-card__header">
+          <div><h2>Class Details</h2><p>{classItem.student} - {classItem.dateTime}</p></div>
+          <button type="button" className="dashboard-icon-button" aria-label="Close class details" onClick={onClose}><Icon name="x" /></button>
+        </div>
+        <div className="student-info-grid">
+          <span>Program<strong>{classItem.program}</strong></span>
+          <span>Status<strong><StatusBadge label={classItem.status} /></strong></span>
+          <span>Platform<strong>{classItem.platform}</strong></span>
+          <span>Attendance<strong>{classItem.attendanceStatus}</strong></span>
+          <span>Lesson covered<strong>{classItem.lessonCovered || 'Not recorded yet'}</strong></span>
+          <span>Homework<strong>{classItem.homeworkAssigned || 'No homework assigned'}</strong></span>
+          <span>Report status<strong>{classItem.reportStatus}</strong></span>
+          <span>Notes<strong>{classItem.notes || 'No notes recorded'}</strong></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ComposeModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label="New message">
@@ -257,6 +280,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
   const [activeClassTab, setActiveClassTab] = useState('Today');
   const [evaluationModal, setEvaluationModal] = useState<EvaluationRow | null>(null);
   const [reportModal, setReportModal] = useState<ClassRow | null>(null);
+  const [classDetails, setClassDetails] = useState<ClassRow | null>(null);
   const [composeOpen, setComposeOpen] = useState(false);
   const [teacherTrials, setTeacherTrials] = useState<Array<Record<string, unknown>>>([]);
   const [trialFeedback, setTrialFeedback] = useState<Record<string, unknown> | null>(null);
@@ -363,6 +387,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         </SectionCard>
         {evaluationModal && <TeacherEvaluationModal evaluation={evaluationModal} onClose={() => { setEvaluationModal(null); setToast({ type: 'success', message: 'Evaluation saved.' }); }} />}
         {reportModal && <ClassReportModal classItem={reportModal} onClose={() => { setReportModal(null); setToast({ type: 'success', message: 'Class note saved.' }); }} />}
+        {classDetails && <ClassDetailsModal classItem={classDetails} onClose={() => setClassDetails(null)} />}
         {composeOpen && <ComposeModal onClose={() => { setComposeOpen(false); setToast({ type: 'success', message: 'Message sent to academy workflow.' }); }} />}
       </div>
     );
@@ -474,7 +499,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
               { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.status !== 'Live' },
               { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
               { label: 'Add Class Report', onClick: () => setReportModal(row) },
-              { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${row.student}: ${row.notes}` }) },
+              { label: 'View Details', onClick: () => setClassDetails(row) },
             ]}
           />
         ),
@@ -501,7 +526,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                     primaryAction={{ label: 'Join Class', onClick: () => joinClass(row, setToast) }}
                     actions={[
                       { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast) },
-                      { label: 'View Details', onClick: () => setToast({ type: 'info', message: `${row.student}: ${row.notes}` }) },
+                      { label: 'View Details', onClick: () => setClassDetails(row) },
                       { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
                       { label: 'Add Class Report', onClick: () => setReportModal(row) },
                     ]}
@@ -512,6 +537,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           </div>
         </SectionCard>
         {reportModal && <ClassReportModal classItem={reportModal} onClose={() => { setReportModal(null); setToast({ type: 'success', message: 'Class report saved.' }); }} />}
+        {classDetails && <ClassDetailsModal classItem={classDetails} onClose={() => setClassDetails(null)} />}
       </div>
     );
   }
@@ -537,16 +563,16 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           <DashboardActionMenu
             primaryAction={{
               label: ['Live', 'Upcoming'].includes(row.status) ? 'Join Class' : row.reportStatus === 'Needs Report' ? 'Add Report' : 'View Details',
-              onClick: ['Live', 'Upcoming'].includes(row.status) ? () => joinClass(row, setToast) : row.reportStatus === 'Needs Report' ? () => setReportModal(row) : () => setToast({ type: 'info', message: `${row.student}: ${row.notes}` }),
+              onClick: ['Live', 'Upcoming'].includes(row.status) ? () => joinClass(row, setToast) : row.reportStatus === 'Needs Report' ? () => setReportModal(row) : () => setClassDetails(row),
             }}
             actions={[
               { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast), hidden: !['Live', 'Upcoming', 'Scheduled'].includes(row.status) },
               { label: 'Start Class', onClick: () => updateClassCheckin(row, 'live', setToast), hidden: row.status !== 'Live' },
               { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.status !== 'Live' },
-              { label: row.reportStatus === 'Submitted' ? 'View Report' : 'Add Report', onClick: row.reportStatus === 'Submitted' ? () => setToast({ type: 'info', message: row.notes }) : () => setReportModal(row), hidden: row.reportStatus === 'Needs Report' },
+              { label: row.reportStatus === 'Submitted' ? 'View Report' : 'Add Report', onClick: row.reportStatus === 'Submitted' ? () => setClassDetails(row) : () => setReportModal(row), hidden: row.reportStatus === 'Needs Report' },
               { label: 'Set Homework', onClick: () => setReportModal(row) },
               { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
-              { label: 'View Class Details', onClick: () => setToast({ type: 'info', message: `${row.student}: ${row.notes}` }) },
+              { label: 'View Class Details', onClick: () => setClassDetails(row) },
             ]}
           />
         ),
@@ -564,6 +590,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           <DataTable columns={columns} rows={rowsByTab} getRowKey={(row) => row.id} />
         </SectionCard>
         {reportModal && <ClassReportModal classItem={reportModal} onClose={() => { setReportModal(null); setToast({ type: 'success', message: 'Class record saved.' }); }} />}
+        {classDetails && <ClassDetailsModal classItem={classDetails} onClose={() => setClassDetails(null)} />}
       </div>
     );
   }

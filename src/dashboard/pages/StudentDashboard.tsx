@@ -6,7 +6,6 @@ import DashboardSkeleton from '../components/DashboardSkeleton';
 import ProgressBar from '../components/ProgressBar';
 import SectionCard from '../components/SectionCard';
 import {
-  ComingSoonModal,
   ComposeMessageModal,
   NextClassCard,
   StudentPageHeader,
@@ -39,7 +38,6 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData | null>(null);
   const [compose, setCompose] = useState<{ to: string; subject: string } | null>(null);
-  const [comingSoon, setComingSoon] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStudentDashboardData().then(setData);
@@ -71,7 +69,6 @@ export default function StudentDashboard() {
           }}
         />
       )}
-      {comingSoon && <ComingSoonModal feature={comingSoon} onClose={() => setComingSoon(null)} />}
 
       <StudentPageHeader
         title="Student Dashboard"
@@ -157,17 +154,17 @@ export default function StudentDashboard() {
             <Icon name="document" />
             <span>Upload Homework</span>
           </button>
-          <button type="button" onClick={() => setComingSoon('Download Materials')}>
+          <button type="button" disabled title="This feature requires database setup.">
             <Icon name="download" />
-            <span>Download Materials</span>
+            <span>Materials require setup</span>
           </button>
-          <button type="button" onClick={() => setComingSoon('Dua & Azkar')}>
+          <button type="button" disabled title="This feature requires database setup.">
             <Icon name="sparkles" />
-            <span>Dua & Azkar</span>
+            <span>Dua & Azkar requires setup</span>
           </button>
-          <button type="button" onClick={() => setComingSoon('Quran Library')}>
+          <button type="button" disabled title="This feature requires database setup.">
             <Icon name="quran" />
-            <span>Quran Library</span>
+            <span>Library requires setup</span>
           </button>
         </div>
       </SectionCard>

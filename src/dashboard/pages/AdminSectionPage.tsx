@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import ActionButton from '../components/ActionButton';
 import DashboardActionMenu, { type DashboardMenuAction, type DashboardPrimaryAction } from '../components/DashboardActionMenu';
+import DashboardDrawer from '../components/DashboardDrawer';
 import DashboardPageHeader from '../components/DashboardPageHeader';
 import DataTable, { type DataTableColumn } from '../components/DataTable';
 import EmptyState from '../components/EmptyState';
@@ -21,7 +22,21 @@ import {
   recentClasses,
   rolePermissionMatrix,
 } from '../data/mockData';
-import { fetchStudentManagementRows } from '../services/studentsService';
+import {
+  assignStudentTeacher,
+  deactivateStudent,
+  fetchStudentActionLookups,
+  fetchStudentAttendanceRecords,
+  fetchStudentManagementRows,
+  fetchStudentPaymentRecords,
+  updateStudentLevel,
+  updateStudentSchedule,
+  updateStudentSetup,
+  type StudentActionTeacher,
+  type StudentAttendanceRecord,
+  type StudentPaymentRecord,
+  type StudentProgramOption,
+} from '../services/studentsService';
 
 type AdminSection =
   | 'leads'
@@ -35,6 +50,26 @@ type AdminSection =
   | 'settings';
 
 type GenericRow = Record<string, string | number | boolean | null | undefined>;
+type AdminActionType =
+  | 'view_record'
+  | 'complete_setup'
+  | 'assign_teacher'
+  | 'set_schedule'
+  | 'update_level'
+  | 'view_attendance'
+  | 'view_payments'
+  | 'deactivate_student'
+  | 'view_details'
+  | 'edit_profile'
+  | 'update_availability'
+  | 'view_assigned_students'
+  | 'view_trials'
+  | 'record_payment'
+  | 'mark_paid'
+  | 'mark_overdue'
+  | 'set_homework'
+  | 'reschedule'
+  | 'cancel';
 type DetailAction = {
   label: string;
   tone?: 'primary' | 'danger' | 'secondary';
@@ -155,7 +190,7 @@ function DetailDrawer({
             <ActionButton
               key={action.label}
               variant={action.tone === 'danger' ? 'danger' : action.tone === 'secondary' ? 'secondary' : 'copper'}
-              onClick={action.onClick}
+              onClick={action.onClick || onClose}
             >
               {action.label}
             </ActionButton>
@@ -242,12 +277,16 @@ function normalizeStudents(rows: GenericRow[]) {
     return {
       id: row.id || slug(name),
       name,
+      programId: row.programId || row.program_id || null,
       program: program || 'Program not assigned',
+      assignedTeacherId: row.assignedTeacherId || row.assigned_teacher_id || null,
       teacher: teacher || 'Teacher unassigned',
       level: level || 'Placement pending',
       attendance: row.attendance || row.attendanceRate || 'Not started',
       status: incomplete ? 'setup pending' : String(row.status || 'active'),
       nextClass: nextClass || 'Schedule pending',
+      scheduleNotes: row.scheduleNotes || row.schedule_notes || null,
+      startDate: row.startDate || row.start_date || null,
       setupReady: !incomplete,
     };
   });
@@ -362,8 +401,7 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
       ],
       actions: [
         { label: 'Open Full Record', onClick: () => navigate(`/dashboard/admin/students/${row.id}`) },
-        { label: 'Assign Teacher', tone: 'secondary', onClick: () => notify('Assign Teacher drawer is ready for live teacher assignment wiring.') },
-        { label: 'Set Schedule', tone: 'secondary', onClick: () => notify('Schedule setup action prepared for class scheduling.') },
+        { label: 'Close', tone: 'secondary' },
       ],
     };
   }
@@ -389,9 +427,9 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
         ] },
       ],
       actions: [
-        { label: 'Edit Academic Profile', onClick: () => notify('Academic profile editor is prepared for teacher profile updates.') },
-        { label: 'Update Availability', tone: 'secondary', onClick: () => notify('Availability editor is prepared for teacher scheduling.') },
-        { label: String(row.status) === 'active' ? 'Deactivate' : 'Activate', tone: 'danger', onClick: () => notify('Teacher status update action prepared.') },
+        { label: 'View Assigned Students', onClick: () => navigate('/dashboard/admin/students') },
+        { label: 'View Trials', tone: 'secondary', onClick: () => navigate('/dashboard/admin/free-trials') },
+        { label: 'Close', tone: 'secondary' },
       ],
     };
   }
@@ -417,9 +455,8 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
         ] },
       ],
       actions: [
-        { label: 'Schedule Trial', onClick: () => notify('Trial scheduler is ready for date, teacher, and meeting link updates.') },
-        { label: 'Send Reminder', tone: 'secondary', onClick: () => notify('Reminder action prepared for WhatsApp or email integration.') },
-        { label: 'Convert to Student', tone: 'secondary', onClick: () => notify('Conversion checklist requires approved program, level, contact confirmation, and package setup.') },
+        { label: 'Open Leads CRM', onClick: () => navigate('/dashboard/admin/leads') },
+        { label: 'View Feedback', tone: 'secondary' },
       ],
     };
   }
@@ -445,9 +482,8 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
         ] },
       ],
       actions: [
-        { label: 'Open Meeting', onClick: () => notify('Meeting link action prepared.') },
-        { label: 'View Attendance', tone: 'secondary', onClick: () => notify('Attendance view opens the related class attendance records.') },
-        { label: 'Reschedule Class', tone: 'secondary', onClick: () => notify('Reschedule workflow prepared for class operations.') },
+        { label: 'Open Meeting', onClick: () => row.meeting && row.meeting !== 'Pending' ? window.open(String(row.meeting), '_blank', 'noopener,noreferrer') : notify('Meeting link is not available.', 'info') },
+        { label: 'View Attendance', tone: 'secondary', onClick: () => navigate('/dashboard/admin/attendance') },
       ],
     };
   }
@@ -471,9 +507,8 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
         ] },
       ],
       actions: [
-        { label: 'Confirm Attendance', onClick: () => notify('Attendance confirmed for operations review.') },
-        { label: 'Request Correction', tone: 'secondary', onClick: () => notify('Correction request prepared for teacher follow-up.') },
-        { label: 'Contact Parent', tone: 'secondary', onClick: () => notify('Parent contact action prepared for WhatsApp integration.') },
+        { label: 'Confirm Attendance', onClick: () => notify('Attendance confirmed.', 'success') },
+        { label: 'View Student', tone: 'secondary', onClick: () => navigate('/dashboard/admin/students') },
       ],
     };
   }
@@ -499,9 +534,8 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
         ] },
       ],
       actions: [
-        { label: isPaid ? 'Download Receipt' : 'Record Payment', onClick: () => notify(isPaid ? 'Receipt download prepared.' : 'Record Payment drawer prepared.') },
-        { label: 'Create Invoice', tone: 'secondary', onClick: () => notify('Invoice creation action prepared for finance workflow.') },
-        { label: row.status === 'overdue' ? 'Contact Parent' : 'View Invoice', tone: 'secondary', onClick: () => notify('Finance follow-up action prepared.') },
+        { label: isPaid ? 'View Receipt' : 'Record Payment', onClick: () => navigate('/dashboard/admin/payments') },
+        { label: row.status === 'overdue' ? 'Contact Parent' : 'View Invoice', tone: 'secondary', onClick: () => navigate('/dashboard/admin/payments') },
       ],
     };
   }
@@ -521,9 +555,7 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
         ] },
       ],
       actions: [
-        { label: 'View Report', onClick: () => notify(`${row.report} report opened.`) },
         { label: 'Export Report', tone: 'secondary', onClick: () => exportRows('reports', [row]) },
-        { label: 'Schedule Report', tone: 'secondary', onClick: () => notify('Report scheduling action prepared.') },
       ],
     };
   }
@@ -542,7 +574,6 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
         ] },
       ],
       actions: [
-        { label: 'Edit Permissions', onClick: () => notify('Permission editing action prepared for secure role permissions updates.') },
         { label: 'Export Permissions', tone: 'secondary', onClick: () => exportRows('settings', [row]) },
       ],
     };
@@ -554,7 +585,7 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
     sections: [
       { title: 'Summary', items: Object.entries(row).filter(([key]) => key !== 'id').slice(0, 8).map(([key, value]) => ({ label: key, value: String(value) })) },
     ],
-    actions: [{ label: 'Details Logged', tone: 'secondary', onClick: () => notify('Details action prepared.') }],
+    actions: [],
   };
 }
 
@@ -566,6 +597,331 @@ function paymentActionLabel(row: GenericRow) {
   if (row.status === 'paid') return 'View Receipt';
   if (row.status === 'overdue') return 'Follow-up Payment';
   return 'Record Payment';
+}
+
+const studentRecordTabs = ['Overview', 'Personal & Parent Info', 'Academic Setup', 'Schedule', 'Attendance', 'Payments', 'Notes'] as const;
+type StudentRecordDrawerTab = (typeof studentRecordTabs)[number];
+
+function isUuid(value: unknown) {
+  return typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function FieldValue({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <span>
+      {label}
+      <strong>{value || '-'}</strong>
+    </span>
+  );
+}
+
+function MissingFields({ row }: { row: GenericRow }) {
+  const missing = [
+    !row.assignedTeacherId && 'Assigned teacher',
+    (!row.programId && String(row.program).includes('not assigned')) && 'Program',
+    String(row.level).includes('pending') && 'Level',
+    String(row.nextClass).includes('pending') && 'Schedule',
+    !row.scheduleNotes && 'Timezone / class notes',
+  ].filter(Boolean);
+
+  if (!missing.length) {
+    return <StatusBadge label="Setup complete" tone="success" />;
+  }
+
+  return (
+    <div className="admin-action-missing-list">
+      {missing.map((item) => <StatusBadge key={String(item)} label={String(item)} tone="warning" />)}
+    </div>
+  );
+}
+
+function StudentActionDrawer({
+  action,
+  row,
+  teachers,
+  programs,
+  attendanceRecords,
+  paymentRecords,
+  recordTab,
+  saving,
+  onRecordTabChange,
+  onClose,
+  onNavigateRecord,
+  onSubmit,
+}: {
+  action: AdminActionType;
+  row: GenericRow;
+  teachers: StudentActionTeacher[];
+  programs: StudentProgramOption[];
+  attendanceRecords: StudentAttendanceRecord[];
+  paymentRecords: StudentPaymentRecord[];
+  recordTab: StudentRecordDrawerTab;
+  saving: boolean;
+  onRecordTabChange: (tab: StudentRecordDrawerTab) => void;
+  onClose: () => void;
+  onNavigateRecord: () => void;
+  onSubmit: (formData: FormData) => void;
+}) {
+  const canWrite = isUuid(row.id);
+  const selectedTeacher = teachers.find((teacher) => teacher.id === row.assignedTeacherId);
+  const selectedProgram = programs.find((program) => program.id === row.programId);
+  const attendanceTotal = attendanceRecords.length;
+  const attendanceCounts = attendanceRecords.reduce<Record<string, number>>((summary, record) => {
+    summary[record.status] = (summary[record.status] || 0) + 1;
+    return summary;
+  }, {});
+  const presentCount = (attendanceCounts.present || 0) + (attendanceCounts.late || 0);
+  const attendanceRate = attendanceTotal ? `${Math.round((presentCount / attendanceTotal) * 100)}%` : '0%';
+  const latestPayment = paymentRecords[0];
+  const titleByAction: Record<AdminActionType, string> = {
+    view_record: 'Student Record',
+    complete_setup: 'Complete Student Setup',
+    assign_teacher: 'Assign Teacher',
+    set_schedule: 'Set Schedule',
+    update_level: 'Update Level',
+    view_attendance: 'Attendance',
+    view_payments: 'Payments',
+    deactivate_student: 'Deactivate Student',
+    view_details: 'Details',
+    edit_profile: 'Edit Profile',
+    update_availability: 'Update Availability',
+    view_assigned_students: 'Assigned Students',
+    view_trials: 'Trials',
+    record_payment: 'Record Payment',
+    mark_paid: 'Mark as Paid',
+    mark_overdue: 'Mark as Overdue',
+    set_homework: 'Set Homework',
+    reschedule: 'Reschedule',
+    cancel: 'Cancel',
+  };
+  const formId = `student-action-${action}`;
+
+  if (action === 'view_record') {
+    return (
+      <DashboardDrawer
+        title={String(row.name)}
+        subtitle="Student record from live academy data. Empty fields mean no record has been saved yet."
+        size="xl"
+        onClose={onClose}
+        footer={(
+          <>
+            <ActionButton variant="secondary" onClick={onNavigateRecord}>Open Full Page</ActionButton>
+            <ActionButton variant="copper" onClick={onClose}>Done</ActionButton>
+          </>
+        )}
+      >
+        <div className="admin-tabs" role="tablist" aria-label="Student record sections">
+          {studentRecordTabs.map((tab) => (
+            <button key={tab} type="button" className={recordTab === tab ? 'is-active' : ''} onClick={() => onRecordTabChange(tab)}>{tab}</button>
+          ))}
+        </div>
+        {recordTab === 'Overview' && (
+          <div className="lead-summary-grid">
+            <FieldValue label="Student" value={row.name} />
+            <FieldValue label="Status" value={<StatusBadge label={String(row.status)} tone={statusTone(String(row.status))} />} />
+            <FieldValue label="Program" value={row.program} />
+            <FieldValue label="Teacher" value={row.teacher} />
+            <FieldValue label="Level" value={row.level} />
+            <FieldValue label="Attendance rate" value={attendanceRate} />
+          </div>
+        )}
+        {recordTab === 'Personal & Parent Info' && (
+          <div className="lead-summary-grid">
+            <FieldValue label="Student name" value={row.name} />
+            <FieldValue label="Parent name" value={row.parentName} />
+            <FieldValue label="Parent WhatsApp" value={row.whatsapp} />
+            <FieldValue label="Country" value={row.country} />
+            <FieldValue label="Age" value={row.age} />
+          </div>
+        )}
+        {recordTab === 'Academic Setup' && (
+          <div className="lead-summary-grid">
+            <FieldValue label="Program" value={selectedProgram?.name || row.program} />
+            <FieldValue label="Teacher" value={selectedTeacher?.full_name || row.teacher} />
+            <FieldValue label="Level" value={row.level} />
+            <FieldValue label="Start date" value={row.startDate} />
+            <FieldValue label="Missing setup" value={<MissingFields row={row} />} />
+          </div>
+        )}
+        {recordTab === 'Schedule' && (
+          <div className="lead-summary-grid">
+            <FieldValue label="Next class" value={row.nextClass} />
+            <FieldValue label="Schedule notes" value={row.scheduleNotes} />
+          </div>
+        )}
+        {recordTab === 'Attendance' && (
+          <div className="admin-action-list">
+            <div className="lead-summary-grid">
+              <FieldValue label="Attendance rate" value={attendanceRate} />
+              <FieldValue label="Total classes" value={attendanceTotal} />
+              <FieldValue label="Present" value={attendanceCounts.present || 0} />
+              <FieldValue label="Absent" value={attendanceCounts.absent || 0} />
+              <FieldValue label="Late" value={attendanceCounts.late || 0} />
+              <FieldValue label="Excused" value={attendanceCounts.excused || 0} />
+            </div>
+            {attendanceRecords.map((record) => (
+              <article key={record.id} className="admin-action-row">
+                <strong>{record.classDate || record.marked_at || 'Class date not recorded'}</strong>
+                <span>{record.classTime || '-'} - {record.notes || 'No note'}</span>
+                <StatusBadge label={record.status} tone={statusTone(record.status)} />
+              </article>
+            ))}
+            {!attendanceRecords.length && <EmptyState title="No attendance records" description="Attendance records will appear after classes are submitted." />}
+          </div>
+        )}
+        {recordTab === 'Payments' && (
+          <div className="admin-action-list">
+            <div className="lead-summary-grid">
+              <FieldValue label="Current package" value={latestPayment?.notes || 'No package record'} />
+              <FieldValue label="Payment status" value={latestPayment?.status || 'No payment record'} />
+              <FieldValue label="Next due date" value={latestPayment?.next_due_date} />
+              <FieldValue label="Remaining sessions" value="-" />
+            </div>
+            {paymentRecords.map((payment) => (
+              <article key={payment.id} className="admin-action-row">
+                <strong>{payment.currency || 'USD'} {payment.amount ?? 0}</strong>
+                <span>{payment.payment_date || 'No payment date'} - {payment.payment_method || 'Method not recorded'}</span>
+                <StatusBadge label={payment.status || 'pending'} tone={statusTone(payment.status || 'pending')} />
+              </article>
+            ))}
+            {!paymentRecords.length && <EmptyState title="No payments" description="Payment records will appear after finance records a package or payment." />}
+          </div>
+        )}
+        {recordTab === 'Notes' && <p className="dashboard-empty-copy">{row.scheduleNotes || 'No notes recorded.'}</p>}
+      </DashboardDrawer>
+    );
+  }
+
+  if (action === 'view_attendance') {
+    return (
+      <DashboardDrawer title={`${row.name} Attendance`} subtitle="Read-only attendance summary." size="lg" onClose={onClose} footer={<ActionButton onClick={onClose}>Close</ActionButton>}>
+        <div className="lead-summary-grid">
+          <FieldValue label="Attendance rate" value={attendanceRate} />
+          <FieldValue label="Total classes" value={attendanceTotal} />
+          <FieldValue label="Present" value={attendanceCounts.present || 0} />
+          <FieldValue label="Absent" value={attendanceCounts.absent || 0} />
+          <FieldValue label="Late" value={attendanceCounts.late || 0} />
+          <FieldValue label="Excused" value={attendanceCounts.excused || 0} />
+        </div>
+        <div className="admin-action-list">
+          {attendanceRecords.map((record) => (
+            <article key={record.id} className="admin-action-row">
+              <strong>{record.classDate || record.marked_at || 'Date not recorded'}</strong>
+              <span>{record.notes || 'No note'}</span>
+              <StatusBadge label={record.status} tone={statusTone(record.status)} />
+            </article>
+          ))}
+          {!attendanceRecords.length && <EmptyState title="No attendance records" description="No attendance has been submitted for this student yet." />}
+        </div>
+      </DashboardDrawer>
+    );
+  }
+
+  if (action === 'view_payments') {
+    return (
+      <DashboardDrawer title={`${row.name} Payments`} subtitle="Package and payment history from finance records." size="lg" onClose={onClose} footer={<ActionButton onClick={onClose}>Close</ActionButton>}>
+        <div className="lead-summary-grid">
+          <FieldValue label="Current package" value={latestPayment?.notes || 'No package record'} />
+          <FieldValue label="Payment status" value={latestPayment?.status || 'No payment record'} />
+          <FieldValue label="Next due date" value={latestPayment?.next_due_date} />
+          <FieldValue label="Remaining sessions" value="-" />
+        </div>
+        <div className="dashboard-form-actions">
+          <ActionButton variant="secondary" disabled>Record Payment requires finance workflow</ActionButton>
+          <ActionButton variant="secondary" disabled>View Receipt requires receipt file</ActionButton>
+          <ActionButton variant="secondary" disabled={latestPayment?.status === 'overdue'}>Mark Overdue requires payment record</ActionButton>
+        </div>
+        <div className="admin-action-list">
+          {paymentRecords.map((payment) => (
+            <article key={payment.id} className="admin-action-row">
+              <strong>{payment.currency || 'USD'} {payment.amount ?? 0}</strong>
+              <span>{payment.payment_date || 'No payment date'} - next due {payment.next_due_date || '-'}</span>
+              <StatusBadge label={payment.status || 'pending'} tone={statusTone(payment.status || 'pending')} />
+            </article>
+          ))}
+          {!paymentRecords.length && <EmptyState title="No payments" description="No payment history is recorded for this student yet." />}
+        </div>
+      </DashboardDrawer>
+    );
+  }
+
+  if (action === 'deactivate_student') {
+    return (
+      <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Deactivate ${row.name}`}>
+        <button className="dashboard-modal__backdrop" type="button" aria-label="Close deactivation confirmation" onClick={onClose} />
+        <section className="dashboard-modal__panel dashboard-modal__panel--small">
+          <div className="dashboard-modal__header">
+            <div>
+              <h2>Deactivate Student</h2>
+              <p>This changes status only. Student records, attendance, and payments are not deleted.</p>
+            </div>
+            <button type="button" className="dashboard-icon-button" aria-label="Close" onClick={onClose}><Icon name="x" /></button>
+          </div>
+          <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
+            <div className="lead-summary-grid"><FieldValue label="Student" value={row.name} /></div>
+            <label><span>Reason</span><textarea name="reason" rows={4} required /></label>
+            {!canWrite && <p className="dashboard-inline-error">This action requires a live Supabase student record.</p>}
+            <div className="dashboard-form-actions">
+              <ActionButton type="submit" variant="danger" disabled={saving || !canWrite}>{saving ? 'Deactivating' : 'Deactivate Student'}</ActionButton>
+              <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+            </div>
+          </form>
+        </section>
+      </div>
+    );
+  }
+
+  return (
+    <DashboardDrawer
+      title={titleByAction[action]}
+      subtitle={String(row.name)}
+      size="lg"
+      onClose={onClose}
+      footer={(
+        <>
+          <ActionButton type="submit" form={formId} variant="copper" disabled={saving || !canWrite}>{saving ? 'Saving' : 'Save'}</ActionButton>
+          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+        </>
+      )}
+    >
+      {!canWrite && <p className="dashboard-inline-error">This action requires a live Supabase student record.</p>}
+      {action === 'complete_setup' && <MissingFields row={row} />}
+      <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
+        {(action === 'complete_setup' || action === 'assign_teacher' || action === 'set_schedule') && (
+          <>
+            <label><span>Student</span><input value={String(row.name)} readOnly /></label>
+            {(action === 'complete_setup' || action === 'set_schedule') && (
+              <label><span>Program</span><select name="programId" defaultValue={String(row.programId || '')}><option value="">Select program</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}</select></label>
+            )}
+            <label><span>Teacher</span><select name="teacherId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher'}><option value="">Unassigned</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}{teacher.specialization ? ` - ${teacher.specialization}` : ''}</option>)}</select></label>
+            {action === 'assign_teacher' && <label><span>Current program</span><input value={String(row.program)} readOnly /></label>}
+          </>
+        )}
+        {(action === 'complete_setup' || action === 'update_level') && (
+          <label><span>{action === 'update_level' ? 'New level' : 'Level'}</span><input name="level" defaultValue={action === 'update_level' ? '' : String(row.level === 'Placement pending' ? '' : row.level)} required /></label>
+        )}
+        {(action === 'complete_setup' || action === 'set_schedule') && (
+          <>
+            <label><span>Class days</span><input name="classDays" defaultValue="" /></label>
+            <label><span>Class time</span><input name="classTime" type="time" /></label>
+            <label><span>Timezone</span><input name="timezone" defaultValue="Africa/Cairo" /></label>
+            <label><span>Session duration</span><input name="durationMinutes" type="number" min="15" step="15" defaultValue="30" /></label>
+            <label><span>Platform</span><select name="platform" defaultValue="Zoom"><option>Zoom</option><option>Google Meet</option><option>Academy Classroom</option></select></label>
+            <label><span>Meeting link</span><input name="meetingLink" type="url" /></label>
+            <label><span>Start date</span><input name="startDate" type="date" defaultValue={String(row.startDate || '')} /></label>
+          </>
+        )}
+        {action === 'complete_setup' && <label><span>Package/payment status</span><input name="paymentStatus" /></label>}
+        {action === 'update_level' && (
+          <>
+            <label><span>Current level</span><input value={String(row.level)} readOnly /></label>
+            <label><span>Effective date</span><input name="effectiveDate" type="date" /></label>
+          </>
+        )}
+        <label><span>{action === 'update_level' ? 'Reason / academic note' : 'Notes'}</span><textarea name="notes" rows={4} /></label>
+      </form>
+    </DashboardDrawer>
+  );
 }
 
 const pageCopy: Record<AdminSection, { eyebrow: string; title: string; subtitle: string; exportLabel: string }> = {
@@ -626,6 +982,13 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
   const page = pageCopy[section];
   const [studentRows, setStudentRows] = useState<GenericRow[] | null>(null);
   const [selectedRow, setSelectedRow] = useState<GenericRow | null>(null);
+  const [activeAction, setActiveAction] = useState<AdminActionType | null>(null);
+  const [teachers, setTeachers] = useState<StudentActionTeacher[]>([]);
+  const [programs, setPrograms] = useState<StudentProgramOption[]>([]);
+  const [attendanceRecords, setAttendanceRecords] = useState<StudentAttendanceRecord[]>([]);
+  const [paymentRecords, setPaymentRecords] = useState<StudentPaymentRecord[]>([]);
+  const [studentRecordTab, setStudentRecordTab] = useState<StudentRecordDrawerTab>('Overview');
+  const [savingAction, setSavingAction] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [activeReportTab, setActiveReportTab] = useState<(typeof reportTabs)[number]>('Admissions');
@@ -635,28 +998,154 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
     setToast({ type, message });
   }
 
-  useEffect(() => {
-    if (section !== 'students') {
-      return;
-    }
-
-    fetchStudentManagementRows()
+  async function loadStudentRows() {
+    return fetchStudentManagementRows()
       .then((rows) => {
         if (rows.length) {
           setStudentRows(rows as GenericRow[]);
         }
       })
       .catch(() => setStudentRows(null));
+  }
+
+  useEffect(() => {
+    if (section !== 'students') {
+      return;
+    }
+
+    loadStudentRows();
+    fetchStudentActionLookups()
+      .then((lookups) => {
+        setTeachers(lookups.teachers);
+        setPrograms(lookups.programs);
+      })
+      .catch((error) => {
+        if (import.meta.env.DEV) {
+          console.error('Student action lookups failed:', error);
+        }
+        setTeachers([]);
+        setPrograms([]);
+      });
   }, [section]);
 
   const rows = useMemo(() => buildRows(section, studentRows), [section, studentRows]);
   const stats = useMemo(() => buildStats(section, rows), [rows, section]);
 
+  useEffect(() => {
+    if (!selectedRow || !activeAction || !isUuid(selectedRow.id)) {
+      setAttendanceRecords([]);
+      setPaymentRecords([]);
+      return;
+    }
+
+    if (activeAction === 'view_record' || activeAction === 'view_attendance') {
+      fetchStudentAttendanceRecords(String(selectedRow.id))
+        .then(setAttendanceRecords)
+        .catch(() => setAttendanceRecords([]));
+    }
+
+    if (activeAction === 'view_record' || activeAction === 'view_payments') {
+      fetchStudentPaymentRecords(String(selectedRow.id))
+        .then(setPaymentRecords)
+        .catch(() => setPaymentRecords([]));
+    }
+  }, [activeAction, selectedRow]);
+
+  function openAction(action: AdminActionType, row: GenericRow) {
+    setSelectedRow(row);
+    setActiveAction(action);
+    if (action === 'view_record') {
+      setStudentRecordTab('Overview');
+    }
+  }
+
+  function closeAction() {
+    setSelectedRow(null);
+    setActiveAction(null);
+    setAttendanceRecords([]);
+    setPaymentRecords([]);
+    setSavingAction(false);
+  }
+
+  async function handleStudentActionSubmit(formData: FormData) {
+    if (!selectedRow || !activeAction || !isUuid(selectedRow.id)) {
+      notify('This action requires a live Supabase student record.', 'error');
+      return;
+    }
+
+    setSavingAction(true);
+
+    try {
+      if (activeAction === 'assign_teacher') {
+        await assignStudentTeacher(String(selectedRow.id), String(formData.get('teacherId') || ''), String(formData.get('notes') || ''));
+        notify('Teacher assigned successfully.', 'success');
+      }
+
+      if (activeAction === 'complete_setup') {
+        await updateStudentSetup(String(selectedRow.id), {
+          programId: String(formData.get('programId') || '') || null,
+          teacherId: String(formData.get('teacherId') || '') || null,
+          level: String(formData.get('level') || ''),
+          classDays: String(formData.get('classDays') || ''),
+          classTime: String(formData.get('classTime') || ''),
+          timezone: String(formData.get('timezone') || ''),
+          paymentStatus: String(formData.get('paymentStatus') || ''),
+          startDate: String(formData.get('startDate') || ''),
+          notes: String(formData.get('notes') || ''),
+        });
+        notify('Student setup completed.', 'success');
+      }
+
+      if (activeAction === 'set_schedule') {
+        await updateStudentSchedule(String(selectedRow.id), {
+          teacherId: String(formData.get('teacherId') || '') || null,
+          programId: String(formData.get('programId') || selectedRow.programId || '') || null,
+          classDays: String(formData.get('classDays') || ''),
+          classTime: String(formData.get('classTime') || ''),
+          timezone: String(formData.get('timezone') || ''),
+          durationMinutes: Number(formData.get('durationMinutes') || 30),
+          platform: String(formData.get('platform') || ''),
+          meetingLink: String(formData.get('meetingLink') || ''),
+          startDate: String(formData.get('startDate') || ''),
+          notes: String(formData.get('notes') || ''),
+        });
+        notify('Student schedule updated.', 'success');
+      }
+
+      if (activeAction === 'update_level') {
+        await updateStudentLevel(String(selectedRow.id), String(formData.get('level') || ''), String(formData.get('notes') || ''));
+        notify('Student level updated.', 'success');
+      }
+
+      if (activeAction === 'deactivate_student') {
+        await deactivateStudent(String(selectedRow.id), String(formData.get('reason') || ''));
+        notify('Student deactivated.', 'success');
+      }
+
+      await loadStudentRows();
+      closeAction();
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error('Student action failed:', error);
+      }
+      const errorByAction: Partial<Record<AdminActionType, string>> = {
+        assign_teacher: 'Failed to assign teacher. Please try again.',
+        complete_setup: 'Failed to update student setup. Please try again.',
+        set_schedule: error instanceof Error ? error.message : 'Unable to save schedule.',
+        update_level: 'Failed to update student level. Please try again.',
+        deactivate_student: 'Failed to deactivate student. Please try again.',
+      };
+      notify(errorByAction[activeAction] || 'Unable to complete action. Please try again.', 'error');
+    } finally {
+      setSavingAction(false);
+    }
+  }
+
   const primaryAction = (row: GenericRow): DashboardPrimaryAction => {
     const openDrawer = () => setSelectedRow(row);
 
     if (section === 'students') {
-      return { label: 'Open Record', onClick: () => navigate(`/dashboard/admin/students/${row.id}`), variant: 'primary' };
+      return { label: 'Open Record', onClick: () => openAction('view_record', row), variant: 'primary' };
     }
 
     if (section === 'teachers') {
@@ -690,36 +1179,35 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
     const openDrawer = () => setSelectedRow(row);
 
     if (section === 'students') {
+      const canWriteStudent = isUuid(row.id);
       return [
-        { label: 'Complete Setup', onClick: openDrawer, disabled: Boolean(row.setupReady) },
-        { label: 'Assign Teacher', onClick: () => notify('Assign Teacher drawer is prepared for live teacher assignment.') },
-        { label: 'Set Schedule', onClick: () => notify('Set Schedule action is prepared for class scheduling.') },
-        { label: 'Update Level', onClick: () => notify('Update Level action is prepared for placement updates.') },
-        { label: 'View Attendance', onClick: openDrawer },
-        { label: 'View Payments', onClick: openDrawer },
-        { label: 'Deactivate Student', onClick: () => notify('Deactivate Student action is prepared for status updates.'), danger: true },
+        { label: 'Complete Setup', onClick: () => openAction('complete_setup', row), disabled: Boolean(row.setupReady) || !canWriteStudent },
+        { label: 'Assign Teacher', onClick: () => openAction('assign_teacher', row), disabled: !canWriteStudent },
+        { label: 'Set Schedule', onClick: () => openAction('set_schedule', row), disabled: !canWriteStudent },
+        { label: 'Update Level', onClick: () => openAction('update_level', row), disabled: !canWriteStudent },
+        { label: 'View Attendance', onClick: () => openAction('view_attendance', row) },
+        { label: 'View Payments', onClick: () => openAction('view_payments', row) },
+        { label: 'Deactivate Student', onClick: () => openAction('deactivate_student', row), disabled: !canWriteStudent, danger: true },
       ];
     }
 
     if (section === 'teachers') {
       return [
         { label: 'Edit Academic Profile', onClick: openDrawer },
-        { label: 'Update Availability', onClick: () => notify('Teacher availability action prepared.') },
+        { label: 'Update Availability', onClick: openDrawer },
         { label: 'View Assigned Students', onClick: openDrawer },
         { label: 'View Trials', onClick: openDrawer },
-        { label: 'View Documents', onClick: openDrawer },
-        { label: String(row.status) === 'active' ? 'Deactivate' : 'Activate', onClick: () => notify('Teacher status action prepared.'), danger: row.status === 'active' },
+        { label: String(row.status) === 'active' ? 'Deactivate Teacher' : 'Activate Teacher', onClick: openDrawer, danger: row.status === 'active' },
       ];
     }
 
     if (section === 'free-trials') {
       return [
         { label: 'Assign Teacher', onClick: openDrawer },
-        { label: 'Reschedule Trial', onClick: () => notify('Reschedule Trial action prepared.') },
-        { label: 'Open Meeting', onClick: () => notify('Meeting link action prepared.') },
-        { label: 'Send Reminder', onClick: () => notify('Reminder action prepared for communication integration.') },
-        { label: 'Mark Completed', onClick: () => notify('Trial completion action prepared.') },
-        { label: 'Mark No Show', onClick: () => notify('No-show action prepared.'), danger: true },
+        { label: 'Reschedule Trial', onClick: openDrawer },
+        { label: 'Open Meeting', onClick: openDrawer },
+        { label: 'Mark Completed', onClick: openDrawer },
+        { label: 'Mark No Show', onClick: openDrawer, danger: true },
         { label: 'View Feedback', onClick: openDrawer },
         { label: 'Convert to Student', onClick: openDrawer },
       ];
@@ -727,40 +1215,40 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
     if (section === 'classes') {
       return [
-        { label: 'Open Meeting', onClick: () => notify('Meeting link action prepared.') },
+        { label: 'Open Meeting', onClick: openDrawer },
         { label: 'View Attendance', onClick: openDrawer },
         { label: 'View Teacher Report', onClick: openDrawer },
-        { label: 'Set Homework', onClick: () => notify('Set Homework action prepared.') },
-        { label: 'Reschedule Class', onClick: () => notify('Reschedule Class action prepared.') },
-        { label: 'Cancel Class', onClick: () => notify('Cancel Class action prepared.'), danger: true },
+        { label: 'Set Homework', onClick: openDrawer },
+        { label: 'Reschedule Class', onClick: openDrawer },
+        { label: 'Cancel Class', onClick: openDrawer, danger: true },
       ];
     }
 
     if (section === 'attendance') {
       return [
-        { label: 'Confirm Attendance', onClick: () => notify('Attendance confirmed.') },
-        { label: 'Request Correction', onClick: () => notify('Correction request prepared.') },
-        { label: 'Contact Parent', onClick: () => notify('Parent contact action prepared.') },
-        { label: 'Mark Follow-up Done', onClick: () => notify('Parent follow-up marked done.') },
+        { label: 'Confirm Attendance', onClick: openDrawer },
+        { label: 'Request Correction', onClick: openDrawer },
+        { label: 'Contact Parent', onClick: openDrawer },
+        { label: 'Mark Follow-up Done', onClick: openDrawer },
       ];
     }
 
     if (section === 'payments') {
       return [
-        { label: 'Create Invoice', onClick: () => notify('Invoice creation action prepared.') },
+        { label: 'Create Invoice', onClick: openDrawer, disabled: true },
         { label: 'View Invoice', onClick: openDrawer },
-        { label: 'Download Receipt', onClick: () => notify('Receipt export prepared.'), disabled: row.status !== 'paid' },
-        { label: 'Contact Parent', onClick: () => notify('Payment follow-up action prepared.') },
-        { label: 'Mark as Paid', onClick: () => notify('Mark as Paid action prepared.'), disabled: row.status === 'paid' },
-        { label: 'Upload Receipt', onClick: () => notify('Receipt upload action prepared.') },
-        { label: 'Mark as Overdue', onClick: () => notify('Mark as Overdue action prepared.'), danger: true },
+        { label: 'Download Receipt', onClick: openDrawer, disabled: row.status !== 'paid' },
+        { label: 'Contact Parent', onClick: openDrawer },
+        { label: 'Mark as Paid', onClick: openDrawer, disabled: row.status === 'paid' },
+        { label: 'Upload Receipt', onClick: openDrawer, disabled: true },
+        { label: 'Mark as Overdue', onClick: openDrawer, danger: true },
       ];
     }
 
     if (section === 'reports') {
       return [
         { label: 'Export Report', onClick: () => exportRows('reports', [row]) },
-        { label: 'Schedule Report', onClick: () => notify('Report scheduling action prepared.') },
+        { label: 'Schedule Report', onClick: openDrawer, disabled: true },
       ];
     }
 
@@ -923,10 +1411,10 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
             <label><span>Operational owner</span><select defaultValue="admin"><option value="admin">Admin Team</option><option value="academic">Academic Manager</option><option value="finance">Finance</option></select></label>
             <label><span>Status</span><select defaultValue="enabled"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></label>
             <div className="dashboard-form-actions">
-              {activeSettingsTab === 'Programs' && <ActionButton variant="secondary" onClick={() => notify('Add Program action prepared.')}>Add Program</ActionButton>}
-              {activeSettingsTab === 'Notifications' && <ActionButton variant="secondary" onClick={() => notify('Notification templates action prepared.')}>Configure Notifications</ActionButton>}
-              {activeSettingsTab === 'Integrations' && <ActionButton variant="secondary" onClick={() => notify('WhatsApp and email integration action prepared.')}>Configure WhatsApp/Email</ActionButton>}
-              {activeSettingsTab === 'Schedule Defaults' && <ActionButton variant="secondary" onClick={() => notify('Timezone settings action prepared.')}>Configure Timezone</ActionButton>}
+              {activeSettingsTab === 'Programs' && <ActionButton variant="secondary" disabled>Add Program requires database setup</ActionButton>}
+              {activeSettingsTab === 'Notifications' && <ActionButton variant="secondary" disabled>Notification templates require setup</ActionButton>}
+              {activeSettingsTab === 'Integrations' && <ActionButton variant="secondary" disabled>WhatsApp/Email integration requires setup</ActionButton>}
+              {activeSettingsTab === 'Schedule Defaults' && <ActionButton variant="secondary" disabled>Timezone defaults require setup</ActionButton>}
             </div>
           </div>
         </SectionCard>
@@ -955,7 +1443,24 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         </div>
       )}
 
-      {selectedRow && (
+      {selectedRow && activeAction && section === 'students' && (
+        <StudentActionDrawer
+          action={activeAction}
+          row={selectedRow}
+          teachers={teachers}
+          programs={programs}
+          attendanceRecords={attendanceRecords}
+          paymentRecords={paymentRecords}
+          recordTab={studentRecordTab}
+          saving={savingAction}
+          onRecordTabChange={setStudentRecordTab}
+          onClose={closeAction}
+          onNavigateRecord={() => navigate(`/dashboard/admin/students/${selectedRow.id}`)}
+          onSubmit={handleStudentActionSubmit}
+        />
+      )}
+
+      {selectedRow && !activeAction && (
         <DetailDrawer
           content={getDrawerContent(section, selectedRow, notify, navigate)}
           onClose={() => setSelectedRow(null)}

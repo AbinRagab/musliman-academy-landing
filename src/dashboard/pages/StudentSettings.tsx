@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import Icon from '../../components/Icon';
+import { supabase } from '../../lib/supabaseClient';
 import ActionButton from '../components/ActionButton';
 import DashboardActionMenu from '../components/DashboardActionMenu';
 import SectionCard from '../components/SectionCard';
 import {
-  ComingSoonModal,
   StudentModal,
   StudentPageHeader,
 } from '../components/student/StudentPortalComponents';
@@ -25,7 +25,7 @@ function SettingToggle({ label, description, enabled, name }: { label: string; d
 export default function StudentSettings() {
   const [settings, setSettings] = useState<StudentSettingsData>(emptyStudentSettings);
   const [saved, setSaved] = useState(false);
-  const [comingSoon, setComingSoon] = useState<string | null>(null);
+  const [securityMessage, setSecurityMessage] = useState('');
 
   useEffect(() => {
     fetchStudentDashboardData().then((data) => {
@@ -39,6 +39,19 @@ export default function StudentSettings() {
     });
   }, []);
 
+  async function handlePasswordReset() {
+    if (!supabase || !settings.email) {
+      setSecurityMessage('A profile email is required before a password reset email can be sent.');
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(settings.email, {
+      redirectTo: `${window.location.origin}/dashboard/login`,
+    });
+
+    setSecurityMessage(error ? error.message : `Password reset email sent to ${settings.email}.`);
+  }
+
   return (
     <div className="dashboard-page dashboard-page--management dashboard-page--student-settings">
       {saved && (
@@ -46,7 +59,11 @@ export default function StudentSettings() {
           <p className="student-modal-copy">Admin-managed academic, attendance, payment, and teacher assignment fields remain view-only.</p>
         </StudentModal>
       )}
-      {comingSoon && <ComingSoonModal feature={comingSoon} onClose={() => setComingSoon(null)} />}
+      {securityMessage && (
+        <StudentModal title="Security Action" onClose={() => setSecurityMessage('')} footer={<ActionButton onClick={() => setSecurityMessage('')}>Close</ActionButton>}>
+          <p className="student-modal-copy">{securityMessage}</p>
+        </StudentModal>
+      )}
 
       <StudentPageHeader title="Settings" subtitle="Preferences, notifications, password, language, and timezone." />
 
@@ -64,9 +81,9 @@ export default function StudentSettings() {
             <label><span>WhatsApp</span><input value={settings.whatsapp} onChange={(event) => setSettings((current) => ({ ...current, whatsapp: event.target.value }))} /></label>
             <div className="student-card-actions">
               <DashboardActionMenu
-                primaryAction={{ label: 'Change Password', icon: <Icon name="lock" size={15} />, onClick: () => setComingSoon('Change Password') }}
+                primaryAction={{ label: 'Change Password', icon: <Icon name="lock" size={15} />, onClick: handlePasswordReset }}
                 actions={[
-                  { label: 'Request Contact Update', icon: <Icon name="send" size={15} />, onClick: () => setComingSoon('Request Contact Update') },
+                  { label: 'Request Contact Update', icon: <Icon name="send" size={15} />, onClick: () => setSaved(true) },
                 ]}
               />
             </div>
@@ -102,9 +119,9 @@ export default function StudentSettings() {
 
         <SectionCard title="Privacy & Security">
           <div className="student-security-list">
-            <button type="button" onClick={() => setComingSoon('Change Password')}><Icon name="lock" size={17} /><span>Change password</span><Icon name="chevronRight" size={16} /></button>
-            <button type="button" onClick={() => setComingSoon('Active Sessions')}><Icon name="laptop" size={17} /><span>Active sessions</span><Icon name="chevronRight" size={16} /></button>
-            <button type="button" onClick={() => setComingSoon('Two-Factor Authentication')}><Icon name="shieldCheck" size={17} /><span>Two-factor authentication</span><Icon name="chevronRight" size={16} /></button>
+            <button type="button" onClick={handlePasswordReset}><Icon name="lock" size={17} /><span>Change password</span><Icon name="chevronRight" size={16} /></button>
+            <button type="button" disabled title="This feature requires database setup."><Icon name="laptop" size={17} /><span>Active sessions require setup</span><Icon name="chevronRight" size={16} /></button>
+            <button type="button" disabled title="This feature requires database setup."><Icon name="shieldCheck" size={17} /><span>Two-factor authentication requires setup</span><Icon name="chevronRight" size={16} /></button>
           </div>
         </SectionCard>
 
