@@ -980,6 +980,67 @@ function StudentActionDrawer({
 
 const availabilityDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
+function TimeInputField({
+  label,
+  name,
+  defaultValue,
+  disabled,
+}: {
+  label: string;
+  name: string;
+  defaultValue: string;
+  disabled: boolean;
+}) {
+  return (
+    <label className="availability-time-field">
+      <span>{label}</span>
+      <input type="time" name={name} defaultValue={defaultValue} disabled={disabled} />
+    </label>
+  );
+}
+
+function AvailabilityDayCard({
+  day,
+  defaultAvailable,
+}: {
+  day: string;
+  defaultAvailable: boolean;
+}) {
+  const [available, setAvailable] = useState(defaultAvailable);
+  const fieldPrefix = day.toLowerCase();
+
+  return (
+    <section className={`availability-day-card ${available ? 'is-active' : 'is-muted'}`.trim()}>
+      <div className="availability-day-card__header">
+        <div>
+          <h3>{day}</h3>
+          <p>{available ? 'Available' : 'Not available'}</p>
+        </div>
+        <label className="availability-switch">
+          <input
+            type="checkbox"
+            name={`${fieldPrefix}Available`}
+            checked={available}
+            onChange={(event) => setAvailable(event.target.checked)}
+          />
+          <span aria-hidden="true" />
+          <strong>{available ? 'Available' : 'Off'}</strong>
+        </label>
+      </div>
+
+      <div className="availability-day-card__times">
+        <TimeInputField label="Start time" name={`${fieldPrefix}Start`} defaultValue="09:00" disabled={!available} />
+        <TimeInputField label="End time" name={`${fieldPrefix}End`} defaultValue="17:00" disabled={!available} />
+      </div>
+
+      <label className="availability-notes-field">
+        <span>Notes</span>
+        <input name={`${fieldPrefix}Notes`} placeholder="Optional notes" disabled={!available} />
+      </label>
+    </section>
+  );
+}
+
 function TeacherProfileDrawer({
   row,
   onClose,
@@ -1052,56 +1113,43 @@ function TeacherAvailabilityDrawer({
   return (
     <DashboardDrawer
       title="Update Availability"
-      subtitle="Set teacher weekly teaching availability."
+      subtitle="Set weekly teaching availability and preferred teaching hours."
       size="md"
+      panelClassName="dashboard-drawer__panel--availability"
       onClose={onClose}
       footer={(
         <>
-          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
           <ActionButton type="submit" form={formId} variant="copper">Save Availability</ActionButton>
+          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
         </>
       )}
     >
-      <form id={formId} className="dashboard-form admin-availability-form" onSubmit={(event) => { event.preventDefault(); onClose(); }}>
-        <label>
-          <span>Teacher</span>
-          <input value={String(row.name || 'Teacher')} readOnly />
-        </label>
-        <label>
-          <span>Timezone</span>
-          <select name="timezone" defaultValue="Africa/Cairo">
-            <option value="Africa/Cairo">Africa/Cairo</option>
-            <option value="Asia/Riyadh">Asia/Riyadh</option>
-            <option value="Europe/London">Europe/London</option>
-            <option value="America/New_York">America/New_York</option>
-          </select>
-        </label>
+      <form id={formId} className="admin-availability-form" onSubmit={(event) => { event.preventDefault(); onClose(); }}>
+        <section className="availability-editor-section">
+          <div>
+            <span className="dashboard-eyebrow">TEACHER</span>
+            <h3>{row.name || 'Teacher'}</h3>
+            <p>{row.email || row.specialization || 'Availability profile'}</p>
+          </div>
+          <label>
+            <span>Timezone</span>
+            <select name="timezone" defaultValue="Africa/Cairo">
+              <option value="Africa/Cairo">Africa/Cairo</option>
+              <option value="Asia/Riyadh">Asia/Riyadh</option>
+              <option value="Europe/London">Europe/London</option>
+              <option value="America/New_York">America/New_York</option>
+            </select>
+          </label>
+        </section>
 
-        <section className="admin-availability-form__week">
+        <section className="availability-editor-section availability-editor-section--week">
           <div className="admin-availability-form__heading">
             <h3>Weekly Availability</h3>
-            <p>{row.availability || 'No availability details saved yet.'}</p>
+            <p>Choose the days and times this teacher is available for classes.</p>
           </div>
 
           {availabilityDays.map((day, index) => (
-            <div className="admin-availability-day" key={day}>
-              <label className="admin-availability-day__toggle">
-                <input type="checkbox" name={`${day.toLowerCase()}Available`} defaultChecked={index < 5} />
-                <span>{day}</span>
-              </label>
-              <label>
-                <span>Start</span>
-                <input type="time" name={`${day.toLowerCase()}Start`} defaultValue="09:00" />
-              </label>
-              <label>
-                <span>End</span>
-                <input type="time" name={`${day.toLowerCase()}End`} defaultValue="17:00" />
-              </label>
-              <label className="admin-availability-day__notes">
-                <span>Notes</span>
-                <input name={`${day.toLowerCase()}Notes`} placeholder="Optional notes" />
-              </label>
-            </div>
+            <AvailabilityDayCard key={day} day={day} defaultAvailable={index < 5} />
           ))}
         </section>
       </form>

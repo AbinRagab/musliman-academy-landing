@@ -27,6 +27,7 @@ export default function DashboardDrawer({
   onClose,
   width = 'standard',
   size,
+  panelClassName = '',
 }: {
   open?: boolean;
   eyebrow?: string;
@@ -39,6 +40,7 @@ export default function DashboardDrawer({
   onClose: () => void;
   width?: 'standard' | 'wide';
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  panelClassName?: string;
 }) {
   useEffect(() => {
     if (!open) {
@@ -64,7 +66,7 @@ export default function DashboardDrawer({
   return (
     <div className="dashboard-drawer" role="dialog" aria-modal="true" aria-label={title}>
       <button type="button" className="dashboard-drawer__backdrop" aria-label="Close drawer" onClick={onClose} />
-      <aside className={`dashboard-drawer__panel dashboard-drawer__panel--${width} dashboard-drawer__panel--${resolvedSize}`}>
+      <aside className={`dashboard-drawer__panel dashboard-drawer__panel--${width} dashboard-drawer__panel--${resolvedSize} ${panelClassName}`.trim()}>
         <header className="dashboard-drawer__header">
           <div>
             {eyebrow && <span className="dashboard-eyebrow">{eyebrow}</span>}
