@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
+import { resolveTeacherNamesById } from './teachersService';
 
 export type AdminDashboardClass = {
   id: string;
@@ -139,14 +140,13 @@ async function fetchTodayClasses(today: string): Promise<AdminDashboardClass[]> 
 
   const teacherIds = Array.from(new Set(data.map((classRow) => classRow.teacher_id).filter(Boolean))) as string[];
   const studentIds = Array.from(new Set(data.map((classRow) => classRow.student_id).filter(Boolean))) as string[];
-  const [teachersResult, studentsResult, attendanceResult, reportsResult] = await Promise.all([
-    teacherIds.length ? supabase.from('profiles').select('id, full_name').in('id', teacherIds) : Promise.resolve({ data: [] }),
+  const [teacherById, studentsResult, attendanceResult, reportsResult] = await Promise.all([
+    resolveTeacherNamesById(teacherIds),
     studentIds.length ? supabase.from('students').select('id, student_name').in('id', studentIds) : Promise.resolve({ data: [] }),
     supabase.from('attendance').select('class_id').in('class_id', data.map((classRow) => classRow.id)),
     supabase.from('teacher_class_reports').select('class_id').in('class_id', data.map((classRow) => classRow.id)),
   ]);
 
-  const teacherById = new Map((teachersResult.data || []).map((teacher) => [teacher.id, teacher.full_name]));
   const studentById = new Map((studentsResult.data || []).map((student) => [student.id, student.student_name]));
   const attendanceClassIds = new Set((attendanceResult.data || []).map((record) => record.class_id));
   const reportClassIds = new Set((reportsResult.data || []).map((record) => record.class_id));

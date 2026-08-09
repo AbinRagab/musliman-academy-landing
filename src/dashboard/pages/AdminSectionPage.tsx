@@ -19,7 +19,6 @@ import {
   adminPayments,
   adminReports,
   adminStudents,
-  adminTeachers,
   freeTrials,
   recentClasses,
   rolePermissionMatrix,
@@ -40,6 +39,7 @@ import {
   type StudentPaymentRecord,
   type StudentProgramOption,
 } from '../services/studentsService';
+import { fetchAdminTeacherRows } from '../services/teachersService';
 import { usePrograms } from '../services/programsService';
 
 type AdminSection =
@@ -310,20 +310,13 @@ function normalizeStudents(rows: GenericRow[]) {
   });
 }
 
-function buildRows(section: AdminSection, studentRows: GenericRow[] | null): GenericRow[] {
+function buildRows(section: AdminSection, studentRows: GenericRow[] | null, teacherRows: GenericRow[] | null): GenericRow[] {
   if (section === 'students') {
     return normalizeStudents(studentRows || []);
   }
 
   if (section === 'teachers') {
-    return adminTeachers.map((teacher) => ({
-      ...teacher,
-      id: slug(teacher.name),
-      completedClasses: Number(teacher.students) * 3,
-      rating: '4.8',
-      feedback: 'Strong parent feedback',
-      documents: 'Certificates on file',
-    }));
+    return teacherRows || [];
   }
 
   if (section === 'free-trials') {
@@ -954,7 +947,7 @@ function StudentActionDrawer({
             {(action === 'complete_setup' || action === 'set_schedule') && (
               <ProgramSelect label="Program" name="programId" value={String(row.programId || '')} />
             )}
-            <label><span>Teacher</span><select name="teacherId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher'}><option value="">Unassigned</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}{teacher.specialization ? ` - ${teacher.specialization}` : ''}</option>)}</select></label>
+            <label><span>Teacher</span><select name="teacherId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher' || action === 'set_schedule'}><option value="">Unassigned</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}{teacher.specialization ? ` - ${teacher.specialization}` : ''}</option>)}</select></label>
             {action === 'assign_teacher' && <label><span>Current program</span><input value={String(row.program)} readOnly /></label>}
           </>
         )}
@@ -1043,6 +1036,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
   const { role } = useAuth();
   const page = pageCopy[section];
   const [studentRows, setStudentRows] = useState<GenericRow[] | null>(null);
+  const [teacherRows, setTeacherRows] = useState<GenericRow[] | null>(null);
   const [selectedRow, setSelectedRow] = useState<GenericRow | null>(null);
   const [activeAction, setActiveAction] = useState<AdminActionType | null>(null);
   const [teachers, setTeachers] = useState<StudentActionTeacher[]>([]);
@@ -1071,6 +1065,19 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       .catch(() => setStudentRows(null));
   }
 
+  async function loadTeacherRows() {
+    return fetchAdminTeacherRows()
+      .then((rows) => {
+        setTeacherRows(rows as GenericRow[]);
+      })
+      .catch((error) => {
+        if (import.meta.env.DEV) {
+          console.error('Admin teacher rows fetch failed:', error);
+        }
+        setTeacherRows([]);
+      });
+  }
+
   useEffect(() => {
     if (section !== 'students') {
       return;
@@ -1091,7 +1098,15 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       });
   }, [section]);
 
-  const rows = useMemo(() => buildRows(section, studentRows), [section, studentRows]);
+  useEffect(() => {
+    if (section !== 'teachers') {
+      return;
+    }
+
+    loadTeacherRows();
+  }, [section]);
+
+  const rows = useMemo(() => buildRows(section, studentRows, teacherRows), [section, studentRows, teacherRows]);
   const stats = useMemo(() => buildStats(section, rows), [rows, section]);
 
   useEffect(() => {
@@ -1348,7 +1363,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
     if (section === 'teachers') {
       return [
-        { header: 'Teacher', accessor: 'name' },
+        { header: 'Teacher', accessor: (row) => <DetailCell primary={row.name} secondary={row.email} /> },
         { header: 'Specialization', accessor: 'specialization' },
         { header: 'Students', accessor: 'students' },
         { header: 'Trials', accessor: 'trials' },

@@ -1,6 +1,7 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
 import { fetchPrograms as fetchActivePrograms } from './programsService';
+import { fetchActiveTeacherOptions, resolveTeacherNamesById } from './teachersService';
 
 export type LeadStatus =
   | 'new'
@@ -165,15 +166,17 @@ async function addActivity(leadId: string, actionType: string, description: stri
 async function hydrateLeads(leads: LeadRecord[]) {
   const client = requireSupabase();
   const programIds = Array.from(new Set(leads.map((lead) => lead.program_id).filter(Boolean))) as string[];
-  const profileIds = Array.from(new Set(leads.flatMap((lead) => [lead.assigned_to, lead.assigned_teacher_id]).filter(Boolean))) as string[];
+  const ownerProfileIds = Array.from(new Set(leads.map((lead) => lead.assigned_to).filter(Boolean))) as string[];
+  const teacherIds = Array.from(new Set(leads.map((lead) => lead.assigned_teacher_id).filter(Boolean))) as string[];
 
-  const [{ data: programs }, { data: profiles }] = await Promise.all([
+  const [{ data: programs }, { data: profiles }, teacherById] = await Promise.all([
     programIds.length
       ? client.from('programs').select('id, name').in('id', programIds)
       : Promise.resolve({ data: [] }),
-    profileIds.length
-      ? client.from('profiles').select('id, full_name').in('id', profileIds)
+    ownerProfileIds.length
+      ? client.from('profiles').select('id, full_name').in('id', ownerProfileIds)
       : Promise.resolve({ data: [] }),
+    resolveTeacherNamesById(teacherIds),
   ]);
 
   const programById = new Map((programs || []).map((program) => [program.id, program.name]));
@@ -185,7 +188,7 @@ async function hydrateLeads(leads: LeadRecord[]) {
       ? programById.get(lead.program_id) || lead.program_name || 'Program not assigned'
       : lead.program_name || 'Program not assigned',
     assignedOwnerName: lead.assigned_to ? profileById.get(lead.assigned_to) || 'Assigned owner' : 'Unassigned',
-    assignedTeacherName: lead.assigned_teacher_id ? profileById.get(lead.assigned_teacher_id) || 'Assigned teacher' : 'Unassigned',
+    assignedTeacherName: lead.assigned_teacher_id ? teacherById.get(lead.assigned_teacher_id) || 'Assigned teacher' : 'Unassigned',
   }));
 }
 
@@ -489,30 +492,5 @@ export async function fetchAssignableProfiles(roles: AuthRole[] = ['super_admin'
 }
 
 export async function fetchTeacherOptions() {
-  const client = requireSupabase();
-  const [{ data: profiles, error: profilesError }, { data: teachers }, { data: students }, { data: trials }] = await Promise.all([
-    client.from('profiles').select('id, full_name, email').eq('role', 'teacher').eq('status', 'active').order('full_name'),
-    client.from('teachers').select('profile_id, specialization, languages, availability'),
-    client.from('students').select('assigned_teacher_id').eq('status', 'active'),
-    client.from('free_trials').select('teacher_id').eq('status', 'scheduled'),
-  ]);
-
-  if (profilesError) {
-    throw profilesError;
-  }
-
-  return (profiles || []).map((profile) => {
-    const teacher = (teachers || []).find((item) => item.profile_id === profile.id);
-
-    return {
-      id: profile.id,
-      full_name: profile.full_name,
-      email: profile.email,
-      specialization: teacher?.specialization || 'Quran and Arabic',
-      languages: teacher?.languages || ['Arabic', 'English'],
-      availability: teacher?.availability || 'Availability not set',
-      assignedStudents: (students || []).filter((student) => student.assigned_teacher_id === profile.id).length,
-      activeTrialLoad: (trials || []).filter((trial) => trial.teacher_id === profile.id).length,
-    } satisfies TeacherOption;
-  });
+  return fetchActiveTeacherOptions() as Promise<TeacherOption[]>;
 }

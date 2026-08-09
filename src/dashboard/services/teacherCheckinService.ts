@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
+import { getCurrentTeacherContext } from './teacherOperationsService';
 
 export type TeacherCheckinAction = 'ready' | 'joined' | 'live' | 'completed';
 
@@ -17,8 +18,8 @@ export async function updateTeacherSessionCheckin(payload: TeacherCheckinPayload
     return { success: true, fallback: true };
   }
 
-  const { data: userData } = await supabase.auth.getUser();
-  const teacherId = payload.teacherId || userData.user?.id;
+  const context = payload.teacherId ? null : await getCurrentTeacherContext();
+  const teacherId = payload.teacherId || context?.teacherId;
 
   if (!teacherId) {
     throw new Error('Teacher session is required before class check-in.');

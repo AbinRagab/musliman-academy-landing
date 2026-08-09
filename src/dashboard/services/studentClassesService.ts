@@ -4,6 +4,7 @@ import {
   resolveCurrentStudentProfile,
   type StudentClassSession,
 } from './studentService';
+import { resolveTeacherNamesById } from './teachersService';
 
 function normalizeClassStatus(status?: string | null): StudentClassSession['status'] {
   if (status === 'completed' || status === 'cancelled' || status === 'rescheduled' || status === 'student_absent' || status === 'teacher_absent') {
@@ -41,12 +42,11 @@ export async function fetchStudentClassesData() {
 
     const teacherIds = Array.from(new Set(data.map((session) => session.teacher_id).filter(Boolean))) as string[];
     const programIds = Array.from(new Set(data.map((session) => session.program_id).filter(Boolean))) as string[];
-    const [teacherResult, programResult] = await Promise.all([
-      teacherIds.length ? supabase.from('profiles').select('id, full_name').in('id', teacherIds) : Promise.resolve({ data: [] }),
+    const [teacherById, programResult] = await Promise.all([
+      resolveTeacherNamesById(teacherIds),
       programIds.length ? supabase.from('programs').select('id, name').in('id', programIds) : Promise.resolve({ data: [] }),
     ]);
 
-    const teacherById = new Map((teacherResult.data || []).map((teacher) => [teacher.id, teacher.full_name]));
     const programById = new Map((programResult.data || []).map((program) => [program.id, program.name]));
 
     const classes = data.map((session): StudentClassSession => {

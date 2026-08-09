@@ -1,5 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import { fetchLeads } from './leadsService';
+import { getCurrentTeacherContext } from './teacherOperationsService';
 
 export type TrialResult = 'recommended' | 'needs_follow_up' | 'not_suitable' | 'no_show';
 
@@ -51,16 +52,17 @@ export async function fetchTrials(filters: { teacherId?: string; status?: string
   return data || [];
 }
 
-export async function fetchTeacherTrials(teacherProfileId?: string | null) {
-  if (!teacherProfileId) {
-    teacherProfileId = await getCurrentUserId();
+export async function fetchTeacherTrials(teacherId?: string | null) {
+  if (!teacherId) {
+    const context = await getCurrentTeacherContext();
+    teacherId = context?.teacherId || null;
   }
 
-  if (!teacherProfileId) {
+  if (!teacherId) {
     return [];
   }
 
-  const trials = await fetchTrials({ teacherId: teacherProfileId });
+  const trials = await fetchTrials({ teacherId });
   const leadIds = trials.map((trial) => trial.lead_id).filter(Boolean);
   const leads = leadIds.length ? await fetchLeads() : [];
 

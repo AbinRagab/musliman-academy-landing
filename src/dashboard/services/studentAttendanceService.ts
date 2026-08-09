@@ -1,5 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import { resolveCurrentStudentProfile, type StudentAttendanceRecord, type StudentAttendanceStatus } from './studentService';
+import { resolveTeacherNamesById } from './teachersService';
 
 export type StudentAttendanceFilters = {
   month: string;
@@ -45,13 +46,12 @@ export async function fetchStudentAttendanceData() {
 
     const classIds = Array.from(new Set(data.map((record) => record.class_id).filter(Boolean))) as string[];
     const teacherIds = Array.from(new Set(data.map((record) => record.teacher_id).filter(Boolean))) as string[];
-    const [classesResult, teachersResult] = await Promise.all([
+    const [classesResult, teachersById] = await Promise.all([
       classIds.length ? supabase.from('classes').select('id, class_title, lesson_title, class_date, scheduled_start_at, program_id').in('id', classIds) : Promise.resolve({ data: [] }),
-      teacherIds.length ? supabase.from('profiles').select('id, full_name').in('id', teacherIds) : Promise.resolve({ data: [] }),
+      resolveTeacherNamesById(teacherIds),
     ]);
 
     const classesById = new Map((classesResult.data || []).map((classRecord) => [classRecord.id, classRecord]));
-    const teachersById = new Map((teachersResult.data || []).map((teacher) => [teacher.id, teacher.full_name]));
 
     const records = data.map((record): StudentAttendanceRecord => {
       const classRecord = record.class_id ? classesById.get(record.class_id) : null;

@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
+import { resolveTeacherNamesById } from './teachersService';
 
 export type StudentPortalProfile = {
   id: string;
@@ -374,7 +375,7 @@ export async function resolveCurrentStudentProfile() {
 
     const [programResult, teacherResult] = await Promise.all([
       student.program_id ? supabase.from('programs').select('id, name').eq('id', student.program_id).maybeSingle() : Promise.resolve({ data: null }),
-      student.assigned_teacher_id ? supabase.from('profiles').select('id, full_name').eq('id', student.assigned_teacher_id).maybeSingle() : Promise.resolve({ data: null }),
+      student.assigned_teacher_id ? resolveTeacherNamesById([student.assigned_teacher_id]) : Promise.resolve(new Map<string, string>()),
     ]);
 
     const name = student.student_name || profile?.full_name || 'Student';
@@ -391,7 +392,7 @@ export async function resolveCurrentStudentProfile() {
       age: student.age ? String(student.age) : '',
       program: programResult.data?.name || student.program_name || 'No program assigned',
       level: student.current_level || student.level || 'Level not set',
-      teacher: teacherResult.data?.full_name || 'No teacher assigned',
+      teacher: student.assigned_teacher_id ? teacherResult.get(student.assigned_teacher_id) || 'No teacher assigned' : 'No teacher assigned',
       teacherId: student.assigned_teacher_id || null,
       startDate: formatDate(student.enrollment_date || student.start_date),
       timezone: student.timezone || profile?.timezone || defaultTimezone,
@@ -421,12 +422,11 @@ async function fetchClassesForProfile(profile: StudentPortalProfile) {
 
   const teacherIds = Array.from(new Set(data.map((session) => session.teacher_id).filter(Boolean))) as string[];
   const programIds = Array.from(new Set(data.map((session) => session.program_id).filter(Boolean))) as string[];
-  const [teacherResult, programResult] = await Promise.all([
-    teacherIds.length ? supabase.from('profiles').select('id, full_name').in('id', teacherIds) : Promise.resolve({ data: [] }),
+  const [teacherById, programResult] = await Promise.all([
+    resolveTeacherNamesById(teacherIds),
     programIds.length ? supabase.from('programs').select('id, name').in('id', programIds) : Promise.resolve({ data: [] }),
   ]);
 
-  const teacherById = new Map((teacherResult.data || []).map((teacher) => [teacher.id, teacher.full_name]));
   const programById = new Map((programResult.data || []).map((program) => [program.id, program.name]));
 
   return data.map((session): StudentClassSession => {

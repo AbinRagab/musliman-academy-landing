@@ -111,7 +111,7 @@ create table if not exists public.students (
   age text,
   program_id uuid references public.programs(id),
   level text,
-  assigned_teacher_id uuid references public.profiles(id),
+  assigned_teacher_id uuid,
   schedule_notes text,
   start_date date,
   status text default 'active',
@@ -137,7 +137,7 @@ create table if not exists public.free_trials (
   id uuid primary key default gen_random_uuid(),
   lead_id uuid references public.leads(id),
   student_id uuid references public.students(id),
-  teacher_id uuid references public.profiles(id),
+  teacher_id uuid references public.teachers(id),
   program_id uuid references public.programs(id),
   trial_date date,
   trial_time time,
@@ -153,7 +153,7 @@ create table if not exists public.free_trials (
 create table if not exists public.classes (
   id uuid primary key default gen_random_uuid(),
   student_id uuid references public.students(id),
-  teacher_id uuid references public.profiles(id),
+  teacher_id uuid references public.teachers(id),
   program_id uuid references public.programs(id),
   class_date date not null,
   start_time time,
@@ -172,7 +172,7 @@ create table if not exists public.attendance (
   id uuid primary key default gen_random_uuid(),
   class_id uuid references public.classes(id) on delete cascade,
   student_id uuid references public.students(id),
-  teacher_id uuid references public.profiles(id),
+  teacher_id uuid references public.teachers(id),
   status public.attendance_status not null,
   notes text,
   marked_by uuid references public.profiles(id),
@@ -182,7 +182,7 @@ create table if not exists public.attendance (
 create table if not exists public.evaluations (
   id uuid primary key default gen_random_uuid(),
   student_id uuid references public.students(id),
-  teacher_id uuid references public.profiles(id),
+  teacher_id uuid references public.teachers(id),
   class_id uuid references public.classes(id),
   recitation_rating int check (recitation_rating between 1 and 5),
   tajweed_rating int check (tajweed_rating between 1 and 5),
@@ -236,6 +236,11 @@ create table if not exists public.homework_submissions (
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now()
 );
+
+alter table public.students drop constraint if exists students_assigned_teacher_id_fkey;
+alter table public.students
+  add constraint students_assigned_teacher_id_fkey
+  foreign key (assigned_teacher_id) references public.teachers(id);
 
 create index if not exists profiles_role_idx on public.profiles(role);
 create index if not exists leads_status_idx on public.leads(status);
@@ -297,6 +302,16 @@ security definer
 set search_path = public
 as $$
   select role from public.profiles where id = auth.uid();
+$$;
+
+create or replace function public.current_teacher_id()
+returns uuid
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select id from public.teachers where profile_id = auth.uid() limit 1;
 $$;
 
 create or replace function public.is_admin_role()
@@ -374,7 +389,7 @@ create policy "Students can view their own student record" on public.students
 
 drop policy if exists "Teachers can view students assigned to them" on public.students;
 create policy "Teachers can view students assigned to them" on public.students
-  for select using (assigned_teacher_id = auth.uid());
+  for select using (assigned_teacher_id = public.current_teacher_id());
 
 drop policy if exists "Admin roles can view all students" on public.students;
 create policy "Admin roles can view all students" on public.students
@@ -398,7 +413,7 @@ create policy "Admin admissions manage free trials" on public.free_trials
 
 drop policy if exists "Teachers view assigned free trials" on public.free_trials;
 create policy "Teachers view assigned free trials" on public.free_trials
-  for select using (teacher_id = auth.uid());
+  for select using (teacher_id = public.current_teacher_id());
 
 drop policy if exists "Students can view their own classes" on public.classes;
 create policy "Students can view their own classes" on public.classes
@@ -406,11 +421,11 @@ create policy "Students can view their own classes" on public.classes
 
 drop policy if exists "Teachers can view assigned classes" on public.classes;
 create policy "Teachers can view assigned classes" on public.classes
-  for select using (teacher_id = auth.uid());
+  for select using (teacher_id = public.current_teacher_id());
 
 drop policy if exists "Teachers can update assigned classes" on public.classes;
 create policy "Teachers can update assigned classes" on public.classes
-  for update using (teacher_id = auth.uid()) with check (teacher_id = auth.uid());
+  for update using (teacher_id = public.current_teacher_id()) with check (teacher_id = public.current_teacher_id());
 
 drop policy if exists "Admin roles can view all classes" on public.classes;
 create policy "Admin roles can view all classes" on public.classes
@@ -426,15 +441,15 @@ create policy "Students can view their own attendance" on public.attendance
 
 drop policy if exists "Teachers can view assigned attendance" on public.attendance;
 create policy "Teachers can view assigned attendance" on public.attendance
-  for select using (teacher_id = auth.uid());
+  for select using (teacher_id = public.current_teacher_id());
 
 drop policy if exists "Teachers can insert attendance for assigned classes" on public.attendance;
 create policy "Teachers can insert attendance for assigned classes" on public.attendance
-  for insert with check (teacher_id = auth.uid() and exists (select 1 from public.classes c where c.id = attendance.class_id and c.teacher_id = auth.uid()));
+  for insert with check (teacher_id = public.current_teacher_id() and exists (select 1 from public.classes c where c.id = attendance.class_id and c.teacher_id = public.current_teacher_id()));
 
 drop policy if exists "Teachers can update attendance for assigned classes" on public.attendance;
 create policy "Teachers can update attendance for assigned classes" on public.attendance
-  for update using (teacher_id = auth.uid()) with check (teacher_id = auth.uid());
+  for update using (teacher_id = public.current_teacher_id()) with check (teacher_id = public.current_teacher_id());
 
 drop policy if exists "Admin roles can manage all attendance" on public.attendance;
 create policy "Admin roles can manage all attendance" on public.attendance
@@ -446,13 +461,13 @@ create policy "Students can view their own evaluations" on public.evaluations
 
 drop policy if exists "Teachers can view assigned evaluations" on public.evaluations;
 create policy "Teachers can view assigned evaluations" on public.evaluations
-  for select using (teacher_id = auth.uid());
+  for select using (teacher_id = public.current_teacher_id());
 
 drop policy if exists "Teachers can insert evaluations for assigned students" on public.evaluations;
 create policy "Teachers can insert evaluations for assigned students" on public.evaluations
   for insert with check (
-    teacher_id = auth.uid()
-    and exists (select 1 from public.students s where s.id = evaluations.student_id and s.assigned_teacher_id = auth.uid())
+    teacher_id = public.current_teacher_id()
+    and exists (select 1 from public.students s where s.id = evaluations.student_id and s.assigned_teacher_id = public.current_teacher_id())
   );
 
 drop policy if exists "Admin roles can manage all evaluations" on public.evaluations;
@@ -482,7 +497,7 @@ create policy "Authenticated users view own homework submissions" on public.home
 
 drop policy if exists "Teachers can view assigned homework submissions" on public.homework_submissions;
 create policy "Teachers can view assigned homework submissions" on public.homework_submissions
-  for select using (exists (select 1 from public.classes c where c.id = homework_submissions.class_id and c.teacher_id = auth.uid()));
+  for select using (exists (select 1 from public.classes c where c.id = homework_submissions.class_id and c.teacher_id = public.current_teacher_id()));
 
 drop policy if exists "Students can submit homework" on public.homework_submissions;
 drop policy if exists "Authenticated users insert own homework submissions" on public.homework_submissions;

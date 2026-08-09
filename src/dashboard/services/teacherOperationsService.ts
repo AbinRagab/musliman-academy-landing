@@ -97,16 +97,23 @@ export async function getCurrentTeacherContext(): Promise<TeacherContext | null>
 
   const { data: teacherRecord } = await client
     .from('teachers')
-    .select('id, profile_id, full_name')
+    .select('id, profile_id, full_name, status')
     .eq('profile_id', profile.id)
     .maybeSingle();
+
+  if (!teacherRecord) {
+    if (import.meta.env.DEV) {
+      console.warn('Teacher profile exists without a matching public.teachers row.', { profileId: profile.id });
+    }
+    return null;
+  }
 
   return {
     authUserId,
     profile,
-    teacherId: profile.id,
-    teacherProfileId: teacherRecord?.profile_id || profile.id,
-    teacherName: teacherRecord?.full_name || profile.full_name,
+    teacherId: teacherRecord.id,
+    teacherProfileId: teacherRecord.profile_id || profile.id,
+    teacherName: teacherRecord.full_name || profile.full_name,
   };
 }
 
@@ -249,7 +256,7 @@ export async function markTeacherAttendance(payload: {
     teacher_id: context.teacherId,
     status: payload.status,
     notes: payload.notes || null,
-    marked_by: context.teacherId,
+    marked_by: context.teacherProfileId,
     marked_at: new Date().toISOString(),
   };
 

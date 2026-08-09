@@ -1,6 +1,7 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
 import { fetchPrograms } from './programsService';
+import { fetchActiveTeacherOptions, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
 
 export type StudentManagementRow = {
   id: string;
@@ -19,6 +20,7 @@ export type StudentManagementRow = {
 
 export type StudentActionTeacher = {
   id: string;
+  profileId?: string | null;
   full_name: string;
   email?: string | null;
   specialization?: string | null;
@@ -357,11 +359,7 @@ export async function fetchStudentManagementRows() {
   }
 
   const teacherIds = Array.from(new Set((data || []).map((student) => student.assigned_teacher_id).filter(Boolean))) as string[];
-  const { data: teachers } = teacherIds.length
-    ? await client.from('profiles').select('id, full_name').in('id', teacherIds)
-    : { data: [] };
-
-  const teacherById = new Map((teachers || []).map((teacher) => [teacher.id, teacher.full_name]));
+  const teacherById = await resolveTeacherNamesById(teacherIds);
 
   return (data || []).map((student) => {
     const joinedProgram = Array.isArray(student.programs) ? student.programs[0] : student.programs;
@@ -385,30 +383,20 @@ export async function fetchStudentManagementRows() {
 }
 
 export async function fetchStudentActionLookups() {
-  const client = requireSupabase();
-  const [{ data: profiles, error: profilesError }, { data: teachers }, programs] = await Promise.all([
-    client.from('profiles').select('id, full_name, email').eq('role', 'teacher').eq('status', 'active').order('full_name'),
-    client.from('teachers').select('profile_id, specialization, availability').eq('status', 'active'),
+  const [teacherOptions, programs] = await Promise.all([
+    fetchActiveTeacherOptions(),
     fetchPrograms(),
   ]);
 
-  if (profilesError) {
-    throw profilesError;
-  }
-
-  const teacherByProfileId = new Map((teachers || []).map((teacher) => [teacher.profile_id, teacher]));
-
   return {
-    teachers: (profiles || []).map((profile) => {
-      const teacher = teacherByProfileId.get(profile.id);
-      return {
-        id: profile.id,
-        full_name: profile.full_name,
-        email: profile.email,
-        specialization: teacher?.specialization || null,
-        availability: teacher?.availability || null,
-      } satisfies StudentActionTeacher;
-    }),
+    teachers: teacherOptions.map((teacher) => ({
+      id: teacher.id,
+      profileId: teacher.profileId,
+      full_name: teacher.full_name,
+      email: teacher.email,
+      specialization: teacher.specialization || null,
+      availability: teacher.availability || null,
+    }) satisfies StudentActionTeacher),
     programs: programs as StudentProgramOption[],
   };
 }
@@ -461,14 +449,17 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
 
   await client.from('free_trials').update({ teacher_id: teacherId }).eq('student_id', studentId);
 
-  const { error: notificationError } = await client.from('in_app_notifications').insert({
-    recipient_id: teacherId,
-    title: 'New student assigned',
-    message: 'A student has been assigned to you. Please review the student record and upcoming schedule.',
-    type: 'class',
-    related_entity_type: 'student',
-    related_entity_id: studentId,
-  });
+  const teacherProfileId = await resolveTeacherProfileId(teacherId);
+  const { error: notificationError } = teacherProfileId
+    ? await client.from('in_app_notifications').insert({
+      recipient_id: teacherProfileId,
+      title: 'New student assigned',
+      message: 'A student has been assigned to you. Please review the student record and upcoming schedule.',
+      type: 'class',
+      related_entity_type: 'student',
+      related_entity_id: studentId,
+    })
+    : { error: null };
 
   if (notificationError && import.meta.env.DEV) {
     console.info('Teacher assignment notification was not created:', notificationError.message);
@@ -545,6 +536,10 @@ export async function updateStudentSetup(studentId: string, payload: {
   }
 
   if (payload.startDate && payload.classTime) {
+    if (!payload.teacherId) {
+      throw new Error('Assign a teacher before saving schedule.');
+    }
+
     await client.from('classes').upsert({
       student_id: studentId,
       teacher_id: payload.teacherId || null,
@@ -598,6 +593,10 @@ export async function updateStudentSchedule(studentId: string, payload: {
 
   if (!payload.startDate || !payload.classTime) {
     return data;
+  }
+
+  if (!payload.teacherId) {
+    throw new Error('Assign a teacher before saving schedule.');
   }
 
   const classRows = buildScheduledClassRows(studentId, payload);

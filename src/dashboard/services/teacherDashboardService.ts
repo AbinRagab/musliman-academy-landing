@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
+import { getCurrentTeacherContext } from './teacherOperationsService';
 
 export type TeacherDashboardClass = {
   id: string;
@@ -70,8 +71,8 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
   }
 
   try {
-    const { data: sessionData } = await supabase.auth.getSession();
-    const teacherId = sessionData.session?.user.id;
+    const context = await getCurrentTeacherContext();
+    const teacherId = context?.teacherId;
 
     if (!teacherId) {
       return emptyData;
