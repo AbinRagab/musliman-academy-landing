@@ -42,18 +42,18 @@ export async function fetchPrograms({ activeOnly = true, force = false }: { acti
   inflightPrograms = (async () => {
     let query = supabase
       .from('programs')
-      .select('id, name, slug, status, description')
+      .select('id, name, slug, status')
       .order('name', { ascending: true });
 
     if (activeOnly) {
-      query = query.or('status.is.null,status.eq.active');
+      query = query.eq('status', 'active');
     }
 
     const { data, error } = await query;
 
     if (error) {
       if (import.meta.env.DEV) {
-        console.warn('Programs fetch failed:', error.message);
+        console.warn('Programs fetch failed. Check public.programs RLS/read policy:', error);
       }
       throw error;
     }
@@ -61,7 +61,7 @@ export async function fetchPrograms({ activeOnly = true, force = false }: { acti
     const programs = (data || []).map((row) => normalizeProgram(row as Record<string, unknown>));
 
     if (programs.length === 0 && import.meta.env.DEV) {
-      console.warn('Programs table returned 0 active records.');
+      console.warn('public.programs returned 0 active records for Set Program dropdown.', { activeOnly, rowCount: data?.length || 0 });
     }
 
     cachedPrograms = programs;

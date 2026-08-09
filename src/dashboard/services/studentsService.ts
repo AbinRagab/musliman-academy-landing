@@ -346,37 +346,42 @@ export async function fetchStudentManagementRows() {
   const client = requireSupabase();
   const { data, error } = await client
     .from('students')
-    .select('id, student_name, program_id, assigned_teacher_id, level, status, schedule_notes, start_date, created_at')
+    .select('id, student_name, program_id, assigned_teacher_id, level, status, schedule_notes, start_date, created_at, programs:program_id(id, name, slug)')
     .order('created_at', { ascending: false });
 
   if (error) {
+    if (import.meta.env.DEV) {
+      console.error('Student management rows fetch failed:', error);
+    }
     throw error;
   }
 
-  const programIds = Array.from(new Set((data || []).map((student) => student.program_id).filter(Boolean))) as string[];
   const teacherIds = Array.from(new Set((data || []).map((student) => student.assigned_teacher_id).filter(Boolean))) as string[];
-  const [{ data: programs }, { data: teachers }] = await Promise.all([
-    programIds.length ? client.from('programs').select('id, name').in('id', programIds) : Promise.resolve({ data: [] }),
-    teacherIds.length ? client.from('profiles').select('id, full_name').in('id', teacherIds) : Promise.resolve({ data: [] }),
-  ]);
+  const { data: teachers } = teacherIds.length
+    ? await client.from('profiles').select('id, full_name').in('id', teacherIds)
+    : { data: [] };
 
-  const programById = new Map((programs || []).map((program) => [program.id, program.name]));
   const teacherById = new Map((teachers || []).map((teacher) => [teacher.id, teacher.full_name]));
 
-  return (data || []).map((student) => ({
-    id: student.id,
-    name: student.student_name,
-    programId: student.program_id,
-    program: student.program_id ? programById.get(student.program_id) || 'Program not assigned' : 'Program not assigned',
-    assignedTeacherId: student.assigned_teacher_id,
-    teacher: student.assigned_teacher_id ? teacherById.get(student.assigned_teacher_id) || 'Assigned teacher' : 'Unassigned',
-    level: student.level || 'Placement pending',
-    attendance: 'New',
-    status: student.status || 'active',
-    nextClass: student.start_date || 'Schedule pending',
-    scheduleNotes: student.schedule_notes,
-    startDate: student.start_date,
-  })) satisfies StudentManagementRow[];
+  return (data || []).map((student) => {
+    const joinedProgram = Array.isArray(student.programs) ? student.programs[0] : student.programs;
+    const programName = joinedProgram?.name || 'Program not assigned';
+
+    return {
+      id: student.id,
+      name: student.student_name,
+      programId: student.program_id,
+      program: programName,
+      assignedTeacherId: student.assigned_teacher_id,
+      teacher: student.assigned_teacher_id ? teacherById.get(student.assigned_teacher_id) || 'Assigned teacher' : 'Unassigned',
+      level: student.level || 'Placement pending',
+      attendance: 'New',
+      status: student.status || 'active',
+      nextClass: student.start_date || 'Schedule pending',
+      scheduleNotes: student.schedule_notes,
+      startDate: student.start_date,
+    };
+  }) satisfies StudentManagementRow[];
 }
 
 export async function fetchStudentActionLookups() {
