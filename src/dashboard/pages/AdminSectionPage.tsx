@@ -1330,9 +1330,47 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       return;
     }
 
+    const submittedStudentId = String(selectedRow.id);
     const submittedTeacherId = activeAction === 'assign_teacher'
       ? String(formData.get('teacherId') || '')
       : null;
+    const selectedTeacher = activeAction === 'assign_teacher'
+      ? teachers.find((teacher) => teacher.id === submittedTeacherId) || null
+      : null;
+    const assignTeacherUpdatePayload = activeAction === 'assign_teacher'
+      ? {
+        assigned_teacher_id: submittedTeacherId,
+        updated_at: new Date().toISOString(),
+      }
+      : null;
+
+    if (activeAction === 'assign_teacher') {
+      if (!submittedTeacherId) {
+        notify('Select a teacher before saving.', 'error');
+        return;
+      }
+
+      if (!isUuid(submittedTeacherId)) {
+        notify('Select a valid teacher before saving.', 'error');
+        return;
+      }
+
+      if (!selectedTeacher) {
+        notify('Selected teacher is not an active teacher record.', 'error');
+        return;
+      }
+
+      if (import.meta.env.DEV) {
+        console.log('Assign teacher payload', {
+          student: selectedRow,
+          studentId: submittedStudentId,
+          selectedTeacher,
+          selectedTeacherId: submittedTeacherId,
+          currentProgram: selectedRow.program,
+          updatePayload: assignTeacherUpdatePayload,
+        });
+      }
+    }
 
     setSavingAction(true);
 
@@ -1348,7 +1386,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       }
 
       if (activeAction === 'assign_teacher') {
-        await assignStudentTeacher(String(selectedRow.id), submittedTeacherId || '', String(formData.get('notes') || ''));
+        await assignStudentTeacher(submittedStudentId, submittedTeacherId || '', String(formData.get('notes') || ''));
         notify('Teacher assigned successfully.', 'success');
       }
 
@@ -1399,10 +1437,21 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       if (import.meta.env.DEV) {
         console.error('Student action failed:', error);
         if (activeAction === 'assign_teacher') {
+          const supabaseError = error as {
+            message?: string;
+            details?: string;
+            hint?: string;
+            code?: string;
+          };
           console.error('Assign teacher failed', {
-            studentId: String(selectedRow.id),
-            selectedTeacherId: submittedTeacherId,
             error,
+            message: supabaseError.message,
+            details: supabaseError.details,
+            hint: supabaseError.hint,
+            code: supabaseError.code,
+            studentId: submittedStudentId,
+            selectedTeacherId: submittedTeacherId,
+            updatePayload: assignTeacherUpdatePayload,
           });
         }
       }

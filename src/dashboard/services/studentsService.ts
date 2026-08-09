@@ -385,7 +385,7 @@ export async function fetchStudentManagementRows() {
       programId: student.program_id,
       program: programName,
       assignedTeacherId: student.assigned_teacher_id,
-      teacher: student.assigned_teacher_id ? teacherById.get(student.assigned_teacher_id) || 'Assigned teacher' : 'Unassigned',
+      teacher: student.assigned_teacher_id ? teacherById.get(student.assigned_teacher_id) || 'Teacher name unavailable' : 'Unassigned',
       level: student.level || 'Placement pending',
       attendance: 'New',
       status: student.status || 'active',
@@ -432,9 +432,27 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
     throw new Error('Selected teacher is not a valid teacher record.');
   }
 
+  if (operationalTeacherId !== teacherId) {
+    throw new Error('Selected teacher id must be an operational teacher record id.');
+  }
+
+  const { data: selectedTeacher, error: selectedTeacherError } = await client
+    .from('teachers')
+    .select('id, profile_id, full_name, status')
+    .eq('id', teacherId)
+    .maybeSingle();
+
+  if (selectedTeacherError) {
+    throw selectedTeacherError;
+  }
+
+  if (!selectedTeacher?.id) {
+    throw new Error('Selected teacher record was not found.');
+  }
+
   const { data: currentStudent, error: currentStudentError } = await client
     .from('students')
-    .select('id, lead_id, schedule_notes')
+    .select('id, lead_id, student_name, program_id, assigned_teacher_id')
     .eq('id', studentId)
     .maybeSingle();
 
@@ -446,16 +464,34 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
     throw new Error('Student record was not found.');
   }
 
-  const scheduleNotes = [
-    currentStudent?.schedule_notes || '',
-    note ? `Teacher assignment note: ${note}` : '',
-  ].filter(Boolean).join('\n');
+  const { data: currentProgram, error: currentProgramError } = currentStudent.program_id
+    ? await client
+      .from('programs')
+      .select('id, name, slug, status')
+      .eq('id', currentStudent.program_id)
+      .maybeSingle()
+    : { data: null, error: null };
+
+  if (currentProgramError && import.meta.env.DEV) {
+    console.warn('Assign teacher current program lookup failed:', currentProgramError);
+  }
+
   const assignmentPayload = {
     assigned_teacher_id: operationalTeacherId,
-    schedule_notes: scheduleNotes || currentStudent?.schedule_notes || null,
-    status: 'active',
     updated_at: new Date().toISOString(),
   };
+
+  if (import.meta.env.DEV) {
+    console.log('Assign teacher payload', {
+      student: currentStudent,
+      studentId,
+      selectedTeacher,
+      selectedTeacherId: teacherId,
+      currentProgram,
+      updatePayload: assignmentPayload,
+      note: note || null,
+    });
+  }
 
   const { data, error } = await client
     .from('students')
@@ -467,14 +503,21 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
   if (error) {
     if (import.meta.env.DEV) {
       console.error('Assign teacher failed', {
+        error,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
         studentId,
         selectedTeacherId: teacherId,
-        payload: assignmentPayload,
-        operationalTeacherId,
-        error,
+        updatePayload: assignmentPayload,
       });
     }
     throw error;
+  }
+
+  if (!data) {
+    throw new Error('Assignment failed: student not found or update blocked.');
   }
 
   const { data: verifiedStudent, error: verifyError } = await client
