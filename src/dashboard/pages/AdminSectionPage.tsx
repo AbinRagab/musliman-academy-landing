@@ -14,6 +14,7 @@ import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
 import Toast, { type ToastMessage } from '../components/Toast';
+import { useAuth, type AuthRole } from '../auth/AuthProvider';
 import {
   adminPayments,
   adminReports,
@@ -31,6 +32,7 @@ import {
   fetchStudentManagementRows,
   fetchStudentPaymentRecords,
   updateStudentLevel,
+  updateStudentProgram,
   updateStudentSchedule,
   updateStudentSetup,
   type StudentActionTeacher,
@@ -55,6 +57,7 @@ type GenericRow = Record<string, string | number | boolean | null | undefined>;
 type AdminActionType =
   | 'view_record'
   | 'complete_setup'
+  | 'set_program'
   | 'assign_teacher'
   | 'set_schedule'
   | 'update_level'
@@ -89,6 +92,7 @@ type DrawerContent = {
 
 const reportTabs = ['Admissions', 'Academic', 'Attendance', 'Teachers', 'Finance'] as const;
 const settingsTabs = ['Academy Info', 'Programs', 'Roles & Permissions', 'Notifications', 'Payment Settings', 'Schedule Defaults', 'Integrations', 'Security'] as const;
+const studentProgramManagerRoles: AuthRole[] = ['super_admin', 'admin', 'academic_manager'];
 
 function rowMatches(row: GenericRow, search: string) {
   const query = search.trim().toLowerCase();
@@ -649,6 +653,44 @@ function MissingFields({ row }: { row: GenericRow }) {
   );
 }
 
+function SetProgramDrawer({
+  row,
+  saving,
+  onClose,
+  onSubmit,
+}: {
+  row: GenericRow;
+  saving: boolean;
+  onClose: () => void;
+  onSubmit: (formData: FormData) => void;
+}) {
+  const canWrite = isUuid(row.id);
+  const formId = 'student-set-program-form';
+
+  return (
+    <DashboardDrawer
+      title="Set Program"
+      subtitle="Assign or update the student's academic program."
+      size="md"
+      onClose={onClose}
+      footer={(
+        <>
+          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+          <ActionButton type="submit" form={formId} variant="copper" disabled={saving || !canWrite}>{saving ? 'Saving' : 'Save Program'}</ActionButton>
+        </>
+      )}
+    >
+      {!canWrite && <p className="dashboard-inline-error">This action requires a live Supabase student record.</p>}
+      <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
+        <label><span>Student</span><input value={String(row.name)} readOnly /></label>
+        <label><span>Current Program</span><input value={String(row.program || 'Program not assigned')} readOnly /></label>
+        <ProgramSelect label="Program" name="programId" value={String(row.programId || '')} required />
+        <label><span>Optional note</span><textarea name="notes" rows={4} placeholder="Add an academic note about this program update..." /></label>
+      </form>
+    </DashboardDrawer>
+  );
+}
+
 function StudentActionDrawer({
   action,
   row,
@@ -690,6 +732,7 @@ function StudentActionDrawer({
   const titleByAction: Record<AdminActionType, string> = {
     view_record: 'Student Record',
     complete_setup: 'Complete Student Setup',
+    set_program: 'Set Program',
     assign_teacher: 'Assign Teacher',
     set_schedule: 'Set Schedule',
     update_level: 'Update Level',
@@ -709,6 +752,10 @@ function StudentActionDrawer({
     cancel: 'Cancel',
   };
   const formId = `student-action-${action}`;
+
+  if (action === 'set_program') {
+    return <SetProgramDrawer row={row} saving={saving} onClose={onClose} onSubmit={onSubmit} />;
+  }
 
   if (action === 'view_record') {
     return (
@@ -993,6 +1040,7 @@ function buildStats(section: AdminSection, rows: GenericRow[]) {
 
 export default function AdminSectionPage({ section }: { section: AdminSection }) {
   const navigate = useNavigate();
+  const { role } = useAuth();
   const page = pageCopy[section];
   const [studentRows, setStudentRows] = useState<GenericRow[] | null>(null);
   const [selectedRow, setSelectedRow] = useState<GenericRow | null>(null);
@@ -1007,6 +1055,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
   const [statusFilter, setStatusFilter] = useState('all');
   const [activeReportTab, setActiveReportTab] = useState<(typeof reportTabs)[number]>('Admissions');
   const [activeSettingsTab, setActiveSettingsTab] = useState<(typeof settingsTabs)[number]>('Academy Info');
+  const canSetStudentProgram = Boolean(role && studentProgramManagerRoles.includes(role));
 
   function notify(message: string, type: ToastMessage['type'] = 'info') {
     setToast({ type, message });
@@ -1090,6 +1139,16 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
     setSavingAction(true);
 
     try {
+      if (activeAction === 'set_program') {
+        const programId = String(formData.get('programId') || '');
+        if (!programId) {
+          notify('Select a program before saving.', 'error');
+          return;
+        }
+        await updateStudentProgram(String(selectedRow.id), programId, String(formData.get('notes') || ''));
+        notify('Program updated successfully.', 'success');
+      }
+
       if (activeAction === 'assign_teacher') {
         await assignStudentTeacher(String(selectedRow.id), String(formData.get('teacherId') || ''), String(formData.get('notes') || ''));
         notify('Teacher assigned successfully.', 'success');
@@ -1143,6 +1202,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         console.error('Student action failed:', error);
       }
       const errorByAction: Partial<Record<AdminActionType, string>> = {
+        set_program: 'Failed to update program. Please try again.',
         assign_teacher: 'Failed to assign teacher. Please try again.',
         complete_setup: 'Failed to update student setup. Please try again.',
         set_schedule: error instanceof Error ? error.message : 'Unable to save schedule.',
@@ -1196,6 +1256,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       const canWriteStudent = isUuid(row.id);
       return [
         { label: 'Complete Setup', onClick: () => openAction('complete_setup', row), disabled: Boolean(row.setupReady) || !canWriteStudent },
+        { label: 'Set Program', onClick: () => openAction('set_program', row), disabled: !canWriteStudent, hidden: !canSetStudentProgram },
         { label: 'Assign Teacher', onClick: () => openAction('assign_teacher', row), disabled: !canWriteStudent },
         { label: 'Set Schedule', onClick: () => openAction('set_schedule', row), disabled: !canWriteStudent },
         { label: 'Update Level', onClick: () => openAction('update_level', row), disabled: !canWriteStudent },
@@ -1367,7 +1428,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       { header: 'Finance', accessor: (row) => <StatusBadge label={row.finance ? 'enabled' : 'disabled'} tone={row.finance ? 'success' : 'neutral'} /> },
       createActionsColumn('Permission', primaryAction, actions),
     ];
-  }, [section, navigate, rows]);
+  }, [canSetStudentProgram, section, navigate, rows]);
 
   const visibleRows = section === 'reports'
     ? rows.filter((row) => row.category === activeReportTab)

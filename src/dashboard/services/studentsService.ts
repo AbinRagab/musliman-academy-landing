@@ -438,6 +438,40 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
   return data;
 }
 
+export async function updateStudentProgram(studentId: string, programId: string, note?: string) {
+  const client = requireSupabase();
+  const { data: currentStudent, error: currentStudentError } = await client
+    .from('students')
+    .select('program_id, schedule_notes')
+    .eq('id', studentId)
+    .maybeSingle();
+
+  if (currentStudentError) {
+    throw currentStudentError;
+  }
+
+  const scheduleNotes = [
+    currentStudent?.schedule_notes || '',
+    note ? `Program update note: ${note}` : '',
+  ].filter(Boolean).join('\n');
+
+  const { data, error } = await client
+    .from('students')
+    .update({
+      program_id: programId,
+      schedule_notes: scheduleNotes || currentStudent?.schedule_notes || null,
+    })
+    .eq('id', studentId)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
 export async function updateStudentSetup(studentId: string, payload: {
   programId?: string | null;
   teacherId?: string | null;
