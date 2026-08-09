@@ -11,7 +11,7 @@ export type TeacherContext = {
     status: string;
   };
   teacherId: string;
-  teacherProfileId: string;
+  currentTeacherProfileId: string;
   teacherLookupIds: string[];
   teacherName: string;
 };
@@ -136,7 +136,7 @@ export async function getCurrentTeacherContext(): Promise<TeacherContext | null>
     authUserId,
     profile,
     teacherId: teacherRecord.id,
-    teacherProfileId: teacherRecord.profile_id || profile.id,
+    currentTeacherProfileId: teacherRecord.profile_id || profile.id,
     teacherLookupIds: Array.from(new Set([teacherRecord.id, teacherRecord.profile_id || profile.id].filter(Boolean))),
     teacherName: teacherRecord.full_name || profile.full_name,
   };
@@ -144,6 +144,10 @@ export async function getCurrentTeacherContext(): Promise<TeacherContext | null>
 
 export function applyTeacherIdFilter<T>(query: T, column: string, context: TeacherContext): T {
   return (query as { eq: (column: string, value: string) => T }).eq(column, context.teacherId);
+}
+
+export function applyCurrentTeacherProfileFilter<T>(query: T, column: string, context: TeacherContext): T {
+  return (query as { eq: (column: string, value: string) => T }).eq(column, context.currentTeacherProfileId);
 }
 
 export async function fetchTeacherOperationsData(): Promise<TeacherOperationsData> {
@@ -162,7 +166,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
 
   const today = new Date().toISOString().slice(0, 10);
   const [{ data: studentRows, error: studentsError }, { data: classRows, error: classesError }] = await Promise.all([
-    applyTeacherIdFilter(
+    applyCurrentTeacherProfileFilter(
       client
         .from('students')
         .select('id, student_name, program_id, level, status, assigned_teacher_id'),
@@ -199,7 +203,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
   if (import.meta.env.DEV) {
     console.info('Teacher operations query result:', {
       authUserId: context.authUserId,
-      profileId: context.teacherProfileId,
+      currentTeacherProfileId: context.currentTeacherProfileId,
       teacherId: context.teacherId,
       lookupIds: context.teacherLookupIds,
       assignedStudents: students.length,
@@ -318,7 +322,7 @@ export async function markTeacherAttendance(payload: {
     teacher_id: context.teacherId,
     status: payload.status,
     notes: payload.notes || null,
-    marked_by: context.teacherProfileId,
+    marked_by: context.currentTeacherProfileId,
     marked_at: new Date().toISOString(),
   };
 

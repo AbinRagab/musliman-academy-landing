@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
-import { resolveTeacherNamesById } from './teachersService';
+import { resolveTeacherNamesById, resolveTeacherNamesByProfileId } from './teachersService';
 
 export type StudentPortalProfile = {
   id: string;
@@ -375,7 +375,7 @@ export async function resolveCurrentStudentProfile() {
 
     const [programResult, teacherResult] = await Promise.all([
       student.program_id ? supabase.from('programs').select('id, name').eq('id', student.program_id).maybeSingle() : Promise.resolve({ data: null }),
-      student.assigned_teacher_id ? resolveTeacherNamesById([student.assigned_teacher_id]) : Promise.resolve(new Map<string, string>()),
+      student.assigned_teacher_id ? resolveTeacherNamesByProfileId([student.assigned_teacher_id]) : Promise.resolve(new Map<string, string>()),
     ]);
 
     const name = student.student_name || profile?.full_name || 'Student';

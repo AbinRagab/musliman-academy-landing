@@ -1,7 +1,7 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
 import { fetchPrograms as fetchActivePrograms } from './programsService';
-import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById } from './teachersService';
+import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
 
 export type LeadStatus =
   | 'new'
@@ -59,6 +59,7 @@ export type LeadActivity = {
 
 export type TeacherOption = {
   id: string;
+  profileId?: string | null;
   full_name: string;
   email: string;
   specialization?: string | null;
@@ -468,9 +469,12 @@ export async function fetchLeadActivity(leadId: string) {
 export async function convertLeadToStudent(leadId: string, payload: ConvertLeadPayload) {
   const client = requireSupabase();
   const operationalTeacherId = await resolveOperationalTeacherId(payload.assigned_teacher_id);
+  const selectedTeacherProfileId = operationalTeacherId
+    ? await resolveTeacherProfileId(operationalTeacherId)
+    : null;
   const { data: student, error } = await client
     .from('students')
-    .insert({ ...payload, assigned_teacher_id: operationalTeacherId })
+    .insert({ ...payload, assigned_teacher_id: selectedTeacherProfileId })
     .select('*')
     .single();
 

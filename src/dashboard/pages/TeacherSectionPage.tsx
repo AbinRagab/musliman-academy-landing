@@ -696,7 +696,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <div className="dashboard-grid dashboard-grid--two">
           <SectionCard title="Teacher Performance">
             <div className="dashboard-insight-list">
-              <EvaluationCard title="Assigned students" score={students.length} note="Students where assigned_teacher_id matches this teacher." />
+              <EvaluationCard title="Assigned students" score={students.length} note="Students where assigned_teacher_id matches this teacher profile." />
               <EvaluationCard title="Completed classes" score={classRows.filter((classItem) => classItem.status === 'Completed').length} note="Completed class records from Supabase." />
               <EvaluationCard title="Reports submitted" score={classRows.filter((classItem) => classItem.reportStatus === 'Submitted').length} note="Classes with lesson or homework notes saved." />
             </div>

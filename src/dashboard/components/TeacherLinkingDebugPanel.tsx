@@ -11,7 +11,7 @@ type DebugState = {
   teacher: Record<string, unknown> | null;
   students: {
     filter: string;
-    assignedTeacherId: string | null;
+    assignedTeacherProfileId: string | null;
     count: number;
     error: string | null;
   };
@@ -30,8 +30,8 @@ const emptyDebugState: DebugState = {
   profile: null,
   teacher: null,
   students: {
-    filter: 'students.assigned_teacher_id = <teacher.id>',
-    assignedTeacherId: null,
+    filter: 'students.assigned_teacher_id = <teacher.profile_id>',
+    assignedTeacherProfileId: null,
     count: 0,
     error: null,
   },
@@ -141,12 +141,13 @@ export default function TeacherLinkingDebugPanel({ route }: { route: string }) {
           return;
         }
 
-        nextState.students.assignedTeacherId = teacher.id;
-        nextState.students.filter = `students.assigned_teacher_id = ${teacher.id}`;
+        const currentTeacherProfileId = teacher.profile_id || profile.id;
+        nextState.students.assignedTeacherProfileId = currentTeacherProfileId;
+        nextState.students.filter = `students.assigned_teacher_id = ${currentTeacherProfileId}`;
         const { data: students, error: studentsError } = await supabase
           .from('students')
           .select('id')
-          .eq('assigned_teacher_id', teacher.id);
+          .eq('assigned_teacher_id', currentTeacherProfileId);
         nextState.students.count = students?.length || 0;
         nextState.students.error = studentsError?.message || null;
 
@@ -225,7 +226,7 @@ export default function TeacherLinkingDebugPanel({ route }: { route: string }) {
         <article>
           <h3>Assigned Students Query</h3>
           <DebugLine label="query filter used" value={debugState.students.filter} />
-          <DebugLine label="assigned_teacher_id value used" value={debugState.students.assignedTeacherId} />
+          <DebugLine label="assigned_teacher_id value used" value={debugState.students.assignedTeacherProfileId} />
           <DebugLine label="students returned" value={debugState.students.count} />
           <DebugLine label="Supabase error" value={debugState.students.error} />
         </article>

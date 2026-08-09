@@ -1,6 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import { getStudentDisplayName } from './displayNameUtils';
-import { applyTeacherIdFilter, getCurrentTeacherContext } from './teacherOperationsService';
+import { applyCurrentTeacherProfileFilter, applyTeacherIdFilter, getCurrentTeacherContext } from './teacherOperationsService';
 
 export type TeacherDashboardClass = {
   id: string;
@@ -86,7 +86,7 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
 
     const today = new Date().toISOString().slice(0, 10);
     const [{ data: students }, { data: classes }, { data: trials }, { data: completedClasses }] = await Promise.all([
-      applyTeacherIdFilter(
+      applyCurrentTeacherProfileFilter(
         supabase.from('students').select('id, student_name, program_id, level, status, assigned_teacher_id'),
         'assigned_teacher_id',
         context,
@@ -111,7 +111,7 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
     if (import.meta.env.DEV) {
       console.info('Teacher dashboard query result:', {
         authUserId: context.authUserId,
-        profileId: context.teacherProfileId,
+        currentTeacherProfileId: context.currentTeacherProfileId,
         teacherId: context.teacherId,
         lookupIds: context.teacherLookupIds,
         assignedStudents: students?.length || 0,

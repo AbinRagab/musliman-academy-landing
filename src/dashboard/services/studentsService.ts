@@ -2,7 +2,7 @@ import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
 import { getStudentDisplayName } from './displayNameUtils';
 import { fetchPrograms } from './programsService';
-import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
+import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesByProfileId, resolveTeacherProfileId } from './teachersService';
 
 export type StudentManagementRow = {
   id: string;
@@ -21,7 +21,8 @@ export type StudentManagementRow = {
 
 export type StudentActionTeacher = {
   id: string;
-  profileId?: string | null;
+  teacherId: string;
+  profileId: string;
   full_name: string;
   email?: string | null;
   specialization?: string | null;
@@ -372,8 +373,8 @@ export async function fetchStudentManagementRows() {
     throw error;
   }
 
-  const teacherIds = Array.from(new Set((data || []).map((student) => student.assigned_teacher_id).filter(Boolean))) as string[];
-  const teacherById = await resolveTeacherNamesById(teacherIds);
+  const teacherProfileIds = Array.from(new Set((data || []).map((student) => student.assigned_teacher_id).filter(Boolean))) as string[];
+  const teacherByProfileId = await resolveTeacherNamesByProfileId(teacherProfileIds);
 
   return (data || []).map((student) => {
     const joinedProgram = Array.isArray(student.programs) ? student.programs[0] : student.programs;
@@ -385,7 +386,7 @@ export async function fetchStudentManagementRows() {
       programId: student.program_id,
       program: programName,
       assignedTeacherId: student.assigned_teacher_id,
-      teacher: student.assigned_teacher_id ? teacherById.get(student.assigned_teacher_id) || 'Teacher name unavailable' : 'Unassigned',
+      teacher: student.assigned_teacher_id ? teacherByProfileId.get(student.assigned_teacher_id) || 'Unassigned' : 'Unassigned',
       level: student.level || 'Placement pending',
       attendance: 'New',
       status: student.status || 'active',
@@ -404,49 +405,46 @@ export async function fetchStudentActionLookups() {
 
   return {
     teachers: teacherOptions.map((teacher) => ({
-      id: teacher.id,
-      profileId: teacher.profileId,
+      id: teacher.profileId || teacher.id,
+      teacherId: teacher.id,
+      profileId: teacher.profileId || '',
       full_name: teacher.full_name,
       email: teacher.email,
       specialization: teacher.specialization || null,
       availability: teacher.availability || null,
-    }) satisfies StudentActionTeacher),
+    }) satisfies StudentActionTeacher).filter((teacher) => teacher.profileId),
     programs: programs as StudentProgramOption[],
   };
 }
 
-export async function assignStudentTeacher(studentId: string, teacherId: string, note?: string) {
+export async function assignStudentTeacher(studentId: string, selectedTeacherProfileId: string, note?: string) {
   const client = requireSupabase();
 
   if (!studentId || !uuidPattern.test(studentId)) {
     throw new Error('A valid student record is required before assigning a teacher.');
   }
 
-  if (!teacherId || !uuidPattern.test(teacherId)) {
+  if (!selectedTeacherProfileId || !uuidPattern.test(selectedTeacherProfileId)) {
     throw new Error('Select a valid teacher before saving.');
   }
 
-  const operationalTeacherId = await resolveOperationalTeacherId(teacherId);
+  const operationalTeacherId = await resolveOperationalTeacherId(selectedTeacherProfileId);
 
   if (!operationalTeacherId) {
     throw new Error('Selected teacher is not a valid teacher record.');
   }
 
-  if (operationalTeacherId !== teacherId) {
-    throw new Error('Selected teacher id must be an operational teacher record id.');
-  }
-
   const { data: selectedTeacher, error: selectedTeacherError } = await client
     .from('teachers')
     .select('id, profile_id, full_name, status')
-    .eq('id', teacherId)
+    .eq('profile_id', selectedTeacherProfileId)
     .maybeSingle();
 
   if (selectedTeacherError) {
     throw selectedTeacherError;
   }
 
-  if (!selectedTeacher?.id) {
+  if (!selectedTeacher?.id || !selectedTeacher.profile_id) {
     throw new Error('Selected teacher record was not found.');
   }
 
@@ -477,18 +475,18 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
   }
 
   const assignmentPayload = {
-    assigned_teacher_id: operationalTeacherId,
+    assigned_teacher_id: selectedTeacherProfileId,
     updated_at: new Date().toISOString(),
   };
 
   if (import.meta.env.DEV) {
-    console.log('Assign teacher payload', {
-      student: currentStudent,
+    console.log('Assign teacher save', {
       studentId,
-      selectedTeacher,
-      selectedTeacherId: teacherId,
-      currentProgram,
+      selectedTeacherProfileId,
       updatePayload: assignmentPayload,
+      student: currentStudent,
+      selectedTeacher,
+      currentProgram,
       note: note || null,
     });
   }
@@ -497,7 +495,7 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
     .from('students')
     .update(assignmentPayload)
     .eq('id', studentId)
-    .select('id, assigned_teacher_id, schedule_notes, status, updated_at')
+    .select()
     .single();
 
   if (error) {
@@ -509,7 +507,7 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
         hint: error.hint,
         code: error.code,
         studentId,
-        selectedTeacherId: teacherId,
+        selectedTeacherProfileId,
         updatePayload: assignmentPayload,
       });
     }
@@ -530,7 +528,7 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
     if (import.meta.env.DEV) {
       console.error('Assign teacher verification failed', {
         studentId,
-        selectedTeacherId: teacherId,
+        selectedTeacherProfileId,
         operationalTeacherId,
         error: verifyError,
       });
@@ -538,11 +536,11 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
     throw verifyError;
   }
 
-  if (verifiedStudent?.assigned_teacher_id !== operationalTeacherId) {
+  if (verifiedStudent?.assigned_teacher_id !== selectedTeacherProfileId) {
     if (import.meta.env.DEV) {
       console.error('Assign teacher verification mismatch', {
         studentId,
-        selectedTeacherId: teacherId,
+        selectedTeacherProfileId,
         operationalTeacherId,
         verifiedAssignedTeacherId: verifiedStudent?.assigned_teacher_id || null,
       });
@@ -638,7 +636,7 @@ export async function updateStudentProgram(studentId: string, programId: string,
 
 export async function updateStudentSetup(studentId: string, payload: {
   programId?: string | null;
-  teacherId?: string | null;
+  teacherProfileId?: string | null;
   level?: string;
   classDays?: string;
   classTime?: string;
@@ -648,7 +646,8 @@ export async function updateStudentSetup(studentId: string, payload: {
   notes?: string;
 }) {
   const client = requireSupabase();
-  const operationalTeacherId = await resolveOperationalTeacherId(payload.teacherId);
+  const selectedTeacherProfileId = payload.teacherProfileId || null;
+  const operationalTeacherId = await resolveOperationalTeacherId(selectedTeacherProfileId);
   const scheduleNotes = [
     payload.notes,
     payload.classDays ? `Class days: ${payload.classDays}` : '',
@@ -658,7 +657,7 @@ export async function updateStudentSetup(studentId: string, payload: {
   ].filter(Boolean).join('\n');
   const updatePayload = {
     program_id: payload.programId || null,
-    assigned_teacher_id: operationalTeacherId,
+    assigned_teacher_id: selectedTeacherProfileId,
     level: payload.level || null,
     start_date: payload.startDate || null,
     schedule_notes: scheduleNotes || null,
@@ -693,7 +692,7 @@ export async function updateStudentSetup(studentId: string, payload: {
 }
 
 export async function updateStudentSchedule(studentId: string, payload: {
-  teacherId?: string | null;
+  teacherProfileId?: string | null;
   programId?: string | null;
   classDays?: string;
   classTime?: string;
@@ -705,7 +704,8 @@ export async function updateStudentSchedule(studentId: string, payload: {
   notes?: string;
 }) {
   const client = requireSupabase();
-  const operationalTeacherId = await resolveOperationalTeacherId(payload.teacherId);
+  const selectedTeacherProfileId = payload.teacherProfileId || null;
+  const operationalTeacherId = await resolveOperationalTeacherId(selectedTeacherProfileId);
   const scheduleNotes = [
     payload.notes,
     payload.classDays ? `Class days: ${payload.classDays}` : '',
@@ -717,7 +717,7 @@ export async function updateStudentSchedule(studentId: string, payload: {
 
   const { data, error } = await client.from('students').update({
     program_id: payload.programId || null,
-    assigned_teacher_id: operationalTeacherId,
+    assigned_teacher_id: selectedTeacherProfileId,
     schedule_notes: scheduleNotes || null,
     start_date: payload.startDate || null,
     updated_at: new Date().toISOString(),

@@ -712,7 +712,7 @@ function StudentActionDrawer({
   onSubmit: (formData: FormData) => void;
 }) {
   const canWrite = isUuid(row.id);
-  const selectedTeacher = teachers.find((teacher) => teacher.id === row.assignedTeacherId);
+  const selectedTeacher = teachers.find((teacher) => teacher.profileId === row.assignedTeacherId);
   const selectedProgram = programs.find((program) => program.id === row.programId);
   const attendanceTotal = attendanceRecords.length;
   const attendanceCounts = attendanceRecords.reduce<Record<string, number>>((summary, record) => {
@@ -947,7 +947,7 @@ function StudentActionDrawer({
             {(action === 'complete_setup' || action === 'set_schedule') && (
               <ProgramSelect label="Program" name="programId" value={String(row.programId || '')} />
             )}
-            <label><span>Teacher</span><select name="teacherId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher' || action === 'set_schedule'}><option value="">Unassigned</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}{teacher.email ? `  ${teacher.email}` : ''}</option>)}</select></label>
+            <label><span>Teacher</span><select name="teacherProfileId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher' || action === 'set_schedule'}><option value="">Unassigned</option>{teachers.map((teacher) => <option key={teacher.teacherId} value={teacher.profileId}>{teacher.full_name}{teacher.email ? `  ${teacher.email}` : ''}</option>)}</select></label>
             {action === 'assign_teacher' && <label><span>Current program</span><input value={String(row.program)} readOnly /></label>}
           </>
         )}
@@ -1331,26 +1331,26 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
     }
 
     const submittedStudentId = String(selectedRow.id);
-    const submittedTeacherId = activeAction === 'assign_teacher'
-      ? String(formData.get('teacherId') || '')
+    const selectedTeacherProfileId = activeAction === 'assign_teacher'
+      ? String(formData.get('teacherProfileId') || '')
       : null;
     const selectedTeacher = activeAction === 'assign_teacher'
-      ? teachers.find((teacher) => teacher.id === submittedTeacherId) || null
+      ? teachers.find((teacher) => teacher.profileId === selectedTeacherProfileId) || null
       : null;
     const assignTeacherUpdatePayload = activeAction === 'assign_teacher'
       ? {
-        assigned_teacher_id: submittedTeacherId,
+        assigned_teacher_id: selectedTeacherProfileId,
         updated_at: new Date().toISOString(),
       }
       : null;
 
     if (activeAction === 'assign_teacher') {
-      if (!submittedTeacherId) {
+      if (!selectedTeacherProfileId) {
         notify('Select a teacher before saving.', 'error');
         return;
       }
 
-      if (!isUuid(submittedTeacherId)) {
+      if (!isUuid(selectedTeacherProfileId)) {
         notify('Select a valid teacher before saving.', 'error');
         return;
       }
@@ -1361,13 +1361,13 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       }
 
       if (import.meta.env.DEV) {
-        console.log('Assign teacher payload', {
-          student: selectedRow,
+        console.log('Assign teacher save', {
           studentId: submittedStudentId,
-          selectedTeacher,
-          selectedTeacherId: submittedTeacherId,
-          currentProgram: selectedRow.program,
+          selectedTeacherProfileId,
           updatePayload: assignTeacherUpdatePayload,
+          student: selectedRow,
+          selectedTeacher,
+          currentProgram: selectedRow.program,
         });
       }
     }
@@ -1386,14 +1386,14 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       }
 
       if (activeAction === 'assign_teacher') {
-        await assignStudentTeacher(submittedStudentId, submittedTeacherId || '', String(formData.get('notes') || ''));
+        await assignStudentTeacher(submittedStudentId, selectedTeacherProfileId || '', String(formData.get('notes') || ''));
         notify('Teacher assigned successfully.', 'success');
       }
 
       if (activeAction === 'complete_setup') {
         await updateStudentSetup(String(selectedRow.id), {
           programId: String(formData.get('programId') || '') || null,
-          teacherId: String(formData.get('teacherId') || '') || null,
+          teacherProfileId: String(formData.get('teacherProfileId') || '') || null,
           level: String(formData.get('level') || ''),
           classDays: String(formData.get('classDays') || ''),
           classTime: String(formData.get('classTime') || ''),
@@ -1407,7 +1407,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
 
       if (activeAction === 'set_schedule') {
         await updateStudentSchedule(String(selectedRow.id), {
-          teacherId: String(formData.get('teacherId') || '') || null,
+          teacherProfileId: String(formData.get('teacherProfileId') || '') || null,
           programId: String(formData.get('programId') || selectedRow.programId || '') || null,
           classDays: String(formData.get('classDays') || ''),
           classTime: String(formData.get('classTime') || ''),
@@ -1450,7 +1450,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
             hint: supabaseError.hint,
             code: supabaseError.code,
             studentId: submittedStudentId,
-            selectedTeacherId: submittedTeacherId,
+            selectedTeacherProfileId,
             updatePayload: assignTeacherUpdatePayload,
           });
         }
