@@ -175,3 +175,44 @@ export async function resolveTeacherProfileId(teacherId: string | null | undefin
 
   return data?.profile_id || null;
 }
+
+export async function resolveOperationalTeacherId(teacherOrProfileId: string | null | undefined) {
+  const client = requireSupabase();
+
+  if (!teacherOrProfileId) {
+    return null;
+  }
+
+  const { data: teacherById, error: teacherByIdError } = await client
+    .from('teachers')
+    .select('id')
+    .eq('id', teacherOrProfileId)
+    .maybeSingle();
+
+  if (teacherByIdError) {
+    throw teacherByIdError;
+  }
+
+  if (teacherById?.id) {
+    return teacherById.id;
+  }
+
+  const { data: teacherByProfileId, error: teacherByProfileError } = await client
+    .from('teachers')
+    .select('id')
+    .eq('profile_id', teacherOrProfileId)
+    .maybeSingle();
+
+  if (teacherByProfileError) {
+    throw teacherByProfileError;
+  }
+
+  if (import.meta.env.DEV && teacherByProfileId?.id) {
+    console.warn('Converted teacher profile id to operational teacher id before save.', {
+      profileId: teacherOrProfileId,
+      teacherId: teacherByProfileId.id,
+    });
+  }
+
+  return teacherByProfileId?.id || teacherOrProfileId;
+}

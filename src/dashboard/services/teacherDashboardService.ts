@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
-import { getCurrentTeacherContext } from './teacherOperationsService';
+import { applyTeacherIdFilter, getCurrentTeacherContext } from './teacherOperationsService';
 
 export type TeacherDashboardClass = {
   id: string;
@@ -47,6 +47,7 @@ export type TeacherDashboardStats = Array<{
 }>;
 
 export type TeacherDashboardData = {
+  contextError?: string | null;
   stats: TeacherDashboardStats;
   todaysClasses: TeacherDashboardClass[];
   assignedStudents: TeacherDashboardStudent[];
@@ -61,6 +62,7 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
       { label: 'Upcoming Free Trials', value: 0, trend: 'Assigned trials', icon: 'gift' },
       { label: 'Pending Evaluations', value: 0, trend: 'Awaiting teacher submission', icon: 'chart' },
     ],
+    contextError: null,
     todaysClasses: [],
     assignedStudents: [],
     evaluationQueue: [],
@@ -74,17 +76,32 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
     const context = await getCurrentTeacherContext();
     const teacherId = context?.teacherId;
 
-    if (!teacherId) {
-      return emptyData;
+    if (!context || !teacherId) {
+      return {
+        ...emptyData,
+        contextError: 'Teacher profile is not connected. Please contact admin.',
+      };
     }
 
     const today = new Date().toISOString().slice(0, 10);
     const [{ data: students }, { data: classes }, { data: trials }, { data: completedClasses }] = await Promise.all([
-      supabase.from('students').select('*').eq('assigned_teacher_id', teacherId),
-      supabase.from('classes').select('*').eq('teacher_id', teacherId).gte('class_date', today).lte('class_date', today),
-      supabase.from('free_trials').select('*').eq('teacher_id', teacherId).eq('status', 'scheduled'),
-      supabase.from('classes').select('*').eq('teacher_id', teacherId).eq('status', 'completed').order('class_date', { ascending: false }),
+      applyTeacherIdFilter(supabase.from('students').select('*'), 'assigned_teacher_id', context),
+      applyTeacherIdFilter(supabase.from('classes').select('*'), 'teacher_id', context).gte('class_date', today).lte('class_date', today),
+      applyTeacherIdFilter(supabase.from('free_trials').select('*'), 'teacher_id', context).eq('status', 'scheduled'),
+      applyTeacherIdFilter(supabase.from('classes').select('*'), 'teacher_id', context).eq('status', 'completed').order('class_date', { ascending: false }),
     ]);
+
+    if (import.meta.env.DEV) {
+      console.info('Teacher dashboard query result:', {
+        authUserId: context.authUserId,
+        profileId: context.teacherProfileId,
+        teacherId: context.teacherId,
+        lookupIds: context.teacherLookupIds,
+        assignedStudents: students?.length || 0,
+        todaysClasses: classes?.length || 0,
+        trials: trials?.length || 0,
+      });
+    }
 
     const studentRows = students || [];
     const classRows = classes || [];
@@ -169,6 +186,7 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
         { label: 'Upcoming Free Trials', value: (trials || []).length, trend: 'Assigned trials', icon: 'gift' },
         { label: 'Pending Evaluations', value: evaluationQueue.length, trend: 'Awaiting teacher submission', icon: 'chart' },
       ],
+      contextError: null,
       todaysClasses,
       assignedStudents,
       evaluationQueue,

@@ -1,7 +1,7 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
 import { fetchPrograms } from './programsService';
-import { fetchActiveTeacherOptions, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
+import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
 
 export type StudentManagementRow = {
   id: string;
@@ -403,6 +403,12 @@ export async function fetchStudentActionLookups() {
 
 export async function assignStudentTeacher(studentId: string, teacherId: string, note?: string) {
   const client = requireSupabase();
+  const operationalTeacherId = await resolveOperationalTeacherId(teacherId);
+
+  if (!operationalTeacherId) {
+    throw new Error('Select a teacher before saving.');
+  }
+
   const { data: currentStudent, error: currentStudentError } = await client
     .from('students')
     .select('id, lead_id, schedule_notes')
@@ -421,7 +427,7 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
   const { data, error } = await client
     .from('students')
     .update({
-      assigned_teacher_id: teacherId,
+      assigned_teacher_id: operationalTeacherId,
       schedule_notes: scheduleNotes || currentStudent?.schedule_notes || null,
       status: 'active',
       updated_at: new Date().toISOString(),
@@ -437,19 +443,19 @@ export async function assignStudentTeacher(studentId: string, teacherId: string,
   const today = new Date().toISOString().slice(0, 10);
   await client
     .from('classes')
-    .update({ teacher_id: teacherId, updated_at: new Date().toISOString() })
+    .update({ teacher_id: operationalTeacherId, updated_at: new Date().toISOString() })
     .eq('student_id', studentId)
     .gte('class_date', today)
     .is('teacher_id', null);
 
   if (currentStudent?.lead_id) {
-    await client.from('leads').update({ assigned_teacher_id: teacherId }).eq('id', currentStudent.lead_id);
-    await client.from('free_trials').update({ teacher_id: teacherId }).eq('lead_id', currentStudent.lead_id);
+    await client.from('leads').update({ assigned_teacher_id: operationalTeacherId }).eq('id', currentStudent.lead_id);
+    await client.from('free_trials').update({ teacher_id: operationalTeacherId }).eq('lead_id', currentStudent.lead_id);
   }
 
-  await client.from('free_trials').update({ teacher_id: teacherId }).eq('student_id', studentId);
+  await client.from('free_trials').update({ teacher_id: operationalTeacherId }).eq('student_id', studentId);
 
-  const teacherProfileId = await resolveTeacherProfileId(teacherId);
+  const teacherProfileId = await resolveTeacherProfileId(operationalTeacherId);
   const { error: notificationError } = teacherProfileId
     ? await client.from('in_app_notifications').insert({
       recipient_id: teacherProfileId,
@@ -514,6 +520,7 @@ export async function updateStudentSetup(studentId: string, payload: {
   notes?: string;
 }) {
   const client = requireSupabase();
+  const operationalTeacherId = await resolveOperationalTeacherId(payload.teacherId);
   const scheduleNotes = [
     payload.notes,
     payload.classDays ? `Class days: ${payload.classDays}` : '',
@@ -523,7 +530,7 @@ export async function updateStudentSetup(studentId: string, payload: {
   ].filter(Boolean).join('\n');
   const updatePayload = {
     program_id: payload.programId || null,
-    assigned_teacher_id: payload.teacherId || null,
+    assigned_teacher_id: operationalTeacherId,
     level: payload.level || null,
     start_date: payload.startDate || null,
     schedule_notes: scheduleNotes || null,
@@ -536,13 +543,13 @@ export async function updateStudentSetup(studentId: string, payload: {
   }
 
   if (payload.startDate && payload.classTime) {
-    if (!payload.teacherId) {
+    if (!operationalTeacherId) {
       throw new Error('Assign a teacher before saving schedule.');
     }
 
     await client.from('classes').upsert({
       student_id: studentId,
-      teacher_id: payload.teacherId || null,
+      teacher_id: operationalTeacherId,
       program_id: payload.programId || null,
       class_date: payload.startDate,
       start_time: payload.classTime,
@@ -570,6 +577,7 @@ export async function updateStudentSchedule(studentId: string, payload: {
   notes?: string;
 }) {
   const client = requireSupabase();
+  const operationalTeacherId = await resolveOperationalTeacherId(payload.teacherId);
   const scheduleNotes = [
     payload.notes,
     payload.classDays ? `Class days: ${payload.classDays}` : '',
@@ -581,7 +589,7 @@ export async function updateStudentSchedule(studentId: string, payload: {
 
   const { data, error } = await client.from('students').update({
     program_id: payload.programId || null,
-    assigned_teacher_id: payload.teacherId || null,
+    assigned_teacher_id: operationalTeacherId,
     schedule_notes: scheduleNotes || null,
     start_date: payload.startDate || null,
     updated_at: new Date().toISOString(),
@@ -595,11 +603,11 @@ export async function updateStudentSchedule(studentId: string, payload: {
     return data;
   }
 
-  if (!payload.teacherId) {
+  if (!operationalTeacherId) {
     throw new Error('Assign a teacher before saving schedule.');
   }
 
-  const classRows = buildScheduledClassRows(studentId, payload);
+  const classRows = buildScheduledClassRows(studentId, { ...payload, teacherId: operationalTeacherId });
   const { error: classError } = await client.from('classes').insert(classRows);
 
   if (classError) {

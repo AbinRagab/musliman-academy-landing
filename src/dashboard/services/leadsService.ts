@@ -1,7 +1,7 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
 import { fetchPrograms as fetchActivePrograms } from './programsService';
-import { fetchActiveTeacherOptions, resolveTeacherNamesById } from './teachersService';
+import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById } from './teachersService';
 
 export type LeadStatus =
   | 'new'
@@ -326,27 +326,34 @@ export async function assignLeadOwner(leadId: string, ownerId: string | null) {
 
 export async function assignLeadTeacher(leadId: string, teacherId: string | null) {
   const client = requireSupabase();
-  const { data, error } = await client.from('leads').update({ assigned_teacher_id: teacherId }).eq('id', leadId).select('*').single();
+  const operationalTeacherId = await resolveOperationalTeacherId(teacherId);
+  const { data, error } = await client.from('leads').update({ assigned_teacher_id: operationalTeacherId }).eq('id', leadId).select('*').single();
 
   if (error) {
     throw error;
   }
 
-  await client.from('free_trials').update({ teacher_id: teacherId }).eq('lead_id', leadId);
+  await client.from('free_trials').update({ teacher_id: operationalTeacherId }).eq('lead_id', leadId);
   if (data.converted_student_id) {
-    await client.from('classes').update({ teacher_id: teacherId }).eq('student_id', data.converted_student_id).is('teacher_id', null);
+    await client.from('classes').update({ teacher_id: operationalTeacherId }).eq('student_id', data.converted_student_id).is('teacher_id', null);
   }
-  await addActivity(leadId, 'assigned_teacher', 'Teacher assignment updated.', null, teacherId);
+  await addActivity(leadId, 'assigned_teacher', 'Teacher assignment updated.', null, operationalTeacherId);
   return data as LeadRecord;
 }
 
 export async function scheduleFreeTrial(payload: ScheduleTrialPayload) {
   const client = requireSupabase();
+  const operationalTeacherId = await resolveOperationalTeacherId(payload.teacherId);
+
+  if (!operationalTeacherId) {
+    throw new Error('Select a teacher before scheduling a trial.');
+  }
+
   const { data, error } = await client
     .from('free_trials')
     .insert({
       lead_id: payload.leadId,
-      teacher_id: payload.teacherId,
+      teacher_id: operationalTeacherId,
       program_id: payload.programId || null,
       trial_date: payload.trialDate,
       trial_time: payload.trialTime,
@@ -363,7 +370,7 @@ export async function scheduleFreeTrial(payload: ScheduleTrialPayload) {
 
   if (payload.trialDate && payload.trialTime) {
     const { error: classError } = await client.from('classes').insert({
-      teacher_id: payload.teacherId,
+      teacher_id: operationalTeacherId,
       program_id: payload.programId || null,
       class_date: payload.trialDate,
       start_time: payload.trialTime,
@@ -381,7 +388,7 @@ export async function scheduleFreeTrial(payload: ScheduleTrialPayload) {
 
   await client
     .from('leads')
-    .update({ status: 'trial_scheduled', assigned_teacher_id: payload.teacherId })
+    .update({ status: 'trial_scheduled', assigned_teacher_id: operationalTeacherId })
     .eq('id', payload.leadId);
 
   await addActivity(payload.leadId, 'trial_scheduled', 'Free trial scheduled.', null, `${payload.trialDate} ${payload.trialTime}`);
@@ -460,7 +467,12 @@ export async function fetchLeadActivity(leadId: string) {
 
 export async function convertLeadToStudent(leadId: string, payload: ConvertLeadPayload) {
   const client = requireSupabase();
-  const { data: student, error } = await client.from('students').insert(payload).select('*').single();
+  const operationalTeacherId = await resolveOperationalTeacherId(payload.assigned_teacher_id);
+  const { data: student, error } = await client
+    .from('students')
+    .insert({ ...payload, assigned_teacher_id: operationalTeacherId })
+    .select('*')
+    .single();
 
   if (error) {
     throw error;

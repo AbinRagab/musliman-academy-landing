@@ -187,6 +187,7 @@ export default function TeacherDashboard() {
           { label: 'Upcoming Free Trials', value: 0, trend: 'Assigned trials', icon: 'gift' },
           { label: 'Pending Evaluations', value: 0, trend: 'Awaiting teacher submission', icon: 'chart' },
         ],
+        contextError: null,
         todaysClasses: [],
         assignedStudents: [],
         evaluationQueue: [],
@@ -197,6 +198,7 @@ export default function TeacherDashboard() {
   }, []);
 
   const teacherStats = dashboardData?.stats || [];
+  const contextError = dashboardData?.contextError || null;
   const todaysClasses = dashboardData?.todaysClasses || [];
   const assignedStudents = dashboardData?.assignedStudents || [];
   const evaluationQueue = dashboardData?.evaluationQueue || [];
@@ -313,7 +315,13 @@ export default function TeacherDashboard() {
       </div>
 
       <SectionCard className="teacher-next-class-card">
-        {nextClass ? (
+        {contextError ? (
+          <div className="teacher-empty-card">
+            <span className="dashboard-eyebrow">Teacher Account</span>
+            <h2>Teacher profile is not connected</h2>
+            <p>Please contact admin so this login can be linked to an operational teacher record.</p>
+          </div>
+        ) : nextClass ? (
           <div className="teacher-next-class">
             <div>
               <span className="dashboard-eyebrow">Next Class</span>

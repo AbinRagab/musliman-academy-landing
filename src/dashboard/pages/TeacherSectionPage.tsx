@@ -213,6 +213,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
   const [classRows, setClassRows] = useState<ClassRow[]>([]);
   const [evaluationRows, setEvaluationRows] = useState<EvaluationRow[]>([]);
   const [loadingOperations, setLoadingOperations] = useState(true);
+  const [teacherContextError, setTeacherContextError] = useState<string | null>(null);
   const [selectedClassId, setSelectedClassId] = useState('');
 
   useEffect(() => {
@@ -228,6 +229,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
 
     try {
       const data = await fetchTeacherOperationsData();
+      setTeacherContextError(data.contextError || null);
       setStudents(data.students);
       setClassRows(data.classes);
       setEvaluationRows(data.evaluations);
@@ -239,6 +241,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       setStudents([]);
       setClassRows([]);
       setEvaluationRows([]);
+      setTeacherContextError('Unable to load teacher records. Please try again.');
     } finally {
       setLoadingOperations(false);
     }
@@ -368,6 +371,18 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
     },
   ];
 
+  if (teacherContextError && !loadingOperations) {
+    return (
+      <div className="dashboard-page dashboard-page--management">
+        <Toast toast={toast} onClose={() => setToast(null)} />
+        {commonHeader}
+        <SectionCard title="Teacher profile is not connected">
+          <p className="dashboard-empty-copy">{teacherContextError}</p>
+        </SectionCard>
+      </div>
+    );
+  }
+
   if (section === 'students') {
     return (
       <div className="dashboard-page dashboard-page--management">
@@ -377,7 +392,11 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           <label><span>Status</span><select defaultValue="all"><option value="all">All assigned</option><option value="needs">Needs support</option><option value="active">Active</option></select></label>
         </FilterBar>
         <SectionCard title="Assigned Students" subtitle="Parent contact is handled through academy-approved messaging.">
-          <DataTable columns={studentColumns} rows={filteredStudents} getRowKey={(row) => row.id} />
+          {filteredStudents.length > 0 ? (
+            <DataTable columns={studentColumns} rows={filteredStudents} getRowKey={(row) => row.id} />
+          ) : (
+            <p className="dashboard-empty-copy">No assigned students yet. Students assigned by the academy team will appear here.</p>
+          )}
         </SectionCard>
         {evaluationModal && <TeacherEvaluationModal evaluation={evaluationModal} onClose={() => setEvaluationModal(null)} onSubmit={(formData) => handleEvaluationSubmit(evaluationModal, formData)} />}
         {reportModal && <ClassReportModal classItem={reportModal} onClose={() => setReportModal(null)} onSubmit={(formData) => handleClassReportSubmit(reportModal, formData)} />}
@@ -479,7 +498,11 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <Toast toast={toast} onClose={() => setToast(null)} />
         {commonHeader}
         <SectionCard title="Today's Classes" subtitle="Timezone: Africa/Cairo">
-          <DataTable columns={scheduleColumns} rows={classRows.filter((row) => row.dateTime.startsWith('Today'))} getRowKey={(row) => row.id} />
+          {classRows.filter((row) => row.dateTime.startsWith('Today')).length > 0 ? (
+            <DataTable columns={scheduleColumns} rows={classRows.filter((row) => row.dateTime.startsWith('Today'))} getRowKey={(row) => row.id} />
+          ) : (
+            <p className="dashboard-empty-copy">No classes scheduled today.</p>
+          )}
         </SectionCard>
         <SectionCard title="Upcoming Classes" subtitle="Timetable view for assigned live and upcoming classes.">
           <div className="teacher-week-grid">
@@ -502,6 +525,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                 </div>
               </article>
             ))}
+            {classRows.filter((row) => ['Live', 'Upcoming', 'Scheduled'].includes(row.status)).length === 0 && <p className="dashboard-empty-copy">No classes scheduled yet.</p>}
           </div>
         </SectionCard>
         {reportModal && <ClassReportModal classItem={reportModal} onClose={() => setReportModal(null)} onSubmit={(formData) => handleClassReportSubmit(reportModal, formData)} />}
@@ -555,7 +579,11 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           {['Today', 'Upcoming', 'Completed', 'Needs Report', 'Cancelled / Rescheduled'].map((tab) => <button key={tab} type="button" className={activeClassTab === tab ? 'is-active' : ''} onClick={() => setActiveClassTab(tab)}>{tab}</button>)}
         </div>
         <SectionCard title="Class Records" subtitle="Schedule shows when classes happen. My Classes records what happened in class.">
-          <DataTable columns={columns} rows={rowsByTab} getRowKey={(row) => row.id} />
+          {rowsByTab.length > 0 ? (
+            <DataTable columns={columns} rows={rowsByTab} getRowKey={(row) => row.id} />
+          ) : (
+            <p className="dashboard-empty-copy">No class records found for this filter.</p>
+          )}
         </SectionCard>
         {reportModal && <ClassReportModal classItem={reportModal} onClose={() => setReportModal(null)} onSubmit={(formData) => handleClassReportSubmit(reportModal, formData)} />}
         {classDetails && <ClassDetailsModal classItem={classDetails} onClose={() => setClassDetails(null)} />}

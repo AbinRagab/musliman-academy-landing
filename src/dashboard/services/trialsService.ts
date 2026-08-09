@@ -1,6 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import { fetchLeads } from './leadsService';
-import { getCurrentTeacherContext } from './teacherOperationsService';
+import { applyTeacherIdFilter, getCurrentTeacherContext } from './teacherOperationsService';
 
 export type TrialResult = 'recommended' | 'needs_follow_up' | 'not_suitable' | 'no_show';
 
@@ -53,16 +53,34 @@ export async function fetchTrials(filters: { teacherId?: string; status?: string
 }
 
 export async function fetchTeacherTrials(teacherId?: string | null) {
-  if (!teacherId) {
-    const context = await getCurrentTeacherContext();
-    teacherId = context?.teacherId || null;
-  }
+  const context = teacherId ? null : await getCurrentTeacherContext();
+  const resolvedTeacherId = teacherId || context?.teacherId || null;
 
-  if (!teacherId) {
+  if (!resolvedTeacherId) {
     return [];
   }
 
-  const trials = await fetchTrials({ teacherId });
+  const client = requireSupabase();
+  const query = client.from('free_trials').select('*').order('trial_date', { ascending: true });
+  const { data: trials, error } = context
+    ? await applyTeacherIdFilter(query, 'teacher_id', context)
+    : await query.eq('teacher_id', resolvedTeacherId);
+
+  if (error) {
+    if (import.meta.env.DEV) {
+      console.error('Teacher free trials query failed:', { teacherId: resolvedTeacherId, error });
+    }
+    throw error;
+  }
+
+  if (import.meta.env.DEV) {
+    console.info('Teacher free trials query result:', {
+      teacherId: resolvedTeacherId,
+      lookupIds: context?.teacherLookupIds || [resolvedTeacherId],
+      trials: trials?.length || 0,
+    });
+  }
+
   const leadIds = trials.map((trial) => trial.lead_id).filter(Boolean);
   const leads = leadIds.length ? await fetchLeads() : [];
 

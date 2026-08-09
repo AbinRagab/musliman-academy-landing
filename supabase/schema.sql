@@ -389,7 +389,7 @@ create policy "Students can view their own student record" on public.students
 
 drop policy if exists "Teachers can view students assigned to them" on public.students;
 create policy "Teachers can view students assigned to them" on public.students
-  for select using (assigned_teacher_id = public.current_teacher_id());
+  for select using (assigned_teacher_id = public.current_teacher_id() or assigned_teacher_id = auth.uid());
 
 drop policy if exists "Admin roles can view all students" on public.students;
 create policy "Admin roles can view all students" on public.students
@@ -413,7 +413,7 @@ create policy "Admin admissions manage free trials" on public.free_trials
 
 drop policy if exists "Teachers view assigned free trials" on public.free_trials;
 create policy "Teachers view assigned free trials" on public.free_trials
-  for select using (teacher_id = public.current_teacher_id());
+  for select using (teacher_id = public.current_teacher_id() or teacher_id = auth.uid());
 
 drop policy if exists "Students can view their own classes" on public.classes;
 create policy "Students can view their own classes" on public.classes
@@ -421,11 +421,11 @@ create policy "Students can view their own classes" on public.classes
 
 drop policy if exists "Teachers can view assigned classes" on public.classes;
 create policy "Teachers can view assigned classes" on public.classes
-  for select using (teacher_id = public.current_teacher_id());
+  for select using (teacher_id = public.current_teacher_id() or teacher_id = auth.uid());
 
 drop policy if exists "Teachers can update assigned classes" on public.classes;
 create policy "Teachers can update assigned classes" on public.classes
-  for update using (teacher_id = public.current_teacher_id()) with check (teacher_id = public.current_teacher_id());
+  for update using (teacher_id = public.current_teacher_id() or teacher_id = auth.uid()) with check (teacher_id = public.current_teacher_id());
 
 drop policy if exists "Admin roles can view all classes" on public.classes;
 create policy "Admin roles can view all classes" on public.classes
@@ -441,7 +441,7 @@ create policy "Students can view their own attendance" on public.attendance
 
 drop policy if exists "Teachers can view assigned attendance" on public.attendance;
 create policy "Teachers can view assigned attendance" on public.attendance
-  for select using (teacher_id = public.current_teacher_id());
+  for select using (teacher_id = public.current_teacher_id() or teacher_id = auth.uid());
 
 drop policy if exists "Teachers can insert attendance for assigned classes" on public.attendance;
 create policy "Teachers can insert attendance for assigned classes" on public.attendance
@@ -449,7 +449,7 @@ create policy "Teachers can insert attendance for assigned classes" on public.at
 
 drop policy if exists "Teachers can update attendance for assigned classes" on public.attendance;
 create policy "Teachers can update attendance for assigned classes" on public.attendance
-  for update using (teacher_id = public.current_teacher_id()) with check (teacher_id = public.current_teacher_id());
+  for update using (teacher_id = public.current_teacher_id() or teacher_id = auth.uid()) with check (teacher_id = public.current_teacher_id());
 
 drop policy if exists "Admin roles can manage all attendance" on public.attendance;
 create policy "Admin roles can manage all attendance" on public.attendance
@@ -461,7 +461,7 @@ create policy "Students can view their own evaluations" on public.evaluations
 
 drop policy if exists "Teachers can view assigned evaluations" on public.evaluations;
 create policy "Teachers can view assigned evaluations" on public.evaluations
-  for select using (teacher_id = public.current_teacher_id());
+  for select using (teacher_id = public.current_teacher_id() or teacher_id = auth.uid());
 
 drop policy if exists "Teachers can insert evaluations for assigned students" on public.evaluations;
 create policy "Teachers can insert evaluations for assigned students" on public.evaluations
@@ -497,7 +497,7 @@ create policy "Authenticated users view own homework submissions" on public.home
 
 drop policy if exists "Teachers can view assigned homework submissions" on public.homework_submissions;
 create policy "Teachers can view assigned homework submissions" on public.homework_submissions
-  for select using (exists (select 1 from public.classes c where c.id = homework_submissions.class_id and c.teacher_id = public.current_teacher_id()));
+  for select using (exists (select 1 from public.classes c where c.id = homework_submissions.class_id and (c.teacher_id = public.current_teacher_id() or c.teacher_id = auth.uid())));
 
 drop policy if exists "Students can submit homework" on public.homework_submissions;
 drop policy if exists "Authenticated users insert own homework submissions" on public.homework_submissions;

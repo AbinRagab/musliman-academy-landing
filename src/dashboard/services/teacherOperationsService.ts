@@ -11,6 +11,7 @@ export type TeacherContext = {
   };
   teacherId: string;
   teacherProfileId: string;
+  teacherLookupIds: string[];
   teacherName: string;
 };
 
@@ -55,6 +56,7 @@ export type TeacherEvaluationRow = {
 
 export type TeacherOperationsData = {
   context: TeacherContext | null;
+  contextError?: string | null;
   students: TeacherStudentRow[];
   classes: TeacherClassRow[];
   evaluations: TeacherEvaluationRow[];
@@ -77,6 +79,10 @@ export async function getCurrentTeacherContext(): Promise<TeacherContext | null>
   }
 
   const authUserId = userData.user?.id;
+  if (import.meta.env.DEV) {
+    console.info('Teacher context auth user id:', authUserId || null);
+  }
+
   if (!authUserId) {
     return null;
   }
@@ -88,18 +94,35 @@ export async function getCurrentTeacherContext(): Promise<TeacherContext | null>
     .maybeSingle();
 
   if (profileError) {
+    if (import.meta.env.DEV) {
+      console.error('Teacher context profile fetch failed:', profileError);
+    }
     throw profileError;
   }
 
   if (!profile || profile.role !== 'teacher') {
+    if (import.meta.env.DEV) {
+      console.warn('Teacher context profile is missing or not a teacher.', { authUserId, profile });
+    }
     return null;
   }
 
-  const { data: teacherRecord } = await client
+  if (import.meta.env.DEV) {
+    console.info('Teacher context profile id:', profile.id);
+  }
+
+  const { data: teacherRecord, error: teacherError } = await client
     .from('teachers')
     .select('id, profile_id, full_name, status')
     .eq('profile_id', profile.id)
     .maybeSingle();
+
+  if (teacherError) {
+    if (import.meta.env.DEV) {
+      console.error('Teacher context teacher record fetch failed:', teacherError);
+    }
+    throw teacherError;
+  }
 
   if (!teacherRecord) {
     if (import.meta.env.DEV) {
@@ -113,8 +136,19 @@ export async function getCurrentTeacherContext(): Promise<TeacherContext | null>
     profile,
     teacherId: teacherRecord.id,
     teacherProfileId: teacherRecord.profile_id || profile.id,
+    teacherLookupIds: Array.from(new Set([teacherRecord.id, teacherRecord.profile_id || profile.id].filter(Boolean))),
     teacherName: teacherRecord.full_name || profile.full_name,
   };
+}
+
+export function applyTeacherIdFilter<T>(query: T, column: string, context: TeacherContext): T {
+  const ids = context.teacherLookupIds.length ? context.teacherLookupIds : [context.teacherId];
+
+  if (ids.length === 1) {
+    return (query as { eq: (column: string, value: string) => T }).eq(column, ids[0]);
+  }
+
+  return (query as { in: (column: string, values: string[]) => T }).in(column, ids);
 }
 
 export async function fetchTeacherOperationsData(): Promise<TeacherOperationsData> {
@@ -122,29 +156,61 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
   const context = await getCurrentTeacherContext();
 
   if (!context) {
-    return { context: null, students: [], classes: [], evaluations: [] };
+    return {
+      context: null,
+      contextError: 'Teacher profile is not connected. Please contact admin.',
+      students: [],
+      classes: [],
+      evaluations: [],
+    };
   }
 
   const today = new Date().toISOString().slice(0, 10);
   const [{ data: studentRows, error: studentsError }, { data: classRows, error: classesError }] = await Promise.all([
-    client
-      .from('students')
-      .select('id, student_name, program_id, level, status, assigned_teacher_id')
-      .eq('assigned_teacher_id', context.teacherId)
+    applyTeacherIdFilter(
+      client
+        .from('students')
+        .select('id, student_name, program_id, level, status, assigned_teacher_id'),
+      'assigned_teacher_id',
+      context,
+    )
       .order('student_name', { ascending: true }),
-    client
-      .from('classes')
-      .select('id, student_id, teacher_id, program_id, class_date, start_time, end_time, duration_minutes, meeting_link, lesson_title, lesson_covered, homework, status, created_at')
-      .eq('teacher_id', context.teacherId)
+    applyTeacherIdFilter(
+      client
+        .from('classes')
+        .select('id, student_id, teacher_id, program_id, class_date, start_time, end_time, duration_minutes, meeting_link, lesson_title, lesson_covered, homework, status, created_at'),
+      'teacher_id',
+      context,
+    )
       .order('class_date', { ascending: true })
       .order('start_time', { ascending: true }),
   ]);
 
-  if (studentsError) throw studentsError;
-  if (classesError) throw classesError;
+  if (studentsError) {
+    if (import.meta.env.DEV) {
+      console.error('Assigned students query failed:', { teacherIds: context.teacherLookupIds, error: studentsError });
+    }
+    throw studentsError;
+  }
+  if (classesError) {
+    if (import.meta.env.DEV) {
+      console.error('Assigned classes query failed:', { teacherIds: context.teacherLookupIds, error: classesError });
+    }
+    throw classesError;
+  }
 
   const students = studentRows || [];
   const classes = classRows || [];
+  if (import.meta.env.DEV) {
+    console.info('Teacher operations query result:', {
+      authUserId: context.authUserId,
+      profileId: context.teacherProfileId,
+      teacherId: context.teacherId,
+      lookupIds: context.teacherLookupIds,
+      assignedStudents: students.length,
+      assignedClasses: classes.length,
+    });
+  }
   const studentIds = Array.from(new Set([...students.map((student) => student.id), ...classes.map((classRow) => classRow.student_id)].filter(Boolean))) as string[];
   const programIds = Array.from(new Set([...students.map((student) => student.program_id), ...classes.map((classRow) => classRow.program_id)].filter(Boolean))) as string[];
   const classIds = classes.map((classRow) => classRow.id);
@@ -232,6 +298,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
 
   return {
     context,
+    contextError: null,
     students: mappedStudents,
     classes: mappedClasses,
     evaluations: mappedEvaluations,
