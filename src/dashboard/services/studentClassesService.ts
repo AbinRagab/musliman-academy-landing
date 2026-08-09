@@ -1,5 +1,10 @@
 import { supabase } from '../../lib/supabaseClient';
 import {
+  fetchActiveClassSchedulesByStudentIds,
+  getNextClass as getNextScheduledClass,
+  mapScheduleToClassSession,
+} from './classSchedulesService';
+import {
   getUpcomingClasses,
   resolveCurrentStudentProfile,
   type StudentClassSession,
@@ -25,6 +30,19 @@ export async function fetchStudentClassesData() {
 
   try {
     const profile = await resolveCurrentStudentProfile();
+    const scheduleRows = profile.id ? await fetchActiveClassSchedulesByStudentIds([profile.id]) : [];
+    const nextSchedule = getNextScheduledClass(scheduleRows, profile.timezone);
+    const scheduledClasses = [...scheduleRows]
+      .sort((first, second) => {
+        if (nextSchedule?.row.id === first.id) return -1;
+        if (nextSchedule?.row.id === second.id) return 1;
+        return first.day_of_week.localeCompare(second.day_of_week) || first.start_time.localeCompare(second.start_time);
+      })
+      .map((schedule) => mapScheduleToClassSession(schedule, {
+        program: profile.program,
+        level: profile.level,
+        teacher: profile.teacher,
+      }));
     const { data, error } = await supabase
       .from('classes')
       .select('*')
@@ -35,8 +53,8 @@ export async function fetchStudentClassesData() {
     if (error || !data?.length) {
       return {
         profile,
-        classes: [] as StudentClassSession[],
-        upcomingClasses: [] as StudentClassSession[],
+        classes: scheduledClasses,
+        upcomingClasses: getUpcomingClasses(scheduledClasses),
       };
     }
 
@@ -74,10 +92,12 @@ export async function fetchStudentClassesData() {
       };
     });
 
+    const classesWithSchedules = [...scheduledClasses, ...classes];
+
     return {
       profile,
-      classes,
-      upcomingClasses: getUpcomingClasses(classes),
+      classes: classesWithSchedules,
+      upcomingClasses: getUpcomingClasses(classesWithSchedules),
     };
   } catch {
     return {

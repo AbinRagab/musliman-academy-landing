@@ -1,4 +1,9 @@
 import { supabase } from '../../lib/supabaseClient';
+import {
+  fetchActiveClassSchedulesByTeacherProfileId,
+  getCurrentWeekDay,
+  getNextClass as getNextScheduledClass,
+} from './classSchedulesService';
 import { getStudentDisplayName } from './displayNameUtils';
 import { applyCurrentTeacherProfileFilter, applyTeacherIdFilter, getCurrentTeacherContext } from './teacherOperationsService';
 
@@ -123,15 +128,18 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
     const studentRows = students || [];
     const classRows = classes || [];
     const completedClassRows = completedClasses || [];
+    const scheduleRows = await fetchActiveClassSchedulesByTeacherProfileId(context.currentTeacherProfileId);
     const studentIds = Array.from(new Set([
       ...studentRows.map((student) => student.id),
       ...classRows.map((classRow) => classRow.student_id),
       ...completedClassRows.map((classRow) => classRow.student_id),
+      ...scheduleRows.map((scheduleRow) => scheduleRow.student_id),
     ].filter(Boolean))) as string[];
     const programIds = Array.from(new Set([
       ...studentRows.map((student) => student.program_id),
       ...classRows.map((classRow) => classRow.program_id),
       ...completedClassRows.map((classRow) => classRow.program_id),
+      ...scheduleRows.map((scheduleRow) => scheduleRow.program_id),
     ].filter(Boolean))) as string[];
     const [studentResult, programResult, attendanceResult, evaluationResult] = await Promise.all([
       studentIds.length ? supabase.from('students').select('id, student_name, level, status').in('id', studentIds) : Promise.resolve({ data: [] }),
@@ -144,6 +152,13 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
     const programById = new Map((programResult.data || []).map((program) => [program.id, program.name]));
     const attendanceClassIds = new Set((attendanceResult.data || []).map((attendance) => attendance.class_id));
     const evaluatedClassIds = new Set((evaluationResult.data || []).map((evaluation) => evaluation.class_id));
+    const scheduleRowsByStudent = new Map<string, typeof scheduleRows>();
+
+    scheduleRows.forEach((scheduleRow) => {
+      const current = scheduleRowsByStudent.get(scheduleRow.student_id) || [];
+      current.push(scheduleRow);
+      scheduleRowsByStudent.set(scheduleRow.student_id, current);
+    });
 
     const todaysClasses = classRows.map((classRow): TeacherDashboardClass => {
       const student = classRow.student_id ? studentById.get(classRow.student_id) : null;
@@ -164,13 +179,36 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
         scheduledStartAt: `${classRow.class_date || today}T${classRow.start_time || '00:00:00'}`,
       };
     });
+    const currentWeekDay = getCurrentWeekDay('Africa/Cairo');
+    const todaysScheduleClasses = scheduleRows
+      .filter((scheduleRow) => scheduleRow.day_of_week.toLowerCase() === currentWeekDay.toLowerCase())
+      .map((scheduleRow): TeacherDashboardClass => {
+        const student = studentById.get(scheduleRow.student_id);
+        const program = scheduleRow.program_id ? programById.get(scheduleRow.program_id) || 'Program' : 'Program';
+
+        return {
+          id: `schedule:${scheduleRow.id}`,
+          time: formatTime(scheduleRow.start_time),
+          student: getStudentDisplayName(student),
+          studentId: scheduleRow.student_id,
+          program,
+          status: 'scheduled',
+          platform: scheduleRow.platform || 'Zoom',
+          meetingLink: scheduleRow.meeting_link || undefined,
+          reportStatus: 'Not Due',
+          attendanceStatus: 'Not Started',
+          scheduledStartAt: `${today}T${scheduleRow.start_time || '00:00:00'}`,
+        };
+      });
+    const allTodaysClasses = [...todaysScheduleClasses, ...todaysClasses];
 
     const assignedStudents = studentRows.map((student): TeacherDashboardStudent => ({
       id: student.id,
       student: getStudentDisplayName(student),
       program: student.program_id ? programById.get(student.program_id) || 'Program not assigned' : 'Program not assigned',
       level: student.level || 'Level not set',
-      nextClass: nextClassLabel(todaysClasses.find((classItem) => classItem.studentId === student.id)),
+      nextClass: getNextScheduledClass(scheduleRowsByStudent.get(student.id) || [])?.label
+        || nextClassLabel(allTodaysClasses.find((classItem) => classItem.studentId === student.id)),
       attendance: 'Calculated from attendance',
       progress: student.status === 'needs_support' ? 'Needs support' : 'On track',
       status: student.status || 'active',
@@ -199,12 +237,12 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
     return {
       stats: [
         { label: 'Assigned Students', value: assignedStudents.length, trend: 'Active assigned records', icon: 'student' },
-        { label: "Today's Classes", value: todaysClasses.length, trend: 'Scheduled for today', icon: 'calendar' },
+        { label: "Today's Classes", value: allTodaysClasses.length, trend: 'Scheduled for today', icon: 'calendar' },
         { label: 'Upcoming Free Trials', value: (trials || []).length, trend: 'Assigned trials', icon: 'gift' },
         { label: 'Pending Evaluations', value: evaluationQueue.length, trend: 'Awaiting teacher submission', icon: 'chart' },
       ],
       contextError: null,
-      todaysClasses,
+      todaysClasses: allTodaysClasses,
       assignedStudents,
       evaluationQueue,
     };

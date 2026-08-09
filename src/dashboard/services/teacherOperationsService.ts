@@ -1,4 +1,8 @@
 import { supabase } from '../../lib/supabaseClient';
+import {
+  fetchActiveClassSchedulesByTeacherProfileId,
+  getNextClass as getNextScheduledClass,
+} from './classSchedulesService';
 import { getStudentDisplayName } from './displayNameUtils';
 
 export type TeacherContext = {
@@ -42,6 +46,7 @@ export type TeacherClassRow = {
   homeworkAssigned: string;
   reportStatus: string;
   notes: string;
+  isRecurringSchedule?: boolean;
 };
 
 export type TeacherEvaluationRow = {
@@ -200,6 +205,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
 
   const students = studentRows || [];
   const classes = classRows || [];
+  const scheduleRows = await fetchActiveClassSchedulesByTeacherProfileId(context.currentTeacherProfileId);
   if (import.meta.env.DEV) {
     console.info('Teacher operations query result:', {
       authUserId: context.authUserId,
@@ -210,8 +216,16 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
       assignedClasses: classes.length,
     });
   }
-  const studentIds = Array.from(new Set([...students.map((student) => student.id), ...classes.map((classRow) => classRow.student_id)].filter(Boolean))) as string[];
-  const programIds = Array.from(new Set([...students.map((student) => student.program_id), ...classes.map((classRow) => classRow.program_id)].filter(Boolean))) as string[];
+  const studentIds = Array.from(new Set([
+    ...students.map((student) => student.id),
+    ...classes.map((classRow) => classRow.student_id),
+    ...scheduleRows.map((scheduleRow) => scheduleRow.student_id),
+  ].filter(Boolean))) as string[];
+  const programIds = Array.from(new Set([
+    ...students.map((student) => student.program_id),
+    ...classes.map((classRow) => classRow.program_id),
+    ...scheduleRows.map((scheduleRow) => scheduleRow.program_id),
+  ].filter(Boolean))) as string[];
   const classIds = classes.map((classRow) => classRow.id);
 
   const [{ data: joinedStudents }, { data: programs }, { data: attendance }, { data: evaluations }] = await Promise.all([
@@ -226,12 +240,19 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
   const attendanceByClassId = new Map((attendance || []).map((record) => [record.class_id, record]));
   const evaluatedClassIds = new Set((evaluations || []).map((evaluation) => evaluation.class_id).filter(Boolean));
   const classRowsByStudent = new Map<string, typeof classes>();
+  const scheduleRowsByStudent = new Map<string, typeof scheduleRows>();
 
   classes.forEach((classRow) => {
     if (!classRow.student_id) return;
     const current = classRowsByStudent.get(classRow.student_id) || [];
     current.push(classRow);
     classRowsByStudent.set(classRow.student_id, current);
+  });
+
+  scheduleRows.forEach((scheduleRow) => {
+    const current = scheduleRowsByStudent.get(scheduleRow.student_id) || [];
+    current.push(scheduleRow);
+    scheduleRowsByStudent.set(scheduleRow.student_id, current);
   });
 
   const mappedClasses = classes.map((classRow): TeacherClassRow => {
@@ -258,9 +279,34 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
     };
   });
 
+  const mappedScheduleClasses = scheduleRows.map((scheduleRow): TeacherClassRow => {
+    const student = studentById.get(scheduleRow.student_id);
+    const program = scheduleRow.program_id ? programById.get(scheduleRow.program_id) || 'Program not assigned' : 'Program not assigned';
+
+    return {
+      id: `schedule:${scheduleRow.id}`,
+      studentId: scheduleRow.student_id,
+      student: getStudentDisplayName(student),
+      programId: scheduleRow.program_id,
+      program,
+      dateTime: `${scheduleRow.day_of_week} ${formatTime(scheduleRow.start_time)}`,
+      status: 'Scheduled',
+      platform: scheduleRow.platform || 'Zoom',
+      meetingLink: scheduleRow.meeting_link || undefined,
+      attendanceStatus: 'Not Started',
+      lessonCovered: 'Planned lesson',
+      homeworkAssigned: 'Set after class',
+      reportStatus: 'Not Due',
+      notes: `${scheduleRow.duration_minutes} minutes`,
+      isRecurringSchedule: true,
+    };
+  });
+
   const mappedStudents = students.map((student): TeacherStudentRow => {
     const studentClasses = classRowsByStudent.get(student.id) || [];
+    const studentSchedules = scheduleRowsByStudent.get(student.id) || [];
     const nextClass = studentClasses.find((classRow) => classRow.class_date >= today);
+    const nextSchedule = getNextScheduledClass(studentSchedules);
     const studentAttendance = (attendance || []).filter((record) => record.student_id === student.id);
     const presentCount = studentAttendance.filter((record) => ['present', 'late'].includes(record.status)).length;
     const attendanceRate = studentAttendance.length ? `${Math.round((presentCount / studentAttendance.length) * 100)}%` : 'No attendance yet';
@@ -270,7 +316,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
       student: getStudentDisplayName(student),
       program: student.program_id ? programById.get(student.program_id) || 'Program not assigned' : 'Program not assigned',
       level: student.level || 'Level not set',
-      nextClass: nextClass ? formatClassDateTime(nextClass.class_date, nextClass.start_time) : 'No class scheduled',
+      nextClass: nextSchedule ? nextSchedule.label : nextClass ? formatClassDateTime(nextClass.class_date, nextClass.start_time) : 'No class scheduled',
       attendance: attendanceRate,
       progress: studentAttendance.length && presentCount / studentAttendance.length < 0.8 ? 'Needs support' : 'On track',
       status: student.status || 'active',
@@ -299,7 +345,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
     context,
     contextError: null,
     students: mappedStudents,
-    classes: mappedClasses,
+    classes: [...mappedScheduleClasses, ...mappedClasses],
     evaluations: mappedEvaluations,
   };
 }

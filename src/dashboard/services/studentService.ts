@@ -1,4 +1,9 @@
 import { supabase } from '../../lib/supabaseClient';
+import {
+  fetchActiveClassSchedulesByStudentIds,
+  getNextClass as getNextScheduledClass,
+  mapScheduleToClassSession,
+} from './classSchedulesService';
 import { resolveTeacherNamesById, resolveTeacherNamesByProfileId } from './teachersService';
 
 export type StudentPortalProfile = {
@@ -455,6 +460,26 @@ async function fetchClassesForProfile(profile: StudentPortalProfile) {
   });
 }
 
+async function fetchScheduleClassesForProfile(profile: StudentPortalProfile) {
+  if (!profile.id) {
+    return [] as StudentClassSession[];
+  }
+
+  const scheduleRows = await fetchActiveClassSchedulesByStudentIds([profile.id]);
+  const nextSchedule = getNextScheduledClass(scheduleRows, profile.timezone);
+  const sortedRows = [...scheduleRows].sort((first, second) => {
+    if (nextSchedule?.row.id === first.id) return -1;
+    if (nextSchedule?.row.id === second.id) return 1;
+    return first.day_of_week.localeCompare(second.day_of_week) || first.start_time.localeCompare(second.start_time);
+  });
+
+  return sortedRows.map((schedule) => mapScheduleToClassSession(schedule, {
+    program: profile.program,
+    level: profile.level,
+    teacher: profile.teacher,
+  }));
+}
+
 async function fetchLatestTrial(profile: StudentPortalProfile): Promise<StudentTrial> {
   if (!supabase || !profile.id) {
     return emptyStudentTrial;
@@ -491,7 +516,11 @@ async function fetchLatestTrial(profile: StudentPortalProfile): Promise<StudentT
 
 export async function fetchStudentDashboardData() {
   const profile = await resolveCurrentStudentProfile();
-  const classes = await fetchClassesForProfile(profile);
+  const [scheduledClasses, classHistory] = await Promise.all([
+    fetchScheduleClassesForProfile(profile),
+    fetchClassesForProfile(profile),
+  ]);
+  const classes = [...scheduledClasses, ...classHistory];
   const upcomingClasses = getUpcomingClasses(classes).slice(0, 5);
   const trial = await fetchLatestTrial(profile);
 

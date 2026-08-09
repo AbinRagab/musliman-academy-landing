@@ -1,5 +1,11 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
+import {
+  fetchActiveClassSchedulesByStudentIds,
+  getNextClass,
+  replaceStudentClassSchedules,
+  type ClassScheduleInput,
+} from './classSchedulesService';
 import { getStudentDisplayName } from './displayNameUtils';
 import { fetchPrograms } from './programsService';
 import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesByProfileId, resolveTeacherProfileId } from './teachersService';
@@ -54,6 +60,8 @@ export type StudentPaymentRecord = {
   status: string | null;
   notes: string | null;
 };
+
+export type StudentSchedulePayload = ClassScheduleInput;
 
 export type StudentRecordTab =
   | 'overview'
@@ -375,10 +383,19 @@ export async function fetchStudentManagementRows() {
 
   const teacherProfileIds = Array.from(new Set((data || []).map((student) => student.assigned_teacher_id).filter(Boolean))) as string[];
   const teacherByProfileId = await resolveTeacherNamesByProfileId(teacherProfileIds);
+  const scheduleRows = await fetchActiveClassSchedulesByStudentIds((data || []).map((student) => student.id));
+  const schedulesByStudentId = new Map<string, typeof scheduleRows>();
+
+  scheduleRows.forEach((schedule) => {
+    const current = schedulesByStudentId.get(schedule.student_id) || [];
+    current.push(schedule);
+    schedulesByStudentId.set(schedule.student_id, current);
+  });
 
   return (data || []).map((student) => {
     const joinedProgram = Array.isArray(student.programs) ? student.programs[0] : student.programs;
     const programName = joinedProgram?.name || 'Program not assigned';
+    const nextSchedule = getNextClass(schedulesByStudentId.get(student.id) || []);
 
     return {
       id: student.id,
@@ -390,7 +407,7 @@ export async function fetchStudentManagementRows() {
       level: student.level || 'Placement pending',
       attendance: 'New',
       status: student.status || 'active',
-      nextClass: student.start_date || 'Schedule pending',
+      nextClass: nextSchedule ? nextSchedule.label : 'Schedule pending',
       scheduleNotes: student.schedule_notes,
       startDate: student.start_date,
     };
@@ -648,6 +665,7 @@ export async function updateStudentSetup(studentId: string, payload: {
   const client = requireSupabase();
   const selectedTeacherProfileId = payload.teacherProfileId || null;
   const operationalTeacherId = await resolveOperationalTeacherId(selectedTeacherProfileId);
+
   const scheduleNotes = [
     payload.notes,
     payload.classDays ? `Class days: ${payload.classDays}` : '',
@@ -694,25 +712,30 @@ export async function updateStudentSetup(studentId: string, payload: {
 export async function updateStudentSchedule(studentId: string, payload: {
   teacherProfileId?: string | null;
   programId?: string | null;
-  classDays?: string;
-  classTime?: string;
+  schedules?: StudentSchedulePayload[];
   timezone?: string;
-  durationMinutes?: number;
-  platform?: string;
-  meetingLink?: string;
   startDate?: string;
   notes?: string;
 }) {
   const client = requireSupabase();
   const selectedTeacherProfileId = payload.teacherProfileId || null;
   const operationalTeacherId = await resolveOperationalTeacherId(selectedTeacherProfileId);
+
+  if (!payload.programId) {
+    throw new Error('Program is required before setting a schedule.');
+  }
+
+  if (!selectedTeacherProfileId || !operationalTeacherId) {
+    throw new Error('Teacher is required before setting a schedule.');
+  }
+
+  if (!payload.schedules?.length) {
+    throw new Error('Please add at least one class day.');
+  }
+
   const scheduleNotes = [
     payload.notes,
-    payload.classDays ? `Class days: ${payload.classDays}` : '',
-    payload.classTime ? `Class time: ${payload.classTime}` : '',
     payload.timezone ? `Timezone: ${payload.timezone}` : '',
-    payload.platform ? `Platform: ${payload.platform}` : '',
-    payload.meetingLink ? `Meeting link: ${payload.meetingLink}` : '',
   ].filter(Boolean).join('\n');
 
   const { data, error } = await client.from('students').update({
@@ -727,21 +750,13 @@ export async function updateStudentSchedule(studentId: string, payload: {
     throw error;
   }
 
-  if (!payload.startDate || !payload.classTime) {
-    return data;
-  }
-
-  if (!operationalTeacherId) {
-    throw new Error('Assign a teacher before saving schedule.');
-  }
-
-  const classRows = buildScheduledClassRows(studentId, { ...payload, teacherId: operationalTeacherId });
-  const { error: classError } = await client.from('classes').insert(classRows);
-
-  if (classError) {
-    console.error('Schedule table insert failed:', classError);
-    throw new Error('Schedule table is not configured yet.');
-  }
+  await replaceStudentClassSchedules({
+    studentId,
+    programId: payload.programId,
+    teacherProfileId: selectedTeacherProfileId,
+    timezone: payload.timezone || 'Africa/Cairo',
+    schedules: payload.schedules || [],
+  });
 
   return data;
 }

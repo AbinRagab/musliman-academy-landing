@@ -484,11 +484,11 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           <DashboardActionMenu
             primaryAction={{ label: 'Join Class', onClick: () => joinClass(row, setToast) }}
             actions={[
-              { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast) },
-              { label: 'Start Class', onClick: () => updateClassCheckin(row, 'live', setToast), hidden: row.status !== 'Live' },
-              { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.status !== 'Live' },
-              { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
-              { label: 'Add Class Report', onClick: () => setReportModal(row) },
+              { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast), hidden: row.isRecurringSchedule },
+              { label: 'Start Class', onClick: () => updateClassCheckin(row, 'live', setToast), hidden: row.isRecurringSchedule || row.status !== 'Live' },
+              { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.isRecurringSchedule || row.status !== 'Live' },
+              { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance'), hidden: row.isRecurringSchedule },
+              { label: 'Add Class Report', onClick: () => setReportModal(row), hidden: row.isRecurringSchedule },
               { label: 'View Details', onClick: () => setClassDetails(row) },
             ]}
           />
@@ -520,10 +520,10 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                   <DashboardActionMenu
                     primaryAction={{ label: 'Join Class', onClick: () => joinClass(row, setToast) }}
                     actions={[
-                      { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast) },
+                      { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast), hidden: row.isRecurringSchedule },
                       { label: 'View Details', onClick: () => setClassDetails(row) },
-                      { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
-                      { label: 'Add Class Report', onClick: () => setReportModal(row) },
+                      { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance'), hidden: row.isRecurringSchedule },
+                      { label: 'Add Class Report', onClick: () => setReportModal(row), hidden: row.isRecurringSchedule },
                     ]}
                   />
                 </div>
@@ -559,15 +559,15 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           <DashboardActionMenu
             primaryAction={{
               label: ['Live', 'Upcoming'].includes(row.status) ? 'Join Class' : row.reportStatus === 'Needs Report' ? 'Add Report' : 'View Details',
-              onClick: ['Live', 'Upcoming'].includes(row.status) ? () => joinClass(row, setToast) : row.reportStatus === 'Needs Report' ? () => setReportModal(row) : () => setClassDetails(row),
+              onClick: row.isRecurringSchedule || ['Live', 'Upcoming'].includes(row.status) ? () => joinClass(row, setToast) : row.reportStatus === 'Needs Report' ? () => setReportModal(row) : () => setClassDetails(row),
             }}
             actions={[
-              { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast), hidden: !['Live', 'Upcoming', 'Scheduled'].includes(row.status) },
-              { label: 'Start Class', onClick: () => updateClassCheckin(row, 'live', setToast), hidden: row.status !== 'Live' },
-              { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.status !== 'Live' },
-              { label: row.reportStatus === 'Submitted' ? 'View Report' : 'Add Report', onClick: row.reportStatus === 'Submitted' ? () => setClassDetails(row) : () => setReportModal(row), hidden: row.reportStatus === 'Needs Report' },
-              { label: 'Set Homework', onClick: () => setReportModal(row) },
-              { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
+              { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast), hidden: row.isRecurringSchedule || !['Live', 'Upcoming', 'Scheduled'].includes(row.status) },
+              { label: 'Start Class', onClick: () => updateClassCheckin(row, 'live', setToast), hidden: row.isRecurringSchedule || row.status !== 'Live' },
+              { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.isRecurringSchedule || row.status !== 'Live' },
+              { label: row.reportStatus === 'Submitted' ? 'View Report' : 'Add Report', onClick: row.reportStatus === 'Submitted' ? () => setClassDetails(row) : () => setReportModal(row), hidden: row.isRecurringSchedule || row.reportStatus === 'Needs Report' },
+              { label: 'Set Homework', onClick: () => setReportModal(row), hidden: row.isRecurringSchedule },
+              { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance'), hidden: row.isRecurringSchedule },
               { label: 'View Class Details', onClick: () => setClassDetails(row) },
             ]}
           />
@@ -596,7 +596,8 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
   }
 
   if (section === 'attendance') {
-    const selectedClass = classRows.find((classItem) => classItem.id === selectedClassId) || classRows[0];
+    const attendanceClassRows = classRows.filter((classItem) => !classItem.isRecurringSchedule);
+    const selectedClass = attendanceClassRows.find((classItem) => classItem.id === selectedClassId) || attendanceClassRows[0];
     return (
       <div className="dashboard-page dashboard-page--management">
         <Toast toast={toast} onClose={() => setToast(null)} />
@@ -605,7 +606,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           {selectedClass ? (
             <form className="dashboard-form">
               <div className="teacher-form-grid">
-                <label><span>Class</span><select value={selectedClassId} onChange={(event) => setSelectedClassId(event.target.value)}>{classRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.student} - {classItem.dateTime}</option>)}</select></label>
+                <label><span>Class</span><select value={selectedClassId} onChange={(event) => setSelectedClassId(event.target.value)}>{attendanceClassRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.student} - {classItem.dateTime}</option>)}</select></label>
                 <label><span>Date</span><input type="date" /></label>
               </div>
               <div className="dashboard-attendance-list">

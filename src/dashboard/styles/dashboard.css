@@ -1843,8 +1843,98 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 10px;
-  position: sticky;
-  bottom: 0;
+}
+
+.dashboard-drawer .dashboard-form label span,
+.dashboard-drawer .dashboard-form input,
+.dashboard-drawer .dashboard-form select,
+.dashboard-drawer .dashboard-form textarea {
+  font-size: 14px;
+}
+
+.dashboard-drawer .dashboard-form input,
+.dashboard-drawer .dashboard-form select {
+  min-height: 44px;
+}
+
+.weekly-schedule-builder {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  background: #f8f7f3;
+  border: 1px solid rgba(11, 31, 58, 0.12);
+  border-radius: 8px;
+}
+
+.weekly-schedule-builder__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.weekly-schedule-builder__header h3 {
+  margin: 0;
+  color: #0b1f3a;
+  font-size: 18px;
+}
+
+.weekly-schedule-builder__header p {
+  margin: 4px 0 0;
+  color: var(--dashboard-muted);
+  font-size: 14px;
+}
+
+.weekly-schedule-builder__timezone {
+  max-width: 260px;
+}
+
+.weekly-schedule-builder__rows {
+  display: grid;
+  gap: 10px;
+}
+
+.weekly-schedule-row {
+  display: grid;
+  grid-template-columns: minmax(105px, 1fr) minmax(105px, 1fr) minmax(120px, 1fr) minmax(130px, 1fr) minmax(160px, 1.35fr) auto;
+  gap: 10px;
+  align-items: end;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid rgba(11, 31, 58, 0.12);
+  border-radius: 8px;
+}
+
+.weekly-schedule-row label {
+  min-width: 0;
+}
+
+.weekly-schedule-row__remove {
+  min-height: 44px;
+  padding: 0 12px;
+  color: #7a3418;
+  background: rgba(184, 115, 51, 0.08);
+  border: 1px solid rgba(184, 115, 51, 0.24);
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.weekly-schedule-row__remove:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.weekly-schedule-row__warning {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #9a5a00;
+  font-size: 13px;
+}
+
+.weekly-schedule-builder .dashboard-inline-error {
+  display: grid;
+  gap: 4px;
 }
 
 .dashboard-skeleton {
@@ -7849,10 +7939,31 @@ body,
   line-height: 1.45;
 }
 
-.dashboard-drawer__body {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+  .dashboard-drawer__body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .weekly-schedule-builder {
+    padding: 14px;
+  }
+
+  .weekly-schedule-builder__header {
+    display: grid;
+  }
+
+  .weekly-schedule-builder__timezone {
+    max-width: none;
+  }
+
+  .weekly-schedule-row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .weekly-schedule-row__remove {
+    width: 100%;
+  }
 
 @media (min-width: 901px) {
   .dashboard-main {

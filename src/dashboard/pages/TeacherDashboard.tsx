@@ -209,6 +209,11 @@ export default function TeacherDashboard() {
   );
 
   async function handleCheckinAction(classItem: TeacherClass, action: TeacherCheckinAction) {
+    if (classItem.id.startsWith('schedule:')) {
+      setToast({ type: 'info', message: 'This is a weekly schedule row. Attendance opens after a class record is created.' });
+      return;
+    }
+
     await updateTeacherSessionCheckin({
       classId: classItem.id,
       scheduledStartAt: classItem.scheduledStartAt || getScheduledStartAt(classItem.time),
@@ -227,7 +232,9 @@ export default function TeacherDashboard() {
   }
 
   async function handleJoinClass(classItem: TeacherClass) {
-    await handleCheckinAction(classItem, 'joined');
+    if (!classItem.id.startsWith('schedule:')) {
+      await handleCheckinAction(classItem, 'joined');
+    }
 
     if (classItem.meetingLink) {
       window.open(classItem.meetingLink, '_blank', 'noopener,noreferrer');
@@ -243,6 +250,11 @@ export default function TeacherDashboard() {
   }
 
   async function handleClassReportSubmit(classItem: TeacherClass, formData: FormData) {
+    if (classItem.id.startsWith('schedule:')) {
+      setToast({ type: 'info', message: 'Create or complete a class record before submitting a class report.' });
+      return;
+    }
+
     await saveTeacherClassReport({
       classId: classItem.id,
       lessonCovered: String(formData.get('lessonCovered') || ''),

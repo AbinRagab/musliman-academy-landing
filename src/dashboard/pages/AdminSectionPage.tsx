@@ -38,6 +38,7 @@ import {
   type StudentAttendanceRecord,
   type StudentPaymentRecord,
   type StudentProgramOption,
+  type StudentSchedulePayload,
 } from '../services/studentsService';
 import { fetchAdminTeacherRows } from '../services/teachersService';
 import { usePrograms } from '../services/programsService';
@@ -80,6 +81,69 @@ type DetailAction = {
   tone?: 'primary' | 'danger' | 'secondary';
   onClick?: () => void;
 };
+
+type ScheduleDraftRow = StudentSchedulePayload & {
+  key: string;
+};
+
+const scheduleDayOptions = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const durationOptions = [30, 45, 60, 75, 90];
+const platformOptions = ['Zoom', 'Google Meet', 'Academy Classroom'];
+
+function createScheduleDraft(overrides: Partial<ScheduleDraftRow> = {}): ScheduleDraftRow {
+  return {
+    key: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    dayOfWeek: '',
+    startTime: '',
+    durationMinutes: 30,
+    platform: 'Zoom',
+    meetingLink: '',
+    ...overrides,
+  };
+}
+
+function validateScheduleRows(rows: ScheduleDraftRow[]) {
+  const errors: string[] = [];
+  const seen = new Set<string>();
+
+  if (!rows.length) {
+    errors.push('Please add at least one class day.');
+  }
+
+  rows.forEach((row) => {
+    if (!row.dayOfWeek) {
+      errors.push('Please select a day.');
+    }
+
+    if (!row.startTime) {
+      errors.push('Please select a start time.');
+    }
+
+    const exactKey = `${row.dayOfWeek}|${row.startTime}`;
+    if (row.dayOfWeek && row.startTime && seen.has(exactKey)) {
+      errors.push('This schedule row is duplicated.');
+    }
+    seen.add(exactKey);
+  });
+
+  return Array.from(new Set(errors));
+}
+
+function getSameDayWarnings(rows: ScheduleDraftRow[]) {
+  const dayCounts = rows.reduce<Record<string, number>>((summary, row) => {
+    if (row.dayOfWeek) {
+      summary[row.dayOfWeek] = (summary[row.dayOfWeek] || 0) + 1;
+    }
+    return summary;
+  }, {});
+
+  return rows.reduce<Record<string, string>>((warnings, row) => {
+    if (row.dayOfWeek && dayCounts[row.dayOfWeek] > 1) {
+      warnings[row.key] = 'This student already has another class on the same day.';
+    }
+    return warnings;
+  }, {});
+}
 type DrawerContent = {
   title: string;
   subtitle: string;
@@ -745,6 +809,53 @@ function StudentActionDrawer({
     cancel: 'Cancel',
   };
   const formId = `student-action-${action}`;
+  const [scheduleRows, setScheduleRows] = useState<ScheduleDraftRow[]>([createScheduleDraft()]);
+  const [scheduleErrors, setScheduleErrors] = useState<string[]>([]);
+  const sameDayWarnings = useMemo(() => getSameDayWarnings(scheduleRows), [scheduleRows]);
+  const serializedScheduleRows = useMemo(() => JSON.stringify(scheduleRows.map((schedule) => ({
+    dayOfWeek: schedule.dayOfWeek,
+    startTime: schedule.startTime,
+    durationMinutes: schedule.durationMinutes,
+    platform: schedule.platform,
+    meetingLink: schedule.meetingLink,
+  }))), [scheduleRows]);
+
+  function updateScheduleRow(key: string, patch: Partial<ScheduleDraftRow>) {
+    setScheduleRows((current) => current.map((schedule) => (
+      schedule.key === key ? { ...schedule, ...patch } : schedule
+    )));
+    setScheduleErrors([]);
+  }
+
+  function removeScheduleRow(key: string) {
+    setScheduleRows((current) => current.filter((schedule) => schedule.key !== key));
+    setScheduleErrors([]);
+  }
+
+  function handleActionSubmit(formData: FormData) {
+    if (action === 'set_schedule') {
+      const errors = validateScheduleRows(scheduleRows);
+      const teacherProfileId = String(formData.get('teacherProfileId') || '');
+      const programId = String(formData.get('programId') || '');
+
+      if (!teacherProfileId) {
+        errors.push('Teacher is required before setting a schedule.');
+      }
+
+      if (!programId) {
+        errors.push('Program is required before setting a schedule.');
+      }
+
+      const uniqueErrors = Array.from(new Set(errors));
+      setScheduleErrors(uniqueErrors);
+
+      if (uniqueErrors.length) {
+        return;
+      }
+    }
+
+    onSubmit(formData);
+  }
 
   if (action === 'set_program') {
     return <SetProgramDrawer row={row} saving={saving} onClose={onClose} onSubmit={onSubmit} />;
@@ -940,7 +1051,7 @@ function StudentActionDrawer({
     >
       {!canWrite && <p className="dashboard-inline-error">This action requires a live Supabase student record.</p>}
       {action === 'complete_setup' && <MissingFields row={row} />}
-      <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
+      <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); handleActionSubmit(new FormData(event.currentTarget)); }}>
         {(action === 'complete_setup' || action === 'assign_teacher' || action === 'set_schedule') && (
           <>
             <label><span>Student</span><input value={String(row.name)} readOnly /></label>
@@ -954,7 +1065,7 @@ function StudentActionDrawer({
         {(action === 'complete_setup' || action === 'update_level') && (
           <label><span>{action === 'update_level' ? 'New level' : 'Level'}</span><input name="level" defaultValue={action === 'update_level' ? '' : String(row.level === 'Placement pending' ? '' : row.level)} required /></label>
         )}
-        {(action === 'complete_setup' || action === 'set_schedule') && (
+        {action === 'complete_setup' && (
           <>
             <label><span>Class days</span><input name="classDays" defaultValue="" /></label>
             <label><span>Class time</span><input name="classTime" type="time" /></label>
@@ -964,6 +1075,39 @@ function StudentActionDrawer({
             <label><span>Meeting link</span><input name="meetingLink" type="url" /></label>
             <label><span>Start date</span><input name="startDate" type="date" defaultValue={String(row.startDate || '')} /></label>
           </>
+        )}
+        {action === 'set_schedule' && (
+          <section className="weekly-schedule-builder" aria-label="Weekly class schedule">
+            <div className="weekly-schedule-builder__header">
+              <div>
+                <h3>Weekly Class Schedule</h3>
+                <p>Add one or more class days. Each day can have its own time.</p>
+              </div>
+              <ActionButton type="button" variant="secondary" onClick={() => setScheduleRows((current) => [...current, createScheduleDraft()])}>
+                + Add class day
+              </ActionButton>
+            </div>
+            <input type="hidden" name="scheduleRows" value={serializedScheduleRows} />
+            <label className="weekly-schedule-builder__timezone"><span>Timezone</span><input name="timezone" defaultValue="Africa/Cairo" /></label>
+            <div className="weekly-schedule-builder__rows">
+              {scheduleRows.map((schedule) => (
+                <article key={schedule.key} className="weekly-schedule-row">
+                  <label><span>Day</span><select value={schedule.dayOfWeek} onChange={(event) => updateScheduleRow(schedule.key, { dayOfWeek: event.target.value })}><option value="">Select day</option>{scheduleDayOptions.map((day) => <option key={day} value={day}>{day}</option>)}</select></label>
+                  <label><span>Start time</span><input type="time" value={schedule.startTime} onChange={(event) => updateScheduleRow(schedule.key, { startTime: event.target.value })} /></label>
+                  <label><span>Duration</span><select value={schedule.durationMinutes} onChange={(event) => updateScheduleRow(schedule.key, { durationMinutes: Number(event.target.value) })}>{durationOptions.map((duration) => <option key={duration} value={duration}>{duration} minutes</option>)}</select></label>
+                  <label><span>Platform</span><select value={schedule.platform || 'Zoom'} onChange={(event) => updateScheduleRow(schedule.key, { platform: event.target.value })}>{platformOptions.map((platform) => <option key={platform} value={platform}>{platform}</option>)}</select></label>
+                  <label><span>Meeting link</span><input type="url" value={schedule.meetingLink || ''} onChange={(event) => updateScheduleRow(schedule.key, { meetingLink: event.target.value })} placeholder="Optional" /></label>
+                  <button type="button" className="weekly-schedule-row__remove" onClick={() => removeScheduleRow(schedule.key)} disabled={scheduleRows.length === 1}>Remove</button>
+                  {sameDayWarnings[schedule.key] && <p className="weekly-schedule-row__warning">{sameDayWarnings[schedule.key]}</p>}
+                </article>
+              ))}
+            </div>
+            {scheduleErrors.length > 0 && (
+              <div className="dashboard-inline-error">
+                {scheduleErrors.map((error) => <span key={error}>{error}</span>)}
+              </div>
+            )}
+          </section>
         )}
         {action === 'complete_setup' && <label><span>Package/payment status</span><input name="paymentStatus" /></label>}
         {action === 'update_level' && (
@@ -1406,15 +1550,36 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       }
 
       if (activeAction === 'set_schedule') {
+        const scheduleRowsValue = String(formData.get('scheduleRows') || '[]');
+        let schedules: StudentSchedulePayload[] = [];
+
+        try {
+          schedules = JSON.parse(scheduleRowsValue) as StudentSchedulePayload[];
+        } catch {
+          notify('Please add at least one class day.', 'error');
+          return;
+        }
+
+        if (!schedules.length) {
+          notify('Please add at least one class day.', 'error');
+          return;
+        }
+
+        if (!String(formData.get('teacherProfileId') || '')) {
+          notify('Teacher is required before setting a schedule.', 'error');
+          return;
+        }
+
+        if (!String(formData.get('programId') || selectedRow.programId || '')) {
+          notify('Program is required before setting a schedule.', 'error');
+          return;
+        }
+
         await updateStudentSchedule(String(selectedRow.id), {
           teacherProfileId: String(formData.get('teacherProfileId') || '') || null,
           programId: String(formData.get('programId') || selectedRow.programId || '') || null,
-          classDays: String(formData.get('classDays') || ''),
-          classTime: String(formData.get('classTime') || ''),
+          schedules,
           timezone: String(formData.get('timezone') || ''),
-          durationMinutes: Number(formData.get('durationMinutes') || 30),
-          platform: String(formData.get('platform') || ''),
-          meetingLink: String(formData.get('meetingLink') || ''),
           startDate: String(formData.get('startDate') || ''),
           notes: String(formData.get('notes') || ''),
         });

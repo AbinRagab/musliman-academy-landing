@@ -168,6 +168,22 @@ create table if not exists public.classes (
   updated_at timestamp with time zone default now()
 );
 
+create table if not exists public.class_schedules (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid not null references public.students(id) on delete cascade,
+  program_id uuid references public.programs(id),
+  teacher_profile_id uuid references public.profiles(id),
+  day_of_week text not null,
+  start_time time not null,
+  duration_minutes integer not null default 30,
+  timezone text not null default 'Africa/Cairo',
+  platform text default 'Zoom',
+  meeting_link text,
+  status text not null default 'active',
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now()
+);
+
 create table if not exists public.attendance (
   id uuid primary key default gen_random_uuid(),
   class_id uuid references public.classes(id) on delete cascade,
@@ -251,6 +267,9 @@ create index if not exists students_profile_id_idx on public.students(profile_id
 create index if not exists students_assigned_teacher_id_idx on public.students(assigned_teacher_id);
 create index if not exists classes_student_id_idx on public.classes(student_id);
 create index if not exists classes_teacher_id_idx on public.classes(teacher_id);
+create index if not exists class_schedules_student_id_idx on public.class_schedules(student_id);
+create index if not exists class_schedules_teacher_profile_id_idx on public.class_schedules(teacher_profile_id);
+create index if not exists class_schedules_status_idx on public.class_schedules(status);
 create index if not exists attendance_student_id_idx on public.attendance(student_id);
 create index if not exists evaluations_student_id_idx on public.evaluations(student_id);
 create index if not exists payments_student_id_idx on public.payments(student_id);
@@ -287,6 +306,9 @@ create trigger free_trials_set_updated_at before update on public.free_trials fo
 
 drop trigger if exists classes_set_updated_at on public.classes;
 create trigger classes_set_updated_at before update on public.classes for each row execute function public.set_updated_at();
+
+drop trigger if exists class_schedules_set_updated_at on public.class_schedules;
+create trigger class_schedules_set_updated_at before update on public.class_schedules for each row execute function public.set_updated_at();
 
 drop trigger if exists payments_set_updated_at on public.payments;
 create trigger payments_set_updated_at before update on public.payments for each row execute function public.set_updated_at();
@@ -349,6 +371,7 @@ alter table public.students enable row level security;
 alter table public.teachers enable row level security;
 alter table public.free_trials enable row level security;
 alter table public.classes enable row level security;
+alter table public.class_schedules enable row level security;
 alter table public.attendance enable row level security;
 alter table public.evaluations enable row level security;
 alter table public.payments enable row level security;
@@ -438,6 +461,22 @@ create policy "Admin roles can view all classes" on public.classes
 drop policy if exists "Admin academic roles can manage classes" on public.classes;
 create policy "Admin academic roles can manage classes" on public.classes
   for all using (public.get_current_user_role() in ('super_admin', 'admin', 'academic_manager')) with check (public.get_current_user_role() in ('super_admin', 'admin', 'academic_manager'));
+
+drop policy if exists "Students can view their own class schedules" on public.class_schedules;
+create policy "Students can view their own class schedules" on public.class_schedules
+  for select using (exists (select 1 from public.students s where s.id = class_schedules.student_id and s.profile_id = auth.uid()));
+
+drop policy if exists "Teachers can view assigned class schedules" on public.class_schedules;
+create policy "Teachers can view assigned class schedules" on public.class_schedules
+  for select using (teacher_profile_id = auth.uid());
+
+drop policy if exists "Admin roles can view all class schedules" on public.class_schedules;
+create policy "Admin roles can view all class schedules" on public.class_schedules
+  for select using (public.is_admin_role());
+
+drop policy if exists "Admin academic roles can manage class schedules" on public.class_schedules;
+create policy "Admin academic roles can manage class schedules" on public.class_schedules
+  for all using (public.get_current_user_role() in ('super_admin', 'admin', 'academic_manager', 'admissions')) with check (public.get_current_user_role() in ('super_admin', 'admin', 'academic_manager', 'admissions'));
 
 drop policy if exists "Students can view their own attendance" on public.attendance;
 create policy "Students can view their own attendance" on public.attendance
