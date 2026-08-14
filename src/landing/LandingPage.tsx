@@ -1,16 +1,14 @@
 import { FormEvent, MouseEventHandler, useEffect, useState } from 'react';
 import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
 import type { IconType } from 'react-icons';
-import './styles.css';
-import Icon, { IconName } from './components/Icon';
-import LanguageSwitcher from './components/LanguageSwitcher';
-import Logo from './components/Logo';
+import '../styles.css';
+import Icon, { IconName } from '../components/Icon';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import Logo from '../components/Logo';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
-import DashboardRoutes from './dashboard/DashboardRoutes';
-import { usePrograms } from './dashboard/services/programsService';
+import { usePrograms } from '../dashboard/services/programsService';
 import {
   contact,
   countryOptions,
@@ -1525,7 +1523,7 @@ function Footer() {
   );
 }
 
-function LandingPage() {
+export default function LandingPage() {
   const { i18n, t } = useTranslation();
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') {
@@ -1580,17 +1578,5 @@ function LandingPage() {
         <Icon name="whatsapp" />
       </a>
     </div>
-  );
-}
-
-export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/dashboard/*" element={<DashboardRoutes />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
   );
 }
