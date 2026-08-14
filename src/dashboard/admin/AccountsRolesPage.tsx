@@ -3,7 +3,7 @@ import Icon from '../../components/Icon';
 import { supabase } from '../../lib/supabaseClient';
 import { accountsRoles, type AuthRole } from '../auth/AuthProvider';
 import { useAuth } from '../auth/AuthProvider';
-import AccessDeniedPage from './AccessDeniedPage';
+import AccessDeniedPage from '../auth/pages/AccessDeniedPage';
 import ActionButton from '../components/ActionButton';
 import DashboardActionMenu from '../components/DashboardActionMenu';
 import DashboardSkeleton from '../components/DashboardSkeleton';

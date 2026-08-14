@@ -1,16 +1,15 @@
 import { FormEvent, MouseEventHandler, useEffect, useState } from 'react';
 import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
 import type { IconType } from 'react-icons';
-import './styles.css';
-import Icon, { IconName } from './components/Icon';
-import LanguageSwitcher from './components/LanguageSwitcher';
-import Logo from './components/Logo';
+import './styles/landing.css';
+import Icon, { IconName } from '../components/Icon';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import Logo from '../components/Logo';
+import { buildWebsiteLeadPayload, type LandingBookingLeadData } from './services/leadPayload';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
-import DashboardRoutes from './dashboard/DashboardRoutes';
-import { usePrograms } from './dashboard/services/programsService';
+import { usePrograms } from '../dashboard/services/programsService';
 import {
   contact,
   countryOptions,
@@ -51,15 +50,7 @@ type DecorationItem =
   | { kind: 'icon'; icon: IconName; className: string }
   | { kind: 'arch'; className: string }
   | { kind: 'crescent'; className: string };
-type BookingLeadData = Record<string, string | undefined> & {
-  requestType: 'Free Trial' | 'Teacher Training';
-  name: string;
-  whatsapp: string;
-  country: string;
-  preferredTime: string;
-  message: string;
-  source: string;
-};
+type BookingLeadData = LandingBookingLeadData;
 
 // TODO: move this URL to an environment variable before production if needed.
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJ0VhS9N31RZtRt37NIj8MQHp66luS_1qMInzfv4wagELRjc3w6daWeVRX0CXOIOXx/exec';
@@ -555,29 +546,8 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
         source: 'Musliman Academy Website',
       };
 
-    const crmMessage = isTraining
-      ? [
-        leadData.experience ? `Experience: ${leadData.experience}` : '',
-        leadData.qualification ? `Qualification: ${leadData.qualification}` : '',
-        leadData.trainingGoal ? `Training goal: ${leadData.trainingGoal}` : '',
-        leadData.message ? `Message: ${leadData.message}` : '',
-      ].filter(Boolean).join('\n')
-      : leadData.message;
-
     try {
-      await submitWebsiteLeadToCrm({
-        full_name: leadData.name,
-        whatsapp: leadData.whatsapp,
-        country: leadData.country,
-        student_age: leadData.age || undefined,
-        program_id: isTraining ? undefined : leadData.programId,
-        program: isTraining ? 'Teacher Training' : leadData.program,
-        preferred_time: leadData.preferredTime,
-        message: crmMessage,
-        source: 'website',
-        form_type: isTraining ? 'teacher_training' : 'free_trial',
-        lead_type: isTraining ? 'teacher_training' : 'student',
-      });
+      await submitWebsiteLeadToCrm(buildWebsiteLeadPayload(leadData, isTraining));
 
       setSubmittedLead(leadData);
     } catch (error) {
@@ -1525,7 +1495,7 @@ function Footer() {
   );
 }
 
-function LandingPage() {
+export default function LandingPage() {
   const { i18n, t } = useTranslation();
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') {
@@ -1580,17 +1550,5 @@ function LandingPage() {
         <Icon name="whatsapp" />
       </a>
     </div>
-  );
-}
-
-export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/dashboard/*" element={<DashboardRoutes />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
   );
 }

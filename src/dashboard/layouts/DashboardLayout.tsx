@@ -2,8 +2,8 @@ import { useState, type ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
 import type { DashboardRole } from '../data/mockData';
 import '../styles/dashboard.css';
-import Sidebar from './Sidebar';
-import Topbar from './Topbar';
+import Sidebar from '../components/Sidebar';
+import Topbar from '../components/Topbar';
 
 type DashboardLayoutProps = {
   role: DashboardRole;

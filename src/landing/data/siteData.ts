@@ -1,4 +1,4 @@
-import type { IconName } from '../components/Icon';
+import type { IconName } from '../../components/Icon';
 
 export const contact = {
   whatsappDisplay: '+201038331058',

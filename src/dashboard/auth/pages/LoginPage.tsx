@@ -1,8 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import Icon from '../../components/Icon';
-import ActionButton from '../components/ActionButton';
-import { getDashboardPath, useAuth } from '../auth/AuthProvider';
+import Icon from '../../../components/Icon';
+import ActionButton from '../../components/ActionButton';
+import { getDashboardPath, useAuth } from '../AuthProvider';
 import SupabaseSetupPage from './SupabaseSetupPage';
 
 type LocationState = {
