@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import Icon from '../../components/Icon';
-import { getDashboardPath, useAuth } from '../auth/AuthProvider';
-import ActionButton from '../components/ActionButton';
+import Icon from '../../../components/Icon';
+import { getDashboardPath, useAuth } from '../AuthProvider';
+import ActionButton from '../../components/ActionButton';
 
 export default function AccessDeniedPage() {
   const { role } = useAuth();

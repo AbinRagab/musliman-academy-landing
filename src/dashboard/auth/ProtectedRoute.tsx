@@ -1,8 +1,8 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import ActionButton from '../components/ActionButton';
-import AccessDeniedPage from '../pages/AccessDeniedPage';
-import SupabaseSetupPage from '../pages/SupabaseSetupPage';
+import AccessDeniedPage from './pages/AccessDeniedPage';
+import SupabaseSetupPage from './pages/SupabaseSetupPage';
 import { useAuth, type AuthRole } from './AuthProvider';
 
 export default function ProtectedRoute({

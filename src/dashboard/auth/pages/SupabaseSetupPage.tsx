@@ -1,5 +1,5 @@
-import Icon from '../../components/Icon';
-import { supabaseConfigMessage } from '../../lib/supabaseClient';
+import Icon from '../../../components/Icon';
+import { supabaseConfigMessage } from '../../../lib/supabaseClient';
 
 export default function SupabaseSetupPage() {
   return (
