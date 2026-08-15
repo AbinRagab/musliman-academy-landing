@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { trackMetaEvent } from './metaPixel';
+import { trackMetaEvent, trackWhatsAppContact } from './metaPixel';
 
 describe('trackMetaEvent', () => {
   afterEach(() => {
@@ -17,8 +17,19 @@ describe('trackMetaEvent', () => {
     expect(fbq).toHaveBeenCalledWith('track', 'Lead');
   });
 
+  it('tracks WhatsApp contact clicks as a standard Contact event', () => {
+    const fbq = vi.fn();
+    window.fbq = fbq;
+
+    trackWhatsAppContact();
+
+    expect(fbq).toHaveBeenCalledTimes(1);
+    expect(fbq).toHaveBeenCalledWith('track', 'Contact');
+  });
+
   it('does nothing when Meta Pixel is unavailable', () => {
     expect(() => trackMetaEvent('Lead')).not.toThrow();
+    expect(() => trackWhatsAppContact()).not.toThrow();
   });
 
   it('does not throw when Meta Pixel tracking fails', () => {

@@ -24,3 +24,7 @@ export function trackMetaEvent(eventName: string, params?: MetaEventParams) {
     }
   }
 }
+
+export function trackWhatsAppContact() {
+  trackMetaEvent('Contact');
+}

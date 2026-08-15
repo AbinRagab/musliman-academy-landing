@@ -8,7 +8,7 @@ import Icon, { IconName } from '../components/Icon';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import Logo from '../components/Logo';
 import { buildWebsiteLeadPayload, type LandingBookingLeadData } from './services/leadPayload';
-import { trackMetaEvent } from './services/metaPixel';
+import { trackMetaEvent, trackWhatsAppContact } from './services/metaPixel';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
 import { usePrograms } from '../dashboard/services/programsService';
 import {
@@ -227,7 +227,7 @@ function Navbar({ theme, onToggleTheme, onSelectBookingType }: { theme: Theme; o
           ))}
         </nav>
         <div className="navbar__actions">
-          <a className="whatsapp-circle" href={`https://wa.me/${contact.whatsappNumber}`} aria-label={t('aria.contactWhatsapp')} target="_blank" rel="noreferrer">
+          <a className="whatsapp-circle" href={`https://wa.me/${contact.whatsappNumber}`} aria-label={t('aria.contactWhatsapp')} target="_blank" rel="noreferrer" onClick={trackWhatsAppContact}>
             <Icon name="whatsapp" />
           </a>
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
@@ -629,7 +629,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
               <h3>{t('booking.successTitle')}</h3>
               <p>{successMessage}</p>
               <div className="booking-success__actions">
-                <a className="btn whatsapp-btn" href={buildWhatsAppUrl(submittedLead)} target="_blank" rel="noreferrer">
+                <a className="btn whatsapp-btn" href={buildWhatsAppUrl(submittedLead)} target="_blank" rel="noreferrer" onClick={trackWhatsAppContact}>
                   <Icon name="whatsapp" />
                   <span>{t('booking.continueWhatsapp')}</span>
                 </a>
@@ -1400,7 +1400,7 @@ function FAQSection() {
             <div className="faq-card__icon faq-icon"><Icon name="phone" /></div>
             <h3>{t('faq.cardTitle')}</h3>
             <p>{t('faq.cardText')}</p>
-            <a className="btn whatsapp-btn" href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer">
+            <a className="btn whatsapp-btn" href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer" onClick={trackWhatsAppContact}>
               <Icon name="whatsapp" /> {t('faq.whatsappCta')}
             </a>
             <div className="faq-card__trust"><Icon name="shieldCheck" />{t('faq.trust')}</div>
@@ -1469,7 +1469,7 @@ function Footer() {
         </div>
         <div className="footer__contact">
           <h3>{t('footer.contact')}</h3>
-          <a href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer"><Icon name="whatsapp" /><span>{t('footer.whatsapp')}<br /><small>{contact.whatsappDisplay}</small></span></a>
+          <a href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer" onClick={trackWhatsAppContact}><Icon name="whatsapp" /><span>{t('footer.whatsapp')}<br /><small>{contact.whatsappDisplay}</small></span></a>
           <a href={`mailto:${contact.email}`}><Icon name="mail" /><span>{t('footer.email')}<br /><small>{contact.email}</small></span></a>
           <a href="#home"><Icon name="globe" /><span>{t('footer.website')}<br /><small>{contact.website}</small></span></a>
           <div className="social-links">
@@ -1551,7 +1551,7 @@ export default function LandingPage() {
         <FAQSection />
       </main>
       <Footer />
-      <a className="floating-whatsapp" href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer" aria-label={t('aria.floatingWhatsapp')}>
+      <a className="floating-whatsapp" href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer" aria-label={t('aria.floatingWhatsapp')} onClick={trackWhatsAppContact}>
         <Icon name="whatsapp" />
       </a>
     </div>
