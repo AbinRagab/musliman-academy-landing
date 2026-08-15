@@ -8,6 +8,7 @@ import Icon, { IconName } from '../components/Icon';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import Logo from '../components/Logo';
 import { buildWebsiteLeadPayload, type LandingBookingLeadData } from './services/leadPayload';
+import { trackMetaEvent } from './services/metaPixel';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
 import { usePrograms } from '../dashboard/services/programsService';
 import {
@@ -548,6 +549,10 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
 
     try {
       await submitWebsiteLeadToCrm(buildWebsiteLeadPayload(leadData, isTraining));
+
+      if (!isTraining) {
+        trackMetaEvent('Lead');
+      }
 
       setSubmittedLead(leadData);
     } catch (error) {
