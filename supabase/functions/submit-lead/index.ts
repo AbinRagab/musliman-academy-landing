@@ -18,6 +18,26 @@ type SubmitLeadPayload = {
   form_type?: string;
   lead_type?: string;
   requestType?: string;
+  meta_event_id?: string;
+  event_source_url?: string;
+  fbp?: string;
+  fbc?: string;
+};
+
+type MetaUserData = {
+  client_ip_address?: string;
+  client_user_agent?: string;
+  fbp?: string;
+  fbc?: string;
+};
+
+type MetaCapiEvent = {
+  event_name: 'Lead';
+  event_time: number;
+  event_id: string;
+  event_source_url?: string;
+  action_source: 'website';
+  user_data: MetaUserData;
 };
 
 const corsHeaders = {
@@ -60,6 +80,98 @@ function normalizeFormType(payload: SubmitLeadPayload) {
 
 function normalizeLeadType(formType: string) {
   return formType === 'teacher_training' ? 'teacher_training' : 'student';
+}
+
+function sanitizeOptionalString(value?: string) {
+  const trimmed = (value || '').trim();
+  return trimmed || undefined;
+}
+
+function isHeaderIpCandidate(value: string) {
+  return /^[a-f0-9:.\s]+$/i.test(value) && (value.includes('.') || value.includes(':'));
+}
+
+function getClientIp(req: Request) {
+  const forwardedFor = req.headers.get('x-forwarded-for');
+
+  if (forwardedFor) {
+    const forwardedIp = forwardedFor.split(',').map((value) => value.trim()).find(isHeaderIpCandidate);
+
+    if (forwardedIp) {
+      return forwardedIp;
+    }
+  }
+
+  const cloudflareIp = (req.headers.get('cf-connecting-ip') || '').trim();
+
+  return cloudflareIp && isHeaderIpCandidate(cloudflareIp) ? cloudflareIp : undefined;
+}
+
+function buildMetaUserData(req: Request, payload: SubmitLeadPayload): MetaUserData {
+  return {
+    client_ip_address: getClientIp(req),
+    client_user_agent: sanitizeOptionalString(req.headers.get('user-agent') || undefined),
+    fbp: sanitizeOptionalString(payload.fbp),
+    fbc: sanitizeOptionalString(payload.fbc),
+  };
+}
+
+async function sendMetaLeadEvent(req: Request, payload: SubmitLeadPayload, eventId: string) {
+  const metaPixelId = Deno.env.get('META_PIXEL_ID');
+  const metaAccessToken = Deno.env.get('META_CAPI_ACCESS_TOKEN');
+
+  if (!metaPixelId || !metaAccessToken) {
+    console.error('Meta CAPI Lead skipped: missing Meta Edge Function configuration.');
+    return;
+  }
+
+  const event: MetaCapiEvent = {
+    event_name: 'Lead',
+    event_time: Math.floor(Date.now() / 1000),
+    event_id: eventId,
+    event_source_url: sanitizeOptionalString(payload.event_source_url),
+    action_source: 'website',
+    user_data: buildMetaUserData(req, payload),
+  };
+  const testEventCode = sanitizeOptionalString(Deno.env.get('META_TEST_EVENT_CODE') || undefined);
+  const body: { data: MetaCapiEvent[]; test_event_code?: string } = { data: [event] };
+
+  if (testEventCode) {
+    body.test_event_code = testEventCode;
+  }
+
+  try {
+    const response = await fetch(`https://graph.facebook.com/v25.0/${encodeURIComponent(metaPixelId)}/events`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${metaAccessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      let metaError = `HTTP ${response.status}`;
+
+      try {
+        const responseBody = await response.json();
+        metaError = String(responseBody?.error?.message || metaError);
+      } catch {
+        // Keep the sanitized status-only fallback.
+      }
+
+      console.error('Meta CAPI Lead request failed:', {
+        event_id: eventId,
+        status: response.status,
+        error: metaError,
+      });
+    }
+  } catch (error) {
+    console.error('Meta CAPI Lead request failed:', {
+      event_id: eventId,
+      error: error instanceof Error ? error.message : 'Unknown Meta CAPI error',
+    });
+  }
 }
 
 serve(async (req) => {
@@ -188,6 +300,12 @@ serve(async (req) => {
 
   if (activityError) {
     console.error('Lead activity insert failed:', activityError);
+  }
+
+  const metaEventId = sanitizeOptionalString(payload.meta_event_id);
+
+  if (formType === 'free_trial' && metaEventId) {
+    await sendMetaLeadEvent(req, payload, metaEventId);
   }
 
   return jsonResponse({ success: true, lead });

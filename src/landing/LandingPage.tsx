@@ -8,7 +8,7 @@ import Icon, { IconName } from '../components/Icon';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import Logo from '../components/Logo';
 import { buildWebsiteLeadPayload, type LandingBookingLeadData } from './services/leadPayload';
-import { trackMetaEvent, trackWhatsAppContact } from './services/metaPixel';
+import { getMetaLeadTrackingData, trackMetaEvent, trackWhatsAppContact } from './services/metaPixel';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
 import { usePrograms } from '../dashboard/services/programsService';
 import {
@@ -547,11 +547,16 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
         source: 'Musliman Academy Website',
       };
 
-    try {
-      await submitWebsiteLeadToCrm(buildWebsiteLeadPayload(leadData, isTraining));
+    const metaLeadTrackingData = isTraining ? null : getMetaLeadTrackingData();
 
-      if (!isTraining) {
-        trackMetaEvent('Lead');
+    try {
+      await submitWebsiteLeadToCrm({
+        ...buildWebsiteLeadPayload(leadData, isTraining),
+        ...(metaLeadTrackingData || {}),
+      });
+
+      if (metaLeadTrackingData) {
+        trackMetaEvent('Lead', undefined, { eventID: metaLeadTrackingData.meta_event_id });
       }
 
       setSubmittedLead(leadData);

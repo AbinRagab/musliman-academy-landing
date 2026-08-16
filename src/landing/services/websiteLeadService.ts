@@ -12,6 +12,10 @@ export type WebsiteLeadPayload = {
   source?: string;
   form_type?: string;
   lead_type?: 'student' | 'teacher_training';
+  meta_event_id?: string;
+  event_source_url?: string;
+  fbp?: string;
+  fbc?: string;
 };
 
 async function getFunctionErrorMessage(error: unknown) {
