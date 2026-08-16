@@ -1,0 +1,15 @@
+alter table public.leads
+  add column if not exists utm_source text,
+  add column if not exists utm_medium text,
+  add column if not exists utm_campaign text,
+  add column if not exists utm_content text,
+  add column if not exists utm_term text,
+  add column if not exists campaign_id text,
+  add column if not exists adset_id text,
+  add column if not exists ad_id text,
+  add column if not exists campaign_name text,
+  add column if not exists adset_name text,
+  add column if not exists ad_name text,
+  add column if not exists landing_page text,
+  add column if not exists referrer text,
+  add column if not exists fbclid text;

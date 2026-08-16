@@ -8,6 +8,7 @@ import Icon, { IconName } from '../components/Icon';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import Logo from '../components/Logo';
 import { buildWebsiteLeadPayload, type LandingBookingLeadData } from './services/leadPayload';
+import { captureMarketingAttribution, getMarketingAttribution } from './services/marketingAttribution';
 import { getMetaLeadTrackingData, trackMetaEvent, trackWhatsAppContact } from './services/metaPixel';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
 import { usePrograms } from '../dashboard/services/programsService';
@@ -56,6 +57,7 @@ type BookingLeadData = LandingBookingLeadData;
 // TODO: move this URL to an environment variable before production if needed.
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJ0VhS9N31RZtRt37NIj8MQHp66luS_1qMInzfv4wagELRjc3w6daWeVRX0CXOIOXx/exec';
 const WHATSAPP_NUMBER = '+0201038331058';
+let marketingAttributionCaptured = false;
 const faqSocialLinks: Array<{ name: string; url: string; className: string; icon: IconType }> = [
   {
     name: 'Facebook',
@@ -548,10 +550,12 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
       };
 
     const metaLeadTrackingData = isTraining ? null : getMetaLeadTrackingData();
+    const marketingAttribution = getMarketingAttribution();
 
     try {
       await submitWebsiteLeadToCrm({
         ...buildWebsiteLeadPayload(leadData, isTraining),
+        ...marketingAttribution,
         ...(metaLeadTrackingData || {}),
       });
 
@@ -1520,6 +1524,15 @@ export default function LandingPage() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
   const [activeBookingType, setActiveBookingType] = useState<BookingType>('trial');
+
+  useEffect(() => {
+    if (marketingAttributionCaptured) {
+      return;
+    }
+
+    captureMarketingAttribution();
+    marketingAttributionCaptured = true;
+  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;

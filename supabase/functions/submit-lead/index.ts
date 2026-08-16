@@ -1,7 +1,27 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 
-type SubmitLeadPayload = {
+const marketingAttributionFields = [
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
+  'utm_term',
+  'campaign_id',
+  'adset_id',
+  'ad_id',
+  'campaign_name',
+  'adset_name',
+  'ad_name',
+  'landing_page',
+  'referrer',
+  'fbclid',
+] as const;
+
+type MarketingAttributionField = (typeof marketingAttributionFields)[number];
+type MarketingAttributionPayload = Partial<Record<MarketingAttributionField, string>>;
+
+type SubmitLeadPayload = MarketingAttributionPayload & {
   full_name?: string;
   name?: string;
   whatsapp?: string;
@@ -274,6 +294,20 @@ serve(async (req) => {
       preferred_time: payload.preferred_time || payload.preferredTime || null,
       message: payload.message || null,
       source: payload.source || 'website',
+      utm_source: sanitizeOptionalString(payload.utm_source) || null,
+      utm_medium: sanitizeOptionalString(payload.utm_medium) || null,
+      utm_campaign: sanitizeOptionalString(payload.utm_campaign) || null,
+      utm_content: sanitizeOptionalString(payload.utm_content) || null,
+      utm_term: sanitizeOptionalString(payload.utm_term) || null,
+      campaign_id: sanitizeOptionalString(payload.campaign_id) || null,
+      adset_id: sanitizeOptionalString(payload.adset_id) || null,
+      ad_id: sanitizeOptionalString(payload.ad_id) || null,
+      campaign_name: sanitizeOptionalString(payload.campaign_name) || null,
+      adset_name: sanitizeOptionalString(payload.adset_name) || null,
+      ad_name: sanitizeOptionalString(payload.ad_name) || null,
+      landing_page: sanitizeOptionalString(payload.landing_page) || null,
+      referrer: sanitizeOptionalString(payload.referrer) || null,
+      fbclid: sanitizeOptionalString(payload.fbclid) || null,
       form_type: formType,
       lead_type: leadType,
       status: 'new',

@@ -1,6 +1,7 @@
 import { isSupabaseConfigured, supabase } from '../../lib/supabaseClient';
+import type { MarketingAttribution } from './marketingAttribution';
 
-export type WebsiteLeadPayload = {
+export type WebsiteLeadPayload = MarketingAttribution & {
   full_name: string;
   whatsapp: string;
   country: string;
