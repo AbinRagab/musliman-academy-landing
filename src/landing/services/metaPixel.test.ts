@@ -4,6 +4,7 @@ import { getMetaLeadTrackingData, trackMetaEvent, trackWhatsAppContact } from '.
 describe('trackMetaEvent', () => {
   afterEach(() => {
     delete window.fbq;
+    delete window.dataLayer;
     document.cookie = '_fbp=; Max-Age=0; path=/';
     document.cookie = '_fbc=; Max-Age=0; path=/';
     vi.restoreAllMocks();
@@ -32,11 +33,18 @@ describe('trackMetaEvent', () => {
   it('tracks WhatsApp contact clicks as a standard Contact event', () => {
     const fbq = vi.fn();
     window.fbq = fbq;
+    window.dataLayer = [];
 
     trackWhatsAppContact();
 
     expect(fbq).toHaveBeenCalledTimes(1);
     expect(fbq).toHaveBeenCalledWith('track', 'Contact');
+    expect(window.dataLayer).toEqual([
+      {
+        event: 'musliman_whatsapp_click',
+        contact_method: 'whatsapp',
+      },
+    ]);
   });
 
   it('captures Meta browser identifiers when cookies are available', () => {

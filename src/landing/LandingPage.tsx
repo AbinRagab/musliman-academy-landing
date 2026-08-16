@@ -8,6 +8,7 @@ import Icon, { IconName } from '../components/Icon';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import Logo from '../components/Logo';
 import { buildWebsiteLeadPayload, type LandingBookingLeadData } from './services/leadPayload';
+import { trackGtmGenerateLead } from './services/googleTagManager';
 import { captureMarketingAttribution, getMarketingAttribution } from './services/marketingAttribution';
 import { getMetaLeadTrackingData, trackMetaEvent, trackWhatsAppContact } from './services/metaPixel';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
@@ -558,6 +559,8 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
         ...marketingAttribution,
         ...(metaLeadTrackingData || {}),
       });
+
+      trackGtmGenerateLead(isTraining ? 'teacher_training' : 'free_trial');
 
       if (metaLeadTrackingData) {
         trackMetaEvent('Lead', undefined, { eventID: metaLeadTrackingData.meta_event_id });

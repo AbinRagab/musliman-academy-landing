@@ -1,3 +1,5 @@
+import { trackGtmWhatsAppClick } from './googleTagManager';
+
 type MetaEventParams = Record<string, unknown>;
 type MetaEventOptions = {
   eventID?: string;
@@ -81,4 +83,5 @@ export function trackMetaEvent(eventName: string, params?: MetaEventParams, opti
 
 export function trackWhatsAppContact() {
   trackMetaEvent('Contact');
+  trackGtmWhatsAppClick();
 }
