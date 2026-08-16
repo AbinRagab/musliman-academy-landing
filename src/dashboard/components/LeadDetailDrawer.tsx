@@ -8,6 +8,7 @@ import NotesBox from './NotesBox';
 import ProgramSelect from './ProgramSelect';
 import StatusBadge from './StatusBadge';
 import type { LeadActivity, LeadRecord, LeadStatus, LeadType, TeacherOption, UpdateLeadPayload } from '../services/leadsService';
+import { getMarketingAttributionDisplayItems, hasMarketingAttribution } from '../services/leadAttribution';
 
 type ProgramOption = { id: string; name: string };
 type OwnerOption = { id: string; full_name: string; role?: string };
@@ -95,6 +96,7 @@ export default function LeadDetailDrawer({
 }) {
   const [editLeadType, setEditLeadType] = useState<LeadType>(lead.lead_type || 'student');
   const isTeacherTraining = (mode === 'edit' ? editLeadType : lead.lead_type) === 'teacher_training';
+  const marketingAttributionItems = getMarketingAttributionDisplayItems(lead);
 
   useEffect(() => {
     setEditLeadType(lead.lead_type || 'student');
@@ -250,6 +252,19 @@ export default function LeadDetailDrawer({
                 <div className="lead-trial-placeholder">
                   <StatusBadge label={lead.status === 'trial_scheduled' ? 'scheduled' : 'not scheduled'} />
                   <p>Trial details appear here once a free trial is scheduled.</p>
+                </div>
+              </div>
+            )}
+
+            {hasMarketingAttribution(lead) && (
+              <div className="lead-drawer__section">
+                <div className="lead-drawer__section-header">
+                  <h3>Marketing Attribution</h3>
+                </div>
+                <div className="lead-summary-grid lead-summary-grid--attribution">
+                  {marketingAttributionItems.map((item) => (
+                    <span key={`${item.label}-${item.value}`}>{item.label} <strong>{item.value}</strong></span>
+                  ))}
                 </div>
               </div>
             )}

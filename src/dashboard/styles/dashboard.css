@@ -825,6 +825,10 @@
   text-align: right;
 }
 
+.lead-summary-grid--attribution strong {
+  overflow-wrap: anywhere;
+}
+
 .lead-trial-placeholder {
   display: grid;
   gap: 10px;
@@ -3104,21 +3108,26 @@
 
 .lead-crm-table th:nth-child(4),
 .lead-crm-table td:nth-child(4) {
-  width: 12%;
+  width: 15%;
 }
 
 .lead-crm-table th:nth-child(5),
 .lead-crm-table td:nth-child(5) {
-  width: 17%;
+  width: 10%;
 }
 
 .lead-crm-table th:nth-child(6),
 .lead-crm-table td:nth-child(6) {
-  width: 13%;
+  width: 15%;
 }
 
 .lead-crm-table th:nth-child(7),
 .lead-crm-table td:nth-child(7) {
+  width: 10%;
+}
+
+.lead-crm-table th:nth-child(8),
+.lead-crm-table td:nth-child(8) {
   width: 54px;
   text-align: right;
 }
@@ -3130,7 +3139,8 @@
 }
 
 .lead-table-cell strong,
-.lead-table-cell span {
+.lead-table-cell span,
+.lead-table-cell small {
   min-width: 0;
   overflow: hidden;
   line-height: 1.25;
@@ -3147,6 +3157,11 @@
 .lead-table-cell span {
   color: var(--dashboard-muted);
   font-size: 0.76rem;
+}
+
+.lead-table-cell small {
+  color: var(--dashboard-muted);
+  font-size: 0.68rem;
 }
 
 .lead-table-cell .lead-type-badge {
@@ -3701,6 +3716,10 @@
 
   .lead-table-cell span {
     font-size: 0.72rem;
+  }
+
+  .lead-table-cell small {
+    font-size: 0.66rem;
   }
 
   .lead-type-badge,
@@ -4601,6 +4620,10 @@
   }
 
   .lead-table-cell span {
+    font-size: var(--dashboard-font-xs);
+  }
+
+  .lead-table-cell small {
     font-size: var(--dashboard-font-xs);
   }
 
@@ -7851,6 +7874,7 @@ body,
 .admin-detail-cell span,
 .lead-table-cell strong,
 .lead-table-cell span,
+.lead-table-cell small,
 .account-table-cell strong,
 .account-table-cell span {
   min-width: 0;

@@ -1,5 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
+import { leadMatchesAttributionSearch } from './leadAttribution';
 import { fetchPrograms as fetchActivePrograms } from './programsService';
 import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
 
@@ -27,6 +28,20 @@ export type LeadRecord = {
   preferred_time: string | null;
   message: string | null;
   source: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_content: string | null;
+  utm_term: string | null;
+  campaign_id: string | null;
+  adset_id: string | null;
+  ad_id: string | null;
+  campaign_name: string | null;
+  adset_name: string | null;
+  ad_name: string | null;
+  landing_page: string | null;
+  referrer: string | null;
+  fbclid: string | null;
   form_type: string | null;
   lead_type: LeadType | null;
   status: LeadStatus;
@@ -243,6 +258,7 @@ export async function fetchLeads(filters: LeadFilters = {}) {
     || (lead.whatsapp || '').toLowerCase().includes(search)
     || (lead.country || '').toLowerCase().includes(search)
     || (lead.programName || '').toLowerCase().includes(search)
+    || leadMatchesAttributionSearch(lead, search)
   ));
 }
 

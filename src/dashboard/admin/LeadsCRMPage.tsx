@@ -41,6 +41,7 @@ import {
   type TeacherOption,
   type UpdateLeadPayload,
 } from '../services/leadsService';
+import { getLeadAcquisition, leadMatchesAttributionSearch, marketingAttributionFieldKeys } from '../services/leadAttribution';
 import { usePrograms, type ProgramRecord } from '../services/programsService';
 
 type ProgramOption = ProgramRecord;
@@ -112,6 +113,7 @@ function exportLeadRows(rows: LeadRecord[]) {
     'assignedTeacherName',
     'next_follow_up_at',
     'created_at',
+    ...marketingAttributionFieldKeys,
   ];
   const csv = [
     keys.join(','),
@@ -129,16 +131,19 @@ function exportLeadRows(rows: LeadRecord[]) {
 function CompactCell({
   primary,
   secondary,
+  tertiary,
   children,
 }: {
   primary?: string | null;
   secondary?: string | null;
+  tertiary?: string | null;
   children?: ReactNode;
 }) {
   return (
     <div className="lead-table-cell">
       {children || <strong>{primary || '-'}</strong>}
       {secondary && <span>{secondary}</span>}
+      {tertiary && <small>{tertiary}</small>}
     </div>
   );
 }
@@ -331,7 +336,10 @@ export default function LeadsCRMPage() {
     const query = search.trim().toLowerCase();
 
     return leads.filter((lead) => {
-      const matchesSearch = !query || lead.full_name.toLowerCase().includes(query) || (lead.whatsapp || '').toLowerCase().includes(query);
+      const matchesSearch = !query
+        || lead.full_name.toLowerCase().includes(query)
+        || (lead.whatsapp || '').toLowerCase().includes(query)
+        || leadMatchesAttributionSearch(lead, query);
       const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
       const matchesLeadType = leadTypeFilter === 'all' || (lead.lead_type || 'student') === leadTypeFilter;
       const matchesProgram = programFilter === 'all' || lead.program_id === programFilter || lead.programName === programFilter;
@@ -538,6 +546,20 @@ export default function LeadsCRMPage() {
           <LeadTypeBadge type={row.lead_type} />
         </CompactCell>
       ),
+    },
+    {
+      header: 'Acquisition',
+      accessor: (row) => {
+        const acquisition = getLeadAcquisition(row);
+
+        return (
+          <CompactCell
+            primary={acquisition.primary}
+            secondary={acquisition.secondary}
+            tertiary={acquisition.tertiary ? `Ad: ${acquisition.tertiary}` : null}
+          />
+        );
+      },
     },
     { header: 'Status', accessor: (row) => <LeadStatusBadge status={row.status} /> },
     {
