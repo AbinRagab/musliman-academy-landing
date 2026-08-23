@@ -4,9 +4,10 @@ interface LogoProps {
    * light = logo suitable for dark/navy background
    */
   variant?: 'light' | 'dark';
+  href?: string;
 }
 
-export default function Logo({ variant = 'dark' }: LogoProps) {
+export default function Logo({ variant = 'dark', href = '#home' }: LogoProps) {
   const logoSrc =
     variant === 'light'
       ? '/assets/musliman-logo-dark-bg-transparent.png'
@@ -19,7 +20,7 @@ export default function Logo({ variant = 'dark' }: LogoProps) {
   return (
     <a
       className={`brand-logo brand-logo--${variant}`}
-      href="#home"
+      href={href}
       aria-label="Musliman Academy home"
     >
       <picture>

@@ -14,6 +14,7 @@ import StatusBadge from '../components/StatusBadge';
 import TeacherLinkingDebugPanel from '../components/TeacherLinkingDebugPanel';
 import TeacherTrialCard from '../components/TeacherTrialCard';
 import TrialFeedbackModal from '../components/TrialFeedbackModal';
+import { getAcademyTodayDate } from '../services/dateUtils';
 import Toast, { type ToastMessage } from '../components/Toast';
 import { updateTeacherSessionCheckin, type TeacherCheckinAction } from '../services/teacherCheckinService';
 import { submitTrialFeedback, updateTrialStatus, fetchTeacherTrials } from '../services/trialsService';
@@ -115,17 +116,16 @@ function TeacherEvaluationModal({ evaluation, onClose, onSubmit }: { evaluation:
             <label><span>Student</span><input value={evaluation.student} readOnly /></label>
             <label><span>Related class</span><input value={evaluation.relatedClass} readOnly /></label>
             <label><span>Program</span><input value={evaluation.program} readOnly /></label>
-            <label><span>Evaluation date</span><input type="date" defaultValue="2026-07-29" /></label>
+            <label><span>Evaluation date</span><input type="date" defaultValue={getAcademyTodayDate()} readOnly /></label>
             <label><span>Reading accuracy</span><input name="recitationRating" type="range" min="1" max="5" defaultValue="4" /></label>
             <label><span>Tajweed</span><input name="tajweedRating" type="range" min="1" max="5" defaultValue="4" /></label>
             <label><span>Understanding</span><input name="understandingRating" type="range" min="1" max="5" defaultValue="4" /></label>
             <label><span>Behavior</span><input name="behaviorRating" type="range" min="1" max="5" defaultValue="4" /></label>
             <label className="teacher-form-grid__wide"><span>Strengths / progress notes</span><textarea name="progressNotes" rows={3} /></label>
             <label className="teacher-form-grid__wide"><span>Teacher recommendation</span><textarea name="recommendation" rows={3} /></label>
-            <label className="teacher-form-grid__wide"><span>Next focus</span><textarea rows={2} /></label>
           </div>
           <div className="dashboard-form-actions">
-            <ActionButton variant="secondary" onClick={onClose}>Save as Draft</ActionButton>
+            <ActionButton variant="secondary" disabled>Draft saving unavailable</ActionButton>
             <ActionButton type="submit" variant="copper">Submit Evaluation</ActionButton>
           </div>
         </form>
@@ -146,7 +146,6 @@ function ClassReportModal({ classItem, onClose, onSubmit }: { classItem: ClassRo
           <label><span>Lesson covered</span><input name="lessonCovered" defaultValue={classItem.lessonCovered === 'Planned lesson' ? '' : classItem.lessonCovered} required /></label>
           <label><span>Homework assigned</span><textarea name="homework" rows={3} defaultValue={classItem.homeworkAssigned === 'Set after class' ? '' : classItem.homeworkAssigned} /></label>
           <label><span>Class notes</span><textarea name="notes" rows={4} defaultValue={classItem.notes} /></label>
-          <label><span>Next lesson plan</span><textarea rows={3} /></label>
           <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper">Save Class Report</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
         </form>
       </div>
@@ -191,7 +190,7 @@ function ComposeModal({ students, classRows, onClose }: { students: StudentRow[]
           <label><span>Related class</span><select>{classRows.slice(0, 4).map((classItem) => <option key={classItem.id}>{classItem.program} - {classItem.dateTime}</option>)}</select></label>
           <label><span>Subject</span><input /></label>
           <label><span>Message</span><textarea rows={5} /></label>
-          <div className="dashboard-form-actions"><ActionButton variant="copper" onClick={onClose}>Send</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
+          <div className="dashboard-form-actions"><ActionButton variant="copper" disabled>Messaging unavailable</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
         </form>
       </div>
     </div>
@@ -275,6 +274,10 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
   async function handleEvaluationSubmit(evaluation: EvaluationRow, formData: FormData) {
     if (!evaluation.studentId) {
       setToast({ type: 'error', message: 'This evaluation is missing a student record.' });
+      return;
+    }
+    if (!evaluation.classId) {
+      setToast({ type: 'error', message: 'This evaluation is missing a class record.' });
       return;
     }
 
@@ -751,7 +754,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
             )}
           </SectionCard>
         </div>
-        {composeOpen && <ComposeModal students={students} classRows={classRows} onClose={() => { setComposeOpen(false); setToast({ type: 'success', message: 'Message sent.' }); }} />}
+        {composeOpen && <ComposeModal students={students} classRows={classRows} onClose={() => setComposeOpen(false)} />}
       </div>
     );
   }

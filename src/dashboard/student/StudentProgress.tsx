@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import Icon from '../../components/Icon';
-import ActionButton from '../components/ActionButton';
 import DashboardSkeleton from '../components/DashboardSkeleton';
 import ProgressBar from '../components/ProgressBar';
 import SectionCard from '../components/SectionCard';
@@ -87,6 +86,7 @@ export default function StudentProgress() {
         <div className="student-skills-grid">
           {data.skills.map((skill) => <ProgressSkillCard key={skill.label} skill={skill} />)}
         </div>
+        {data.skills.length === 0 && <p className="dashboard-empty-copy">No evaluation yet.</p>}
       </SectionCard>
 
       <SectionCard title="Recent Lesson Topics" subtitle="Compact view without horizontal scrolling">
@@ -102,6 +102,7 @@ export default function StudentProgress() {
             </article>
           ))}
         </div>
+        {data.topics.length === 0 && <p className="dashboard-empty-copy">No evaluation yet.</p>}
       </SectionCard>
     </div>
   );

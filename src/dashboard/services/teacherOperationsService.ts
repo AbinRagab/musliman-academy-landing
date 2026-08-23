@@ -3,6 +3,7 @@ import {
   fetchActiveClassSchedulesByTeacherProfileId,
   getNextClass as getNextScheduledClass,
 } from './classSchedulesService';
+import { getAcademyTodayDate } from './dateUtils';
 import { getStudentDisplayName } from './displayNameUtils';
 
 export type TeacherContext = {
@@ -169,9 +170,9 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
     };
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getAcademyTodayDate();
   const [{ data: studentRows, error: studentsError }, { data: classRows, error: classesError }] = await Promise.all([
-    applyCurrentTeacherProfileFilter(
+    applyTeacherIdFilter(
       client
         .from('students')
         .select('id, student_name, program_id, level, status, assigned_teacher_id'),
@@ -421,7 +422,7 @@ export async function saveTeacherClassReport(payload: {
 
 export async function saveTeacherEvaluation(payload: {
   studentId: string;
-  classId?: string | null;
+  classId: string;
   recitationRating: number;
   tajweedRating: number;
   understandingRating: number;
@@ -435,17 +436,52 @@ export async function saveTeacherEvaluation(payload: {
     throw new Error('Teacher account is required.');
   }
 
-  const { error } = await client.from('evaluations').insert({
+  if (!payload.studentId || !payload.classId) {
+    throw new Error('A student and class record are required before saving an evaluation.');
+  }
+
+  const { data: classRecord, error: classError } = await client
+    .from('classes')
+    .select('id, student_id, teacher_id')
+    .eq('id', payload.classId)
+    .eq('teacher_id', context.teacherId)
+    .maybeSingle();
+
+  if (classError) {
+    throw classError;
+  }
+
+  if (!classRecord?.id || classRecord.student_id !== payload.studentId) {
+    throw new Error('This evaluation must belong to one of your assigned class records.');
+  }
+
+  const evaluationPayload = {
     student_id: payload.studentId,
     teacher_id: context.teacherId,
-    class_id: payload.classId || null,
+    class_id: payload.classId,
     recitation_rating: payload.recitationRating,
     tajweed_rating: payload.tajweedRating,
     understanding_rating: payload.understandingRating,
     behavior_rating: payload.behaviorRating,
     progress_feedback: payload.progressNotes || null,
     teacher_notes: payload.recommendation || null,
-  });
+  };
+
+  const { data: existingEvaluation, error: existingEvaluationError } = await client
+    .from('evaluations')
+    .select('id')
+    .eq('class_id', payload.classId)
+    .eq('student_id', payload.studentId)
+    .eq('teacher_id', context.teacherId)
+    .maybeSingle();
+
+  if (existingEvaluationError) {
+    throw existingEvaluationError;
+  }
+
+  const { error } = existingEvaluation?.id
+    ? await client.from('evaluations').update(evaluationPayload).eq('id', existingEvaluation.id)
+    : await client.from('evaluations').insert(evaluationPayload);
 
   if (error) {
     throw error;
@@ -457,7 +493,7 @@ function formatClassDateTime(classDate?: string | null, startTime?: string | nul
     return 'Date pending';
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getAcademyTodayDate();
   const dateLabel = classDate === today ? 'Today' : classDate;
   return `${dateLabel} ${formatTime(startTime)}`.trim();
 }

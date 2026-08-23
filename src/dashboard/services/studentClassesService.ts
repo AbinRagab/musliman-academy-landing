@@ -28,8 +28,7 @@ export async function fetchStudentClassesData() {
     };
   }
 
-  try {
-    const profile = await resolveCurrentStudentProfile();
+  const profile = await resolveCurrentStudentProfile();
     const scheduleRows = profile.id ? await fetchActiveClassSchedulesByStudentIds([profile.id]) : [];
     const nextSchedule = getNextScheduledClass(scheduleRows, profile.timezone);
     const scheduledClasses = [...scheduleRows]
@@ -50,13 +49,17 @@ export async function fetchStudentClassesData() {
       .order('class_date', { ascending: true })
       .order('start_time', { ascending: true });
 
-    if (error || !data?.length) {
-      return {
-        profile,
-        classes: scheduledClasses,
-        upcomingClasses: getUpcomingClasses(scheduledClasses),
-      };
-    }
+  if (error) {
+    throw error;
+  }
+
+  if (!data?.length) {
+    return {
+      profile,
+      classes: scheduledClasses,
+      upcomingClasses: getUpcomingClasses(scheduledClasses),
+    };
+  }
 
     const teacherIds = Array.from(new Set(data.map((session) => session.teacher_id).filter(Boolean))) as string[];
     const programIds = Array.from(new Set(data.map((session) => session.program_id).filter(Boolean))) as string[];
@@ -94,18 +97,11 @@ export async function fetchStudentClassesData() {
 
     const classesWithSchedules = [...scheduledClasses, ...classes];
 
-    return {
-      profile,
-      classes: classesWithSchedules,
-      upcomingClasses: getUpcomingClasses(classesWithSchedules),
-    };
-  } catch {
-    return {
-      profile: await resolveCurrentStudentProfile(),
-      classes: [] as StudentClassSession[],
-      upcomingClasses: [] as StudentClassSession[],
-    };
-  }
+  return {
+    profile,
+    classes: classesWithSchedules,
+    upcomingClasses: getUpcomingClasses(classesWithSchedules),
+  };
 }
 
 function normalizeAttendanceStatus(status?: string | null): StudentClassSession['attendanceStatus'] {
@@ -146,9 +142,57 @@ function formatTime(value?: string | null) {
 }
 
 export async function submitRescheduleRequest(payload: { classId: string; preferredDateTime: string; reason: string }) {
-  return { success: true, payload };
+  return sendAdminClassRequest(
+    `Class reschedule request: ${payload.reason}`,
+    `Class ID: ${payload.classId}\nPreferred time: ${payload.preferredDateTime}\n\n${payload.reason}`,
+  );
 }
 
 export async function reportClassIssue(payload: { classId: string; reason: string; message: string }) {
-  return { success: true, payload };
+  return sendAdminClassRequest(
+    `Class issue: ${payload.reason}`,
+    `Class ID: ${payload.classId}\n\n${payload.message}`,
+  );
+}
+
+async function sendAdminClassRequest(subject: string, body: string) {
+  if (!supabase) {
+    throw new Error('Supabase is not configured for this environment.');
+  }
+
+  const { data: sessionData } = await supabase.auth.getSession();
+  const senderId = sessionData.session?.user.id;
+
+  if (!senderId) {
+    throw new Error('You must be signed in before sending this request.');
+  }
+
+  const { data: adminProfile, error: adminError } = await supabase
+    .from('profiles')
+    .select('id')
+    .in('role', ['admin', 'super_admin', 'academic_manager'])
+    .eq('status', 'active')
+    .limit(1)
+    .maybeSingle();
+
+  if (adminError) {
+    throw adminError;
+  }
+
+  if (!adminProfile?.id) {
+    throw new Error('No admin recipient is configured for this request.');
+  }
+
+  const { data, error } = await supabase.from('messages').insert({
+    sender_id: senderId,
+    receiver_id: adminProfile.id,
+    subject,
+    body,
+  }).select('*').single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
 }

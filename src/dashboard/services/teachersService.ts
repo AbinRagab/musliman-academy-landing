@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
+import { getAcademyTodayDate } from './dateUtils';
 
 export type TeacherOption = {
   id: string;
@@ -74,7 +75,7 @@ export async function fetchActiveTeacherOptions(): Promise<TeacherOption[]> {
         specialization: teacher.specialization || null,
         languages: teacher.languages || [],
         availability: teacher.availability || null,
-        assignedStudents: (students || []).filter((student) => student.assigned_teacher_id === teacher.profile_id).length,
+        assignedStudents: (students || []).filter((student) => student.assigned_teacher_id === teacher.id).length,
         activeTrialLoad: (trials || []).filter((trial) => trial.teacher_id === teacher.id).length,
       };
     })
@@ -97,10 +98,10 @@ export async function fetchAdminTeacherRows(): Promise<AdminTeacherRow[]> {
 
   const profileIds = Array.from(new Set((teachers || []).map((teacher) => teacher.profile_id).filter(Boolean))) as string[];
   const teacherIds = Array.from(new Set((teachers || []).map((teacher) => teacher.id).filter(Boolean))) as string[];
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getAcademyTodayDate();
   const [profileResult, studentResult, classResult, trialResult] = await Promise.all([
     profileIds.length ? client.from('profiles').select('id, full_name, email, phone, status').in('id', profileIds) : Promise.resolve({ data: [] }),
-    profileIds.length ? client.from('students').select('assigned_teacher_id').in('assigned_teacher_id', profileIds) : Promise.resolve({ data: [] }),
+    teacherIds.length ? client.from('students').select('assigned_teacher_id').in('assigned_teacher_id', teacherIds) : Promise.resolve({ data: [] }),
     teacherIds.length ? client.from('classes').select('teacher_id, class_date, status').in('teacher_id', teacherIds).gte('class_date', today) : Promise.resolve({ data: [] }),
     teacherIds.length ? client.from('free_trials').select('teacher_id, status').in('teacher_id', teacherIds) : Promise.resolve({ data: [] }),
   ]);
@@ -118,7 +119,7 @@ export async function fetchAdminTeacherRows(): Promise<AdminTeacherRow[]> {
       email: profile?.email || 'Email not set',
       phone: profile?.phone || 'Phone not set',
       specialization: teacher.specialization || 'Specialization not set',
-      students: (studentResult.data || []).filter((student) => student.assigned_teacher_id === teacher.profile_id).length,
+      students: (studentResult.data || []).filter((student) => student.assigned_teacher_id === teacher.id).length,
       trials: (trialResult.data || []).filter((trial) => trial.teacher_id === teacher.id && trial.status === 'scheduled').length,
       upcomingClasses: (classResult.data || []).filter((classRow) => classRow.teacher_id === teacher.id).length,
       availability: teacher.availability || 'Availability not set',

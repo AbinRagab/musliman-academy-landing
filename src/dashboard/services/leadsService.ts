@@ -1,8 +1,9 @@
 import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
+import { getAcademyTodayDate } from './dateUtils';
 import { leadMatchesAttributionSearch } from './leadAttribution';
 import { fetchPrograms as fetchActivePrograms } from './programsService';
-import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
+import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById } from './teachersService';
 
 export type LeadStatus =
   | 'new'
@@ -236,7 +237,7 @@ export async function fetchLeads(filters: LeadFilters = {}) {
   }
 
   if (filters.followUpToday) {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getAcademyTodayDate();
     query = query.gte('next_follow_up_at', `${today}T00:00:00`).lte('next_follow_up_at', `${today}T23:59:59`);
   }
 
@@ -485,12 +486,9 @@ export async function fetchLeadActivity(leadId: string) {
 export async function convertLeadToStudent(leadId: string, payload: ConvertLeadPayload) {
   const client = requireSupabase();
   const operationalTeacherId = await resolveOperationalTeacherId(payload.assigned_teacher_id);
-  const selectedTeacherProfileId = operationalTeacherId
-    ? await resolveTeacherProfileId(operationalTeacherId)
-    : null;
   const { data: student, error } = await client
     .from('students')
-    .insert({ ...payload, assigned_teacher_id: selectedTeacherProfileId })
+    .insert({ ...payload, assigned_teacher_id: operationalTeacherId })
     .select('*')
     .single();
 

@@ -1,182 +1,138 @@
-# Musliman Academy Dashboard Supabase Setup
+# Musliman Academy Dashboard Setup
 
-## 1. Create a Supabase project
+## Environment
 
-Create a new Supabase project from the Supabase dashboard. Keep the database password somewhere secure. Do not put the service role key in the frontend project.
-
-## 2. Add local environment variables
-
-Create a local `.env` file in the project root:
+Create `.env` in the project root:
 
 ```bash
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-public-anon-key
 ```
 
-Only use the anon key in Vite frontend code. Keep real `.env` values out of git.
+Only the anon key belongs in the Vite frontend. Do not expose the Supabase service role key in local frontend env files, Vercel frontend env vars, or client code.
 
-## 3. Run the schema
+## Database Setup
 
-Open Supabase SQL Editor and run:
+For a fresh database, run `supabase/schema.sql` first, then `supabase/seed.sql`, then every migration in timestamp order:
 
-```sql
--- Paste and run supabase/schema.sql
+```text
+20260724_leads_crm_pipeline.sql
+20260724_public_lead_types.sql
+20260726_private_storage_uploads.sql
+20260726_z_homework_upload_rls_fix.sql
+20260729_notifications_compliance.sql
+20260809_programs_read_policies.sql
+20260809_student_assignment_update_policy.sql
+20260809_teacher_assigned_class_updates.sql
+20260809_teacher_assignment_linking_fix.sql
+20260809_teacher_operational_ids.sql
+20260810_class_schedules.sql
+20260816_marketing_attribution_fields.sql
+20260823095000_reconcile_dashboard_prerequisites.sql
+20260823100000_dashboard_data_contract_cleanup.sql
 ```
 
-This creates enums, tables, indexes, helper functions, triggers, and Row Level Security policies.
+`schema.sql` is the baseline schema. Migrations are additive fixes and must not be skipped on an existing project.
 
-## 4. Run seed data
+## Existing Production Reconciliation
 
-After the schema succeeds, run:
+The current production Supabase database was found to be partially migrated: the base schema and `20260816_marketing_attribution_fields.sql` are already present, but Supabase migration history only records `20260816 marketing_attribution_fields` and several dashboard prerequisite objects are missing.
 
-```sql
--- Paste and run supabase/seed.sql
+Do not replay all historical migrations against that production database. Instead, run the reconciliation migration first, then Phase 1:
+
+```text
+20260823095000_reconcile_dashboard_prerequisites.sql
+20260823100000_dashboard_data_contract_cleanup.sql
 ```
 
-This seeds permissions, role permissions, and academy programs.
+The reconciliation migration restores missing dashboard prerequisites without reapplying the 20260816 marketing attribution columns. It creates or reconciles lead CRM support objects, notification/compliance tables, `class_schedules`, `public.current_teacher_id()`, operational teacher-id foreign keys, indexes, triggers, and RLS policies required before Phase 1.
 
-## 4.1. Run CRM pipeline migration
+The reconciliation migration may abort intentionally if it finds ambiguous teacher mappings, unmappable teacher references, duplicate teacher profile links, duplicate notification keys, duplicate teacher check-ins, or duplicate teacher warning keys. Clean those records manually before retrying.
 
-After the base schema and seed are complete, run the leads CRM migration:
+## Latest Phase 1 Migration
 
-```sql
--- Paste and run supabase/migrations/20260724_leads_crm_pipeline.sql
-```
+`20260823100000_dashboard_data_contract_cleanup.sql` adds:
 
-This adds lead teacher assignment, priority/lost/converted fields, lead activity logs, and RLS policies for admin/admissions/teacher lead access.
+- `profiles.timezone` and `profiles.preferred_contact_method`.
+- Optional `payment_packages`.
+- `payments.package_id`, `sessions_included`, `sessions_remaining`, `receipt_url`, and `receipt_file_path`.
+- Unique constraints to prevent duplicate attendance and duplicate class/student/teacher evaluations.
+- RLS cleanup so teacher operational tables use `public.current_teacher_id()`.
 
-Then run the public lead classification migration:
+If the unique constraints fail because duplicate rows already exist, clean duplicate attendance/evaluation records and rerun the migration.
 
-```sql
--- Paste and run supabase/migrations/20260724_public_lead_types.sql
-```
+## Teacher IDs
 
-This adds `lead_type` and `program_name` to `public.leads` so public website submissions can be clearly separated as student free trial leads or teacher training applications.
+Use these ids consistently:
 
-## 5. Create the first admin user
+- Auth/account identity: `profiles.id`.
+- Operational teacher records: `teachers.id`.
+- Operational references must store `teachers.id`: `students.assigned_teacher_id`, `classes.teacher_id`, `attendance.teacher_id`, `evaluations.teacher_id`, and `free_trials.teacher_id`.
+- `class_schedules.teacher_profile_id` intentionally stores `profiles.id` for the current recurring schedule architecture.
 
-In Supabase Authentication, create the first user manually with email and password.
+Frontend code should resolve ids through `teachersService` / `teacherOperationsService`, not by guessing.
 
-Then insert a matching profile row using that auth user UUID:
+## Storage Buckets
 
-```sql
-insert into public.profiles (id, full_name, email, role, status)
-values (
-  'AUTH_USER_UUID_FROM_SUPABASE',
-  'Musliman Super Admin',
-  'admin@muslimanacademy.com',
-  'super_admin',
-  'active'
-);
-```
+Private upload migrations configure these buckets/policies where available:
 
-Use the exact UUID from `auth.users`.
+- `homework-submissions`
+- `class-materials`
+- `payment-documents`
+- `teacher-documents`
+- `profile-images`
 
-## 6. Test login
+TODO: Historical storage RLS still needs a dedicated audit. This Phase 1 patch does not change storage policies.
 
-Start the app locally:
+## RLS Expectations
+
+- Admin roles manage academy operational data.
+- Teachers access assigned students, classes, trials, attendance, evaluations, homework, and check-ins through operational `teachers.id`.
+- Students access only their own student records, classes, attendance, evaluations, payments, messages, homework, and notifications.
+- Do not use service role credentials from frontend code to bypass RLS.
+
+## Edge Functions
+
+Deploy the account creation and public lead functions:
 
 ```bash
-npm run dev
+npx supabase functions deploy create-user
+npx supabase functions deploy submit-lead
 ```
 
-Open:
+Supabase provides reserved runtime values such as `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` to Edge Functions. Do not add service role keys to the Vite app.
+
+## Local Validation
+
+Run:
+
+```bash
+npm install
+npm test
+npm run typecheck
+npm run lint
+npm run build
+```
+
+Then sign in at:
 
 ```text
 http://localhost:5173/dashboard/login
 ```
 
-Sign in with the Supabase Auth email and password. The app reads `public.profiles` and redirects by role:
+Role redirects:
 
 - `super_admin`, `admin`, `admissions`, `academic_manager`, `viewer` -> `/dashboard/admin`
 - `finance` -> `/dashboard/admin/payments`
 - `teacher` -> `/dashboard/teacher`
 - `student` -> `/dashboard/student`
 
-## 7. Add Vercel environment variables
+## Data Validation Checklist
 
-In Vercel, open Project Settings -> Environment Variables and add:
-
-```text
-VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
-```
-
-Redeploy after adding or changing environment variables.
-
-## 8. Deploy create-user Edge Function
-
-The dashboard creates Auth users through `supabase/functions/create-user/index.ts`. The frontend never receives the service role key.
-
-Install the Supabase CLI if needed:
-
-```bash
-npm install -g supabase
-```
-
-Log in and link the project:
-
-```bash
-supabase login
-supabase link --project-ref your-project-ref
-```
-
-Supabase Edge Functions automatically provide these reserved environment variables at runtime:
-
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-
-Do not set these with `supabase secrets set`; the Supabase CLI rejects reserved `SUPABASE_` secret names. The Edge Functions read the default values directly with `Deno.env.get(...)`.
-
-Deploy the account creation function:
-
-```bash
-npx supabase functions deploy create-user
-```
-
-Deploy the public website lead submission function:
-
-```bash
-npx supabase functions deploy submit-lead
-```
-
-The `submit-lead` function is required for public website forms. It creates CRM leads with:
-
-- `form_type = free_trial` and `lead_type = student` for Book a Free Trial.
-- `form_type = teacher_training` and `lead_type = teacher_training` for Teacher Training.
-- `source = website` by default.
-
-The frontend must only use:
-
-```bash
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-```
-
-Do not add `SUPABASE_SERVICE_ROLE_KEY` to Vercel frontend environment variables.
-
-Test from the dashboard:
-
-1. Sign in at `/dashboard/login` as a `super_admin` or `admin`.
-2. Open `/dashboard/admin/accounts`.
-3. Use the Create New Account panel to create a teacher, student, admin, admissions, academic manager, finance, or viewer account.
-4. Confirm the user appears in Supabase Authentication and `public.profiles`.
-5. For teacher accounts, confirm a row appears in `public.teachers`.
-6. For student accounts, confirm a row appears in `public.students`.
-
-Test website lead capture:
-
-1. Submit the public website free trial form.
-2. Confirm the lead appears in `public.leads` with `status = 'new'`.
-3. Confirm a `created` entry appears in `public.lead_activity_logs`.
-4. Confirm the existing Google Sheet backup still receives the lead if the Apps Script endpoint is available.
-
-## Notes
-
-- The dashboard currently uses Supabase for authentication and profile/role loading.
-- The Accounts & Roles page uses real `public.profiles` data.
-- Other dashboard tables still use mock UI data in this phase.
-- The frontend never uses the Supabase service role key.
-- The service role key is only used as an Edge Function secret.
-- RLS is enabled on CRM tables to enforce role-based access at the database layer.
+- Create or confirm a `profiles` row for each auth user.
+- Confirm teacher users have a linked `teachers.profile_id`.
+- Confirm student assignments store `teachers.id`, not `profiles.id`.
+- Confirm recurring schedules store `class_schedules.teacher_profile_id`.
+- Confirm student dashboard sections show real data, empty states, or errors without mock fallback data.
+- Confirm payments use `payments` plus optional `payment_packages`, not a nonexistent `packages` table.
+- Confirm messages use `messages` for direct communication and `in_app_notifications` for system alerts.

@@ -7,7 +7,8 @@ import {
 } from './classSchedulesService';
 import { getStudentDisplayName } from './displayNameUtils';
 import { fetchPrograms } from './programsService';
-import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesByProfileId, resolveTeacherProfileId } from './teachersService';
+import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
+import { getAcademyTodayDate, getNowIso } from './dateUtils';
 import type {
   StudentActionTeacher,
   StudentAttendanceRecord,
@@ -305,8 +306,8 @@ export async function fetchStudentManagementRows() {
     throw error;
   }
 
-  const teacherProfileIds = Array.from(new Set((data || []).map((student) => student.assigned_teacher_id).filter(Boolean))) as string[];
-  const teacherByProfileId = await resolveTeacherNamesByProfileId(teacherProfileIds);
+  const teacherIds = Array.from(new Set((data || []).map((student) => student.assigned_teacher_id).filter(Boolean))) as string[];
+  const teacherById = await resolveTeacherNamesById(teacherIds);
   const scheduleRows = await fetchActiveClassSchedulesByStudentIds((data || []).map((student) => student.id));
   const schedulesByStudentId = new Map<string, typeof scheduleRows>();
 
@@ -327,7 +328,7 @@ export async function fetchStudentManagementRows() {
       programId: student.program_id,
       program: programName,
       assignedTeacherId: student.assigned_teacher_id,
-      teacher: student.assigned_teacher_id ? teacherByProfileId.get(student.assigned_teacher_id) || 'Unassigned' : 'Unassigned',
+      teacher: student.assigned_teacher_id ? teacherById.get(student.assigned_teacher_id) || 'Unassigned' : 'Unassigned',
       level: student.level || 'Placement pending',
       attendance: 'New',
       status: student.status || 'active',
@@ -416,8 +417,8 @@ export async function assignStudentTeacher(studentId: string, selectedTeacherPro
   }
 
   const assignmentPayload = {
-    assigned_teacher_id: selectedTeacherProfileId,
-    updated_at: new Date().toISOString(),
+    assigned_teacher_id: operationalTeacherId,
+    updated_at: getNowIso(),
   };
 
   if (import.meta.env.DEV) {
@@ -477,7 +478,7 @@ export async function assignStudentTeacher(studentId: string, selectedTeacherPro
     throw verifyError;
   }
 
-  if (verifiedStudent?.assigned_teacher_id !== selectedTeacherProfileId) {
+  if (verifiedStudent?.assigned_teacher_id !== operationalTeacherId) {
     if (import.meta.env.DEV) {
       console.error('Assign teacher verification mismatch', {
         studentId,
@@ -489,12 +490,12 @@ export async function assignStudentTeacher(studentId: string, selectedTeacherPro
     throw new Error('Assignment saved but verification failed.');
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getAcademyTodayDate();
   await logNonBlockingAssignmentStep(
     'classes',
     client
       .from('classes')
-      .update({ teacher_id: operationalTeacherId, updated_at: new Date().toISOString() })
+      .update({ teacher_id: operationalTeacherId, updated_at: getNowIso() })
       .eq('student_id', studentId)
       .gte('class_date', today)
       .is('teacher_id', null),
@@ -599,7 +600,7 @@ export async function updateStudentSetup(studentId: string, payload: {
   ].filter(Boolean).join('\n');
   const updatePayload = {
     program_id: payload.programId || null,
-    assigned_teacher_id: selectedTeacherProfileId,
+    assigned_teacher_id: operationalTeacherId,
     level: payload.level || null,
     start_date: payload.startDate || null,
     schedule_notes: scheduleNotes || null,
@@ -664,10 +665,10 @@ export async function updateStudentSchedule(studentId: string, payload: {
 
   const { data, error } = await client.from('students').update({
     program_id: payload.programId || null,
-    assigned_teacher_id: selectedTeacherProfileId,
+    assigned_teacher_id: operationalTeacherId,
     schedule_notes: scheduleNotes || null,
     start_date: payload.startDate || null,
-    updated_at: new Date().toISOString(),
+    updated_at: getNowIso(),
   }).eq('id', studentId).select('*').single();
 
   if (error) {
@@ -704,7 +705,7 @@ function buildScheduledClassRows(studentId: string, payload: {
   notes?: string;
 }) {
   const durationMinutes = payload.durationMinutes || 30;
-  const startDate = payload.startDate || new Date().toISOString().slice(0, 10);
+  const startDate = payload.startDate || getAcademyTodayDate();
   const classTime = payload.classTime || '00:00';
   const scheduledDates = getUpcomingClassDates(startDate, payload.classDays);
 
@@ -727,7 +728,7 @@ function buildScheduledClassRows(studentId: string, payload: {
 function getUpcomingClassDates(startDate: string, classDays?: string) {
   const start = new Date(`${startDate}T00:00:00`);
   if (Number.isNaN(start.getTime())) {
-    return [new Date().toISOString().slice(0, 10)];
+    return [getAcademyTodayDate()];
   }
 
   const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -924,6 +925,6 @@ export async function updateStudentAcademicSetup(studentId: string, payload: Rec
   return data;
 }
 
-export async function updateStudentPreferences(studentId: string, payload: Record<string, string>) {
-  return { success: true, studentId, payload };
+export async function updateStudentPreferences(_studentId: string, _payload: Record<string, string>) {
+  throw new Error('Student preference editing is not available until preference columns are finalized.');
 }

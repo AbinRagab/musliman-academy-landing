@@ -9,13 +9,6 @@ import ScheduleCard from '../components/ScheduleCard';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
-import {
-  studentAttendanceHistory,
-  studentPaymentSummary,
-  studentProfile,
-  studentProgressTopics,
-  studentTimetable,
-} from '../data/mockData';
 
 type StudentSection =
   | 'classes'
@@ -42,6 +35,20 @@ type StudentMessage = {
   unread: boolean;
   relatedClass?: string;
   program?: string;
+};
+
+const studentAttendanceHistory: GenericRow[] = [];
+const studentPaymentSummary: GenericRow[] = [];
+const studentProgressTopics: GenericRow[] = [];
+const studentTimetable: Array<{ time: string; className: string; teacher: string; status: string }> = [];
+const studentProfile = {
+  name: 'Student',
+  course: 'No course assigned',
+  teacher: 'No teacher assigned',
+  attendanceRate: '0%',
+  totalClasses: 0,
+  completedLessons: 0,
+  currentCourse: 'No course assigned',
 };
 
 const scheduleItems = studentTimetable.map((item) => ({

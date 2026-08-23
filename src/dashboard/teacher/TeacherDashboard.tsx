@@ -14,6 +14,7 @@ import Toast, { type ToastMessage } from '../components/Toast';
 import { updateTeacherSessionCheckin, type TeacherCheckinAction } from '../services/teacherCheckinService';
 import { submitTrialFeedback, updateTrialStatus, fetchTeacherTrials } from '../services/trialsService';
 import { saveTeacherClassReport, saveTeacherEvaluation } from '../services/teacherOperationsService';
+import { getAcademyTodayDate } from '../services/dateUtils';
 import {
   fetchTeacherDashboardData,
   type TeacherDashboardClass as TeacherClass,
@@ -49,7 +50,7 @@ function EvaluationModal({ evaluation, onClose, onSubmit }: { evaluation: Evalua
             <label><span>Behavior</span><input name="behaviorRating" type="range" min="1" max="5" defaultValue="4" /></label>
             <label>
               <span>Evaluation date</span>
-              <input type="date" defaultValue="2026-07-29" />
+              <input type="date" defaultValue={getAcademyTodayDate()} readOnly />
             </label>
             <label className="teacher-form-grid__wide">
               <span>Strengths / progress notes</span>
@@ -59,13 +60,9 @@ function EvaluationModal({ evaluation, onClose, onSubmit }: { evaluation: Evalua
               <span>Teacher recommendation</span>
               <textarea name="recommendation" rows={3} placeholder="Recommend next focus, level change, or admin review." />
             </label>
-            <label className="teacher-form-grid__wide">
-              <span>Next focus</span>
-              <textarea rows={2} placeholder="Define the next lesson focus." />
-            </label>
           </div>
           <div className="dashboard-form-actions">
-            <ActionButton variant="secondary" onClick={onClose}>Save Draft</ActionButton>
+            <ActionButton variant="secondary" disabled>Draft saving unavailable</ActionButton>
             <ActionButton type="submit" variant="copper">Submit Evaluation</ActionButton>
           </div>
         </form>
@@ -269,6 +266,10 @@ export default function TeacherDashboard() {
   async function handleEvaluationSubmit(evaluation: EvaluationRow, formData: FormData) {
     if (!evaluation.studentId) {
       setToast({ type: 'error', message: 'This evaluation is missing a student record.' });
+      return;
+    }
+    if (!evaluation.classId) {
+      setToast({ type: 'error', message: 'This evaluation is missing a class record.' });
       return;
     }
 

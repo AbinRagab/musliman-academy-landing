@@ -6,7 +6,16 @@ import ProgressBar from '../components/ProgressBar';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
-import { studentProfile, studentTimetable } from '../data/mockData';
+
+const studentProfile = {
+  name: 'Student',
+  teacher: 'No teacher assigned',
+  totalClasses: 0,
+  attendanceRate: '0%',
+  completedLessons: 0,
+  currentCourse: 'No course assigned',
+};
+const studentTimetable: Array<{ time: string; className: string; teacher: string; status: string }> = [];
 
 type TimetableRow = (typeof studentTimetable)[number];
 

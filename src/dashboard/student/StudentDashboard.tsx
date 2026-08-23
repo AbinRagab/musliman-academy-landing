@@ -32,6 +32,7 @@ type DashboardData = {
   homework: StudentHomeworkItem[];
   payments: StudentPayment[];
   messages: StudentMessage[];
+  sectionErrors?: Partial<Record<'homework' | 'payments' | 'messages', string>>;
 };
 
 export default function StudentDashboard() {
@@ -109,8 +110,8 @@ export default function StudentDashboard() {
       <div className="dashboard-stats-grid">
         <StudentStatCard label="Current Level" value={data.profile.level} trend={data.profile.program} icon="quran" />
         <StudentStatCard label="Completed Lessons" value={data.profile.completedLessons} trend="From completed class records" icon="book" />
-        <StudentStatCard label="Pending Homework" value={pendingHomework} trend="Needs student action" icon="document" />
-        <StudentStatCard label="Remaining Sessions" value={payment?.remainingSessions ?? 0} trend={payment?.packageName || 'Package pending'} icon="award" />
+        <StudentStatCard label="Pending Homework" value={data.sectionErrors?.homework ? 'Error' : pendingHomework} trend={data.sectionErrors?.homework || 'Needs student action'} icon="document" />
+        <StudentStatCard label="Remaining Sessions" value={data.sectionErrors?.payments ? 'Error' : payment?.remainingSessions ?? 'Not provided'} trend={data.sectionErrors?.payments || payment?.packageName || 'Package pending'} icon="award" />
       </div>
 
       <div className="dashboard-grid dashboard-grid--student">

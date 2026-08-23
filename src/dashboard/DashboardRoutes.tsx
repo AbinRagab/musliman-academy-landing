@@ -5,7 +5,7 @@ import ProtectedRoute from './auth/ProtectedRoute';
 import DashboardLayout from './layouts/DashboardLayout';
 import EmptyState from './components/EmptyState';
 import ActionButton from './components/ActionButton';
-import type { DashboardRole } from './data/mockData';
+import type { DashboardRole } from './types';
 import './styles/dashboard.css';
 
 const AccountsRolesPage = lazy(() => import('./admin/AccountsRolesPage'));

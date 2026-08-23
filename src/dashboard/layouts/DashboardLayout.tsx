@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
-import type { DashboardRole } from '../data/mockData';
+import type { DashboardRole } from '../types';
 import '../styles/dashboard.css';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';

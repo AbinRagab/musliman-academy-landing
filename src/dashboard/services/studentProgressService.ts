@@ -1,4 +1,11 @@
 import { supabase } from '../../lib/supabaseClient';
+import {
+  mapEvaluation,
+  noEvaluationText,
+  notProvidedText,
+  ratingToPercent,
+  type CanonicalEvaluation,
+} from './evaluationsService';
 import { fetchStudentAttendanceData } from './studentAttendanceService';
 import { fetchStudentHomeworkData } from './studentHomeworkService';
 import {
@@ -6,6 +13,8 @@ import {
   type StudentProgressTopic,
   type StudentSkillRating,
 } from './studentService';
+import { resolveTeacherNamesById } from './teachersService';
+import type { Evaluation } from '../types';
 
 export async function fetchStudentProgressData() {
   const profile = await resolveCurrentStudentProfile();
@@ -20,7 +29,7 @@ export async function fetchStudentProgressData() {
   const completedHomework = homework.filter((item) => item.status === 'submitted' || item.status === 'reviewed').length;
   const homeworkContribution = homework.length ? Math.round((completedHomework / homework.length) * 100) : 0;
   const skills = buildSkillRatings(evaluationData.evaluations);
-  const topics = buildTopics(evaluationData.evaluations);
+  const topics = buildTopics(evaluationData.evaluations, evaluationData.teacherById);
   const overallProgress = skills.length
     ? Math.round(skills.reduce((total, skill) => total + skill.value, 0) / skills.length)
     : Math.round((attendanceContribution + homeworkContribution) / 2);
@@ -43,80 +52,104 @@ export async function fetchStudentProgressData() {
 async function fetchStudentEvaluations(studentId: string) {
   if (!supabase || !studentId) {
     return {
-      evaluations: [] as any[],
+      evaluations: [] as CanonicalEvaluation[],
+      teacherById: new Map<string, string>(),
       recommendations: emptyRecommendations(),
     };
   }
 
   const { data, error } = await supabase
     .from('evaluations')
-    .select('*')
+    .select('id, student_id, teacher_id, class_id, recitation_rating, tajweed_rating, understanding_rating, behavior_rating, progress_feedback, teacher_notes, created_at')
     .eq('student_id', studentId)
     .order('created_at', { ascending: false });
 
-  if (error || !data?.length) {
+  if (error) {
+    throw error;
+  }
+
+  const evaluations = (data || []).map((row) => mapEvaluation(row as Evaluation));
+  const teacherIds = Array.from(new Set(evaluations.map((evaluation) => evaluation.teacherId).filter(Boolean))) as string[];
+  const teacherById = await resolveTeacherNamesById(teacherIds);
+
+  if (!evaluations.length) {
     return {
-      evaluations: [] as any[],
+      evaluations,
+      teacherById,
       recommendations: emptyRecommendations(),
     };
   }
 
-  const latest = data[0];
+  const latest = evaluations[0];
 
   return {
-    evaluations: data,
+    evaluations,
+    teacherById,
     recommendations: {
-      focusArea: latest.next_focus || latest.recommendation || 'No teacher recommendation yet',
-      revisionAdvice: latest.teacher_feedback || 'No revision advice yet',
-      homeworkAdvice: latest.homework_recommendation || 'No homework advice yet',
+      focusArea: latest.progressFeedback || notProvidedText,
+      revisionAdvice: latest.teacherNotes || notProvidedText,
+      homeworkAdvice: notProvidedText,
     },
   };
 }
 
-function buildSkillRatings(evaluations: any[]): StudentSkillRating[] {
+function buildSkillRatings(evaluations: CanonicalEvaluation[]): StudentSkillRating[] {
   if (!evaluations.length) {
     return [];
   }
 
   const fields = [
-    ['Reading Accuracy', 'reading_score', 'reading_accuracy'],
-    ['Tajweed', 'tajweed_score', 'tajweed'],
-    ['Memorization', 'memorization_score', 'memorization'],
-    ['Arabic Understanding', 'understanding_score', 'arabic_level'],
-    ['Participation', 'participation_score', 'participation'],
-    ['Homework Commitment', 'homework_score', 'homework_commitment'],
+    ['Recitation', 'recitationRating'],
+    ['Tajweed', 'tajweedRating'],
+    ['Understanding', 'understandingRating'],
+    ['Behavior / Engagement', 'behaviorRating'],
   ] as const;
 
-  return fields.map(([label, primaryKey, fallbackKey]) => {
+  return fields.map(([label, key]) => {
     const values = evaluations
-      .map((evaluation) => Number(evaluation[primaryKey] ?? evaluation[fallbackKey] ?? 0))
-      .filter((value) => Number.isFinite(value) && value > 0);
+      .map((evaluation) => ratingToPercent(evaluation[key]))
+      .filter((value): value is number => value !== null);
     const average = values.length ? Math.round(values.reduce((total, value) => total + value, 0) / values.length) : 0;
 
     return {
       label,
-      value: average <= 10 ? average * 10 : average,
-      note: values.length ? 'Calculated from teacher evaluations.' : 'No evaluation score yet.',
+      value: average,
+      note: values.length ? 'Calculated from teacher evaluations.' : notProvidedText,
     };
   });
 }
 
-function buildTopics(evaluations: any[]): StudentProgressTopic[] {
+function buildTopics(evaluations: CanonicalEvaluation[], teacherById: Map<string, string>): StudentProgressTopic[] {
   return evaluations.slice(0, 6).map((evaluation): StudentProgressTopic => ({
     id: evaluation.id,
-    topic: evaluation.lesson_topic || evaluation.class_title || 'Teacher evaluation',
-    classDate: formatDate(evaluation.created_at),
-    teacher: evaluation.teacher_name || 'Teacher',
-    score: evaluation.status || 'Submitted',
-    feedback: evaluation.teacher_feedback || evaluation.recommendation || 'No feedback note recorded.',
+    topic: 'Teacher evaluation',
+    classDate: formatDate(evaluation.createdAt),
+    teacher: evaluation.teacherId ? teacherById.get(evaluation.teacherId) || 'Teacher' : 'Teacher',
+    score: averageEvaluationScore(evaluation),
+    feedback: evaluation.progressFeedback || evaluation.teacherNotes || notProvidedText,
   }));
+}
+
+function averageEvaluationScore(evaluation: CanonicalEvaluation) {
+  const values = [
+    evaluation.recitationRating,
+    evaluation.tajweedRating,
+    evaluation.understandingRating,
+    evaluation.behaviorRating,
+  ].filter((value): value is number => value !== null);
+
+  if (!values.length) {
+    return notProvidedText;
+  }
+
+  return `${Math.round(values.reduce((total, value) => total + value, 0) / values.length)}/5`;
 }
 
 function emptyRecommendations() {
   return {
-    focusArea: 'No teacher recommendation yet',
-    revisionAdvice: 'No revision advice yet',
-    homeworkAdvice: 'No homework advice yet',
+    focusArea: noEvaluationText,
+    revisionAdvice: noEvaluationText,
+    homeworkAdvice: noEvaluationText,
   };
 }
 

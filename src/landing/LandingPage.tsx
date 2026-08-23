@@ -13,6 +13,7 @@ import { captureMarketingAttribution, getMarketingAttribution } from './services
 import { getMetaLeadTrackingData, trackMetaEvent, trackWhatsAppContact } from './services/metaPixel';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
 import { usePrograms } from '../dashboard/services/programsService';
+import { applyPageSeo } from './seo';
 import {
   contact,
   countryOptions,
@@ -160,7 +161,7 @@ type OptimizedPictureProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | '
   alt: string;
 };
 
-function OptimizedPicture({ src, alt, loading = 'lazy', decoding = 'async', ...imageProps }: OptimizedPictureProps) {
+export function OptimizedPicture({ src, alt, loading = 'lazy', decoding = 'async', ...imageProps }: OptimizedPictureProps) {
   const optimizedImage = imageAssets[src];
 
   return (
@@ -179,7 +180,7 @@ function OptimizedPicture({ src, alt, loading = 'lazy', decoding = 'async', ...i
   );
 }
 
-function SectionBadge({ icon, children, dark = false }: { icon?: IconName; children: string; dark?: boolean }) {
+export function SectionBadge({ icon, children, dark = false }: { icon?: IconName; children: string; dark?: boolean }) {
   return (
     <div className={`section-badge ${dark ? 'section-badge--dark' : ''}`}>
       {icon && <Icon name={icon} />}
@@ -188,7 +189,7 @@ function SectionBadge({ icon, children, dark = false }: { icon?: IconName; child
   );
 }
 
-function Button({ href, children, icon = 'calendar', className = '', onClick }: { href: string; children: string; icon?: IconName; className?: string; onClick?: MouseEventHandler<HTMLAnchorElement> }) {
+export function Button({ href, children, icon = 'calendar', className = '', onClick }: { href: string; children: string; icon?: IconName; className?: string; onClick?: MouseEventHandler<HTMLAnchorElement> }) {
   return (
     <a className={`btn btn-primary ${className}`} href={href} onClick={onClick}>
       <Icon name={icon} />
@@ -215,18 +216,55 @@ function ThemeToggle({ theme, onToggle, className = '' }: { theme: Theme; onTogg
   );
 }
 
-function Navbar({ theme, onToggleTheme, onSelectBookingType }: { theme: Theme; onToggleTheme: () => void; onSelectBookingType: (type: BookingType) => void }) {
+export function Navbar({
+  theme,
+  onToggleTheme,
+  onSelectBookingType,
+  anchorPrefix = '',
+  bookingHref = '#book-trial',
+  logoHref = '#home',
+  scrollToBooking = true,
+}: {
+  theme: Theme;
+  onToggleTheme: () => void;
+  onSelectBookingType?: (type: BookingType) => void;
+  anchorPrefix?: string;
+  bookingHref?: string;
+  logoHref?: string;
+  scrollToBooking?: boolean;
+}) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const logoVariant = theme === 'dark' ? 'light' : 'dark';
 
+  function getAnchorHref(href: string) {
+    return href.startsWith('#') ? `${anchorPrefix}${href}` : href;
+  }
+
+  function handleBookTrialClick(closeMenu = false): MouseEventHandler<HTMLAnchorElement> {
+    return (event) => {
+      onSelectBookingType?.('trial');
+
+      if (closeMenu) {
+        setOpen(false);
+      }
+
+      if (!scrollToBooking) {
+        return;
+      }
+
+      event.preventDefault();
+      document.getElementById('book-trial')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+  }
+
   return (
     <header className="navbar">
       <div className="container navbar__inner">
-        <Logo variant={logoVariant} />
+        <Logo variant={logoVariant} href={logoHref} />
         <nav className="navbar__links" aria-label={t('aria.mainNavigation')}>
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href}>{t(link.labelKey)}</a>
+            <a key={link.href} href={getAnchorHref(link.href)}>{t(link.labelKey)}</a>
           ))}
         </nav>
         <div className="navbar__actions">
@@ -235,7 +273,7 @@ function Navbar({ theme, onToggleTheme, onSelectBookingType }: { theme: Theme; o
           </a>
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
           <LanguageSwitcher />
-          <Button href="#book-trial" onClick={(event) => { event.preventDefault(); onSelectBookingType('trial'); document.getElementById('book-trial')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>{t('nav.bookFreeTrial')}</Button>
+          <Button href={bookingHref} onClick={handleBookTrialClick()}>{t('nav.bookFreeTrial')}</Button>
           <button className="menu-button" type="button" aria-label={t('aria.openMenu')} onClick={() => setOpen(true)}>
             <Icon name="menu" />
           </button>
@@ -243,25 +281,20 @@ function Navbar({ theme, onToggleTheme, onSelectBookingType }: { theme: Theme; o
       </div>
       <div className={`mobile-panel ${open ? 'is-open' : ''}`}>
         <div className="mobile-panel__top">
-          <Logo variant={logoVariant} />
+          <Logo variant={logoVariant} href={logoHref} />
           <button className="menu-button" type="button" aria-label={t('aria.closeMenu')} onClick={() => setOpen(false)}>
             <Icon name="x" />
           </button>
         </div>
         {navLinks.map((link) => (
-          <a key={link.href} href={link.href} onClick={() => setOpen(false)}>{t(link.labelKey)}</a>
+          <a key={link.href} href={getAnchorHref(link.href)} onClick={() => setOpen(false)}>{t(link.labelKey)}</a>
         ))}
         <LanguageSwitcher className="language-switcher--mobile" />
         <ThemeToggle theme={theme} onToggle={onToggleTheme} className="theme-toggle--mobile" />
         <Button
-          href="#book-trial"
+          href={bookingHref}
           className="mobile-panel__cta"
-          onClick={(event) => {
-            event.preventDefault();
-            onSelectBookingType('trial');
-            setOpen(false);
-            document.getElementById('book-trial')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }}
+          onClick={handleBookTrialClick(true)}
         >
           {t('nav.bookFreeTrial')}
         </Button>
@@ -427,7 +460,7 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
   );
 }
 
-function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
+export function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
   const { t } = useTranslation();
   const { programs: bookingPrograms, loading: programsLoading, error: programsError } = usePrograms();
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -1444,16 +1477,20 @@ function FAQSection() {
   );
 }
 
-function Footer() {
+export function Footer({ anchorPrefix = '', logoHref = '#home' }: { anchorPrefix?: string; logoHref?: string }) {
   const { t } = useTranslation();
   const quickLinks = navLinks;
+
+  function getAnchorHref(href: string) {
+    return href.startsWith('#') ? `${anchorPrefix}${href}` : href;
+  }
 
   return (
     <footer className="footer section-dark">
       <SectionDecorations variant="dark" type="footer" />
       <div className="container footer__grid">
         <div className="footer__brand">
-          <Logo variant="light" />
+          <Logo variant="light" href={logoHref} />
           <p>{t('footer.aboutText')}</p>
           <div className="subscribe-card">
             <Icon name="mail" />
@@ -1468,22 +1505,22 @@ function Footer() {
         <div>
           <h3>{t('footer.programs')}</h3>
           <ul>
-            {sitePrograms.map((program) => <li key={program.key}><a href="#programs"><Icon name={program.icon} />{t(`programs.items.${program.key}.title`)}</a></li>)}
-            <li><a href="#teacher-training"><Icon name="award" />{t('footer.teacherTraining')}</a></li>
+            {sitePrograms.map((program) => <li key={program.key}><a href={getAnchorHref('#programs')}><Icon name={program.icon} />{t(`programs.items.${program.key}.title`)}</a></li>)}
+            <li><a href={getAnchorHref('#teacher-training')}><Icon name="award" />{t('footer.teacherTraining')}</a></li>
           </ul>
         </div>
         <div>
           <h3>{t('footer.quickLinks')}</h3>
           <ul>
-            {quickLinks.map((link) => <li key={link.href}><a href={link.href}><Icon name="link" />{t(link.labelKey)}</a></li>)}
-            <li><a href="#book-trial"><Icon name="link" />{t('footer.bookFreeTrial')}</a></li>
+            {quickLinks.map((link) => <li key={link.href}><a href={getAnchorHref(link.href)}><Icon name="link" />{t(link.labelKey)}</a></li>)}
+            <li><a href={getAnchorHref('#book-trial')}><Icon name="link" />{t('footer.bookFreeTrial')}</a></li>
           </ul>
         </div>
         <div className="footer__contact">
           <h3>{t('footer.contact')}</h3>
           <a href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer" onClick={trackWhatsAppContact}><Icon name="whatsapp" /><span>{t('footer.whatsapp')}<br /><small>{contact.whatsappDisplay}</small></span></a>
           <a href={`mailto:${contact.email}`}><Icon name="mail" /><span>{t('footer.email')}<br /><small>{contact.email}</small></span></a>
-          <a href="#home"><Icon name="globe" /><span>{t('footer.website')}<br /><small>{contact.website}</small></span></a>
+          <a href={getAnchorHref('#home')}><Icon name="globe" /><span>{t('footer.website')}<br /><small>{contact.website}</small></span></a>
           <div className="social-links">
             {faqSocialLinks.map((item) => {
               const SocialIcon = item.icon;
@@ -1543,11 +1580,15 @@ export default function LandingPage() {
   }, [theme]);
 
   useEffect(() => {
-    document.title = t('seo.title');
-    const metaDescription = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.content = t('seo.description');
-    }
+    applyPageSeo({
+      title: t('seo.title'),
+      description: t('seo.description'),
+      canonical: 'https://www.muslimanacademy.com/',
+      robots: 'index, follow',
+      ogImage: 'https://www.muslimanacademy.com/assets/hero-bg.png',
+      ogImageAlt: 'Musliman Academy online Quran and Arabic learning',
+      jsonLd: undefined,
+    });
   }, [i18n.resolvedLanguage, t]);
 
   function toggleTheme() {

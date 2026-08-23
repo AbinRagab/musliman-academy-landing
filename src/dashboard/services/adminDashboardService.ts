@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
+import { getAcademyTodayDate } from './dateUtils';
 import { resolveTeacherNamesById } from './teachersService';
 
 export type AdminDashboardClass = {
@@ -34,7 +35,7 @@ export async function fetchAdminDashboardData(): Promise<AdminDashboardData> {
   }
 
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getAcademyTodayDate();
     const [
       newLeads,
       scheduledTrials,
@@ -48,14 +49,14 @@ export async function fetchAdminDashboardData(): Promise<AdminDashboardData> {
       classRows,
     ] = await Promise.all([
       countRows('leads', (query) => query.eq('status', 'new')),
-      countRows('free_trials', (query) => query.eq('status', 'scheduled')),
+      countRows('free_trials', (query) => query.eq('status', 'scheduled').gte('trial_date', today)),
       countRows('students', (query) => query.eq('status', 'enrolled')),
       countRows('students', (query) => query.eq('status', 'active')),
       countRows('classes', (query) => query.gte('class_date', today).lte('class_date', today)),
       countRows('payments', (query) => query.in('status', ['pending', 'overdue'])),
-      countRows('attendance', (query) => query.in('status', ['absent', 'late'])),
-      countRows('teacher_class_reports', (query) => query.in('status', ['pending', 'needs_review'])),
-      countRows('free_trials', (query) => query.eq('status', 'scheduled')),
+      countRows('attendance', (query) => query.in('status', ['absent', 'late']).gte('marked_at', `${today}T00:00:00`)),
+      countRows('classes', (query) => query.eq('status', 'completed').is('lesson_covered', null)),
+      countRows('free_trials', (query) => query.eq('status', 'scheduled').gte('trial_date', today)),
       fetchTodayClasses(today),
     ]);
 
@@ -94,9 +95,16 @@ async function countRows(table: string, applyFilter?: (query: any) => any) {
     }
 
     const { count, error } = await query;
-    return error ? 0 : count || 0;
-  } catch {
-    return 0;
+    if (error) {
+      throw error;
+    }
+
+    return count || 0;
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.error(`Count query failed for ${table}:`, error);
+    }
+    throw error;
   }
 }
 
@@ -140,16 +148,14 @@ async function fetchTodayClasses(today: string): Promise<AdminDashboardClass[]> 
 
   const teacherIds = Array.from(new Set(data.map((classRow) => classRow.teacher_id).filter(Boolean))) as string[];
   const studentIds = Array.from(new Set(data.map((classRow) => classRow.student_id).filter(Boolean))) as string[];
-  const [teacherById, studentsResult, attendanceResult, reportsResult] = await Promise.all([
+  const [teacherById, studentsResult, attendanceResult] = await Promise.all([
     resolveTeacherNamesById(teacherIds),
     studentIds.length ? supabase.from('students').select('id, student_name').in('id', studentIds) : Promise.resolve({ data: [] }),
     supabase.from('attendance').select('class_id').in('class_id', data.map((classRow) => classRow.id)),
-    supabase.from('teacher_class_reports').select('class_id').in('class_id', data.map((classRow) => classRow.id)),
   ]);
 
   const studentById = new Map((studentsResult.data || []).map((student) => [student.id, student.student_name]));
   const attendanceClassIds = new Set((attendanceResult.data || []).map((record) => record.class_id));
-  const reportClassIds = new Set((reportsResult.data || []).map((record) => record.class_id));
 
   return data.map((classRow): AdminDashboardClass => ({
     id: classRow.id,
@@ -159,7 +165,7 @@ async function fetchTodayClasses(today: string): Promise<AdminDashboardClass[]> 
     students: classRow.student_id ? studentById.get(classRow.student_id) || 'Student' : 'No student assigned',
     meeting: classRow.meeting_link || 'Meeting link pending',
     attendanceSubmitted: attendanceClassIds.has(classRow.id) ? 'submitted' : 'pending',
-    teacherReport: reportClassIds.has(classRow.id) ? 'submitted' : classRow.status === 'completed' ? 'needs report' : 'not due',
+    teacherReport: classRow.lesson_covered || classRow.homework ? 'submitted' : classRow.status === 'completed' ? 'needs report' : 'not due',
     homeworkSet: classRow.homework ? 'set' : 'pending',
     status: classRow.status || 'scheduled',
   }));

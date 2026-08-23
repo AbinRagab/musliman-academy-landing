@@ -27,12 +27,11 @@ export async function fetchStudentHomeworkData() {
     };
   }
 
-  try {
-    const profile = await resolveCurrentStudentProfile();
-    const [{ classes }, submissions] = await Promise.all([
-      fetchStudentClassesData(),
-      listStudentHomeworkFiles(profile.id),
-    ]);
+  const profile = await resolveCurrentStudentProfile();
+  const [{ classes }, submissions] = await Promise.all([
+    fetchStudentClassesData(),
+    listStudentHomeworkFiles(profile.id),
+  ]);
 
     const assignedHomework = classes
       .filter((classSession) => Boolean(classSession.homeworkAssigned))
@@ -79,19 +78,11 @@ export async function fetchStudentHomeworkData() {
 
     const homework = Array.from(homeworkByClassId.values());
 
-    return {
-      homework,
-      summary: getHomeworkSummary(homework),
-      submissions,
-    };
-  } catch {
-    const homework: StudentHomeworkItem[] = [];
-    return {
-      homework,
-      summary: getHomeworkSummary(homework),
-      submissions: [],
-    };
-  }
+  return {
+    homework,
+    summary: getHomeworkSummary(homework),
+    submissions,
+  };
 }
 
 function buildHomeworkFromClass(classSession: StudentClassSession): StudentHomeworkItem {

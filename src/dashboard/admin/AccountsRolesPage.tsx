@@ -14,7 +14,6 @@ import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
 import Toast, { type ToastMessage } from '../components/Toast';
-import { permissionToggles, permissionsMatrix } from '../data/mockData';
 import {
   createUserAccount,
   fetchProfiles,
@@ -25,7 +24,13 @@ import {
   type ProfileRow,
 } from '../services/accountsService';
 
-type PermissionRow = (typeof permissionsMatrix)[number];
+type PermissionRow = {
+  permission: string;
+  superAdmin: boolean;
+  admin: boolean;
+  teacher: boolean;
+  student: boolean;
+};
 type FormState = {
   full_name: string;
   email: string;
@@ -50,6 +55,9 @@ const filterRoleOptions: Array<{ value: AuthRole | 'all'; label: string }> = [
   { value: 'super_admin', label: 'Super Admin' },
   ...createRoleOptions,
 ];
+
+const permissionsMatrix: PermissionRow[] = [];
+const permissionToggles: string[] = [];
 
 const initialFormState: FormState = {
   full_name: '',
@@ -514,7 +522,7 @@ export default function AccountsRolesPage() {
                         <input type="checkbox" defaultChecked={['Manage Students', 'View Reports', 'Manage Classes'].includes(permission)} />
                       </label>
                     ))}
-                    <small>Permission toggles are visual in this phase. Role assignment is saved now.</small>
+                    <small>Permission editing is not available yet. Role assignment is saved now.</small>
                   </div>
                 </details>
               </div>

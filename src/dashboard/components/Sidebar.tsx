@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import Icon from '../../components/Icon';
-import type { DashboardRole } from '../data/mockData';
+import type { DashboardRole } from '../types';
 
 type SidebarLink = {
   label: string;

@@ -1,4 +1,4 @@
-import type { StatusTone } from '../data/mockData';
+import type { StatusTone } from '../types';
 
 const toneByStatus: Record<string, StatusTone> = {
   active: 'success',

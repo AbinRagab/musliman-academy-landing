@@ -4,7 +4,7 @@ import {
   getNextClass as getNextScheduledClass,
   mapScheduleToClassSession,
 } from './classSchedulesService';
-import { resolveTeacherNamesById, resolveTeacherNamesByProfileId } from './teachersService';
+import { resolveTeacherNamesById } from './teachersService';
 
 export type StudentPortalProfile = {
   id: string;
@@ -146,6 +146,7 @@ export type StudentPayment = {
   paymentDate: string;
   invoiceUrl?: string | null;
   receiptUrl?: string | null;
+  receiptFilePath?: string | null;
 };
 
 export type StudentSettings = {
@@ -380,7 +381,7 @@ export async function resolveCurrentStudentProfile() {
 
     const [programResult, teacherResult] = await Promise.all([
       student.program_id ? supabase.from('programs').select('id, name').eq('id', student.program_id).maybeSingle() : Promise.resolve({ data: null }),
-      student.assigned_teacher_id ? resolveTeacherNamesByProfileId([student.assigned_teacher_id]) : Promise.resolve(new Map<string, string>()),
+      student.assigned_teacher_id ? resolveTeacherNamesById([student.assigned_teacher_id]) : Promise.resolve(new Map<string, string>()),
     ]);
 
     const name = student.student_name || profile?.full_name || 'Student';
@@ -523,43 +524,92 @@ export async function fetchStudentDashboardData() {
   const classes = [...scheduledClasses, ...classHistory];
   const upcomingClasses = getUpcomingClasses(classes).slice(0, 5);
   const trial = await fetchLatestTrial(profile);
+  const [{ fetchStudentHomeworkData }, { fetchStudentPaymentsData }, { fetchStudentMessagesData }] = await Promise.all([
+    import('./studentHomeworkService'),
+    import('./studentPaymentsService'),
+    import('./studentMessagesService'),
+  ]);
+  const sectionErrors: Partial<Record<'homework' | 'payments' | 'messages', string>> = {};
+  const [homeworkResult, paymentsResult, messagesResult] = await Promise.allSettled([
+    fetchStudentHomeworkData(),
+    fetchStudentPaymentsData(),
+    fetchStudentMessagesData(),
+  ]);
+
+  const homework = homeworkResult.status === 'fulfilled' ? homeworkResult.value.homework : [];
+  const payments = paymentsResult.status === 'fulfilled' ? paymentsResult.value.payments : [];
+  const messages = messagesResult.status === 'fulfilled' ? messagesResult.value.messages : [];
+
+  if (homeworkResult.status === 'rejected') {
+    sectionErrors.homework = 'Unable to load homework.';
+  }
+  if (paymentsResult.status === 'rejected') {
+    sectionErrors.payments = 'Unable to load payments.';
+  }
+  if (messagesResult.status === 'rejected') {
+    sectionErrors.messages = 'Unable to load messages.';
+  }
 
   return {
     profile,
     nextClass: getNextClass(classes),
     upcomingClasses,
     trial,
-    homework: [] as StudentHomeworkItem[],
-    payments: [] as StudentPayment[],
-    messages: [] as StudentMessage[],
+    homework,
+    payments,
+    messages,
+    sectionErrors,
   };
 }
 
 export async function requestStudentSupportUpdate(payload: Record<string, string>) {
   if (!supabase) {
-    return { success: false, payload };
-  }
-
-  const { userId } = await getCurrentProfile();
-  const { error } = await supabase.from('messages').insert({
-    sender_id: userId,
-    recipient_role: 'admin',
-    subject: payload.subject || 'Student profile update request',
-    body: payload.message || JSON.stringify(payload),
-    status: 'unread',
-  });
-
-  return { success: !error, payload, error };
-}
-
-export async function saveStudentSettings(settings: StudentSettings) {
-  if (!supabase) {
-    return { success: false, settings };
+    throw new Error('Supabase is not configured for this environment.');
   }
 
   const { userId } = await getCurrentProfile();
   if (!userId) {
-    return { success: false, settings };
+    throw new Error('You must be signed in before requesting a profile update.');
+  }
+
+  const { data: adminProfile, error: adminError } = await supabase
+    .from('profiles')
+    .select('id')
+    .in('role', ['admin', 'super_admin', 'academic_manager'])
+    .eq('status', 'active')
+    .limit(1)
+    .maybeSingle();
+
+  if (adminError) {
+    throw adminError;
+  }
+
+  if (!adminProfile?.id) {
+    throw new Error('No admin recipient is configured for profile update requests.');
+  }
+
+  const { data, error } = await supabase.from('messages').insert({
+    sender_id: userId,
+    receiver_id: adminProfile.id,
+    subject: payload.subject || 'Student profile update request',
+    body: payload.message || JSON.stringify(payload),
+  }).select('*').single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function saveStudentSettings(settings: StudentSettings) {
+  if (!supabase) {
+    throw new Error('Supabase is not configured for this environment.');
+  }
+
+  const { userId } = await getCurrentProfile();
+  if (!userId) {
+    throw new Error('You must be signed in before saving settings.');
   }
 
   const { error } = await supabase
@@ -572,5 +622,9 @@ export async function saveStudentSettings(settings: StudentSettings) {
     })
     .eq('id', userId);
 
-  return { success: !error, settings, error };
+  if (error) {
+    throw error;
+  }
+
+  return settings;
 }

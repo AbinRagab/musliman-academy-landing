@@ -18,15 +18,26 @@ const messageTabs = ['All', 'Teacher', 'Admin', 'Payments', 'Class Updates', 'Ho
 
 export default function StudentMessages() {
   const [messages, setMessages] = useState<StudentMessage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<StudentMessageCategory>('All');
   const [selectedId, setSelectedId] = useState('');
   const [compose, setCompose] = useState<{ to: string; subject: string } | null>(null);
 
   useEffect(() => {
-    fetchStudentMessagesData().then((data) => {
-      setMessages(data.messages);
-      setSelectedId(data.messages[0]?.id || '');
-    });
+    fetchStudentMessagesData()
+      .then((data) => {
+        setMessages(data.messages);
+        setSelectedId(data.messages[0]?.id || '');
+        setError('');
+      })
+      .catch((messageError) => {
+        if (import.meta.env.DEV) {
+          console.error('Student messages fetch failed:', messageError);
+        }
+        setError('Unable to load messages.');
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const filteredMessages = useMemo(() => (
@@ -41,7 +52,11 @@ export default function StudentMessages() {
           to={compose.to}
           subject={compose.subject}
           onClose={() => setCompose(null)}
-          onSend={(payload) => sendStudentMessage(payload).then(() => setCompose(null))}
+          onSend={(payload) => sendStudentMessage(payload).then(() => setCompose(null)).catch((sendError) => {
+            if (import.meta.env.DEV) {
+              console.error('Student message send failed:', sendError);
+            }
+          })}
         />
       )}
 
@@ -67,11 +82,14 @@ export default function StudentMessages() {
 
       <div className="dashboard-grid dashboard-grid--two student-messages-layout">
         <SectionCard title="Message List" subtitle="Select a message to read the full detail">
-          <MessageList messages={filteredMessages} selectedId={selectedMessage?.id || ''} onSelect={(message) => setSelectedId(message.id)} />
+          {loading && <p className="dashboard-empty-copy">Loading messages...</p>}
+          {!loading && error && <p className="dashboard-empty-copy">{error}</p>}
+          {!loading && !error && filteredMessages.length === 0 && <p className="dashboard-empty-copy">No messages yet.</p>}
+          {!loading && !error && filteredMessages.length > 0 && <MessageList messages={filteredMessages} selectedId={selectedMessage?.id || ''} onSelect={(message) => setSelectedId(message.id)} />}
         </SectionCard>
 
         <SectionCard title="Message Detail" subtitle="Full communication record">
-          {selectedMessage && <MessageDetailPanel message={selectedMessage} onReply={() => setCompose({ to: selectedMessage.senderRole, subject: `Re: ${selectedMessage.subject}` })} />}
+          {selectedMessage ? <MessageDetailPanel message={selectedMessage} onReply={() => setCompose({ to: selectedMessage.senderRole, subject: `Re: ${selectedMessage.subject}` })} /> : <p className="dashboard-empty-copy">Select a message when one is available.</p>}
         </SectionCard>
       </div>
 

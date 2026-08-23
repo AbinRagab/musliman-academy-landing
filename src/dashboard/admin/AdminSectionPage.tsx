@@ -16,14 +16,6 @@ import StatusBadge from '../components/StatusBadge';
 import Toast, { type ToastMessage } from '../components/Toast';
 import { useAuth, type AuthRole } from '../auth/AuthProvider';
 import {
-  adminPayments,
-  adminReports,
-  adminStudents,
-  freeTrials,
-  recentClasses,
-  rolePermissionMatrix,
-} from '../data/mockData';
-import {
   assignStudentTeacher,
   deactivateStudent,
   fetchStudentActionLookups,
@@ -346,7 +338,7 @@ function createActionsColumn(
 }
 
 function normalizeStudents(rows: GenericRow[]) {
-  const sourceRows = (rows.length ? rows : adminStudents) as GenericRow[];
+  const sourceRows = rows as GenericRow[];
 
   return sourceRows.map((row, index) => {
     const name = String(row.name || row.student || row.student_name || `Student ${index + 1}`);
@@ -384,72 +376,27 @@ function buildRows(section: AdminSection, studentRows: GenericRow[] | null, teac
   }
 
   if (section === 'free-trials') {
-    return freeTrials.map((trial, index) => ({
-      id: slug(`${trial.student}-${index}`),
-      student: trial.student,
-      lead: trial.student,
-      whatsapp: '+20 100 000 0000',
-      program: trial.program,
-      dateTime: trial.dateTime,
-      teacher: 'Teacher unassigned',
-      meetingLink: index === 2 ? 'Pending' : 'Zoom link ready',
-      status: index === 2 ? 'pending' : 'scheduled',
-      result: 'Awaiting trial',
-      recommendedLevel: 'Placement pending',
-    }));
+    return [];
   }
 
   if (section === 'classes') {
-    return recentClasses.map((item, index) => ({
-      id: slug(`${item.className}-${item.time}`),
-      time: item.time,
-      className: item.className,
-      teacher: item.teacher,
-      students: item.students,
-      meeting: 'Zoom',
-      attendanceSubmitted: index === 0 ? 'yes' : 'no',
-      homeworkSet: index === 2 ? 'no' : 'yes',
-      reportSubmitted: index === 0 ? 'yes' : 'no',
-      lesson: index === 0 ? 'Revision and recitation' : 'Scheduled lesson plan',
-      status: item.status.toLowerCase(),
-    }));
+    return [];
   }
 
   if (section === 'attendance') {
-    return adminStudents.map((student, index) => ({
-      id: slug(`${student.name}-attendance`),
-      student: student.name,
-      program: student.program,
-      teacher: student.teacher,
-      className: student.nextClass,
-      status: index === 2 ? 'late' : index === 3 ? 'absent' : 'present',
-      notes: index === 2 || index === 3 ? 'Needs parent follow-up' : 'Submitted by teacher',
-      submittedBy: student.teacher,
-      submittedAt: 'Today',
-    }));
+    return [];
   }
 
   if (section === 'payments') {
-    return adminPayments.map((payment) => ({
-      id: slug(`${payment.student}-${payment.packageName}`),
-      ...payment,
-      currency: payment.amount.startsWith('$') ? 'USD' : 'USD',
-      paidDate: payment.status === 'paid' ? 'Jul 20, 2026' : '-',
-      remainingSessions: payment.status === 'overdue' ? '0' : '6',
-    }));
+    return [];
   }
 
   if (section === 'reports') {
-    return adminReports.map((report, index) => ({
-      id: slug(report.report),
-      ...report,
-      category: reportTabs[index % reportTabs.length],
-      exportFormat: 'CSV ready',
-    }));
+    return [];
   }
 
   if (section === 'settings') {
-    return rolePermissionMatrix.map((row) => ({ id: slug(row.area), ...row }));
+    return [];
   }
 
   return [];

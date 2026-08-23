@@ -14,8 +14,12 @@ export type TeacherCheckinPayload = {
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export async function updateTeacherSessionCheckin(payload: TeacherCheckinPayload) {
-  if (!supabase || !uuidPattern.test(payload.classId)) {
-    return { success: true, fallback: true };
+  if (!supabase) {
+    throw new Error('Supabase is not configured for this environment.');
+  }
+
+  if (!uuidPattern.test(payload.classId)) {
+    throw new Error('A valid class record is required before class check-in.');
   }
 
   const context = payload.teacherId ? null : await getCurrentTeacherContext();

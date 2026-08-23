@@ -12,7 +12,7 @@ export type InAppNotification = {
 
 export async function fetchMyNotifications() {
   if (!supabase) {
-    return [] satisfies InAppNotification[];
+    throw new Error('Supabase is not configured for this environment.');
   }
 
   const { data, error } = await supabase
@@ -22,7 +22,7 @@ export async function fetchMyNotifications() {
     .limit(10);
 
   if (error) {
-    return [];
+    throw error;
   }
 
   return (data || []) as InAppNotification[];
@@ -30,7 +30,7 @@ export async function fetchMyNotifications() {
 
 export async function markNotificationRead(notificationId: string) {
   if (!supabase) {
-    return { success: true };
+    throw new Error('Supabase is not configured for this environment.');
   }
 
   const { error } = await supabase
@@ -46,8 +46,12 @@ export async function markNotificationRead(notificationId: string) {
 }
 
 export async function markAllNotificationsRead(notificationIds: string[]) {
-  if (!supabase || notificationIds.length === 0) {
-    return { success: true };
+  if (!supabase) {
+    throw new Error('Supabase is not configured for this environment.');
+  }
+
+  if (notificationIds.length === 0) {
+    return { skipped: true };
   }
 
   const { error } = await supabase

@@ -1,4 +1,4 @@
-import type { DashboardRole } from '../data/mockData';
+import type { DashboardRole } from '../types';
 
 const roleLabels: Record<DashboardRole | string, string> = {
   admin: 'Admin',

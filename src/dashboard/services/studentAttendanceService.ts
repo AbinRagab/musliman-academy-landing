@@ -25,54 +25,53 @@ export async function fetchStudentAttendanceData() {
     return { records, summary: getAttendanceSummary(records) };
   }
 
-  try {
-    const profile = await resolveCurrentStudentProfile();
+  const profile = await resolveCurrentStudentProfile();
 
-    if (!profile.id) {
-      const records: StudentAttendanceRecord[] = [];
-      return { records, summary: getAttendanceSummary(records) };
-    }
-
-    const { data, error } = await supabase
-      .from('attendance')
-      .select('*')
-      .eq('student_id', profile.id)
-      .order('submitted_at', { ascending: false });
-
-    if (error || !data?.length) {
-      const records: StudentAttendanceRecord[] = [];
-      return { records, summary: getAttendanceSummary(records) };
-    }
-
-    const classIds = Array.from(new Set(data.map((record) => record.class_id).filter(Boolean))) as string[];
-    const teacherIds = Array.from(new Set(data.map((record) => record.teacher_id).filter(Boolean))) as string[];
-    const [classesResult, teachersById] = await Promise.all([
-      classIds.length ? supabase.from('classes').select('id, class_title, lesson_title, class_date, scheduled_start_at, program_id').in('id', classIds) : Promise.resolve({ data: [] }),
-      resolveTeacherNamesById(teacherIds),
-    ]);
-
-    const classesById = new Map((classesResult.data || []).map((classRecord) => [classRecord.id, classRecord]));
-
-    const records = data.map((record): StudentAttendanceRecord => {
-      const classRecord = record.class_id ? classesById.get(record.class_id) : null;
-
-      return {
-        id: record.id,
-        classDate: formatDate(classRecord?.scheduled_start_at || classRecord?.class_date || record.submitted_at || record.created_at),
-        className: classRecord?.class_title || classRecord?.lesson_title || 'Class session',
-        teacher: record.teacher_id ? teachersById.get(record.teacher_id) || 'Teacher' : 'Teacher',
-        status: normalizeAttendanceStatus(record.status),
-        notes: record.note || record.notes || '',
-        programId: classRecord?.program_id || null,
-        program: profile.program,
-      };
-    });
-
-    return { records, summary: getAttendanceSummary(records) };
-  } catch {
+  if (!profile.id) {
     const records: StudentAttendanceRecord[] = [];
     return { records, summary: getAttendanceSummary(records) };
   }
+
+  const { data, error } = await supabase
+    .from('attendance')
+    .select('*')
+    .eq('student_id', profile.id)
+    .order('marked_at', { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data?.length) {
+    const records: StudentAttendanceRecord[] = [];
+    return { records, summary: getAttendanceSummary(records) };
+  }
+
+  const classIds = Array.from(new Set(data.map((record) => record.class_id).filter(Boolean))) as string[];
+  const teacherIds = Array.from(new Set(data.map((record) => record.teacher_id).filter(Boolean))) as string[];
+  const [classesResult, teachersById] = await Promise.all([
+    classIds.length ? supabase.from('classes').select('id, class_title, lesson_title, class_date, scheduled_start_at, program_id').in('id', classIds) : Promise.resolve({ data: [] }),
+    resolveTeacherNamesById(teacherIds),
+  ]);
+
+  const classesById = new Map((classesResult.data || []).map((classRecord) => [classRecord.id, classRecord]));
+
+  const records = data.map((record): StudentAttendanceRecord => {
+    const classRecord = record.class_id ? classesById.get(record.class_id) : null;
+
+    return {
+      id: record.id,
+      classDate: formatDate(classRecord?.scheduled_start_at || classRecord?.class_date || record.marked_at || record.created_at),
+      className: classRecord?.class_title || classRecord?.lesson_title || 'Class session',
+      teacher: record.teacher_id ? teachersById.get(record.teacher_id) || 'Teacher' : 'Teacher',
+      status: normalizeAttendanceStatus(record.status),
+      notes: record.note || record.notes || '',
+      programId: classRecord?.program_id || null,
+      program: profile.program,
+    };
+  });
+
+  return { records, summary: getAttendanceSummary(records) };
 }
 
 function normalizeAttendanceStatus(status?: string | null): StudentAttendanceStatus {
@@ -100,14 +99,27 @@ export async function reportAttendanceIssue(payload: { attendanceId: string; rea
   }
 
   const { data: sessionData } = await supabase.auth.getSession();
+  const { data: adminProfile, error: adminError } = await supabase
+    .from('profiles')
+    .select('id')
+    .in('role', ['admin', 'super_admin', 'academic_manager'])
+    .eq('status', 'active')
+    .limit(1)
+    .maybeSingle();
+
+  if (adminError) {
+    throw adminError;
+  }
+
+  if (!adminProfile?.id) {
+    throw new Error('No admin recipient is configured for attendance issue reports.');
+  }
+
   const { error } = await supabase.from('messages').insert({
     sender_id: sessionData.session?.user.id || null,
-    related_entity_type: 'attendance',
-    related_entity_id: payload.attendanceId,
-    recipient_role: 'admin',
+    receiver_id: adminProfile.id,
     subject: `Attendance issue: ${payload.reason}`,
-    body: payload.message,
-    status: 'unread',
+    body: `Attendance ID: ${payload.attendanceId}\n\n${payload.message}`,
   });
 
   return { success: !error, payload, error };

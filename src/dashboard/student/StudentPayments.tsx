@@ -12,16 +12,29 @@ import { openExternalLink, type StudentPayment } from '../services/studentServic
 
 export default function StudentPayments() {
   const [payments, setPayments] = useState<StudentPayment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [compose, setCompose] = useState<{ to: string; subject: string } | null>(null);
 
   useEffect(() => {
-    fetchStudentPaymentsData().then((data) => setPayments(data.payments));
+    fetchStudentPaymentsData()
+      .then((data) => {
+        setPayments(data.payments);
+        setError('');
+      })
+      .catch((paymentError) => {
+        if (import.meta.env.DEV) {
+          console.error('Student payments fetch failed:', paymentError);
+        }
+        setError('Unable to load payment records.');
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const currentPackage = payments[0];
   const totals = useMemo(() => ({
-    paidAmount: currentPackage?.paidAmount || '$0',
-    dueAmount: currentPackage?.dueAmount || '$0',
+    paidAmount: currentPackage?.paidAmount || 'Not provided',
+    dueAmount: currentPackage?.dueAmount || 'Not provided',
     nextDueDate: currentPackage?.nextDueDate || 'Not scheduled',
     status: currentPackage?.status || 'pending',
   }), [currentPackage]);
@@ -77,7 +90,10 @@ export default function StudentPayments() {
       </div>
 
       <SectionCard title="Payment History" subtitle="Finance records are view-only in the student portal.">
-        <DataTable columns={columns} rows={payments} getRowKey={(row) => row.id} />
+        {loading && <p className="dashboard-empty-copy">Loading payment records...</p>}
+        {!loading && error && <p className="dashboard-empty-copy">{error}</p>}
+        {!loading && !error && payments.length === 0 && <p className="dashboard-empty-copy">No payment records yet.</p>}
+        {!loading && !error && payments.length > 0 && <DataTable columns={columns} rows={payments} getRowKey={(row) => row.id} />}
       </SectionCard>
 
       <SectionCard title="Payment Actions">

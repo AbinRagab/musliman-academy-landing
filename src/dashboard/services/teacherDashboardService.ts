@@ -4,8 +4,9 @@ import {
   getCurrentWeekDay,
   getNextClass as getNextScheduledClass,
 } from './classSchedulesService';
+import { getAcademyTodayDate } from './dateUtils';
 import { getStudentDisplayName } from './displayNameUtils';
-import { applyCurrentTeacherProfileFilter, applyTeacherIdFilter, getCurrentTeacherContext } from './teacherOperationsService';
+import { applyTeacherIdFilter, getCurrentTeacherContext } from './teacherOperationsService';
 
 export type TeacherDashboardClass = {
   id: string;
@@ -89,9 +90,9 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
       };
     }
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getAcademyTodayDate();
     const [{ data: students }, { data: classes }, { data: trials }, { data: completedClasses }] = await Promise.all([
-      applyCurrentTeacherProfileFilter(
+      applyTeacherIdFilter(
         supabase.from('students').select('id, student_name, program_id, level, status, assigned_teacher_id'),
         'assigned_teacher_id',
         context,
@@ -102,10 +103,10 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
         context,
       ).gte('class_date', today).lte('class_date', today),
       applyTeacherIdFilter(
-        supabase.from('free_trials').select('id, teacher_id, status'),
+        supabase.from('free_trials').select('id, teacher_id, status, trial_date'),
         'teacher_id',
         context,
-      ).eq('status', 'scheduled'),
+      ).eq('status', 'scheduled').gte('trial_date', today),
       applyTeacherIdFilter(
         supabase.from('classes').select('id, student_id, teacher_id, program_id, class_date, start_time, status'),
         'teacher_id',

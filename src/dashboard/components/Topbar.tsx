@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import { useAuth } from '../auth/AuthProvider';
-import type { DashboardRole } from '../data/mockData';
+import type { DashboardRole } from '../types';
 import { fetchMyNotifications, markAllNotificationsRead, markNotificationRead, type InAppNotification } from '../services/notificationsService';
 import TopbarAccountMenu from './TopbarAccountMenu';
 
@@ -28,7 +28,14 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
       return;
     }
 
-    fetchMyNotifications().then(setNotifications);
+    fetchMyNotifications()
+      .then(setNotifications)
+      .catch((error) => {
+        if (import.meta.env.DEV) {
+          console.error('Notifications fetch failed:', error);
+        }
+        setNotifications([]);
+      });
   }, [isConfigured, profile]);
 
   const unreadCount = useMemo(() => notifications.filter((notification) => !notification.read_at).length, [notifications]);
@@ -39,19 +46,31 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
   }
 
   async function handleMarkNotificationRead(notificationId: string) {
-    await markNotificationRead(notificationId);
-    setNotifications((current) => current.map((item) => (
-      item.id === notificationId ? { ...item, read_at: item.read_at || new Date().toISOString() } : item
-    )));
+    try {
+      await markNotificationRead(notificationId);
+      setNotifications((current) => current.map((item) => (
+        item.id === notificationId ? { ...item, read_at: item.read_at || new Date().toISOString() } : item
+      )));
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error('Notification read update failed:', error);
+      }
+    }
   }
 
   async function handleMarkAllNotificationsRead(notificationIds: string[]) {
-    await markAllNotificationsRead(notificationIds);
-    setNotifications((current) => current.map((notification) => (
-      notificationIds.includes(notification.id)
-        ? { ...notification, read_at: notification.read_at || new Date().toISOString() }
-        : notification
-    )));
+    try {
+      await markAllNotificationsRead(notificationIds);
+      setNotifications((current) => current.map((notification) => (
+        notificationIds.includes(notification.id)
+          ? { ...notification, read_at: notification.read_at || new Date().toISOString() }
+          : notification
+      )));
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error('Notifications bulk read update failed:', error);
+      }
+    }
   }
 
   return (
