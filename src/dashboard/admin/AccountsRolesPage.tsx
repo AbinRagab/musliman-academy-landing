@@ -519,7 +519,7 @@ export default function AccountsRolesPage() {
                     {permissionToggles.map((permission) => (
                       <label className="dashboard-toggle" key={permission}>
                         <span>{permission}</span>
-                        <input type="checkbox" defaultChecked={['Manage Students', 'View Reports', 'Manage Classes'].includes(permission)} />
+                        <input type="checkbox" defaultChecked={['Manage Students', 'View Reports', 'Manage Classes'].includes(permission)} disabled />
                       </label>
                     ))}
                     <small>Permission editing is not available yet. Role assignment is saved now.</small>

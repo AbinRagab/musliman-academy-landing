@@ -68,13 +68,19 @@ describe('dashboard data contracts', () => {
   it('keeps the production reconciliation migration scoped to dashboard prerequisites', () => {
     const reconciliationPath = join(process.cwd(), 'supabase/migrations/20260823095000_reconcile_dashboard_prerequisites.sql');
     const phaseOnePath = join(process.cwd(), 'supabase/migrations/20260823100000_dashboard_data_contract_cleanup.sql');
+    const classStatusPath = join(process.cwd(), 'supabase/migrations/20260823105000_class_status_live.sql');
+    const lifecyclePath = join(process.cwd(), 'supabase/migrations/20260823110000_class_lifecycle_engine.sql');
     const migration = readFileSync(
       reconciliationPath,
       'utf8',
     );
 
     expect(existsSync(phaseOnePath)).toBe(true);
+    expect(existsSync(classStatusPath)).toBe(true);
+    expect(existsSync(lifecyclePath)).toBe(true);
     expect('20260823095000_reconcile_dashboard_prerequisites.sql' < '20260823100000_dashboard_data_contract_cleanup.sql').toBe(true);
+    expect('20260823100000_dashboard_data_contract_cleanup.sql' < '20260823105000_class_status_live.sql').toBe(true);
+    expect('20260823105000_class_status_live.sql' < '20260823110000_class_lifecycle_engine.sql').toBe(true);
     expect(migration).toContain('create or replace function public.current_teacher_id()');
     expect(migration).toContain('teacher_profile_id uuid references public.profiles(id)');
     expect(migration).toContain('teacher_id = public.current_teacher_id()');

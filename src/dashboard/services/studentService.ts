@@ -1,9 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
-import {
-  fetchActiveClassSchedulesByStudentIds,
-  getNextClass as getNextScheduledClass,
-  mapScheduleToClassSession,
-} from './classSchedulesService';
+import { materializeScheduledClasses } from './classSchedulesService';
 import { resolveTeacherNamesById } from './teachersService';
 
 export type StudentPortalProfile = {
@@ -314,7 +310,7 @@ export function getHomeworkForClass(classSession: StudentClassSession, homeworkI
     teacher: classSession.teacher,
     dueDate: classSession.date,
     instructions: classSession.homeworkAssigned,
-    status: classSession.status === 'completed' ? 'submitted' : 'pending',
+    status: 'pending',
   } satisfies StudentHomeworkItem;
 }
 
@@ -339,11 +335,15 @@ async function getCurrentProfile() {
     return { userId: null, profile: null };
   }
 
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from('profiles')
     .select('id, full_name, email, phone, role, timezone, preferred_contact_method')
     .eq('id', userId)
     .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
 
   return { userId, profile };
 }
@@ -353,61 +353,61 @@ export async function resolveCurrentStudentProfile() {
     return createEmptyStudentProfile();
   }
 
-  try {
-    const { userId, profile } = await getCurrentProfile();
+  const { userId, profile } = await getCurrentProfile();
 
-    if (!userId) {
-      return createEmptyStudentProfile();
-    }
-
-    const { data: student, error } = await supabase
-      .from('students')
-      .select('*')
-      .eq('profile_id', userId)
-      .maybeSingle();
-
-    if (error || !student) {
-      const name = profile?.full_name || 'Student';
-      return createEmptyStudentProfile({
-        profileId: userId,
-        name,
-        initials: buildInitials(name),
-        parentEmail: profile?.email || '',
-        parentWhatsapp: profile?.phone || '',
-        timezone: profile?.timezone || defaultTimezone,
-        preferredContact: profile?.preferred_contact_method || 'Academy messages',
-      });
-    }
-
-    const [programResult, teacherResult] = await Promise.all([
-      student.program_id ? supabase.from('programs').select('id, name').eq('id', student.program_id).maybeSingle() : Promise.resolve({ data: null }),
-      student.assigned_teacher_id ? resolveTeacherNamesById([student.assigned_teacher_id]) : Promise.resolve(new Map<string, string>()),
-    ]);
-
-    const name = student.student_name || profile?.full_name || 'Student';
-
-    return createEmptyStudentProfile({
-      id: student.id,
-      profileId: student.profile_id,
-      name,
-      initials: buildInitials(name),
-      parentName: student.parent_name || '',
-      parentWhatsapp: student.parent_whatsapp || student.whatsapp || profile?.phone || '',
-      parentEmail: student.parent_email || profile?.email || '',
-      country: student.country || '',
-      age: student.age ? String(student.age) : '',
-      program: programResult.data?.name || student.program_name || 'No program assigned',
-      level: student.current_level || student.level || 'Level not set',
-      teacher: student.assigned_teacher_id ? teacherResult.get(student.assigned_teacher_id) || 'No teacher assigned' : 'No teacher assigned',
-      teacherId: student.assigned_teacher_id || null,
-      startDate: formatDate(student.enrollment_date || student.start_date),
-      timezone: student.timezone || profile?.timezone || defaultTimezone,
-      preferredContact: student.preferred_contact_method || profile?.preferred_contact_method || 'Academy messages',
-      enrollmentStatus: student.status || 'active',
-    });
-  } catch {
+  if (!userId) {
     return createEmptyStudentProfile();
   }
+
+  const { data: student, error } = await supabase
+    .from('students')
+    .select('*')
+    .eq('profile_id', userId)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!student) {
+    const name = profile?.full_name || 'Student';
+    return createEmptyStudentProfile({
+      profileId: userId,
+      name,
+      initials: buildInitials(name),
+      parentEmail: profile?.email || '',
+      parentWhatsapp: profile?.phone || '',
+      timezone: profile?.timezone || defaultTimezone,
+      preferredContact: profile?.preferred_contact_method || 'academy_messages',
+    });
+  }
+
+  const [programResult, teacherResult] = await Promise.all([
+    student.program_id ? supabase.from('programs').select('id, name').eq('id', student.program_id).maybeSingle() : Promise.resolve({ data: null }),
+    student.assigned_teacher_id ? resolveTeacherNamesById([student.assigned_teacher_id]) : Promise.resolve(new Map<string, string>()),
+  ]);
+
+  const name = student.student_name || profile?.full_name || 'Student';
+
+  return createEmptyStudentProfile({
+    id: student.id,
+    profileId: student.profile_id,
+    name,
+    initials: buildInitials(name),
+    parentName: student.parent_name || '',
+    parentWhatsapp: student.parent_whatsapp || student.whatsapp || profile?.phone || '',
+    parentEmail: student.parent_email || profile?.email || '',
+    country: student.country || '',
+    age: student.age ? String(student.age) : '',
+    program: programResult.data?.name || student.program_name || 'No program assigned',
+    level: student.current_level || student.level || 'Level not set',
+    teacher: student.assigned_teacher_id ? teacherResult.get(student.assigned_teacher_id) || 'No teacher assigned' : 'No teacher assigned',
+    teacherId: student.assigned_teacher_id || null,
+    startDate: formatDate(student.enrollment_date || student.start_date),
+    timezone: student.timezone || profile?.timezone || defaultTimezone,
+    preferredContact: student.preferred_contact_method || profile?.preferred_contact_method || 'academy_messages',
+    enrollmentStatus: student.status || 'active',
+  });
 }
 
 async function fetchClassesForProfile(profile: StudentPortalProfile) {
@@ -461,26 +461,6 @@ async function fetchClassesForProfile(profile: StudentPortalProfile) {
   });
 }
 
-async function fetchScheduleClassesForProfile(profile: StudentPortalProfile) {
-  if (!profile.id) {
-    return [] as StudentClassSession[];
-  }
-
-  const scheduleRows = await fetchActiveClassSchedulesByStudentIds([profile.id]);
-  const nextSchedule = getNextScheduledClass(scheduleRows, profile.timezone);
-  const sortedRows = [...scheduleRows].sort((first, second) => {
-    if (nextSchedule?.row.id === first.id) return -1;
-    if (nextSchedule?.row.id === second.id) return 1;
-    return first.day_of_week.localeCompare(second.day_of_week) || first.start_time.localeCompare(second.start_time);
-  });
-
-  return sortedRows.map((schedule) => mapScheduleToClassSession(schedule, {
-    program: profile.program,
-    level: profile.level,
-    teacher: profile.teacher,
-  }));
-}
-
 async function fetchLatestTrial(profile: StudentPortalProfile): Promise<StudentTrial> {
   if (!supabase || !profile.id) {
     return emptyStudentTrial;
@@ -517,11 +497,8 @@ async function fetchLatestTrial(profile: StudentPortalProfile): Promise<StudentT
 
 export async function fetchStudentDashboardData() {
   const profile = await resolveCurrentStudentProfile();
-  const [scheduledClasses, classHistory] = await Promise.all([
-    fetchScheduleClassesForProfile(profile),
-    fetchClassesForProfile(profile),
-  ]);
-  const classes = [...scheduledClasses, ...classHistory];
+  await materializeScheduledClasses();
+  const classes = await fetchClassesForProfile(profile);
   const upcomingClasses = getUpcomingClasses(classes).slice(0, 5);
   const trial = await fetchLatestTrial(profile);
   const [{ fetchStudentHomeworkData }, { fetchStudentPaymentsData }, { fetchStudentMessagesData }] = await Promise.all([
@@ -550,8 +527,10 @@ export async function fetchStudentDashboardData() {
     sectionErrors.messages = 'Unable to load messages.';
   }
 
+  const aggregateProfile = await applyStudentAggregates(profile);
+
   return {
-    profile,
+    profile: aggregateProfile,
     nextClass: getNextClass(classes),
     upcomingClasses,
     trial,
@@ -559,6 +538,45 @@ export async function fetchStudentDashboardData() {
     payments,
     messages,
     sectionErrors,
+  };
+}
+
+async function applyStudentAggregates(profile: StudentPortalProfile): Promise<StudentPortalProfile> {
+  if (!supabase || !profile.id) {
+    return profile;
+  }
+
+  const [attendanceResult, completedClassesResult, evaluationResult] = await Promise.all([
+    supabase.from('attendance').select('status').eq('student_id', profile.id),
+    supabase.from('classes').select('id').eq('student_id', profile.id).eq('status', 'completed'),
+    supabase
+      .from('evaluations')
+      .select('recitation_rating, tajweed_rating, understanding_rating, behavior_rating')
+      .eq('student_id', profile.id),
+  ]);
+
+  const attendanceRows = attendanceResult.data || [];
+  const chargeableAttendance = attendanceRows.filter((row) => !['excused', 'cancelled'].includes(String(row.status)));
+  const presentRows = chargeableAttendance.filter((row) => row.status === 'present' || row.status === 'late');
+  const attendanceRate = chargeableAttendance.length
+    ? `${Math.round((presentRows.length / chargeableAttendance.length) * 100)}%`
+    : '0%';
+
+  const ratingValues = (evaluationResult.data || []).flatMap((evaluation) => [
+    evaluation.recitation_rating,
+    evaluation.tajweed_rating,
+    evaluation.understanding_rating,
+    evaluation.behavior_rating,
+  ]).map(Number).filter((value) => Number.isFinite(value));
+  const overallProgress = ratingValues.length
+    ? Math.round((ratingValues.reduce((sum, value) => sum + value, 0) / (ratingValues.length * 5)) * 100)
+    : 0;
+
+  return {
+    ...profile,
+    attendanceRate,
+    completedLessons: completedClassesResult.data?.length || 0,
+    overallProgress,
   };
 }
 
@@ -619,6 +637,10 @@ export async function saveStudentSettings(settings: StudentSettings) {
       email: settings.email,
       phone: settings.whatsapp,
       timezone: settings.timezone,
+      preferred_language: settings.preferredLanguage,
+      preferred_class_time: settings.preferredClassTime,
+      notification_preferences: settings.notifications,
+      parent_communication_preferences: settings.parentCommunication,
     })
     .eq('id', userId);
 

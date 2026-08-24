@@ -88,7 +88,7 @@ function ClassReportModal({ classItem, onClose, onSubmit }: { classItem: Teacher
           <label><span>Lesson covered</span><input name="lessonCovered" placeholder="Example: Madd letters review" required /></label>
           <label><span>Homework assigned</span><textarea name="homework" rows={3} placeholder="Describe homework for the next session." /></label>
           <label><span>Class notes</span><textarea name="notes" rows={4} placeholder="Summarize class outcome and support needs." /></label>
-          <label><span>Next lesson plan</span><textarea rows={3} placeholder="Define the next teaching plan." /></label>
+          <label><span>Next lesson plan</span><textarea name="nextLessonPlan" rows={3} placeholder="Define the next teaching plan." /></label>
           <div className="dashboard-form-actions">
             <ActionButton type="submit" variant="copper">Save Class Report</ActionButton>
             <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
@@ -211,21 +211,26 @@ export default function TeacherDashboard() {
       return;
     }
 
-    await updateTeacherSessionCheckin({
-      classId: classItem.id,
-      scheduledStartAt: classItem.scheduledStartAt || getScheduledStartAt(classItem.time),
-      action,
-      notes: `${action} from teacher dashboard`,
-    });
+    try {
+      await updateTeacherSessionCheckin({
+        classId: classItem.id,
+        scheduledStartAt: classItem.scheduledStartAt || getScheduledStartAt(classItem.time),
+        action,
+        notes: `${action} from teacher dashboard`,
+      });
 
-    const messageByAction: Record<TeacherCheckinAction, string> = {
-      ready: 'Teacher readiness recorded for this class.',
-      joined: 'Join time recorded for this class.',
-      live: 'Class marked live.',
-      completed: 'Class ended. Please submit attendance and class report.',
-    };
+      const messageByAction: Record<TeacherCheckinAction, string> = {
+        ready: 'Teacher readiness recorded for this class.',
+        joined: 'Join time recorded for this class.',
+        live: 'Class marked live.',
+        completed: 'Class ended. Please submit attendance and class report.',
+      };
 
-    setToast({ type: action === 'completed' ? 'info' : 'success', message: messageByAction[action] });
+      setToast({ type: action === 'completed' ? 'info' : 'success', message: messageByAction[action] });
+      await refreshTeacherDashboard();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : `Unable to update class ${action} state.` });
+    }
   }
 
   async function handleJoinClass(classItem: TeacherClass) {
@@ -252,15 +257,20 @@ export default function TeacherDashboard() {
       return;
     }
 
-    await saveTeacherClassReport({
-      classId: classItem.id,
-      lessonCovered: String(formData.get('lessonCovered') || ''),
-      homework: String(formData.get('homework') || ''),
-      notes: String(formData.get('notes') || ''),
-    });
-    setReportClass(null);
-    setToast({ type: 'success', message: 'Class report saved.' });
-    await refreshTeacherDashboard();
+    try {
+      await saveTeacherClassReport({
+        classId: classItem.id,
+        lessonCovered: String(formData.get('lessonCovered') || ''),
+        homework: String(formData.get('homework') || ''),
+        nextLessonPlan: String(formData.get('nextLessonPlan') || ''),
+        notes: String(formData.get('notes') || ''),
+      });
+      setReportClass(null);
+      setToast({ type: 'success', message: 'Class report saved.' });
+      await refreshTeacherDashboard();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to save class report.' });
+    }
   }
 
   async function handleEvaluationSubmit(evaluation: EvaluationRow, formData: FormData) {
@@ -273,19 +283,23 @@ export default function TeacherDashboard() {
       return;
     }
 
-    await saveTeacherEvaluation({
-      studentId: evaluation.studentId,
-      classId: evaluation.classId,
-      recitationRating: Number(formData.get('recitationRating') || 4),
-      tajweedRating: Number(formData.get('tajweedRating') || 4),
-      understandingRating: Number(formData.get('understandingRating') || 4),
-      behaviorRating: Number(formData.get('behaviorRating') || 4),
-      progressNotes: String(formData.get('progressNotes') || ''),
-      recommendation: String(formData.get('recommendation') || ''),
-    });
-    setEvaluationStudent(null);
-    setToast({ type: 'success', message: 'Evaluation submitted.' });
-    await refreshTeacherDashboard();
+    try {
+      await saveTeacherEvaluation({
+        studentId: evaluation.studentId,
+        classId: evaluation.classId,
+        recitationRating: Number(formData.get('recitationRating') || 4),
+        tajweedRating: Number(formData.get('tajweedRating') || 4),
+        understandingRating: Number(formData.get('understandingRating') || 4),
+        behaviorRating: Number(formData.get('behaviorRating') || 4),
+        progressNotes: String(formData.get('progressNotes') || ''),
+        recommendation: String(formData.get('recommendation') || ''),
+      });
+      setEvaluationStudent(null);
+      setToast({ type: 'success', message: 'Evaluation submitted.' });
+      await refreshTeacherDashboard();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to submit evaluation.' });
+    }
   }
 
   const scheduleColumns: Array<DataTableColumn<TeacherClass>> = [
@@ -302,8 +316,8 @@ export default function TeacherDashboard() {
           actions={[
             { label: 'I am Ready', onClick: () => handleCheckinAction(row, 'ready') },
             { label: 'Join Class', onClick: () => handleJoinClass(row), hidden: row.reportStatus !== 'Needs Report' && row.attendanceStatus !== 'Pending' },
-            { label: 'Start Class', onClick: () => handleCheckinAction(row, 'live') },
-            { label: 'End Class', onClick: () => handleCheckinAction(row, 'completed') },
+            { label: 'Start Class', onClick: () => handleCheckinAction(row, 'live'), hidden: !['scheduled', 'rescheduled'].includes(row.status.toLowerCase()) },
+            { label: 'End Class', onClick: () => handleCheckinAction(row, 'completed'), hidden: row.status.toLowerCase() !== 'live' },
             { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance'), hidden: row.attendanceStatus === 'Pending' },
             { label: 'Add Class Report', onClick: () => setReportClass(row), hidden: row.reportStatus === 'Needs Report' },
             { label: 'View Details', onClick: () => setDetailClass(row) },
@@ -354,8 +368,8 @@ export default function TeacherDashboard() {
                 primaryAction={{ label: 'Join Class', icon: <Icon name="video" size={16} />, onClick: () => handleJoinClass(nextClass) }}
                 actions={[
                   { label: 'I am Ready', onClick: () => handleCheckinAction(nextClass, 'ready') },
-                  { label: 'Start Class', onClick: () => handleCheckinAction(nextClass, 'live') },
-                  { label: 'End Class', onClick: () => handleCheckinAction(nextClass, 'completed') },
+                  { label: 'Start Class', onClick: () => handleCheckinAction(nextClass, 'live'), hidden: !['scheduled', 'rescheduled'].includes(nextClass.status.toLowerCase()) },
+                  { label: 'End Class', onClick: () => handleCheckinAction(nextClass, 'completed'), hidden: nextClass.status.toLowerCase() !== 'live' },
                   { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
                   { label: 'Add Class Report', onClick: () => setReportClass(nextClass) },
                   { label: 'View Details', onClick: () => setDetailClass(nextClass) },
@@ -400,17 +414,14 @@ export default function TeacherDashboard() {
                     { label: 'View Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
                     {
                       label: 'Add Evaluation',
-                      onClick: () => setEvaluationStudent({
-                        id: student.id,
-                        studentId: student.id,
-                        student: student.student,
-                        program: student.program,
-                        relatedClass: student.nextClass,
-                        recitation: 0,
-                        tajweed: 0,
-                        understanding: 0,
-                        status: 'ready',
-                      }),
+                      onClick: () => {
+                        const eligibleEvaluation = evaluationQueue.find((evaluation) => evaluation.studentId === student.id);
+                        if (!eligibleEvaluation) {
+                          setToast({ type: 'info', message: 'No completed unevaluated class is available for this student.' });
+                          return;
+                        }
+                        setEvaluationStudent(eligibleEvaluation);
+                      },
                     },
                     { label: 'Message via Academy', onClick: () => navigate('/dashboard/teacher/messages') },
                   ]}

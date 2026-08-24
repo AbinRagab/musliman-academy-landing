@@ -36,14 +36,28 @@ export default function AdminCompliancePage() {
   const [selectedWarning, setSelectedWarning] = useState<TeacherWarningRow | null>(null);
   const [editingRule, setEditingRule] = useState<ComplianceRuleRow | null>(null);
   const [editingTemplate, setEditingTemplate] = useState<NotificationTemplateRow | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
   }, []);
 
   async function loadData() {
-    const nextData = await fetchComplianceDashboardData();
-    setData(nextData);
+    try {
+      const nextData = await fetchComplianceDashboardData();
+      setData(nextData);
+      setLoadError(null);
+    } catch (error) {
+      setLoadError(error instanceof Error ? error.message : 'Unable to load compliance data.');
+      setData({
+        checkins: [],
+        warnings: [],
+        rules: [],
+        templates: [],
+        logs: [],
+        providerStatus: { emailConfigured: false, whatsappConfigured: false },
+      });
+    }
   }
 
   function notify(message: string, type: ToastMessage['type'] = 'info') {
@@ -76,6 +90,8 @@ export default function AdminCompliancePage() {
     { header: 'Scheduled Time', accessor: 'scheduledTime' },
     { header: 'Teacher Ready', accessor: (row) => <StatusBadge label={row.teacherReady} /> },
     { header: 'Joined', accessor: (row) => <StatusBadge label={row.joined} /> },
+    { header: 'Started', accessor: (row) => <StatusBadge label={row.started} /> },
+    { header: 'Ended', accessor: (row) => <StatusBadge label={row.ended} /> },
     { header: 'Attendance', accessor: (row) => <StatusBadge label={row.attendanceSubmitted} /> },
     { header: 'Report', accessor: (row) => <StatusBadge label={row.reportSubmitted} /> },
     { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
@@ -85,10 +101,10 @@ export default function AdminCompliancePage() {
         <DashboardActionMenu
           primaryAction={{ label: 'View Logs', onClick: () => setSelectedCheckin(row) }}
           actions={[
-            { label: 'Send Reminder Now', onClick: () => notify(`Reminder queued for ${row.teacher}.`) },
-            { label: 'Contact Teacher', onClick: () => notify(`Teacher contact workflow opened for ${row.teacher}.`) },
-            { label: 'Create Warning requires warning form setup', onClick: () => undefined, disabled: true },
-            { label: 'Mark Excused', onClick: () => notify(`${row.teacher} marked excused for review.`) },
+            { label: 'Run Compliance Check', onClick: async () => { await runTeacherComplianceCheck(); notify('Compliance check completed.', 'success'); await loadData(); } },
+            { label: 'Contact Teacher requires messaging recipient', onClick: () => null, disabled: true },
+            { label: 'Create Warning requires warning form setup', onClick: () => null, disabled: true },
+            { label: 'Mark Excused requires linked warning', onClick: () => null, disabled: true },
           ]}
         />
       ),
@@ -181,6 +197,7 @@ export default function AdminCompliancePage() {
       </div>
 
       <SectionCard title="Provider Status" subtitle="Secrets are checked server-side only; values are never exposed.">
+        {loadError && <p className="dashboard-inline-error">{loadError}</p>}
         <div className="student-info-grid">
           <span>In-app notifications <strong><StatusBadge label="configured" /></strong></span>
           <span>Email provider <strong><StatusBadge label={data.providerStatus.emailConfigured ? 'configured' : 'missing secrets'} /></strong></span>
@@ -253,10 +270,8 @@ export default function AdminCompliancePage() {
             },
           ]}
           actions={[
-            { label: 'Send Reminder Now', icon: 'bell', variant: 'copper', onClick: () => notify(`Reminder queued for ${selectedCheckin.teacher}.`) },
-            { label: 'Contact Teacher', icon: 'message', onClick: () => notify(`Contact workflow opened for ${selectedCheckin.teacher}.`) },
-            { label: 'Mark Excused', icon: 'check', onClick: () => notify('Class monitoring record marked excused for review.') },
-            { label: 'Open Class Details', icon: 'calendar', onClick: () => notify('Class details are available from Admin Classes.') },
+            { label: 'Run Compliance Check', icon: 'bell', variant: 'copper', onClick: async () => { await runTeacherComplianceCheck(); notify('Compliance check completed.', 'success'); await loadData(); } },
+            { label: 'Open Class Details', icon: 'calendar', onClick: () => window.location.assign('/dashboard/admin/classes') },
           ]}
         />
       )}
@@ -286,8 +301,8 @@ export default function AdminCompliancePage() {
             { label: 'Cancel Warning', onClick: () => handleWarning(selectedWarning, 'cancelled') },
             { label: 'Mark Excused', onClick: () => handleWarning(selectedWarning, 'excused') },
             { label: 'Resolve', onClick: () => handleWarning(selectedWarning, 'resolved') },
-            { label: 'Suspend Account requires escalation rule', variant: 'danger', disabled: true, onClick: () => undefined },
-            { label: 'Reactivate Account requires account review', disabled: true, onClick: () => undefined },
+            { label: 'Suspend Account requires escalation rule', variant: 'danger', disabled: true, onClick: () => null },
+            { label: 'Reactivate Account requires account review', disabled: true, onClick: () => null },
           ]}
         />
       )}

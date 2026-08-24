@@ -55,6 +55,7 @@ export async function addClassReport(payload: TeacherClassReportPayload) {
     lessonCovered: payload.lessonCovered,
     homework: payload.homework,
     notes: payload.classNotes,
+    nextLessonPlan: payload.nextLessonPlan,
   });
 }
 

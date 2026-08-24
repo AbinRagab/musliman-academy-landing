@@ -8,16 +8,22 @@ import {
   StudentModal,
   StudentPageHeader,
 } from '../components/student/StudentPortalComponents';
-import { emptyStudentSettings, fetchStudentDashboardData, saveStudentSettings, type StudentSettings as StudentSettingsData } from '../services/studentService';
+import {
+  emptyStudentSettings,
+  fetchStudentDashboardData,
+  requestStudentSupportUpdate,
+  saveStudentSettings,
+  type StudentSettings as StudentSettingsData,
+} from '../services/studentService';
 
-function SettingToggle({ label, description, enabled, name }: { label: string; description: string; enabled: boolean; name: string }) {
+function SettingToggle({ label, description, enabled, name, onChange }: { label: string; description: string; enabled: boolean; name: string; onChange: (checked: boolean) => void }) {
   return (
     <label className="student-setting-toggle">
       <span>
         <strong>{label}</strong>
         <small>{description}</small>
       </span>
-      <input name={name} type="checkbox" defaultChecked={enabled} />
+      <input name={name} type="checkbox" checked={enabled} onChange={(event) => onChange(event.target.checked)} />
     </label>
   );
 }
@@ -26,6 +32,7 @@ export default function StudentSettings() {
   const [settings, setSettings] = useState<StudentSettingsData>(emptyStudentSettings);
   const [saved, setSaved] = useState(false);
   const [securityMessage, setSecurityMessage] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchStudentDashboardData().then((data) => {
@@ -55,7 +62,7 @@ export default function StudentSettings() {
   return (
     <div className="dashboard-page dashboard-page--management dashboard-page--student-settings">
       {saved && (
-        <StudentModal title="Preferences Saved" description="Your editable student portal preferences were saved locally for this workflow." onClose={() => setSaved(false)} footer={<ActionButton onClick={() => setSaved(false)}>Close</ActionButton>}>
+        <StudentModal title="Preferences Saved" description="Your editable student portal preferences were saved." onClose={() => setSaved(false)} footer={<ActionButton onClick={() => setSaved(false)}>Close</ActionButton>}>
           <p className="student-modal-copy">Admin-managed academic, attendance, payment, and teacher assignment fields remain view-only.</p>
         </StudentModal>
       )}
@@ -71,7 +78,11 @@ export default function StudentSettings() {
         className="dashboard-grid dashboard-grid--two student-settings-layout"
         onSubmit={(event) => {
           event.preventDefault();
-          saveStudentSettings(settings).then(() => setSaved(true));
+          setSaving(true);
+          saveStudentSettings(settings)
+            .then(() => setSaved(true))
+            .catch((error) => setSecurityMessage(error instanceof Error ? error.message : 'Unable to save preferences.'))
+            .finally(() => setSaving(false));
         }}
       >
         <SectionCard title="Account Settings" subtitle="Contact changes are request-based if academy records need updating.">
@@ -83,7 +94,21 @@ export default function StudentSettings() {
               <DashboardActionMenu
                 primaryAction={{ label: 'Change Password', icon: <Icon name="lock" size={15} />, onClick: handlePasswordReset }}
                 actions={[
-                  { label: 'Request Contact Update', icon: <Icon name="send" size={15} />, onClick: () => setSaved(true) },
+                  {
+                    label: 'Request Contact Update',
+                    icon: <Icon name="send" size={15} />,
+                    onClick: async () => {
+                      try {
+                        await requestStudentSupportUpdate({
+                          subject: 'Student contact update request',
+                          message: `Please review contact details.\nEmail: ${settings.email}\nWhatsApp: ${settings.whatsapp}`,
+                        });
+                        setSecurityMessage('Contact update request sent to the academy team.');
+                      } catch (error) {
+                        setSecurityMessage(error instanceof Error ? error.message : 'Unable to send contact update request.');
+                      }
+                    },
+                  },
                 ]}
               />
             </div>
@@ -92,12 +117,12 @@ export default function StudentSettings() {
 
         <SectionCard title="Notification Preferences">
           <div className="student-settings-list">
-            <SettingToggle name="classReminders" label="Class reminders" description="Send a reminder before each scheduled class." enabled={settings.notifications.classReminders} />
-            <SettingToggle name="homeworkReminders" label="Homework reminders" description="Notify when homework is due or reviewed." enabled={settings.notifications.homeworkReminders} />
-            <SettingToggle name="paymentReminders" label="Payment reminders" description="Notify before package renewal or due dates." enabled={settings.notifications.paymentReminders} />
-            <SettingToggle name="progressReports" label="Progress report notifications" description="Send updates when teacher feedback is available." enabled={settings.notifications.progressReports} />
-            <SettingToggle name="whatsappNotifications" label="WhatsApp notifications" description="Use WhatsApp as the primary reminder channel." enabled={settings.notifications.whatsappNotifications} />
-            <SettingToggle name="emailNotifications" label="Email notifications" description="Send copies of important portal messages by email." enabled={settings.notifications.emailNotifications} />
+            <SettingToggle name="classReminders" label="Class reminders" description="Send a reminder before each scheduled class." enabled={settings.notifications.classReminders} onChange={(checked) => setSettings((current) => ({ ...current, notifications: { ...current.notifications, classReminders: checked } }))} />
+            <SettingToggle name="homeworkReminders" label="Homework reminders" description="Notify when homework is due or reviewed." enabled={settings.notifications.homeworkReminders} onChange={(checked) => setSettings((current) => ({ ...current, notifications: { ...current.notifications, homeworkReminders: checked } }))} />
+            <SettingToggle name="paymentReminders" label="Payment reminders" description="Notify before package renewal or due dates." enabled={settings.notifications.paymentReminders} onChange={(checked) => setSettings((current) => ({ ...current, notifications: { ...current.notifications, paymentReminders: checked } }))} />
+            <SettingToggle name="progressReports" label="Progress report notifications" description="Send updates when teacher feedback is available." enabled={settings.notifications.progressReports} onChange={(checked) => setSettings((current) => ({ ...current, notifications: { ...current.notifications, progressReports: checked } }))} />
+            <SettingToggle name="whatsappNotifications" label="WhatsApp notifications" description="Use WhatsApp as the primary reminder channel." enabled={settings.notifications.whatsappNotifications} onChange={(checked) => setSettings((current) => ({ ...current, notifications: { ...current.notifications, whatsappNotifications: checked } }))} />
+            <SettingToggle name="emailNotifications" label="Email notifications" description="Send copies of important portal messages by email." enabled={settings.notifications.emailNotifications} onChange={(checked) => setSettings((current) => ({ ...current, notifications: { ...current.notifications, emailNotifications: checked } }))} />
           </div>
         </SectionCard>
 
@@ -111,9 +136,9 @@ export default function StudentSettings() {
 
         <SectionCard title="Parent Communication">
           <div className="student-settings-list">
-            <SettingToggle name="parentClassReminders" label="Send class reminders to parent" description="Parent receives scheduled class reminders." enabled={settings.parentCommunication.parentClassReminders} />
-            <SettingToggle name="parentAbsenceAlerts" label="Send absence alerts" description="Parent receives absence and late alerts." enabled={settings.parentCommunication.parentAbsenceAlerts} />
-            <SettingToggle name="parentProgressReports" label="Send progress reports to parent" description="Parent receives progress summaries." enabled={settings.parentCommunication.parentProgressReports} />
+            <SettingToggle name="parentClassReminders" label="Send class reminders to parent" description="Parent receives scheduled class reminders." enabled={settings.parentCommunication.parentClassReminders} onChange={(checked) => setSettings((current) => ({ ...current, parentCommunication: { ...current.parentCommunication, parentClassReminders: checked } }))} />
+            <SettingToggle name="parentAbsenceAlerts" label="Send absence alerts" description="Parent receives absence and late alerts." enabled={settings.parentCommunication.parentAbsenceAlerts} onChange={(checked) => setSettings((current) => ({ ...current, parentCommunication: { ...current.parentCommunication, parentAbsenceAlerts: checked } }))} />
+            <SettingToggle name="parentProgressReports" label="Send progress reports to parent" description="Parent receives progress summaries." enabled={settings.parentCommunication.parentProgressReports} onChange={(checked) => setSettings((current) => ({ ...current, parentCommunication: { ...current.parentCommunication, parentProgressReports: checked } }))} />
           </div>
         </SectionCard>
 
@@ -126,7 +151,7 @@ export default function StudentSettings() {
         </SectionCard>
 
         <div className="dashboard-form-actions student-settings-actions">
-          <ActionButton type="submit" variant="copper"><Icon name="check" size={16} />Save Preferences</ActionButton>
+          <ActionButton type="submit" variant="copper" disabled={saving}><Icon name="check" size={16} />{saving ? 'Saving...' : 'Save Preferences'}</ActionButton>
         </div>
       </form>
     </div>

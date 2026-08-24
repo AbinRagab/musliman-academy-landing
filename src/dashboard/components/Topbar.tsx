@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import { useAuth } from '../auth/AuthProvider';
+import { supabase } from '../../lib/supabaseClient';
 import type { DashboardRole } from '../types';
 import { fetchMyNotifications, markAllNotificationsRead, markNotificationRead, type InAppNotification } from '../services/notificationsService';
+import { searchDashboard, type GlobalSearchResult } from '../services/globalSearchService';
 import TopbarAccountMenu from './TopbarAccountMenu';
 
 type TopbarProps = {
@@ -11,16 +13,14 @@ type TopbarProps = {
   onOpenSidebar: () => void;
 };
 
-const searchPlaceholderByRole: Record<DashboardRole, string> = {
-  admin: 'Search students, leads, classes...',
-  teacher: 'Search my students, classes, trials...',
-  student: 'Search classes, homework, messages...',
-};
-
 export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
   const navigate = useNavigate();
   const { isConfigured, profile, role: authRole, signOut } = useAuth();
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState<GlobalSearchResult[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState('');
 
   useEffect(() => {
     if (!isConfigured || !profile) {
@@ -36,9 +36,75 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
         }
         setNotifications([]);
       });
+
+    const channel = supabase
+      ?.channel(`in-app-notifications:${profile.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'in_app_notifications',
+          filter: `recipient_id=eq.${profile.id}`,
+        },
+        () => {
+          fetchMyNotifications()
+            .then(setNotifications)
+            .catch((error) => {
+              if (import.meta.env.DEV) {
+                console.error('Notifications realtime refresh failed:', error);
+              }
+            });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      if (channel) {
+        supabase?.removeChannel(channel);
+      }
+    };
   }, [isConfigured, profile]);
 
   const unreadCount = useMemo(() => notifications.filter((notification) => !notification.read_at).length, [notifications]);
+
+  useEffect(() => {
+    const query = search.trim();
+    if (!query || query.length < 2 || !isConfigured) {
+      setSearchResults([]);
+      setSearchLoading(false);
+      setSearchError('');
+      return undefined;
+    }
+
+    let cancelled = false;
+    setSearchLoading(true);
+    const timeout = window.setTimeout(() => {
+      searchDashboard(role, query)
+        .then((results) => {
+          if (!cancelled) {
+            setSearchResults(results);
+            setSearchError('');
+          }
+        })
+        .catch((error) => {
+          if (!cancelled) {
+            setSearchResults([]);
+            setSearchError(error instanceof Error ? error.message : 'Search failed.');
+          }
+        })
+        .finally(() => {
+          if (!cancelled) {
+            setSearchLoading(false);
+          }
+        });
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [isConfigured, role, search]);
 
   async function handleSignOut() {
     await signOut();
@@ -82,13 +148,31 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
         <span>Musliman Academy</span>
         <strong>Role Based Dashboard</strong>
       </div>
-      <label className="dashboard-topbar-search">
+      <div className="dashboard-topbar-search">
         <Icon name="search" size={17} />
-        <input
-          type="search"
-          placeholder={searchPlaceholderByRole[role]}
-        />
-      </label>
+        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search dashboard" aria-label="Search dashboard" />
+        {search.trim().length >= 2 && (
+          <div className="dashboard-topbar-search__results">
+            {searchLoading && <span>Searching...</span>}
+            {!searchLoading && searchError && <span>{searchError}</span>}
+            {!searchLoading && !searchError && searchResults.length === 0 && <span>No matching records</span>}
+            {!searchLoading && !searchError && searchResults.map((result) => (
+              <button
+                key={`${result.type}-${result.id}`}
+                type="button"
+                onClick={() => {
+                  navigate(result.path);
+                  setSearch('');
+                  setSearchResults([]);
+                }}
+              >
+                <strong>{result.label}</strong>
+                <small>{result.description}</small>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
       <div className="dashboard-topbar__actions">
         <TopbarAccountMenu
           userName={profile?.full_name || 'Academy User'}

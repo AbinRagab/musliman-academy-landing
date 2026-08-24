@@ -11,7 +11,7 @@ import {
   StudentStatCard,
   StudentTabs,
 } from '../components/student/StudentPortalComponents';
-import { fetchStudentMessagesData, sendStudentMessage, type StudentMessageCategory } from '../services/studentMessagesService';
+import { fetchStudentMessagesData, markMessageRead, sendStudentMessage, type StudentMessageCategory } from '../services/studentMessagesService';
 import { type StudentMessage } from '../services/studentService';
 
 const messageTabs = ['All', 'Teacher', 'Admin', 'Payments', 'Class Updates', 'Homework'] as const;
@@ -52,11 +52,18 @@ export default function StudentMessages() {
           to={compose.to}
           subject={compose.subject}
           onClose={() => setCompose(null)}
-          onSend={(payload) => sendStudentMessage(payload).then(() => setCompose(null)).catch((sendError) => {
-            if (import.meta.env.DEV) {
-              console.error('Student message send failed:', sendError);
-            }
-          })}
+          onSend={(payload) => sendStudentMessage(payload)
+            .then(async () => {
+              setCompose(null);
+              const data = await fetchStudentMessagesData();
+              setMessages(data.messages);
+            })
+            .catch((sendError) => {
+              setError(sendError instanceof Error ? sendError.message : 'Unable to send message.');
+              if (import.meta.env.DEV) {
+                console.error('Student message send failed:', sendError);
+              }
+            })}
         />
       )}
 
@@ -85,7 +92,18 @@ export default function StudentMessages() {
           {loading && <p className="dashboard-empty-copy">Loading messages...</p>}
           {!loading && error && <p className="dashboard-empty-copy">{error}</p>}
           {!loading && !error && filteredMessages.length === 0 && <p className="dashboard-empty-copy">No messages yet.</p>}
-          {!loading && !error && filteredMessages.length > 0 && <MessageList messages={filteredMessages} selectedId={selectedMessage?.id || ''} onSelect={(message) => setSelectedId(message.id)} />}
+          {!loading && !error && filteredMessages.length > 0 && <MessageList messages={filteredMessages} selectedId={selectedMessage?.id || ''} onSelect={(message) => {
+            setSelectedId(message.id);
+            if (message.unread) {
+              markMessageRead(message.id)
+                .then(() => setMessages((current) => current.map((item) => (item.id === message.id ? { ...item, unread: false } : item))))
+                .catch((readError) => {
+                  if (import.meta.env.DEV) {
+                    console.error('Message read update failed:', readError);
+                  }
+                });
+            }
+          }} />}
         </SectionCard>
 
         <SectionCard title="Message Detail" subtitle="Full communication record">

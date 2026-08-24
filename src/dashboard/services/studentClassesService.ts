@@ -1,9 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
-import {
-  fetchActiveClassSchedulesByStudentIds,
-  getNextClass as getNextScheduledClass,
-  mapScheduleToClassSession,
-} from './classSchedulesService';
+import { materializeScheduledClasses } from './classSchedulesService';
 import {
   getUpcomingClasses,
   resolveCurrentStudentProfile,
@@ -12,7 +8,7 @@ import {
 import { resolveTeacherNamesById } from './teachersService';
 
 function normalizeClassStatus(status?: string | null): StudentClassSession['status'] {
-  if (status === 'completed' || status === 'cancelled' || status === 'rescheduled' || status === 'student_absent' || status === 'teacher_absent') {
+  if (status === 'live' || status === 'completed' || status === 'cancelled' || status === 'rescheduled' || status === 'student_absent' || status === 'teacher_absent') {
     return status;
   }
 
@@ -29,19 +25,7 @@ export async function fetchStudentClassesData() {
   }
 
   const profile = await resolveCurrentStudentProfile();
-    const scheduleRows = profile.id ? await fetchActiveClassSchedulesByStudentIds([profile.id]) : [];
-    const nextSchedule = getNextScheduledClass(scheduleRows, profile.timezone);
-    const scheduledClasses = [...scheduleRows]
-      .sort((first, second) => {
-        if (nextSchedule?.row.id === first.id) return -1;
-        if (nextSchedule?.row.id === second.id) return 1;
-        return first.day_of_week.localeCompare(second.day_of_week) || first.start_time.localeCompare(second.start_time);
-      })
-      .map((schedule) => mapScheduleToClassSession(schedule, {
-        program: profile.program,
-        level: profile.level,
-        teacher: profile.teacher,
-      }));
+  await materializeScheduledClasses();
     const { data, error } = await supabase
       .from('classes')
       .select('*')
@@ -56,8 +40,8 @@ export async function fetchStudentClassesData() {
   if (!data?.length) {
     return {
       profile,
-      classes: scheduledClasses,
-      upcomingClasses: getUpcomingClasses(scheduledClasses),
+      classes: [] as StudentClassSession[],
+      upcomingClasses: [] as StudentClassSession[],
     };
   }
 
@@ -95,12 +79,10 @@ export async function fetchStudentClassesData() {
       };
     });
 
-    const classesWithSchedules = [...scheduledClasses, ...classes];
-
   return {
     profile,
-    classes: classesWithSchedules,
-    upcomingClasses: getUpcomingClasses(classesWithSchedules),
+    classes,
+    upcomingClasses: getUpcomingClasses(classes),
   };
 }
 

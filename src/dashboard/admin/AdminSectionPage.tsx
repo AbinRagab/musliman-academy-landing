@@ -34,6 +34,31 @@ import {
 } from '../services/studentsService';
 import { fetchAdminTeacherRows } from '../services/teachersService';
 import { usePrograms } from '../services/programsService';
+import {
+  assignTrialTeacher,
+  cancelClassOccurrence,
+  convertTrialToStudent,
+  createAdminMessage,
+  fetchAcademySettingsRows,
+  fetchAdminAttendanceRows,
+  fetchAdminClassRows,
+  fetchAdminPaymentRows,
+  fetchAdminReportRows,
+  fetchAdminTrialRows,
+  markAttendanceFollowUpDone,
+  openPaymentReceipt,
+  rescheduleClassOccurrence,
+  rescheduleTrial,
+  reviewAttendance,
+  saveAcademySetting,
+  saveAdminHomework,
+  saveAdminPayment,
+  updatePaymentStatus,
+  updateTeacherAvailability,
+  updateTeacherStatus,
+  updateTrialOutcome,
+  upsertProgram,
+} from '../services/adminOperationsService';
 
 type AdminSection =
   | 'leads'
@@ -65,9 +90,18 @@ type AdminActionType =
   | 'record_payment'
   | 'mark_paid'
   | 'mark_overdue'
+  | 'mark_pending'
+  | 'mark_refunded'
+  | 'mark_cancelled'
   | 'set_homework'
   | 'reschedule'
-  | 'cancel';
+  | 'cancel'
+  | 'request_correction'
+  | 'contact_parent'
+  | 'save_setting'
+  | 'edit_program'
+  | 'deactivate_teacher'
+  | 'reactivate_teacher';
 type DetailAction = {
   label: string;
   tone?: 'primary' | 'danger' | 'secondary';
@@ -366,7 +400,7 @@ function normalizeStudents(rows: GenericRow[]) {
   });
 }
 
-function buildRows(section: AdminSection, studentRows: GenericRow[] | null, teacherRows: GenericRow[] | null): GenericRow[] {
+function buildRows(section: AdminSection, studentRows: GenericRow[] | null, teacherRows: GenericRow[] | null, operationRows: GenericRow[] | null): GenericRow[] {
   if (section === 'students') {
     return normalizeStudents(studentRows || []);
   }
@@ -375,28 +409,8 @@ function buildRows(section: AdminSection, studentRows: GenericRow[] | null, teac
     return teacherRows || [];
   }
 
-  if (section === 'free-trials') {
-    return [];
-  }
-
-  if (section === 'classes') {
-    return [];
-  }
-
-  if (section === 'attendance') {
-    return [];
-  }
-
-  if (section === 'payments') {
-    return [];
-  }
-
-  if (section === 'reports') {
-    return [];
-  }
-
-  if (section === 'settings') {
-    return [];
+  if (['free-trials', 'classes', 'attendance', 'payments', 'reports', 'settings'].includes(section)) {
+    return operationRows || [];
   }
 
   return [];
@@ -417,8 +431,8 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
         ] },
         { title: 'Readiness', items: [
           { label: 'Setup status', value: <StatusBadge label={String(row.status)} tone={statusTone(String(row.status))} /> },
-          { label: 'Payments', value: 'Package check required' },
-          { label: 'Parent contact', value: '+20 100 000 0000' },
+          { label: 'Payments', value: row.paymentStatus || 'Open payment tab for live payment records' },
+          { label: 'Parent contact', value: row.whatsapp || 'No parent contact recorded' },
         ] },
       ],
       actions: [
@@ -529,7 +543,7 @@ function getDrawerContent(section: AdminSection, row: GenericRow, notify: (messa
         ] },
       ],
       actions: [
-        { label: 'Confirm Attendance', onClick: () => notify('Attendance confirmed.', 'success') },
+        { label: 'Use Row Actions to Review', onClick: () => notify('Use the attendance row actions to confirm, request correction, or mark follow-up done.', 'info') },
         { label: 'View Student', tone: 'secondary', onClick: () => navigate('/dashboard/admin/students') },
       ],
     };
@@ -733,7 +747,7 @@ function StudentActionDrawer({
   const presentCount = (attendanceCounts.present || 0) + (attendanceCounts.late || 0);
   const attendanceRate = attendanceTotal ? `${Math.round((presentCount / attendanceTotal) * 100)}%` : '0%';
   const latestPayment = paymentRecords[0];
-  const titleByAction: Record<AdminActionType, string> = {
+  const titleByAction: Partial<Record<AdminActionType, string>> = {
     view_record: 'Student Record',
     complete_setup: 'Complete Student Setup',
     set_program: 'Set Program',
@@ -985,7 +999,7 @@ function StudentActionDrawer({
 
   return (
     <DashboardDrawer
-      title={titleByAction[action]}
+      title={titleByAction[action] || 'Admin Action'}
       subtitle={String(row.name)}
       size="lg"
       onClose={onClose}
@@ -1194,10 +1208,14 @@ function TeacherProfileDrawer({
 
 function TeacherAvailabilityDrawer({
   row,
+  saving,
   onClose,
+  onSubmit,
 }: {
   row: GenericRow;
+  saving: boolean;
   onClose: () => void;
+  onSubmit: (formData: FormData) => void;
 }) {
   const formId = 'teacher-availability-form';
 
@@ -1210,12 +1228,12 @@ function TeacherAvailabilityDrawer({
       onClose={onClose}
       footer={(
         <>
-          <ActionButton type="submit" form={formId} variant="copper">Save Availability</ActionButton>
+          <ActionButton type="submit" form={formId} variant="copper" disabled={saving}>{saving ? 'Saving' : 'Save Availability'}</ActionButton>
           <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
         </>
       )}
     >
-      <form id={formId} className="admin-availability-form" onSubmit={(event) => { event.preventDefault(); onClose(); }}>
+      <form id={formId} className="admin-availability-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
         <section className="availability-editor-section">
           <div>
             <span className="dashboard-eyebrow">TEACHER</span>
@@ -1243,6 +1261,131 @@ function TeacherAvailabilityDrawer({
             <AvailabilityDayCard key={day} day={day} defaultAvailable={index < 5} />
           ))}
         </section>
+      </form>
+    </DashboardDrawer>
+  );
+}
+
+function AdminOperationDrawer({
+  section,
+  action,
+  row,
+  teachers,
+  programs,
+  saving,
+  activeSettingsTab,
+  onClose,
+  onSubmit,
+}: {
+  section: AdminSection;
+  action: AdminActionType;
+  row: GenericRow;
+  teachers: StudentActionTeacher[];
+  programs: StudentProgramOption[];
+  saving: boolean;
+  activeSettingsTab: string;
+  onClose: () => void;
+  onSubmit: (formData: FormData) => void;
+}) {
+  const formId = `admin-operation-${section}-${action}`;
+  const titleByAction: Partial<Record<AdminActionType, string>> = {
+    assign_teacher: 'Assign Teacher',
+    reschedule: section === 'free-trials' ? 'Reschedule Trial' : 'Reschedule Class',
+    set_homework: 'Set/Edit Homework',
+    cancel: 'Cancel Class',
+    request_correction: 'Request Attendance Correction',
+    contact_parent: 'Contact Parent / Student',
+    record_payment: row.id ? 'Edit Payment' : 'Record Payment',
+    save_setting: `Save ${activeSettingsTab}`,
+    edit_program: row.id ? 'Edit Program' : 'Create Program',
+  };
+
+  return (
+    <DashboardDrawer
+      title={titleByAction[action] || 'Admin Action'}
+      subtitle={String(row.student || row.className || row.area || row.name || 'Operational record')}
+      size="lg"
+      onClose={onClose}
+      footer={(
+        <>
+          <ActionButton type="submit" form={formId} variant={action === 'cancel' ? 'danger' : 'copper'} disabled={saving}>{saving ? 'Saving' : 'Save'}</ActionButton>
+          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+        </>
+      )}
+    >
+      <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
+        {action === 'assign_teacher' && (
+          <label><span>Teacher</span><select name="teacherId" defaultValue={String(row.teacherId || '')} required><option value="">Select teacher</option>{teachers.map((teacher) => <option key={teacher.teacherId} value={teacher.teacherId}>{teacher.full_name}</option>)}</select></label>
+        )}
+        {action === 'reschedule' && section === 'free-trials' && (
+          <>
+            <label><span>Trial date</span><input name="trialDate" type="date" defaultValue={String(row.trialDate || '')} required /></label>
+            <label><span>Trial time</span><input name="trialTime" type="time" defaultValue={String(row.trialTime || '')} required /></label>
+            <label><span>Meeting link</span><input name="meetingLink" type="url" defaultValue={String(row.meetingLink || '')} /></label>
+          </>
+        )}
+        {action === 'reschedule' && section === 'classes' && (
+          <>
+            <label><span>Class date</span><input name="classDate" type="date" defaultValue={String(row.classDate || '')} required /></label>
+            <label><span>Start time</span><input name="startTime" type="time" defaultValue={String(row.startTime || '')} required /></label>
+            <label><span>Duration</span><input name="durationMinutes" type="number" min="15" step="15" defaultValue={String(row.durationMinutes || 30)} required /></label>
+            <label><span>Meeting link</span><input name="meetingLink" type="url" defaultValue={String(row.meetingLink || '')} /></label>
+            <label><span>Reason</span><textarea name="reason" rows={3} /></label>
+          </>
+        )}
+        {action === 'set_homework' && (
+          <>
+            <label><span>Title</span><input name="title" defaultValue={String(row.homeworkSet && row.homeworkSet !== 'Not set' ? row.homeworkSet : 'Homework assignment')} required /></label>
+            <label><span>Instructions</span><textarea name="instructions" rows={5} defaultValue={String(row.homeworkInstructions || row.homework || '')} required /></label>
+            <label><span>Due date</span><input name="dueAt" type="datetime-local" /></label>
+          </>
+        )}
+        {action === 'cancel' && (
+          <label><span>Cancellation reason</span><textarea name="reason" rows={4} required defaultValue={String(row.cancellationReason || '')} /></label>
+        )}
+        {action === 'request_correction' && (
+          <label><span>Correction note</span><textarea name="note" rows={4} required /></label>
+        )}
+        {action === 'contact_parent' && (
+          <>
+            <label><span>Subject</span><input name="subject" defaultValue={`Follow-up for ${String(row.student || row.name || 'academy record')}`} required /></label>
+            <label><span>Message</span><textarea name="body" rows={5} required /></label>
+          </>
+        )}
+        {action === 'record_payment' && (
+          <>
+            <label><span>Student ID</span><input name="studentId" defaultValue={String(row.studentId || '')} required /></label>
+            <label><span>Program</span><select name="programId" defaultValue={String(row.programId || '')}><option value="">No program</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}</select></label>
+            <label><span>Package ID</span><input name="packageId" defaultValue={String(row.packageId || '')} /></label>
+            <label><span>Currency</span><input name="currency" defaultValue={String(row.currency || 'USD')} maxLength={3} required /></label>
+            <label><span>Amount</span><input name="amount" type="number" min="0" step="0.01" defaultValue={String(row.amount || '')} required /></label>
+            <label><span>Status</span><select name="status" defaultValue={String(row.status || 'pending')}><option value="paid">Paid</option><option value="pending">Pending</option><option value="overdue">Overdue</option><option value="refunded">Refunded</option><option value="cancelled">Cancelled</option></select></label>
+            <label><span>Payment method</span><input name="paymentMethod" defaultValue={String(row.paymentMethod || '')} /></label>
+            <label><span>Payment date</span><input name="paidDate" type="date" defaultValue={String(row.paidDate || '')} /></label>
+            <label><span>Next due date</span><input name="nextDue" type="date" defaultValue={String(row.nextDue || '')} /></label>
+            <label><span>Sessions included</span><input name="sessionsIncluded" type="number" min="0" defaultValue={String(row.sessionsIncluded || 0)} /></label>
+            <label><span>Sessions remaining</span><input name="remainingSessions" type="number" min="0" defaultValue={String(row.remainingSessions || row.sessionsIncluded || 0)} /></label>
+            <label><span>Teacher cost</span><input name="teacherCost" type="number" min="0" step="0.01" defaultValue={String(row.teacherCost || 0)} /></label>
+            <label><span>Net revenue</span><input name="netRevenue" type="number" min="0" step="0.01" defaultValue={String(row.netRevenue || 0)} /></label>
+            <label><span>Receipt file path</span><input name="receiptFilePath" defaultValue={String(row.receiptFilePath || '')} /></label>
+            <label><span>External receipt URL</span><input name="receiptUrl" type="url" defaultValue={String(row.receiptUrl || '')} /></label>
+            <label><span>Invoice URL</span><input name="invoiceUrl" type="url" defaultValue={String(row.invoiceUrl || '')} /></label>
+            <label><span>Notes</span><textarea name="notes" rows={3} defaultValue={String(row.notes || '')} /></label>
+          </>
+        )}
+        {action === 'save_setting' && (
+          <>
+            <label><span>Setting key</span><input name="settingKey" defaultValue={activeSettingsTab.toLowerCase().replace(/[^a-z0-9]+/g, '_')} required /></label>
+            <label><span>Value JSON</span><textarea name="settingValue" rows={7} defaultValue={String(row.value || '{\n  "enabled": true\n}')} required /></label>
+          </>
+        )}
+        {action === 'edit_program' && (
+          <>
+            <label><span>Program name</span><input name="programName" defaultValue={String(row.name || row.area || '')} required /></label>
+            <label><span>Description</span><textarea name="description" rows={3} defaultValue={String(row.description || '')} /></label>
+            <label><span>Status</span><select name="status" defaultValue={String(row.status || 'active')}><option value="active">Active</option><option value="inactive">Inactive</option></select></label>
+          </>
+        )}
       </form>
     </DashboardDrawer>
   );
@@ -1307,6 +1450,8 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
   const page = pageCopy[section];
   const [studentRows, setStudentRows] = useState<GenericRow[] | null>(null);
   const [teacherRows, setTeacherRows] = useState<GenericRow[] | null>(null);
+  const [operationRows, setOperationRows] = useState<GenericRow[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<GenericRow | null>(null);
   const [activeAction, setActiveAction] = useState<AdminActionType | null>(null);
   const [teachers, setTeachers] = useState<StudentActionTeacher[]>([]);
@@ -1348,12 +1493,42 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       });
   }
 
-  useEffect(() => {
-    if (section !== 'students') {
+  async function loadOperationRows(currentSection = section) {
+    if (!['free-trials', 'classes', 'attendance', 'payments', 'reports', 'settings'].includes(currentSection)) {
       return;
     }
 
-    loadStudentRows();
+    setLoadError(null);
+
+    try {
+      const loaders: Partial<Record<AdminSection, () => Promise<GenericRow[]>>> = {
+        'free-trials': async () => fetchAdminTrialRows(),
+        classes: async () => fetchAdminClassRows(),
+        attendance: async () => fetchAdminAttendanceRows(),
+        payments: async () => fetchAdminPaymentRows(),
+        reports: async () => fetchAdminReportRows(),
+        settings: async () => fetchAcademySettingsRows(),
+      };
+      const rows = await loaders[currentSection]?.();
+      setOperationRows(rows || []);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to load admin records.';
+      setOperationRows([]);
+      setLoadError(message);
+      if (import.meta.env.DEV) {
+        console.error(`Admin ${currentSection} load failed:`, error);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (!['students', 'free-trials', 'classes', 'payments', 'settings'].includes(section)) {
+      return;
+    }
+
+    if (section === 'students') {
+      loadStudentRows();
+    }
     fetchStudentActionLookups()
       .then((lookups) => {
         setTeachers(lookups.teachers);
@@ -1376,7 +1551,14 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
     loadTeacherRows();
   }, [section]);
 
-  const rows = useMemo(() => buildRows(section, studentRows, teacherRows), [section, studentRows, teacherRows]);
+  useEffect(() => {
+    setSelectedRow(null);
+    setActiveAction(null);
+    setStatusFilter('all');
+    loadOperationRows(section);
+  }, [section]);
+
+  const rows = useMemo(() => buildRows(section, studentRows, teacherRows, operationRows), [section, studentRows, teacherRows, operationRows]);
   const stats = useMemo(() => buildStats(section, rows), [rows, section]);
 
   useEffect(() => {
@@ -1591,6 +1773,202 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
     }
   }
 
+  function buildAvailabilityPayload(formData: FormData) {
+    return Object.fromEntries(availabilityDays.map((day) => {
+      const key = day.toLowerCase();
+      return [key, {
+        available: formData.get(`${key}Available`) === 'on',
+        start: String(formData.get(`${key}Start`) || ''),
+        end: String(formData.get(`${key}End`) || ''),
+        notes: String(formData.get(`${key}Notes`) || ''),
+      }];
+    }));
+  }
+
+  async function handleAdminActionSubmit(formData: FormData) {
+    if (!selectedRow || !activeAction) {
+      return;
+    }
+
+    setSavingAction(true);
+
+    try {
+      if (section === 'teachers' && activeAction === 'update_availability') {
+        await updateTeacherAvailability(String(selectedRow.id), buildAvailabilityPayload(formData), String(formData.get('timezone') || 'Africa/Cairo'));
+        notify('Teacher availability updated.', 'success');
+        await loadTeacherRows();
+      }
+
+      if (section === 'free-trials' && activeAction === 'assign_teacher') {
+        await assignTrialTeacher(String(selectedRow.id), String(formData.get('teacherId') || ''));
+        notify('Trial teacher assigned.', 'success');
+        await loadOperationRows(section);
+      }
+
+      if (section === 'free-trials' && activeAction === 'reschedule') {
+        await rescheduleTrial(String(selectedRow.id), {
+          trialDate: String(formData.get('trialDate') || ''),
+          trialTime: String(formData.get('trialTime') || ''),
+          meetingLink: String(formData.get('meetingLink') || ''),
+        });
+        notify('Trial rescheduled.', 'success');
+        await loadOperationRows(section);
+      }
+
+      if (section === 'classes' && activeAction === 'reschedule') {
+        await rescheduleClassOccurrence(String(selectedRow.id), {
+          classDate: String(formData.get('classDate') || ''),
+          startTime: String(formData.get('startTime') || ''),
+          durationMinutes: Number(formData.get('durationMinutes') || 30),
+          meetingLink: String(formData.get('meetingLink') || ''),
+          reason: String(formData.get('reason') || ''),
+        });
+        notify('Class occurrence rescheduled.', 'success');
+        await loadOperationRows(section);
+      }
+
+      if (section === 'classes' && activeAction === 'cancel') {
+        await cancelClassOccurrence(String(selectedRow.id), String(formData.get('reason') || ''));
+        notify('Class cancelled.', 'success');
+        await loadOperationRows(section);
+      }
+
+      if (section === 'classes' && activeAction === 'set_homework') {
+        await saveAdminHomework(selectedRow, {
+          title: String(formData.get('title') || ''),
+          instructions: String(formData.get('instructions') || ''),
+          dueAt: String(formData.get('dueAt') || ''),
+        });
+        notify('Homework assignment saved.', 'success');
+        await loadOperationRows(section);
+      }
+
+      if (section === 'attendance' && activeAction === 'request_correction') {
+        await reviewAttendance(String(selectedRow.id), 'correction_requested', String(formData.get('note') || ''));
+        notify('Attendance correction requested.', 'success');
+        await loadOperationRows(section);
+      }
+
+      if (section === 'attendance' && activeAction === 'contact_parent') {
+        await createAdminMessage({
+          subject: String(formData.get('subject') || ''),
+          body: String(formData.get('body') || ''),
+          relatedStudentId: String(selectedRow.studentId || '') || null,
+          relatedClassId: String(selectedRow.classId || '') || null,
+          category: 'attendance_follow_up',
+        });
+        notify('Follow-up message created.', 'success');
+      }
+
+      if (section === 'payments' && activeAction === 'record_payment') {
+        await saveAdminPayment({
+          ...selectedRow,
+          studentId: String(formData.get('studentId') || ''),
+          programId: String(formData.get('programId') || ''),
+          packageId: String(formData.get('packageId') || ''),
+          currency: String(formData.get('currency') || 'USD'),
+          amount: String(formData.get('amount') || ''),
+          status: String(formData.get('status') || 'pending'),
+          paymentMethod: String(formData.get('paymentMethod') || ''),
+          paidDate: String(formData.get('paidDate') || ''),
+          nextDue: String(formData.get('nextDue') || ''),
+          sessionsIncluded: Number(formData.get('sessionsIncluded') || 0),
+          remainingSessions: Number(formData.get('remainingSessions') || 0),
+          teacherCost: Number(formData.get('teacherCost') || 0),
+          netRevenue: Number(formData.get('netRevenue') || 0),
+          receiptFilePath: String(formData.get('receiptFilePath') || ''),
+          receiptUrl: String(formData.get('receiptUrl') || ''),
+          invoiceUrl: String(formData.get('invoiceUrl') || ''),
+          notes: String(formData.get('notes') || ''),
+        });
+        notify('Payment saved.', 'success');
+        await loadOperationRows(section);
+      }
+
+      if (section === 'settings' && activeAction === 'save_setting') {
+        const valueText = String(formData.get('settingValue') || '{}');
+        const value = JSON.parse(valueText) as Record<string, unknown>;
+        await saveAcademySetting(String(formData.get('settingKey') || ''), value);
+        notify('Academy setting saved.', 'success');
+        await loadOperationRows(section);
+      }
+
+      if (section === 'settings' && activeAction === 'edit_program') {
+        await upsertProgram({
+          id: isUuid(String(selectedRow.id || '')) ? String(selectedRow.id) : undefined,
+          name: String(formData.get('programName') || ''),
+          description: String(formData.get('description') || ''),
+          status: String(formData.get('status') || 'active'),
+        });
+        notify('Program saved.', 'success');
+        await loadOperationRows(section);
+      }
+
+      closeAction();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to save. Please try again.';
+      notify(message, 'error');
+      if (import.meta.env.DEV) {
+        console.error('Admin operation failed:', error);
+      }
+    } finally {
+      setSavingAction(false);
+    }
+  }
+
+  async function runImmediateAction(action: AdminActionType, row: GenericRow) {
+    setSavingAction(true);
+    try {
+      if (section === 'free-trials' && action === 'mark_paid') {
+        await updateTrialOutcome(String(row.id), 'completed');
+        notify('Trial marked completed.', 'success');
+        await loadOperationRows(section);
+      } else if (section === 'free-trials' && action === 'mark_overdue') {
+        await updateTrialOutcome(String(row.id), 'no_show');
+        notify('Trial marked no-show.', 'success');
+        await loadOperationRows(section);
+      } else if (section === 'free-trials' && action === 'view_record') {
+        await convertTrialToStudent(String(row.id));
+        notify('Trial converted to student.', 'success');
+        await loadOperationRows(section);
+        await loadStudentRows();
+      } else if (section === 'attendance' && action === 'mark_paid') {
+        await reviewAttendance(String(row.id), 'confirmed');
+        notify('Attendance confirmed.', 'success');
+        await loadOperationRows(section);
+      } else if (section === 'attendance' && action === 'mark_pending') {
+        await markAttendanceFollowUpDone(String(row.id));
+        notify('Attendance follow-up marked done.', 'success');
+        await loadOperationRows(section);
+      } else if (section === 'payments' && ['mark_paid', 'mark_pending', 'mark_overdue', 'mark_refunded', 'mark_cancelled'].includes(action)) {
+        const statusByAction: Partial<Record<AdminActionType, string>> = {
+          mark_paid: 'paid',
+          mark_pending: 'pending',
+          mark_overdue: 'overdue',
+          mark_refunded: 'refunded',
+          mark_cancelled: 'cancelled',
+        };
+        await updatePaymentStatus(String(row.id), statusByAction[action] || 'pending');
+        notify('Payment status updated.', 'success');
+        await loadOperationRows(section);
+      } else if (section === 'payments' && action === 'view_record') {
+        const url = await openPaymentReceipt(row);
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else if (section === 'teachers' && (action === 'deactivate_teacher' || action === 'reactivate_teacher')) {
+        await updateTeacherStatus(String(row.id), action === 'reactivate_teacher' ? 'active' : 'inactive');
+        notify(action === 'reactivate_teacher' ? 'Teacher reactivated.' : 'Teacher deactivated and future work handled.', 'success');
+        await loadTeacherRows();
+      }
+    } catch (error) {
+      notify(error instanceof Error ? error.message : 'Action failed.', 'error');
+      if (import.meta.env.DEV) {
+        console.error('Immediate admin action failed:', error);
+      }
+    } finally {
+      setSavingAction(false);
+    }
+  }
+
   const primaryAction = (row: GenericRow): DashboardPrimaryAction => {
     const openDrawer = () => setSelectedRow(row);
 
@@ -1648,51 +2026,58 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         { label: 'Update Availability', onClick: () => openAction('update_availability', row) },
         { label: 'Assign Students', onClick: () => navigate('/dashboard/admin/students') },
         { label: 'View Schedule', onClick: () => navigate('/dashboard/admin/classes') },
-        { label: 'Deactivate Teacher', onClick: openDrawer, disabled: String(row.status) !== 'active', danger: true },
+        { label: 'View Trials', onClick: () => navigate('/dashboard/admin/free-trials') },
+        { label: 'Deactivate Teacher', onClick: () => runImmediateAction('deactivate_teacher', row), disabled: String(row.status) !== 'active' || Boolean(savingAction), danger: true },
+        { label: 'Reactivate Teacher', onClick: () => runImmediateAction('reactivate_teacher', row), disabled: String(row.status) === 'active' || Boolean(savingAction) },
       ];
     }
 
     if (section === 'free-trials') {
       return [
-        { label: 'Assign Teacher', onClick: openDrawer },
-        { label: 'Reschedule Trial', onClick: openDrawer },
-        { label: 'Open Meeting', onClick: openDrawer },
-        { label: 'Mark Completed', onClick: openDrawer },
-        { label: 'Mark No Show', onClick: openDrawer, danger: true },
+        { label: 'Assign Teacher', onClick: () => openAction('assign_teacher', row) },
+        { label: 'Reschedule Trial', onClick: () => openAction('reschedule', row) },
+        { label: 'Open Meeting', onClick: () => row.meetingLink ? window.open(String(row.meetingLink), '_blank', 'noopener,noreferrer') : notify('Meeting link is not available.', 'info') },
+        { label: 'Mark Completed', onClick: () => runImmediateAction('mark_paid', row), disabled: Boolean(savingAction) },
+        { label: 'Mark No Show', onClick: () => runImmediateAction('mark_overdue', row), disabled: Boolean(savingAction), danger: true },
         { label: 'View Feedback', onClick: openDrawer },
-        { label: 'Convert to Student', onClick: openDrawer },
+        { label: 'Convert to Student', onClick: () => runImmediateAction('view_record', row), disabled: Boolean(savingAction) },
       ];
     }
 
     if (section === 'classes') {
       return [
-        { label: 'Open Meeting', onClick: openDrawer },
-        { label: 'View Attendance', onClick: openDrawer },
+        { label: 'Open Meeting', onClick: () => row.meetingLink ? window.open(String(row.meetingLink), '_blank', 'noopener,noreferrer') : notify('Meeting link is not available.', 'info') },
+        { label: 'View Attendance', onClick: () => navigate('/dashboard/admin/attendance') },
         { label: 'View Teacher Report', onClick: openDrawer },
-        { label: 'Set Homework', onClick: openDrawer },
-        { label: 'Reschedule Class', onClick: openDrawer },
-        { label: 'Cancel Class', onClick: openDrawer, danger: true },
+        { label: 'Set Homework', onClick: () => openAction('set_homework', row) },
+        { label: 'Reschedule Class', onClick: () => openAction('reschedule', row) },
+        { label: 'Cancel Class', onClick: () => openAction('cancel', row), danger: true },
       ];
     }
 
     if (section === 'attendance') {
       return [
-        { label: 'Confirm Attendance', onClick: openDrawer },
-        { label: 'Request Correction', onClick: openDrawer },
-        { label: 'Contact Parent', onClick: openDrawer },
-        { label: 'Mark Follow-up Done', onClick: openDrawer },
+        { label: 'Confirm Attendance', onClick: () => runImmediateAction('mark_paid', row), disabled: Boolean(savingAction) },
+        { label: 'Request Correction', onClick: () => openAction('request_correction', row) },
+        { label: 'Contact Parent', onClick: () => openAction('contact_parent', row) },
+        { label: 'Open Related Class', onClick: () => navigate('/dashboard/admin/classes') },
+        { label: 'Open Student', onClick: () => row.studentId ? navigate(`/dashboard/admin/students/${row.studentId}`) : navigate('/dashboard/admin/students') },
+        { label: 'Open Teacher', onClick: () => navigate('/dashboard/admin/teachers') },
+        { label: 'Mark Follow-up Done', onClick: () => runImmediateAction('mark_pending', row), disabled: Boolean(savingAction) },
       ];
     }
 
     if (section === 'payments') {
       return [
-        { label: 'Create Invoice', onClick: openDrawer, disabled: true },
-        { label: 'View Invoice', onClick: openDrawer },
-        { label: 'Download Receipt', onClick: openDrawer, disabled: row.status !== 'paid' },
-        { label: 'Contact Parent', onClick: openDrawer },
-        { label: 'Mark as Paid', onClick: openDrawer, disabled: row.status === 'paid' },
-        { label: 'Upload Receipt', onClick: openDrawer, disabled: true },
-        { label: 'Mark as Overdue', onClick: openDrawer, danger: true },
+        { label: 'Edit Payment', onClick: () => openAction('record_payment', row) },
+        { label: 'View Invoice', onClick: () => row.invoiceUrl ? window.open(String(row.invoiceUrl), '_blank', 'noopener,noreferrer') : notify('No invoice is attached. Use Request/Create Invoice only after invoice support is configured.', 'info') },
+        { label: 'Download Receipt', onClick: () => runImmediateAction('view_record', row), disabled: !row.receiptFilePath && !row.receiptUrl },
+        { label: 'Contact Parent', onClick: () => openAction('contact_parent', row) },
+        { label: 'Mark as Paid', onClick: () => runImmediateAction('mark_paid', row), disabled: row.status === 'paid' || Boolean(savingAction) },
+        { label: 'Mark Pending', onClick: () => runImmediateAction('mark_pending', row), disabled: row.status === 'pending' || Boolean(savingAction) },
+        { label: 'Mark as Overdue', onClick: () => runImmediateAction('mark_overdue', row), disabled: Boolean(savingAction), danger: true },
+        { label: 'Refund', onClick: () => runImmediateAction('mark_refunded', row), disabled: Boolean(savingAction), danger: true },
+        { label: 'Cancel', onClick: () => runImmediateAction('mark_cancelled', row), disabled: Boolean(savingAction), danger: true },
       ];
     }
 
@@ -1706,6 +2091,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
     return [
       { label: 'Configure Notifications', onClick: () => setActiveSettingsTab('Notifications') },
       { label: 'Configure Timezone', onClick: () => setActiveSettingsTab('Schedule Defaults') },
+      { label: 'Save Setting JSON', onClick: () => openAction('save_setting', row) },
     ];
   };
 
@@ -1822,7 +2208,8 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         subtitle={page.subtitle}
         action={(
           <div className="dashboard-page-actions">
-            {section === 'settings' && <ActionButton variant="copper" onClick={() => notify('Settings saved for this session.', 'success')}>Save Settings</ActionButton>}
+            {section === 'payments' && <ActionButton variant="copper" onClick={() => { setSelectedRow({ id: '', status: 'pending', currency: 'USD' }); setActiveAction('record_payment'); }}>Record Payment</ActionButton>}
+            {section === 'settings' && <ActionButton variant="copper" onClick={() => { setSelectedRow({ id: '', area: activeSettingsTab, value: '{\n  "enabled": true\n}' }); setActiveAction(activeSettingsTab === 'Programs' ? 'edit_program' : 'save_setting'); }}>{activeSettingsTab === 'Programs' ? 'Add Program' : 'Save Setting'}</ActionButton>}
             <ActionButton variant="secondary" onClick={() => exportRows(section, visibleRows)}>
               <Icon name="download" size={18} />
               {page.exportLabel}
@@ -1851,22 +2238,17 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         </div>
       )}
 
+      {loadError && <p className="dashboard-inline-error">{loadError}</p>}
+
       {section === 'settings' && activeSettingsTab !== 'Roles & Permissions' ? (
         <SectionCard
           title={activeSettingsTab}
-          subtitle="Configure academy defaults from the secure admin settings workflow."
-          action={<ActionButton variant="copper" onClick={() => notify(`${activeSettingsTab} settings saved.`, 'success')}>Save Settings</ActionButton>}
+          subtitle="Persist non-secret academy defaults. Secrets remain in Supabase Edge Function settings."
+          action={<ActionButton variant="copper" onClick={() => { setSelectedRow({ id: '', area: activeSettingsTab, value: '{\n  "enabled": true\n}' }); setActiveAction(activeSettingsTab === 'Programs' ? 'edit_program' : 'save_setting'); }}>{activeSettingsTab === 'Programs' ? 'Add Program' : 'Save Setting'}</ActionButton>}
         >
           <div className="admin-settings-panel">
-            <label><span>Primary setting</span><input defaultValue={activeSettingsTab === 'Academy Info' ? 'Musliman Academy' : `${activeSettingsTab} default`} /></label>
-            <label><span>Operational owner</span><select defaultValue="admin"><option value="admin">Admin Team</option><option value="academic">Academic Manager</option><option value="finance">Finance</option></select></label>
-            <label><span>Status</span><select defaultValue="enabled"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></label>
-            <div className="dashboard-form-actions">
-              {activeSettingsTab === 'Programs' && <ActionButton variant="secondary" disabled>Add Program requires database setup</ActionButton>}
-              {activeSettingsTab === 'Notifications' && <ActionButton variant="secondary" disabled>Notification templates require setup</ActionButton>}
-              {activeSettingsTab === 'Integrations' && <ActionButton variant="secondary" disabled>WhatsApp/Email integration requires setup</ActionButton>}
-              {activeSettingsTab === 'Schedule Defaults' && <ActionButton variant="secondary" disabled>Timezone defaults require setup</ActionButton>}
-            </div>
+            <p className="dashboard-empty-copy">Use the action button to save {activeSettingsTab === 'Programs' ? 'program records' : 'non-secret JSON configuration'} to Supabase.</p>
+            {activeSettingsTab === 'Integrations' && <p className="dashboard-inline-error">Email and WhatsApp secrets are intentionally not stored here. Configure them as Edge Function secrets.</p>}
           </div>
         </SectionCard>
       ) : (
@@ -1935,7 +2317,23 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
       {selectedRow && activeAction === 'update_availability' && section === 'teachers' && (
         <TeacherAvailabilityDrawer
           row={selectedRow}
+          saving={savingAction}
           onClose={closeAction}
+          onSubmit={handleAdminActionSubmit}
+        />
+      )}
+
+      {selectedRow && activeAction && section !== 'students' && !(section === 'teachers' && ['view_details', 'update_availability'].includes(activeAction)) && (
+        <AdminOperationDrawer
+          section={section}
+          action={activeAction}
+          row={selectedRow}
+          teachers={teachers}
+          programs={programs}
+          saving={savingAction}
+          activeSettingsTab={activeSettingsTab}
+          onClose={closeAction}
+          onSubmit={handleAdminActionSubmit}
         />
       )}
 

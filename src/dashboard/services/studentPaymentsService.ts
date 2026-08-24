@@ -1,5 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import { resolveCurrentStudentProfile, type StudentPayment } from './studentService';
+import { getSignedFileUrl, PAYMENT_DOCUMENTS_BUCKET } from './storageService';
 
 type PaymentPackageRow = {
   name?: string | null;
@@ -19,6 +20,8 @@ type StudentPaymentRow = {
   sessions_remaining?: number | null;
   receipt_url?: string | null;
   receipt_file_path?: string | null;
+  invoice_url?: string | null;
+  invoice_file_path?: string | null;
   notes?: string | null;
   created_at?: string | null;
   payment_packages?: PaymentPackageRow | PaymentPackageRow[] | null;
@@ -37,7 +40,7 @@ export async function fetchStudentPaymentsData() {
 
   const { data, error } = await supabase
     .from('payments')
-    .select('id, program_id, currency, amount, payment_method, payment_date, next_due_date, status, sessions_included, sessions_remaining, receipt_url, receipt_file_path, notes, created_at, payment_packages:package_id(name, sessions_count)')
+    .select('id, program_id, currency, amount, payment_method, payment_date, next_due_date, status, sessions_included, sessions_remaining, receipt_url, receipt_file_path, invoice_url, invoice_file_path, notes, created_at, payment_packages:package_id(name, sessions_count)')
     .eq('student_id', profile.id)
     .order('next_due_date', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false });
@@ -80,10 +83,22 @@ export function mapStudentPayment(payment: StudentPaymentRow, programById = new 
     currency,
     method: payment.payment_method || 'Not provided',
     paymentDate: formatDate(payment.payment_date),
-    invoiceUrl: null,
+    invoiceUrl: payment.invoice_url || null,
     receiptUrl: payment.receipt_url || null,
     receiptFilePath: payment.receipt_file_path || null,
   };
+}
+
+export async function getStudentPaymentReceiptUrl(payment: StudentPayment) {
+  if (payment.receiptFilePath) {
+    return getSignedFileUrl(PAYMENT_DOCUMENTS_BUCKET, payment.receiptFilePath);
+  }
+
+  if (payment.receiptUrl) {
+    return payment.receiptUrl;
+  }
+
+  throw new Error('No receipt is attached to this payment.');
 }
 
 function formatMoney(amount: number, currency: string) {

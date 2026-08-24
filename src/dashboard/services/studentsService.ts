@@ -17,6 +17,7 @@ import type {
   StudentProgramOption,
   StudentRecord,
   StudentRecordField,
+  StudentRecordSection,
   StudentRecordTab,
   StudentSchedulePayload,
 } from './students/studentTypes';
@@ -851,37 +852,114 @@ export async function fetchStudentRecord(studentId?: string | null) {
   const client = requireSupabase();
   const { data, error } = await client
     .from('students')
-    .select('id, student_name, parent_name, whatsapp, country, age, program_id, level, assigned_teacher_id, schedule_notes, start_date, status')
+    .select('id, profile_id, student_name, parent_name, whatsapp, country, age, program_id, level, assigned_teacher_id, schedule_notes, start_date, status, programs:program_id(id, name), profiles:profile_id(id, email, phone, timezone, preferred_language, preferred_class_time, notification_preferences, parent_communication_preferences)')
     .eq('id', studentId)
     .maybeSingle();
 
-  if (error || !data) {
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
     return emptyStudentRecord;
   }
+
+  const [teacherNames, classes, attendance, homeworkAssignments, evaluations, payments, messages] = await Promise.all([
+    data.assigned_teacher_id ? resolveTeacherNamesById([data.assigned_teacher_id]) : Promise.resolve(new Map<string, string>()),
+    client.from('classes').select('id, class_date, start_time, status, lesson_covered, homework, next_lesson_plan').eq('student_id', studentId).order('class_date', { ascending: false }).limit(20),
+    client.from('attendance').select('id, status, notes, marked_at').eq('student_id', studentId).order('marked_at', { ascending: false }).limit(20),
+    client.from('homework_assignments').select('id, title, status, due_at').eq('student_id', studentId).order('created_at', { ascending: false }).limit(20),
+    client.from('evaluations').select('id, recitation_rating, tajweed_rating, understanding_rating, behavior_rating, progress_feedback, teacher_notes, created_at').eq('student_id', studentId).order('created_at', { ascending: false }).limit(20),
+    client.from('payments').select('id, currency, amount, status, sessions_included, sessions_remaining, next_due_date, teacher_cost, net_revenue, notes').eq('student_id', studentId).order('created_at', { ascending: false }).limit(20),
+    data.profile_id ? client.from('messages').select('id, subject, body, read_at, created_at').or(`sender_id.eq.${data.profile_id},receiver_id.eq.${data.profile_id}`).order('created_at', { ascending: false }).limit(10) : Promise.resolve({ data: [] }),
+  ]);
+
+  const classRows = classes.data || [];
+  const attendanceRows = attendance.data || [];
+  const evaluationRows = evaluations.data || [];
+  const paymentRows = payments.data || [];
+  const activeAttendance = attendanceRows.filter((record) => !['excused', 'cancelled'].includes(String(record.status)));
+  const presentCount = activeAttendance.filter((record) => record.status === 'present' || record.status === 'late').length;
+  const attendanceRate = activeAttendance.length ? `${Math.round((presentCount / activeAttendance.length) * 100)}%` : '0%';
+  const completedClasses = classRows.filter((record) => record.status === 'completed');
+  const ratingValues = evaluationRows.flatMap((evaluation) => [
+    evaluation.recitation_rating,
+    evaluation.tajweed_rating,
+    evaluation.understanding_rating,
+    evaluation.behavior_rating,
+  ]).map(Number).filter((value) => Number.isFinite(value));
+  const progressPercentage = ratingValues.length ? `${Math.round((ratingValues.reduce((sum, value) => sum + value, 0) / (ratingValues.length * 5)) * 100)}%` : '0%';
+  const nextClass = classRows.find((record) => ['scheduled', 'live', 'rescheduled'].includes(String(record.status)));
+  const latestPayment = paymentRows[0];
+  const latestEvaluation = evaluationRows[0];
+  const program = Array.isArray(data.programs) ? data.programs[0] : data.programs;
+  const profile = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles;
+  const teacherName = data.assigned_teacher_id ? teacherNames.get(data.assigned_teacher_id) || 'No teacher assigned' : 'No teacher assigned';
+  const valueByKey: Record<string, string> = {
+    student_name: data.student_name || '',
+    parent_name: data.parent_name || '',
+    parent_whatsapp: data.whatsapp || profile?.phone || '',
+    country: data.country || '',
+    age: data.age || '',
+    current_program: program?.name || 'Program not assigned',
+    approved_level: data.level || 'Level not set',
+    assigned_teacher: teacherName,
+    schedule_days: data.schedule_notes || '',
+    class_time: nextClass?.start_time || '',
+    timezone: profile?.timezone || 'Africa/Cairo',
+    meeting_link: '',
+    trial_status: 'See trials tab',
+    trial_feedback: latestEvaluation?.teacher_notes || '',
+    recommended_level: data.level || '',
+    class_attendance: `${completedClasses.length} completed classes`,
+    class_report: classRows.find((record) => record.lesson_covered)?.lesson_covered || 'No class report recorded',
+    next_lesson_plan: classRows.find((record) => record.next_lesson_plan)?.next_lesson_plan || '',
+    attendance: attendanceRows[0]?.status || 'No attendance records',
+    attendance_note: attendanceRows[0]?.notes || '',
+    attendance_rate: attendanceRate,
+    homework: homeworkAssignments.data?.[0]?.title || 'No homework assigned',
+    homework_status: homeworkAssignments.data?.[0]?.status || 'No homework status',
+    recitation_rating: String(latestEvaluation?.recitation_rating || ''),
+    tajweed_rating: String(latestEvaluation?.tajweed_rating || ''),
+    understanding_rating: String(latestEvaluation?.understanding_rating || ''),
+    behavior_rating: String(latestEvaluation?.behavior_rating || ''),
+    progress_feedback: latestEvaluation?.progress_feedback || '',
+    teacher_notes: latestEvaluation?.teacher_notes || '',
+    completed_lessons: String(completedClasses.length),
+    overall_progress: progressPercentage,
+    package_name: latestPayment?.notes || 'No package record',
+    payment_status: latestPayment?.status || 'No payment record',
+    sessions_included: String(latestPayment?.sessions_included ?? ''),
+    sessions_remaining: String(latestPayment?.sessions_remaining ?? ''),
+    next_due_date: latestPayment?.next_due_date || '',
+    teacher_cost: String(latestPayment?.teacher_cost ?? ''),
+    net_revenue: String(latestPayment?.net_revenue ?? ''),
+    invoice_notes: latestPayment?.notes || '',
+    latest_message: messages.data?.[0]?.subject || 'No messages',
+    preferred_language: profile?.preferred_language || '',
+    preferred_class_time: profile?.preferred_class_time || '',
+  };
 
   return {
     ...emptyStudentRecord,
     id: data.id,
     name: getStudentDisplayName(data) || emptyStudentRecord.name,
     status: data.status || emptyStudentRecord.status,
+    program: program?.name || emptyStudentRecord.program,
     level: data.level || emptyStudentRecord.level,
-    sections: {
-      ...emptyStudentRecord.sections,
-      personal: emptyStudentRecord.sections.personal.map((section) => ({
-        ...section,
-        fields: section.fields.map((field) => {
-          const valueByKey: Record<string, string | null | undefined> = {
-            student_name: data.student_name,
-            parent_name: data.parent_name,
-            parent_whatsapp: data.whatsapp,
-            country: data.country,
-            age: data.age,
-          };
-
-          return valueByKey[field.key] ? { ...field, value: String(valueByKey[field.key]) } : field;
-        }),
-      })),
-    },
+    teacher: teacherName,
+    nextClass: nextClass ? `${nextClass.class_date} ${nextClass.start_time || ''}`.trim() : 'No upcoming class',
+    attendanceRate,
+    progressPercentage,
+    sections: Object.fromEntries(Object.entries(emptyStudentRecord.sections).map(([tab, sections]) => [
+        tab,
+        sections.map((section) => ({
+          ...section,
+          fields: section.fields.map((field) => (
+            valueByKey[field.key] !== undefined ? { ...field, value: String(valueByKey[field.key]) } : field
+          )),
+        })),
+      ])) as Record<StudentRecordTab, StudentRecordSection[]>,
   } satisfies StudentRecord;
 }
 

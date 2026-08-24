@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
+import { getAcademyTodayDate } from './dateUtils';
 
 export const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
 
@@ -180,6 +181,26 @@ export async function fetchActiveClassSchedulesByStudentIds(studentIds: string[]
   return (data || []) as ClassScheduleRow[];
 }
 
+export async function materializeScheduledClasses(options: {
+  fromDate?: string;
+  toDate?: string;
+} = {}) {
+  const client = requireSupabase();
+  const fromDate = options.fromDate || getAcademyTodayDate();
+  const toDate = options.toDate || addDays(fromDate, 46 * 7);
+
+  const { data, error } = await client.rpc('materialize_scheduled_classes', {
+    p_from_date: fromDate,
+    p_to_date: toDate,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return Number(data || 0);
+}
+
 export async function fetchActiveClassSchedulesByTeacherProfileId(teacherProfileId: string) {
   const client = requireSupabase();
 
@@ -210,39 +231,40 @@ export async function replaceStudentClassSchedules(payload: {
   schedules: ClassScheduleInput[];
 }) {
   const client = requireSupabase();
-  const now = new Date().toISOString();
 
-  const { error: archiveError } = await client
-    .from('class_schedules')
-    .update({ status: 'archived', updated_at: now })
-    .eq('student_id', payload.studentId)
-    .eq('status', 'active');
-
-  if (archiveError) {
-    throw archiveError;
+  if (!payload.programId) {
+    throw new Error('Program is required before setting a schedule.');
   }
 
-  const rows = payload.schedules.map((schedule) => ({
-    student_id: payload.studentId,
-    program_id: payload.programId || null,
-    teacher_profile_id: payload.teacherProfileId,
-    day_of_week: schedule.dayOfWeek,
-    start_time: normalizeScheduleTime(schedule.startTime),
-    duration_minutes: schedule.durationMinutes || 30,
-    timezone: payload.timezone || 'Africa/Cairo',
-    platform: schedule.platform || 'Zoom',
-    meeting_link: schedule.meetingLink || null,
-    status: 'active',
-  }));
-
-  const { data, error } = await client
-    .from('class_schedules')
-    .insert(rows)
-    .select('id, student_id, program_id, teacher_profile_id, day_of_week, start_time, duration_minutes, timezone, platform, meeting_link, status');
+  const { error } = await client.rpc('replace_student_class_schedules', {
+    p_student_id: payload.studentId,
+    p_program_id: payload.programId,
+    p_teacher_profile_id: payload.teacherProfileId,
+    p_timezone: payload.timezone || 'Africa/Cairo',
+    p_schedules: payload.schedules.map((schedule) => ({
+      dayOfWeek: schedule.dayOfWeek,
+      startTime: normalizeScheduleTime(schedule.startTime),
+      durationMinutes: schedule.durationMinutes || 30,
+      platform: schedule.platform || 'Zoom',
+      meetingLink: schedule.meetingLink || null,
+    })),
+    p_from_date: getAcademyTodayDate(),
+    p_to_date: addDays(getAcademyTodayDate(), 46 * 7),
+  });
 
   if (error) {
     throw error;
   }
 
-  return (data || []) as ClassScheduleRow[];
+  return fetchActiveClassSchedulesByStudentIds([payload.studentId]);
+}
+
+function addDays(dateValue: string, days: number) {
+  const date = new Date(`${dateValue}T00:00:00`);
+  if (Number.isNaN(date.getTime())) {
+    return dateValue;
+  }
+
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
 }

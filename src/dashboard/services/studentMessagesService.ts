@@ -172,6 +172,50 @@ export async function sendStudentMessage(payload: { to: string; subject: string;
   return data;
 }
 
+export async function markMessageRead(messageId: string) {
+  if (!supabase) {
+    throw new Error('Supabase is not configured for this environment.');
+  }
+
+  if (messageId.startsWith('notification:')) {
+    const notificationId = messageId.replace('notification:', '');
+    const { error } = await supabase
+      .from('in_app_notifications')
+      .update({ read_at: new Date().toISOString() })
+      .eq('id', notificationId);
+
+    if (error) {
+      throw error;
+    }
+
+    return { success: true };
+  }
+
+  const { error } = await supabase.rpc('mark_message_read', {
+    p_message_id: messageId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return { success: true };
+}
+
+export async function markAllMessagesRead() {
+  if (!supabase) {
+    throw new Error('Supabase is not configured for this environment.');
+  }
+
+  const { error } = await supabase.rpc('mark_all_messages_read');
+
+  if (error) {
+    throw error;
+  }
+
+  return { success: true };
+}
+
 async function resolveStudentMessageReceiver(to: string, teacherId?: string | null) {
   const normalized = to.toLowerCase();
 

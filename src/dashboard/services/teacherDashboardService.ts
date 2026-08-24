@@ -1,8 +1,8 @@
 import { supabase } from '../../lib/supabaseClient';
 import {
   fetchActiveClassSchedulesByTeacherProfileId,
-  getCurrentWeekDay,
   getNextClass as getNextScheduledClass,
+  materializeScheduledClasses,
 } from './classSchedulesService';
 import { getAcademyTodayDate } from './dateUtils';
 import { getStudentDisplayName } from './displayNameUtils';
@@ -91,6 +91,7 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
     }
 
     const today = getAcademyTodayDate();
+    await materializeScheduledClasses({ fromDate: today, toDate: today });
     const [{ data: students }, { data: classes }, { data: trials }, { data: completedClasses }] = await Promise.all([
       applyTeacherIdFilter(
         supabase.from('students').select('id, student_name, program_id, level, status, assigned_teacher_id'),
@@ -98,7 +99,7 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
         context,
       ),
       applyTeacherIdFilter(
-        supabase.from('classes').select('id, student_id, teacher_id, program_id, class_date, start_time, meeting_link, lesson_covered, homework, status'),
+        supabase.from('classes').select('id, student_id, teacher_id, program_id, class_date, start_time, meeting_link, lesson_covered, homework, next_lesson_plan, timezone, platform, status'),
         'teacher_id',
         context,
       ).gte('class_date', today).lte('class_date', today),
@@ -180,28 +181,7 @@ export async function fetchTeacherDashboardData(): Promise<TeacherDashboardData>
         scheduledStartAt: `${classRow.class_date || today}T${classRow.start_time || '00:00:00'}`,
       };
     });
-    const currentWeekDay = getCurrentWeekDay('Africa/Cairo');
-    const todaysScheduleClasses = scheduleRows
-      .filter((scheduleRow) => scheduleRow.day_of_week.toLowerCase() === currentWeekDay.toLowerCase())
-      .map((scheduleRow): TeacherDashboardClass => {
-        const student = studentById.get(scheduleRow.student_id);
-        const program = scheduleRow.program_id ? programById.get(scheduleRow.program_id) || 'Program' : 'Program';
-
-        return {
-          id: `schedule:${scheduleRow.id}`,
-          time: formatTime(scheduleRow.start_time),
-          student: getStudentDisplayName(student),
-          studentId: scheduleRow.student_id,
-          program,
-          status: 'scheduled',
-          platform: scheduleRow.platform || 'Zoom',
-          meetingLink: scheduleRow.meeting_link || undefined,
-          reportStatus: 'Not Due',
-          attendanceStatus: 'Not Started',
-          scheduledStartAt: `${today}T${scheduleRow.start_time || '00:00:00'}`,
-        };
-      });
-    const allTodaysClasses = [...todaysScheduleClasses, ...todaysClasses];
+    const allTodaysClasses = todaysClasses;
 
     const assignedStudents = studentRows.map((student): TeacherDashboardStudent => ({
       id: student.id,

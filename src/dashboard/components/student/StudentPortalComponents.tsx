@@ -412,7 +412,7 @@ export function ComposeMessageModal({
   );
 }
 
-export function PaymentSummaryCard({ payment, onContact }: { payment: StudentPayment; onContact: () => void }) {
+export function PaymentSummaryCard({ payment, onContact, onReceipt }: { payment: StudentPayment; onContact: () => void; onReceipt?: () => void }) {
   return (
     <SectionCard title="Current Package" subtitle="View-only package and renewal summary" action={<StatusBadge label={payment.status} />}>
       <div className="student-payment-package">
@@ -436,7 +436,7 @@ export function PaymentSummaryCard({ payment, onContact }: { payment: StudentPay
           primaryAction={{ label: 'Contact Finance', icon: <Icon name="support" size={15} />, onClick: onContact }}
           actions={[
             { label: 'View Invoice', icon: <Icon name="eye" size={15} />, onClick: () => payment.invoiceUrl ? openExternalLink(payment.invoiceUrl) : onContact() },
-            { label: 'Download Receipt', icon: <Icon name="download" size={15} />, onClick: () => payment.receiptUrl ? openExternalLink(payment.receiptUrl) : onContact() },
+            { label: payment.receiptUrl || payment.receiptFilePath ? 'Download Receipt' : 'Request Receipt', icon: <Icon name="download" size={15} />, onClick: () => payment.receiptUrl || payment.receiptFilePath ? (onReceipt ? onReceipt() : openExternalLink(payment.receiptUrl || '')) : onContact() },
             { label: 'Contact Academy to Pay', icon: <Icon name="support" size={15} />, onClick: onContact, hidden: payment.status === 'paid' },
           ]}
         />

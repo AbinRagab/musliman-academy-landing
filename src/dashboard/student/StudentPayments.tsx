@@ -7,7 +7,7 @@ import SectionCard from '../components/SectionCard';
 import StatusBadge from '../components/StatusBadge';
 import { ComposeMessageModal, PaymentSummaryCard, StudentPageHeader, StudentStatCard } from '../components/student/StudentPortalComponents';
 import { sendStudentMessage } from '../services/studentMessagesService';
-import { fetchStudentPaymentsData } from '../services/studentPaymentsService';
+import { fetchStudentPaymentsData, getStudentPaymentReceiptUrl } from '../services/studentPaymentsService';
 import { openExternalLink, type StudentPayment } from '../services/studentService';
 
 export default function StudentPayments() {
@@ -39,6 +39,17 @@ export default function StudentPayments() {
     status: currentPackage?.status || 'pending',
   }), [currentPackage]);
 
+  async function openReceipt(row: StudentPayment) {
+    try {
+      const url = await getStudentPaymentReceiptUrl(row);
+      openExternalLink(url);
+      setError('');
+    } catch (receiptError) {
+      setError(receiptError instanceof Error ? receiptError.message : 'Unable to open receipt.');
+      setCompose({ to: 'Finance Team', subject: `Receipt request: ${row.packageName}` });
+    }
+  }
+
   const columns: Array<DataTableColumn<StudentPayment>> = [
     { header: 'Payment Date', accessor: 'paymentDate' },
     { header: 'Amount', accessor: (row) => row.paidAmount },
@@ -50,9 +61,9 @@ export default function StudentPayments() {
       accessor: (row) => (
         <ActionButton
           variant="ghost"
-          onClick={() => row.receiptUrl ? openExternalLink(row.receiptUrl) : setCompose({ to: 'Finance Team', subject: `Receipt request: ${row.packageName}` })}
+          onClick={() => (row.receiptUrl || row.receiptFilePath) ? openReceipt(row) : setCompose({ to: 'Finance Team', subject: `Receipt request: ${row.packageName}` })}
         >
-          View Receipt
+          {(row.receiptUrl || row.receiptFilePath) ? 'View Receipt' : 'Request Receipt'}
         </ActionButton>
       ),
     },
@@ -80,7 +91,7 @@ export default function StudentPayments() {
         )}
       />
 
-      {currentPackage && <PaymentSummaryCard payment={currentPackage} onContact={() => setCompose({ to: 'Finance Team', subject: 'Payment document request' })} />}
+      {currentPackage && <PaymentSummaryCard payment={currentPackage} onContact={() => setCompose({ to: 'Finance Team', subject: 'Payment document request' })} onReceipt={() => openReceipt(currentPackage)} />}
 
       <div className="dashboard-stats-grid">
         <StudentStatCard label="Paid Amount" value={totals.paidAmount} trend="Current package" icon="award" />
@@ -91,7 +102,7 @@ export default function StudentPayments() {
 
       <SectionCard title="Payment History" subtitle="Finance records are view-only in the student portal.">
         {loading && <p className="dashboard-empty-copy">Loading payment records...</p>}
-        {!loading && error && <p className="dashboard-empty-copy">{error}</p>}
+        {!loading && error && <p className="dashboard-inline-error">{error}</p>}
         {!loading && !error && payments.length === 0 && <p className="dashboard-empty-copy">No payment records yet.</p>}
         {!loading && !error && payments.length > 0 && <DataTable columns={columns} rows={payments} getRowKey={(row) => row.id} />}
       </SectionCard>
@@ -105,8 +116,8 @@ export default function StudentPayments() {
               onClick: () => setCompose({ to: 'Academy Team', subject: 'Payment arrangement request' }),
             }}
             actions={[
-              { label: 'View Invoice', icon: <Icon name="eye" size={15} />, onClick: () => setCompose({ to: 'Finance Team', subject: 'Invoice request' }) },
-              { label: 'Download Receipt', icon: <Icon name="download" size={15} />, onClick: () => setCompose({ to: 'Finance Team', subject: 'Receipt request' }) },
+              { label: currentPackage?.invoiceUrl ? 'View Invoice' : 'Request Invoice', icon: <Icon name="eye" size={15} />, onClick: () => currentPackage?.invoiceUrl ? openExternalLink(currentPackage.invoiceUrl) : setCompose({ to: 'Finance Team', subject: 'Invoice request' }) },
+              { label: currentPackage?.receiptUrl || currentPackage?.receiptFilePath ? 'Download Receipt' : 'Request Receipt', icon: <Icon name="download" size={15} />, onClick: () => currentPackage ? openReceipt(currentPackage) : setCompose({ to: 'Finance Team', subject: 'Receipt request' }) },
               { label: 'Contact Finance', icon: <Icon name="support" size={15} />, onClick: () => setCompose({ to: 'Finance Team', subject: 'Payment support request' }) },
             ]}
           />

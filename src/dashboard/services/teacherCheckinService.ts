@@ -37,17 +37,16 @@ export async function updateTeacherSessionCheckin(payload: TeacherCheckinPayload
     completed: { ended_at: timestamp, status: 'completed' },
   };
 
-  const { error } = await supabase.from('teacher_session_checkins').upsert({
-    class_id: payload.classId,
-    teacher_id: teacherId,
-    scheduled_start_at: payload.scheduledStartAt,
-    notes: payload.notes,
-    ...updateByAction[payload.action],
-  }, { onConflict: 'class_id,teacher_id' });
+  const { data, error } = await supabase.rpc('update_teacher_class_lifecycle', {
+    p_class_id: payload.classId,
+    p_action: payload.action,
+    p_notes: payload.notes || null,
+    p_scheduled_start_at: payload.scheduledStartAt || null,
+  });
 
   if (error) {
     throw error;
   }
 
-  return { success: true, fallback: false };
+  return { success: true, fallback: false, result: data, updateByAction: updateByAction[payload.action], teacherId };
 }

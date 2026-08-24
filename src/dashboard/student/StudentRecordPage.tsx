@@ -22,6 +22,7 @@ import {
   type StudentRecordSection,
   type StudentRecordTab,
 } from '../services/studentsService';
+import { resolveCurrentStudentProfile } from '../services/studentService';
 import { addClassReport, addEvaluation, markAttendance, submitTrialFeedback } from '../services/teacherStudentService';
 import { updateStudentPayment } from '../services/paymentsService';
 
@@ -104,17 +105,25 @@ export default function StudentRecordPage({
   const [toast, setToast] = useState<ToastMessage | null>(null);
 
   useEffect(() => {
-    fetchStudentRecord(studentId || 'mock-yusuf').then((studentRecord) => {
-      setRecord(studentRecord);
-      const nextDrafts: Record<string, Record<string, string>> = {};
-      Object.entries(studentRecord.sections).forEach(([tab, sections]) => {
-        sections.forEach((section) => {
-          nextDrafts[`${tab}:${section.id}`] = Object.fromEntries(section.fields.map((field) => [field.key, field.value]));
+    async function loadStudentRecord() {
+      try {
+        const resolvedStudentId = studentId || (portalRole === 'student' ? (await resolveCurrentStudentProfile()).id : '');
+        const studentRecord = await fetchStudentRecord(resolvedStudentId);
+        setRecord(studentRecord);
+        const nextDrafts: Record<string, Record<string, string>> = {};
+        Object.entries(studentRecord.sections).forEach(([tab, sections]) => {
+          sections.forEach((section) => {
+            nextDrafts[`${tab}:${section.id}`] = Object.fromEntries(section.fields.map((field) => [field.key, field.value]));
+          });
         });
-      });
-      setDrafts(nextDrafts);
-    });
-  }, [studentId]);
+        setDrafts(nextDrafts);
+      } catch (error) {
+        setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to load student record.' });
+      }
+    }
+
+    loadStudentRecord();
+  }, [portalRole, studentId]);
 
   const visibleTabs = useMemo(() => {
     if (portalRole === 'student') {
@@ -164,50 +173,61 @@ export default function StudentRecordPage({
     event.preventDefault();
     const payload = drafts[`${activeTab}:${section.id}`] || {};
 
-    if (section.owner === 'Admin' && section.id.includes('personal')) {
-      await updateStudentPersonalInfo(currentRecord.id, payload);
-    } else if (section.owner === 'Admin') {
-      await updateStudentAcademicSetup(currentRecord.id, payload);
-    } else if (section.owner === 'Teacher' && activeTab === 'trial') {
-      await submitTrialFeedback({
-        trialId: 'mock-trial',
-        readingLevel: payload.reading_level || '',
-        tajweedLevel: payload.tajweed_level || '',
-        arabicLevel: payload.arabic_level,
-        engagement: payload.student_engagement || '',
-        recommendedLevel: payload.recommended_level || '',
-        teacherFeedback: payload.teacher_feedback || '',
-        recommendation: payload.recommendation || '',
-        result: payload.trial_result || '',
-      });
-    } else if (section.owner === 'Teacher' && activeTab === 'attendance') {
-      await markAttendance({ studentId: currentRecord.id, status: 'present', notes: payload.class_notes });
-    } else if (section.owner === 'Teacher' && ['classes', 'homework', 'teacher-notes'].includes(activeTab)) {
-      await addClassReport({
-        studentId: currentRecord.id,
-        lessonCovered: payload.lesson_covered || '',
-        homework: payload.homework,
-        classNotes: payload.class_notes || payload.teacher_note || payload.homework_feedback,
-        participation: payload.participation,
-        nextLessonPlan: payload.next_lesson_plan,
-      });
-    } else if (section.owner === 'Teacher') {
-      await addEvaluation({
-        studentId: currentRecord.id,
-        recitationRating: Number.parseInt(payload.recitation_rating || '0', 10) || 0,
-        tajweedRating: Number.parseInt(payload.tajweed_rating || '0', 10) || 0,
-        understandingRating: Number.parseInt(payload.understanding_rating || '0', 10) || 0,
-        behaviorRating: Number.parseInt(payload.behavior_rating || '0', 10) || 0,
-        progressNotes: payload.progress_notes,
-        recommendation: payload.teacher_recommendation,
-      });
-    } else if (section.owner === 'Finance') {
-      await updateStudentPayment({ studentId: currentRecord.id, ...payload });
-    } else if (section.owner === 'Student') {
-      await updateStudentPreferences(currentRecord.id, payload);
-    }
+    try {
+      if (!currentRecord.id) {
+        throw new Error('A real student record is required before saving this section.');
+      }
 
-    setToast({ type: 'success', message: `${section.title} saved.` });
+      if (section.owner === 'Admin' && section.id.includes('personal')) {
+        await updateStudentPersonalInfo(currentRecord.id, payload);
+      } else if (section.owner === 'Admin') {
+        await updateStudentAcademicSetup(currentRecord.id, payload);
+      } else if (section.owner === 'Teacher' && activeTab === 'trial') {
+        if (!payload.trial_id) {
+          throw new Error('A real trial record is required before saving trial feedback.');
+        }
+        await submitTrialFeedback({
+          trialId: payload.trial_id,
+          readingLevel: payload.reading_level || '',
+          tajweedLevel: payload.tajweed_level || '',
+          arabicLevel: payload.arabic_level,
+          engagement: payload.student_engagement || '',
+          recommendedLevel: payload.recommended_level || '',
+          teacherFeedback: payload.teacher_feedback || '',
+          recommendation: payload.recommendation || '',
+          result: payload.trial_result || '',
+        });
+      } else if (section.owner === 'Teacher' && activeTab === 'attendance') {
+        await markAttendance({ studentId: currentRecord.id, status: 'present', notes: payload.class_notes });
+      } else if (section.owner === 'Teacher' && ['classes', 'homework', 'teacher-notes'].includes(activeTab)) {
+        await addClassReport({
+          studentId: currentRecord.id,
+          lessonCovered: payload.lesson_covered || '',
+          homework: payload.homework,
+          classNotes: payload.class_notes || payload.teacher_note || payload.homework_feedback,
+          participation: payload.participation,
+          nextLessonPlan: payload.next_lesson_plan,
+        });
+      } else if (section.owner === 'Teacher') {
+        await addEvaluation({
+          studentId: currentRecord.id,
+          recitationRating: Number.parseInt(payload.recitation_rating || '0', 10) || 0,
+          tajweedRating: Number.parseInt(payload.tajweed_rating || '0', 10) || 0,
+          understandingRating: Number.parseInt(payload.understanding_rating || '0', 10) || 0,
+          behaviorRating: Number.parseInt(payload.behavior_rating || '0', 10) || 0,
+          progressNotes: payload.progress_notes,
+          recommendation: payload.teacher_recommendation,
+        });
+      } else if (section.owner === 'Finance') {
+        await updateStudentPayment({ studentId: currentRecord.id, ...payload });
+      } else if (section.owner === 'Student') {
+        await updateStudentPreferences(currentRecord.id, payload);
+      }
+
+      setToast({ type: 'success', message: `${section.title} saved.` });
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : `Unable to save ${section.title}.` });
+    }
   }
 
   return (

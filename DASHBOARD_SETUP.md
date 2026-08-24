@@ -30,6 +30,8 @@ For a fresh database, run `supabase/schema.sql` first, then `supabase/seed.sql`,
 20260816_marketing_attribution_fields.sql
 20260823095000_reconcile_dashboard_prerequisites.sql
 20260823100000_dashboard_data_contract_cleanup.sql
+20260823105000_class_status_live.sql
+20260823110000_class_lifecycle_engine.sql
 ```
 
 `schema.sql` is the baseline schema. Migrations are additive fixes and must not be skipped on an existing project.
@@ -43,6 +45,8 @@ Do not replay all historical migrations against that production database. Instea
 ```text
 20260823095000_reconcile_dashboard_prerequisites.sql
 20260823100000_dashboard_data_contract_cleanup.sql
+20260823105000_class_status_live.sql
+20260823110000_class_lifecycle_engine.sql
 ```
 
 The reconciliation migration restores missing dashboard prerequisites without reapplying the 20260816 marketing attribution columns. It creates or reconciles lead CRM support objects, notification/compliance tables, `class_schedules`, `public.current_teacher_id()`, operational teacher-id foreign keys, indexes, triggers, and RLS policies required before Phase 1.
@@ -60,6 +64,31 @@ The reconciliation migration may abort intentionally if it finds ambiguous teach
 - RLS cleanup so teacher operational tables use `public.current_teacher_id()`.
 
 If the unique constraints fail because duplicate rows already exist, clean duplicate attendance/evaluation records and rerun the migration.
+
+## Class Lifecycle Engine
+
+Run `20260823105000_class_status_live.sql` before `20260823110000_class_lifecycle_engine.sql`.
+
+The lifecycle migration adds:
+
+- `classes.schedule_id` linking concrete class occurrences to recurring `class_schedules`.
+- `classes_schedule_date_unique` to prevent duplicate materialized occurrences.
+- `public.materialize_scheduled_classes(from_date, to_date)` for idempotent rolling class generation.
+- `public.replace_student_class_schedules(...)` for atomic schedule replacement with teacher/student overlap validation.
+- `public.update_teacher_class_lifecycle(...)` so Ready/Join/Start/End updates check-ins and class status together.
+- `homework_assignments` so assigning homework is separate from student `homework_submissions`.
+- `20260823120000_admin_operations_completion.sql` adds admin review/follow-up state, atomic trial conversion, one-off class reschedule/cancel RPCs, `academy_settings`, `payment_session_usage`, teacher profile fields, and a local notification-cycle cron function.
+
+Recurring schedules remain the source of timetable rules. Attendance, reports, homework, evaluations, and teacher check-ins must use concrete `classes.id` rows.
+
+## Payment Session Consumption
+
+The canonical rule is implemented in `public.record_payment_session_usage(class_id)`:
+
+- Consumes one paid session for completed/present, completed/late, completed/absent, or `student_absent` class outcomes.
+- Does not consume a paid session for `cancelled`, `teacher_absent`, `rescheduled`, `excused`, or `cancelled` attendance.
+- Writes one row to `payment_session_usage` with `unique(payment_id, class_id)` so the same class cannot decrement a package twice.
+- Decrements `payments.sessions_remaining` only after the usage ledger insert succeeds.
 
 ## Teacher IDs
 
@@ -98,9 +127,29 @@ Deploy the account creation and public lead functions:
 ```bash
 npx supabase functions deploy create-user
 npx supabase functions deploy submit-lead
+npx supabase functions deploy teacher-compliance-check
+npx supabase functions deploy process-scheduled-notifications
+npx supabase functions deploy send-notification
+npx supabase functions deploy send-test-notification
+npx supabase functions deploy notification-provider-status
 ```
 
 Supabase provides reserved runtime values such as `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` to Edge Functions. Do not add service role keys to the Vite app.
+
+Required Edge Function secrets by name only:
+
+- `RESEND_API_KEY` or `SENDGRID_API_KEY` or SMTP variables such as `SMTP_HOST`
+- `WHATSAPP_TOKEN`
+- `WHATSAPP_PHONE_NUMBER_ID`
+
+`notification-provider-status` returns only `{ emailConfigured, whatsappConfigured }`.
+
+## Cron and Realtime
+
+- Apply migrations in timestamp order. Do not run remote migrations from the frontend project.
+- Enable Supabase Realtime for `public.in_app_notifications` so the topbar bell updates without refresh.
+- The latest migration attempts to schedule `public.run_dashboard_notification_cycle()` every 5 minutes via `pg_cron` when the extension is available. If Supabase does not allow the migration to create the extension/job, configure the same 5-minute job manually in the Supabase dashboard.
+- To process provider-backed email/WhatsApp events, schedule `teacher-compliance-check` or `process-scheduled-notifications` every 5 minutes in Supabase Scheduled Functions.
 
 ## Local Validation
 

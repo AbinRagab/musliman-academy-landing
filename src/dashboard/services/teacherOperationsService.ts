@@ -2,6 +2,7 @@ import { supabase } from '../../lib/supabaseClient';
 import {
   fetchActiveClassSchedulesByTeacherProfileId,
   getNextClass as getNextScheduledClass,
+  materializeScheduledClasses,
 } from './classSchedulesService';
 import { getAcademyTodayDate } from './dateUtils';
 import { getStudentDisplayName } from './displayNameUtils';
@@ -48,6 +49,7 @@ export type TeacherClassRow = {
   reportStatus: string;
   notes: string;
   isRecurringSchedule?: boolean;
+  scheduledStartAt?: string;
 };
 
 export type TeacherEvaluationRow = {
@@ -171,6 +173,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
   }
 
   const today = getAcademyTodayDate();
+  await materializeScheduledClasses({ fromDate: today });
   const [{ data: studentRows, error: studentsError }, { data: classRows, error: classesError }] = await Promise.all([
     applyTeacherIdFilter(
       client
@@ -183,7 +186,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
     applyTeacherIdFilter(
       client
         .from('classes')
-        .select('id, student_id, teacher_id, program_id, class_date, start_time, end_time, duration_minutes, meeting_link, lesson_title, lesson_covered, homework, status, created_at'),
+        .select('id, student_id, teacher_id, program_id, class_date, start_time, end_time, duration_minutes, meeting_link, lesson_title, lesson_covered, homework, next_lesson_plan, timezone, platform, status, created_at'),
       'teacher_id',
       context,
     )
@@ -277,29 +280,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
       homeworkAssigned: classRow.homework || (classRow.status === 'completed' ? 'Homework pending' : 'Set after class'),
       reportStatus: classRow.lesson_covered || classRow.homework ? 'Submitted' : classRow.status === 'completed' ? 'Needs Report' : 'Not Due',
       notes: classRow.lesson_title || '',
-    };
-  });
-
-  const mappedScheduleClasses = scheduleRows.map((scheduleRow): TeacherClassRow => {
-    const student = studentById.get(scheduleRow.student_id);
-    const program = scheduleRow.program_id ? programById.get(scheduleRow.program_id) || 'Program not assigned' : 'Program not assigned';
-
-    return {
-      id: `schedule:${scheduleRow.id}`,
-      studentId: scheduleRow.student_id,
-      student: getStudentDisplayName(student),
-      programId: scheduleRow.program_id,
-      program,
-      dateTime: `${scheduleRow.day_of_week} ${formatTime(scheduleRow.start_time)}`,
-      status: 'Scheduled',
-      platform: scheduleRow.platform || 'Zoom',
-      meetingLink: scheduleRow.meeting_link || undefined,
-      attendanceStatus: 'Not Started',
-      lessonCovered: 'Planned lesson',
-      homeworkAssigned: 'Set after class',
-      reportStatus: 'Not Due',
-      notes: `${scheduleRow.duration_minutes} minutes`,
-      isRecurringSchedule: true,
+      scheduledStartAt: `${classRow.class_date || today}T${classRow.start_time || '00:00:00'}`,
     };
   });
 
@@ -346,7 +327,7 @@ export async function fetchTeacherOperationsData(): Promise<TeacherOperationsDat
     context,
     contextError: null,
     students: mappedStudents,
-    classes: [...mappedScheduleClasses, ...mappedClasses],
+    classes: mappedClasses,
     evaluations: mappedEvaluations,
   };
 }
@@ -373,20 +354,9 @@ export async function markTeacherAttendance(payload: {
     marked_at: new Date().toISOString(),
   };
 
-  const { data: existingAttendance, error: existingAttendanceError } = await client
+  const { error } = await client
     .from('attendance')
-    .select('id')
-    .eq('class_id', attendancePayload.class_id)
-    .eq('student_id', attendancePayload.student_id)
-    .maybeSingle();
-
-  if (existingAttendanceError) {
-    throw existingAttendanceError;
-  }
-
-  const { error } = existingAttendance?.id
-    ? await client.from('attendance').update(attendancePayload).eq('id', existingAttendance.id)
-    : await client.from('attendance').insert(attendancePayload);
+    .upsert(attendancePayload, { onConflict: 'class_id,student_id' });
 
   if (error) {
     throw error;
@@ -398,6 +368,7 @@ export async function saveTeacherClassReport(payload: {
   lessonCovered: string;
   homework?: string;
   notes?: string;
+  nextLessonPlan?: string;
 }) {
   const client = requireSupabase();
   const context = await getCurrentTeacherContext();
@@ -405,18 +376,40 @@ export async function saveTeacherClassReport(payload: {
     throw new Error('Teacher account is required.');
   }
 
-  const { error } = await client
+  const { data: classRecord, error } = await client
     .from('classes')
     .update({
       lesson_covered: payload.lessonCovered,
       homework: payload.homework || null,
+      next_lesson_plan: payload.nextLessonPlan || null,
       lesson_title: payload.notes || payload.lessonCovered,
+      teacher_notes: payload.notes || null,
     })
     .eq('id', payload.classId)
-    .eq('teacher_id', context.teacherId);
+    .eq('teacher_id', context.teacherId)
+    .select('id, student_id')
+    .single();
 
   if (error) {
     throw error;
+  }
+
+  if (payload.homework?.trim() && classRecord.student_id) {
+    const { error: homeworkError } = await client
+      .from('homework_assignments')
+      .upsert({
+        class_id: classRecord.id,
+        student_id: classRecord.student_id,
+        teacher_id: context.teacherId,
+        title: `${payload.lessonCovered || 'Class'} homework`,
+        instructions: payload.homework.trim(),
+        due_at: null,
+        status: 'assigned',
+      }, { onConflict: 'class_id,student_id,teacher_id' });
+
+    if (homeworkError) {
+      throw homeworkError;
+    }
   }
 }
 

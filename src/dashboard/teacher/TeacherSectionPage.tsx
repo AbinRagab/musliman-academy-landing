@@ -27,6 +27,20 @@ import {
   type TeacherEvaluationRow as EvaluationRow,
   type TeacherStudentRow as StudentRow,
 } from '../services/teacherOperationsService';
+import {
+  fetchTeacherMessages,
+  markTeacherMessageRead,
+  sendTeacherMessage,
+  type TeacherMessage,
+} from '../services/teacherMessagesService';
+import {
+  fetchTeacherProfileData,
+  requestAvailabilityUpdate,
+  requestTeacherPasswordReset,
+  saveTeacherProfileUpdate,
+  saveTeacherSettings,
+  type TeacherProfileData,
+} from '../services/teacherProfileService';
 
 type TeacherSection =
   | 'students'
@@ -49,18 +63,6 @@ type TrialRow = {
   adminOwner: string;
 };
 
-type MessageThread = {
-  id: string;
-  from: string;
-  subject: string;
-  student: string;
-  relatedClass: string;
-  unread: boolean;
-  preview: string;
-};
-
-const messageThreads: MessageThread[] = [];
-
 function notifyMissingMeeting(setToast: (toast: ToastMessage) => void) {
   setToast({ type: 'info', message: 'Meeting link is not available. Please contact the academy team.' });
 }
@@ -72,9 +74,14 @@ function getScheduledStartAt(dateTime: string) {
 }
 
 async function updateClassCheckin(classItem: ClassRow, action: TeacherCheckinAction, setToast: (toast: ToastMessage) => void) {
+  if (classItem.isRecurringSchedule || classItem.id.startsWith('schedule:')) {
+    setToast({ type: 'info', message: 'A concrete class record is required before check-in.' });
+    return;
+  }
+
   await updateTeacherSessionCheckin({
     classId: classItem.id,
-    scheduledStartAt: getScheduledStartAt(classItem.dateTime),
+    scheduledStartAt: classItem.scheduledStartAt || getScheduledStartAt(classItem.dateTime),
     action,
     notes: `${action} from teacher ${classItem.status.toLowerCase()} workflow`,
   });
@@ -145,6 +152,7 @@ function ClassReportModal({ classItem, onClose, onSubmit }: { classItem: ClassRo
         <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
           <label><span>Lesson covered</span><input name="lessonCovered" defaultValue={classItem.lessonCovered === 'Planned lesson' ? '' : classItem.lessonCovered} required /></label>
           <label><span>Homework assigned</span><textarea name="homework" rows={3} defaultValue={classItem.homeworkAssigned === 'Set after class' ? '' : classItem.homeworkAssigned} /></label>
+          <label><span>Next lesson plan</span><textarea name="nextLessonPlan" rows={3} defaultValue="" /></label>
           <label><span>Class notes</span><textarea name="notes" rows={4} defaultValue={classItem.notes} /></label>
           <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper">Save Class Report</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
         </form>
@@ -176,7 +184,21 @@ function ClassDetailsModal({ classItem, onClose }: { classItem: ClassRow; onClos
   );
 }
 
-function ComposeModal({ students, classRows, onClose }: { students: StudentRow[]; classRows: ClassRow[]; onClose: () => void }) {
+function ComposeModal({
+  students,
+  classRows,
+  selectedMessage,
+  sending,
+  onClose,
+  onSubmit,
+}: {
+  students: StudentRow[];
+  classRows: ClassRow[];
+  selectedMessage?: TeacherMessage | null;
+  sending: boolean;
+  onClose: () => void;
+  onSubmit: (formData: FormData) => void;
+}) {
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label="New message">
       <div className="dashboard-modal__panel">
@@ -184,13 +206,13 @@ function ComposeModal({ students, classRows, onClose }: { students: StudentRow[]
           <div><h2>New Message</h2><p>Messages to parents are routed through the academy when direct messaging is restricted.</p></div>
           <button type="button" className="dashboard-icon-button" aria-label="Close message" onClick={onClose}><Icon name="x" /></button>
         </div>
-        <form className="dashboard-form">
-          <label><span>To</span><select><option>Academic Manager</option><option>Admissions Team</option><option>Send parent note for admin review</option></select></label>
-          <label><span>Related student</span><select>{students.map((student) => <option key={student.id}>{student.student}</option>)}</select></label>
-          <label><span>Related class</span><select>{classRows.slice(0, 4).map((classItem) => <option key={classItem.id}>{classItem.program} - {classItem.dateTime}</option>)}</select></label>
-          <label><span>Subject</span><input /></label>
-          <label><span>Message</span><textarea rows={5} /></label>
-          <div className="dashboard-form-actions"><ActionButton variant="copper" disabled>Messaging unavailable</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
+        <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
+          <label><span>Route</span><select name="category" defaultValue={selectedMessage ? 'teacher_reply' : 'teacher_message'}><option value="teacher_message">Message academy/admin</option><option value="parent_note_review">Send parent note for admin review</option><option value="teacher_reply">Reply</option></select></label>
+          <label><span>Related student</span><select name="relatedStudentId" defaultValue={selectedMessage?.relatedStudentId || ''}><option value="">None</option>{students.map((student) => <option key={student.id} value={student.id}>{student.student}</option>)}</select></label>
+          <label><span>Related class</span><select name="relatedClassId" defaultValue={selectedMessage?.relatedClassId || ''}><option value="">None</option>{classRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.program} - {classItem.dateTime}</option>)}</select></label>
+          <label><span>Subject</span><input name="subject" defaultValue={selectedMessage ? `Re: ${selectedMessage.subject.replace(/^Re:\s*/i, '')}` : ''} required /></label>
+          <label><span>Message</span><textarea name="body" rows={5} required /></label>
+          <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper" disabled={sending}>{sending ? 'Sending' : 'Send Message'}</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
         </form>
       </div>
     </div>
@@ -212,15 +234,33 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
   const [students, setStudents] = useState<StudentRow[]>([]);
   const [classRows, setClassRows] = useState<ClassRow[]>([]);
   const [evaluationRows, setEvaluationRows] = useState<EvaluationRow[]>([]);
+  const [messageRows, setMessageRows] = useState<TeacherMessage[]>([]);
+  const [selectedMessageId, setSelectedMessageId] = useState('');
+  const [messagesLoading, setMessagesLoading] = useState(false);
+  const [messagesError, setMessagesError] = useState<string | null>(null);
+  const [teacherProfile, setTeacherProfile] = useState<TeacherProfileData | null>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [teacherPrefs, setTeacherPrefs] = useState<Record<string, boolean>>({});
   const [loadingOperations, setLoadingOperations] = useState(true);
   const [teacherContextError, setTeacherContextError] = useState<string | null>(null);
   const [selectedClassId, setSelectedClassId] = useState('');
+  const [attendanceStatus, setAttendanceStatus] = useState<'present' | 'absent' | 'late' | 'excused'>('present');
+  const [attendanceNotes, setAttendanceNotes] = useState('');
+  const [savingAction, setSavingAction] = useState<string | null>(null);
 
   useEffect(() => {
     loadTeacherOperations();
 
     if (section === 'free-trials' || section === 'reports') {
       loadTeacherTrials();
+    }
+
+    if (section === 'messages') {
+      loadTeacherMessages();
+    }
+
+    if (section === 'profile' || section === 'settings') {
+      loadTeacherProfile();
     }
   }, [section]);
 
@@ -260,15 +300,172 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
   }
 
   async function handleClassReportSubmit(classItem: ClassRow, formData: FormData) {
-    await saveTeacherClassReport({
-      classId: classItem.id,
-      lessonCovered: String(formData.get('lessonCovered') || ''),
-      homework: String(formData.get('homework') || ''),
-      notes: String(formData.get('notes') || ''),
-    });
-    setReportModal(null);
-    setToast({ type: 'success', message: 'Class report saved.' });
-    await loadTeacherOperations();
+    setSavingAction(`report:${classItem.id}`);
+    try {
+      await saveTeacherClassReport({
+        classId: classItem.id,
+        lessonCovered: String(formData.get('lessonCovered') || ''),
+        homework: String(formData.get('homework') || ''),
+        nextLessonPlan: String(formData.get('nextLessonPlan') || ''),
+        notes: String(formData.get('notes') || ''),
+      });
+      setReportModal(null);
+      setToast({ type: 'success', message: 'Class report saved.' });
+      await loadTeacherOperations();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to save class report.' });
+    } finally {
+      setSavingAction(null);
+    }
+  }
+
+  async function loadTeacherMessages() {
+    setMessagesLoading(true);
+    setMessagesError(null);
+    try {
+      const messages = await fetchTeacherMessages();
+      setMessageRows(messages);
+      setSelectedMessageId((current) => current || messages[0]?.id || '');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to load messages.';
+      setMessagesError(message);
+      setMessageRows([]);
+      if (import.meta.env.DEV) {
+        console.error('Teacher messages failed:', error);
+      }
+    } finally {
+      setMessagesLoading(false);
+    }
+  }
+
+  async function selectTeacherMessage(message: TeacherMessage) {
+    setSelectedMessageId(message.id);
+    if (!message.unread) {
+      return;
+    }
+    try {
+      await markTeacherMessageRead(message.id);
+      setMessageRows((current) => current.map((item) => item.id === message.id ? { ...item, unread: false } : item));
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to mark message read.' });
+    }
+  }
+
+  async function handleTeacherMessageSubmit(formData: FormData) {
+    setSavingAction('teacher-message');
+    try {
+      await sendTeacherMessage({
+        subject: String(formData.get('subject') || ''),
+        body: String(formData.get('body') || ''),
+        relatedStudentId: String(formData.get('relatedStudentId') || '') || null,
+        relatedClassId: String(formData.get('relatedClassId') || '') || null,
+        category: String(formData.get('category') || 'teacher_message'),
+      });
+      setToast({ type: 'success', message: 'Message sent.' });
+      setComposeOpen(false);
+      await loadTeacherMessages();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to send message.' });
+    } finally {
+      setSavingAction(null);
+    }
+  }
+
+  async function loadTeacherProfile() {
+    setProfileError(null);
+    try {
+      const profile = await fetchTeacherProfileData();
+      setTeacherProfile(profile);
+      setTeacherPrefs(profile.notificationPreferences);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to load teacher profile.';
+      setProfileError(message);
+      if (import.meta.env.DEV) {
+        console.error('Teacher profile failed:', error);
+      }
+    }
+  }
+
+  async function handleProfileSave(formData: FormData) {
+    setSavingAction('teacher-profile');
+    try {
+      await saveTeacherProfileUpdate({
+        bio: String(formData.get('bio') || ''),
+        specialization: String(formData.get('specialization') || ''),
+        languages: String(formData.get('languages') || '').split(',').map((item) => item.trim()).filter(Boolean),
+      });
+      setToast({ type: 'success', message: 'Profile saved.' });
+      await loadTeacherProfile();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to save profile.' });
+    } finally {
+      setSavingAction(null);
+    }
+  }
+
+  async function handleSettingsSave(formData: FormData) {
+    setSavingAction('teacher-settings');
+    try {
+      await saveTeacherSettings({
+        timezone: String(formData.get('timezone') || 'Africa/Cairo'),
+        language: String(formData.get('language') || 'English'),
+        notificationPreferences: teacherPrefs,
+      });
+      setToast({ type: 'success', message: 'Teacher settings saved.' });
+      await loadTeacherProfile();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to save settings.' });
+    } finally {
+      setSavingAction(null);
+    }
+  }
+
+  async function handlePasswordReset() {
+    setSavingAction('teacher-password');
+    try {
+      await requestTeacherPasswordReset();
+      setToast({ type: 'success', message: 'Password reset email sent.' });
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to send password reset.' });
+    } finally {
+      setSavingAction(null);
+    }
+  }
+
+  async function handleAvailabilityRequest(formData: FormData) {
+    setSavingAction('teacher-availability');
+    try {
+      await requestAvailabilityUpdate(String(formData.get('availabilityRequest') || ''));
+      setToast({ type: 'success', message: 'Availability request sent to admin.' });
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to send availability request.' });
+    } finally {
+      setSavingAction(null);
+    }
+  }
+
+  async function handleClassLifecycle(classItem: ClassRow, action: TeacherCheckinAction) {
+    setSavingAction(`${action}:${classItem.id}`);
+    try {
+      await updateClassCheckin(classItem, action, setToast);
+      await loadTeacherOperations();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : `Unable to update class ${action} state.` });
+    } finally {
+      setSavingAction(null);
+    }
+  }
+
+  async function handleJoinClass(classItem: ClassRow) {
+    setSavingAction(`joined:${classItem.id}`);
+    try {
+      await joinClass(classItem, setToast);
+      await loadTeacherOperations();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to record class join.' });
+    } finally {
+      setSavingAction(null);
+    }
   }
 
   async function handleEvaluationSubmit(evaluation: EvaluationRow, formData: FormData) {
@@ -281,19 +478,26 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       return;
     }
 
-    await saveTeacherEvaluation({
-      studentId: evaluation.studentId,
-      classId: evaluation.classId,
-      recitationRating: Number(formData.get('recitationRating') || 4),
-      tajweedRating: Number(formData.get('tajweedRating') || 4),
-      understandingRating: Number(formData.get('understandingRating') || 4),
-      behaviorRating: Number(formData.get('behaviorRating') || 4),
-      progressNotes: String(formData.get('progressNotes') || ''),
-      recommendation: String(formData.get('recommendation') || ''),
-    });
-    setEvaluationModal(null);
-    setToast({ type: 'success', message: 'Evaluation submitted.' });
-    await loadTeacherOperations();
+    setSavingAction(`evaluation:${evaluation.classId}`);
+    try {
+      await saveTeacherEvaluation({
+        studentId: evaluation.studentId,
+        classId: evaluation.classId,
+        recitationRating: Number(formData.get('recitationRating') || 4),
+        tajweedRating: Number(formData.get('tajweedRating') || 4),
+        understandingRating: Number(formData.get('understandingRating') || 4),
+        behaviorRating: Number(formData.get('behaviorRating') || 4),
+        progressNotes: String(formData.get('progressNotes') || ''),
+        recommendation: String(formData.get('recommendation') || ''),
+      });
+      setEvaluationModal(null);
+      setToast({ type: 'success', message: 'Evaluation submitted.' });
+      await loadTeacherOperations();
+    } catch (error) {
+      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to submit evaluation.' });
+    } finally {
+      setSavingAction(null);
+    }
   }
 
   const titleBySection: Record<TeacherSection, string> = {
@@ -355,7 +559,17 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           primaryAction={{ label: 'Open Record', onClick: () => navigate(`/dashboard/teacher/students/${row.id}`) }}
           actions={[
             { label: 'View Attendance', onClick: () => navigate('/dashboard/teacher/attendance') },
-            { label: 'Add Evaluation', onClick: () => setEvaluationModal({ id: row.id, student: row.student, program: row.program, relatedClass: row.nextClass, status: 'ready' }) },
+            {
+              label: 'Add Evaluation',
+              onClick: () => {
+                const eligibleEvaluation = evaluationRows.find((evaluation) => evaluation.studentId === row.id);
+                if (!eligibleEvaluation) {
+                  setToast({ type: 'info', message: 'No completed unevaluated class is available for this student.' });
+                  return;
+                }
+                setEvaluationModal(eligibleEvaluation);
+              },
+            },
             {
               label: 'Add Class Note',
               onClick: () => {
@@ -407,7 +621,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         {evaluationModal && <TeacherEvaluationModal evaluation={evaluationModal} onClose={() => setEvaluationModal(null)} onSubmit={(formData) => handleEvaluationSubmit(evaluationModal, formData)} />}
         {reportModal && <ClassReportModal classItem={reportModal} onClose={() => setReportModal(null)} onSubmit={(formData) => handleClassReportSubmit(reportModal, formData)} />}
         {classDetails && <ClassDetailsModal classItem={classDetails} onClose={() => setClassDetails(null)} />}
-        {composeOpen && <ComposeModal students={students} classRows={classRows} onClose={() => { setComposeOpen(false); setToast({ type: 'success', message: 'Message sent to academy workflow.' }); }} />}
+        {composeOpen && <ComposeModal students={students} classRows={classRows} sending={savingAction === 'teacher-message'} onClose={() => setComposeOpen(false)} onSubmit={handleTeacherMessageSubmit} />}
       </div>
     );
   }
@@ -485,11 +699,11 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         header: 'Action',
         accessor: (row) => (
           <DashboardActionMenu
-            primaryAction={{ label: 'Join Class', onClick: () => joinClass(row, setToast) }}
+            primaryAction={{ label: 'Join Class', onClick: () => handleJoinClass(row) }}
             actions={[
-              { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast), hidden: row.isRecurringSchedule },
-              { label: 'Start Class', onClick: () => updateClassCheckin(row, 'live', setToast), hidden: row.isRecurringSchedule || row.status !== 'Live' },
-              { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.isRecurringSchedule || row.status !== 'Live' },
+              { label: 'I am Ready', onClick: () => handleClassLifecycle(row, 'ready'), hidden: row.isRecurringSchedule || !['Scheduled', 'Rescheduled'].includes(row.status) },
+              { label: 'Start Class', onClick: () => handleClassLifecycle(row, 'live'), hidden: row.isRecurringSchedule || !['Scheduled', 'Rescheduled'].includes(row.status) },
+              { label: 'End Class', onClick: () => handleClassLifecycle(row, 'completed'), hidden: row.isRecurringSchedule || row.status !== 'Live' },
               { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance'), hidden: row.isRecurringSchedule },
               { label: 'Add Class Report', onClick: () => setReportModal(row), hidden: row.isRecurringSchedule },
               { label: 'View Details', onClick: () => setClassDetails(row) },
@@ -521,9 +735,11 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                 <StatusBadge label={row.status} />
                 <div className="teacher-action-row">
                   <DashboardActionMenu
-                    primaryAction={{ label: 'Join Class', onClick: () => joinClass(row, setToast) }}
+                    primaryAction={{ label: 'Join Class', onClick: () => handleJoinClass(row) }}
                     actions={[
-                      { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast), hidden: row.isRecurringSchedule },
+                      { label: 'I am Ready', onClick: () => handleClassLifecycle(row, 'ready'), hidden: row.isRecurringSchedule || !['Scheduled', 'Rescheduled'].includes(row.status) },
+                      { label: 'Start Class', onClick: () => handleClassLifecycle(row, 'live'), hidden: row.isRecurringSchedule || !['Scheduled', 'Rescheduled'].includes(row.status) },
+                      { label: 'End Class', onClick: () => handleClassLifecycle(row, 'completed'), hidden: row.isRecurringSchedule || row.status !== 'Live' },
                       { label: 'View Details', onClick: () => setClassDetails(row) },
                       { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance'), hidden: row.isRecurringSchedule },
                       { label: 'Add Class Report', onClick: () => setReportModal(row), hidden: row.isRecurringSchedule },
@@ -562,12 +778,12 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           <DashboardActionMenu
             primaryAction={{
               label: ['Live', 'Upcoming'].includes(row.status) ? 'Join Class' : row.reportStatus === 'Needs Report' ? 'Add Report' : 'View Details',
-              onClick: row.isRecurringSchedule || ['Live', 'Upcoming'].includes(row.status) ? () => joinClass(row, setToast) : row.reportStatus === 'Needs Report' ? () => setReportModal(row) : () => setClassDetails(row),
+              onClick: row.isRecurringSchedule || ['Live', 'Upcoming', 'Scheduled', 'Rescheduled'].includes(row.status) ? () => handleJoinClass(row) : row.reportStatus === 'Needs Report' ? () => setReportModal(row) : () => setClassDetails(row),
             }}
             actions={[
-              { label: 'I am Ready', onClick: () => updateClassCheckin(row, 'ready', setToast), hidden: row.isRecurringSchedule || !['Live', 'Upcoming', 'Scheduled'].includes(row.status) },
-              { label: 'Start Class', onClick: () => updateClassCheckin(row, 'live', setToast), hidden: row.isRecurringSchedule || row.status !== 'Live' },
-              { label: 'End Class', onClick: () => updateClassCheckin(row, 'completed', setToast), hidden: row.isRecurringSchedule || row.status !== 'Live' },
+              { label: 'I am Ready', onClick: () => handleClassLifecycle(row, 'ready'), hidden: row.isRecurringSchedule || !['Scheduled', 'Rescheduled'].includes(row.status) },
+              { label: 'Start Class', onClick: () => handleClassLifecycle(row, 'live'), hidden: row.isRecurringSchedule || !['Scheduled', 'Rescheduled'].includes(row.status) },
+              { label: 'End Class', onClick: () => handleClassLifecycle(row, 'completed'), hidden: row.isRecurringSchedule || row.status !== 'Live' },
               { label: row.reportStatus === 'Submitted' ? 'View Report' : 'Add Report', onClick: row.reportStatus === 'Submitted' ? () => setClassDetails(row) : () => setReportModal(row), hidden: row.isRecurringSchedule || row.reportStatus === 'Needs Report' },
               { label: 'Set Homework', onClick: () => setReportModal(row), hidden: row.isRecurringSchedule },
               { label: 'Mark Attendance', onClick: () => navigate('/dashboard/teacher/attendance'), hidden: row.isRecurringSchedule },
@@ -610,14 +826,24 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
             <form className="dashboard-form">
               <div className="teacher-form-grid">
                 <label><span>Class</span><select value={selectedClassId} onChange={(event) => setSelectedClassId(event.target.value)}>{attendanceClassRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.student} - {classItem.dateTime}</option>)}</select></label>
-                <label><span>Date</span><input type="date" /></label>
+                <label><span>Date</span><input type="text" value={selectedClass.dateTime} readOnly /></label>
               </div>
               <div className="dashboard-attendance-list">
                 {[selectedClass.student].map((student) => (
                   <div className="dashboard-attendance-row dashboard-attendance-row--expanded" key={student}>
                     <span>{student}</span>
-                    {['present', 'absent', 'late', 'excused'].map((status) => <label key={status}><input type="radio" name={`attendance-${selectedClass.id}`} value={status} defaultChecked={status === 'present'} /> {status}</label>)}
-                    <input name={`attendance-note-${selectedClass.id}`} placeholder="Attendance note" />
+                    {(['present', 'absent', 'late', 'excused'] as const).map((status) => (
+                      <label key={status}>
+                        <input
+                          type="radio"
+                          name={`attendance-${selectedClass.id}`}
+                          value={status}
+                          checked={attendanceStatus === status}
+                          onChange={() => setAttendanceStatus(status)}
+                        /> {status}
+                      </label>
+                    ))}
+                    <input value={attendanceNotes} onChange={(event) => setAttendanceNotes(event.target.value)} placeholder="Attendance note" />
                     <StatusBadge label={selectedClass.attendanceStatus === 'Submitted' ? 'submitted' : 'pending'} />
                   </div>
                 ))}
@@ -625,25 +851,31 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
               <div className="dashboard-form-actions">
                 <ActionButton
                   variant="copper"
+                  disabled={savingAction === `attendance:${selectedClass.id}`}
                   onClick={async () => {
                     if (!selectedClass.studentId) {
                       setToast({ type: 'error', message: 'This class is missing a student record.' });
                       return;
                     }
 
-                    const selectedStatus = document.querySelector<HTMLInputElement>(`input[name="attendance-${selectedClass.id}"]:checked`)?.value || 'present';
-                    const notes = document.querySelector<HTMLInputElement>(`input[name="attendance-note-${selectedClass.id}"]`)?.value || '';
-                    await markTeacherAttendance({
-                      classId: selectedClass.id,
-                      studentId: selectedClass.studentId,
-                      status: selectedStatus as 'present' | 'absent' | 'late' | 'excused',
-                      notes,
-                    });
-                    setToast({ type: 'success', message: 'Attendance submitted.' });
-                    await loadTeacherOperations();
+                    setSavingAction(`attendance:${selectedClass.id}`);
+                    try {
+                      await markTeacherAttendance({
+                        classId: selectedClass.id,
+                        studentId: selectedClass.studentId,
+                        status: attendanceStatus,
+                        notes: attendanceNotes,
+                      });
+                      setToast({ type: 'success', message: 'Attendance submitted.' });
+                      await loadTeacherOperations();
+                    } catch (error) {
+                      setToast({ type: 'error', message: error instanceof Error ? error.message : 'Unable to save attendance.' });
+                    } finally {
+                      setSavingAction(null);
+                    }
                   }}
                 >
-                  Save Attendance
+                  {savingAction === `attendance:${selectedClass.id}` ? 'Saving...' : 'Save Attendance'}
                 </ActionButton>
               </div>
             </form>
@@ -719,7 +951,13 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
   }
 
   if (section === 'messages') {
-    const [selectedThread] = messageThreads;
+    const selectedThread = messageRows.find((message) => message.id === selectedMessageId) || messageRows[0] || null;
+    const filteredMessages = messageRows.filter((message) => {
+      const query = search.trim().toLowerCase();
+      if (!query) return true;
+      return [message.from, message.to, message.subject, message.body, message.student, message.relatedClass, message.category]
+        .some((value) => value.toLowerCase().includes(query));
+    });
     return (
       <div className="dashboard-page dashboard-page--management">
         <Toast toast={toast} onClose={() => setToast(null)} />
@@ -730,8 +968,17 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <div className="dashboard-grid dashboard-grid--two student-messages-layout">
           <SectionCard title="Inbox">
             <div className="student-messages-list">
-              {messageThreads.length === 0 && <p className="dashboard-empty-copy">No messages yet.</p>}
-              {messageThreads.map((thread) => <button className={`student-message-card ${selectedThread && thread.id === selectedThread.id ? 'is-selected' : ''}`} type="button" key={thread.id}><div><strong>{thread.from}</strong>{thread.unread && <StatusBadge label="new" />}</div><h3>{thread.subject}</h3><p>{thread.preview}</p><footer><span>{thread.student}</span><small>{thread.relatedClass}</small></footer></button>)}
+              {messagesLoading && <p className="dashboard-empty-copy">Loading messages...</p>}
+              {messagesError && <p className="dashboard-inline-error">{messagesError}</p>}
+              {!messagesLoading && filteredMessages.length === 0 && <p className="dashboard-empty-copy">No messages yet.</p>}
+              {filteredMessages.map((thread) => (
+                <button className={`student-message-card ${selectedThread && thread.id === selectedThread.id ? 'is-selected' : ''}`} type="button" key={thread.id} onClick={() => selectTeacherMessage(thread)}>
+                  <div><strong>{thread.direction === 'incoming' ? thread.from : `To ${thread.to}`}</strong>{thread.unread && <StatusBadge label="new" />}</div>
+                  <h3>{thread.subject}</h3>
+                  <p>{thread.preview}</p>
+                  <footer><span>{thread.student}</span><small>{thread.relatedClass}</small></footer>
+                </button>
+              ))}
             </div>
           </SectionCard>
           <SectionCard title="Message Thread">
@@ -747,14 +994,14 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                     ]}
                   />
                 </div>
-                <p>{selectedThread.preview}</p>
+                <p>{selectedThread.body}</p>
               </div>
             ) : (
               <p className="dashboard-empty-copy">Select a message when one is available.</p>
             )}
           </SectionCard>
         </div>
-        {composeOpen && <ComposeModal students={students} classRows={classRows} onClose={() => setComposeOpen(false)} />}
+        {composeOpen && <ComposeModal students={students} classRows={classRows} selectedMessage={selectedThread} sending={savingAction === 'teacher-message'} onClose={() => setComposeOpen(false)} onSubmit={handleTeacherMessageSubmit} />}
       </div>
     );
   }
@@ -762,20 +1009,23 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
   if (section === 'profile') {
     return (
       <div className="dashboard-page dashboard-page--management">
+        <Toast toast={toast} onClose={() => setToast(null)} />
         {commonHeader}
+        {profileError && <p className="dashboard-inline-error">{profileError}</p>}
         <div className="dashboard-grid dashboard-grid--two student-profile-layout">
-          <ProfilePanel name="Teacher Profile" subtitle="Academic profile will load from Supabase teacher records." role="teacher" status="No profile data" items={[{ label: 'Languages', value: 'Not set' }, { label: 'Availability', value: 'Not set' }, { label: 'Assigned students', value: String(students.length) }, { label: 'Current load', value: '0%' }, { label: 'Completed classes', value: String(classRows.filter((classItem) => classItem.status === 'Completed').length) }, { label: 'Average rating', value: 'No rating yet' }]} />
+          <ProfilePanel name={teacherProfile?.name || 'Teacher Profile'} subtitle={teacherProfile?.email || 'Teacher profile'} role="teacher" status={teacherProfile?.status || 'Loading'} items={[{ label: 'Languages', value: teacherProfile?.languages.join(', ') || 'Not set' }, { label: 'Availability', value: teacherProfile?.availability || 'Not set' }, { label: 'Assigned students', value: String(teacherProfile?.assignedStudents ?? students.length) }, { label: 'Classes', value: String(teacherProfile?.classesCount ?? classRows.length) }, { label: 'Specialization', value: teacherProfile?.specialization || 'Not set' }, { label: 'Phone', value: teacherProfile?.phone || 'Not set' }]} />
           <SectionCard title="Academic Profile">
-            <form className="dashboard-form">
-              <label><span>Bio</span><textarea rows={4} placeholder="Add or request a teacher bio update." /></label>
-              <label><span>Language preferences</span><input placeholder="Not set" /></label>
-              <label><span>Profile photo</span><input type="file" /></label>
+            <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); handleProfileSave(new FormData(event.currentTarget)); }}>
+              <label><span>Specialization</span><input name="specialization" defaultValue={teacherProfile?.specialization || ''} /></label>
+              <label><span>Languages</span><input name="languages" defaultValue={teacherProfile?.languages.join(', ') || ''} placeholder="Arabic, English" /></label>
+              <label><span>Bio</span><textarea name="bio" rows={4} defaultValue={teacherProfile?.bio || ''} /></label>
+              <label><span>Profile photo</span><input type="file" disabled title="Profile photo storage is not configured for teacher images yet." /></label>
               <div className="teacher-checklist">
                 <span><Icon name="certificate" size={16} />Ijazah document on file</span>
                 <span><Icon name="document" size={16} />Identity document verified</span>
                 <span><Icon name="shieldCheck" size={16} />Hourly rate, role, status, assigned students, and permissions are admin-managed</span>
               </div>
-              <div className="dashboard-form-actions"><ActionButton variant="copper">Save Profile Request</ActionButton><ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/settings')}>Notification Preferences</ActionButton></div>
+              <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper" disabled={savingAction === 'teacher-profile'}>{savingAction === 'teacher-profile' ? 'Saving' : 'Save Profile'}</ActionButton><ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/settings')}>Notification Preferences</ActionButton></div>
             </form>
           </SectionCard>
         </div>
@@ -785,23 +1035,31 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
 
   return (
     <div className="dashboard-page dashboard-page--management">
+      <Toast toast={toast} onClose={() => setToast(null)} />
       {commonHeader}
+      {profileError && <p className="dashboard-inline-error">{profileError}</p>}
       <div className="dashboard-grid dashboard-grid--two student-settings-layout">
         <SectionCard title="Notification Preferences">
-          <form className="dashboard-form">
-            {['Class reminders', 'Free trial reminders', 'Evaluation reminders', 'WhatsApp notifications', 'Email notifications'].map((item) => <label className="student-setting-toggle" key={item}><span><strong>{item}</strong><small>Receive operational reminders for assigned work.</small></span><input type="checkbox" defaultChecked /></label>)}
-            <label><span>Language</span><select defaultValue="English"><option>English</option><option>Arabic</option><option>Urdu</option></select></label>
-            <label><span>Timezone</span><select defaultValue="Africa/Cairo"><option>Africa/Cairo</option><option>Europe/London</option><option>America/New_York</option></select></label>
-            <div className="dashboard-form-actions"><ActionButton variant="copper">Save Preferences</ActionButton></div>
+          <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); handleSettingsSave(new FormData(event.currentTarget)); }}>
+            {[
+              ['classReminders', 'Class reminders'],
+              ['trialReminders', 'Free trial reminders'],
+              ['evaluationReminders', 'Evaluation reminders'],
+              ['whatsapp', 'WhatsApp notifications'],
+              ['email', 'Email notifications'],
+            ].map(([key, label]) => <label className="student-setting-toggle" key={key}><span><strong>{label}</strong><small>Stored on your profile preferences.</small></span><input type="checkbox" checked={Boolean(teacherPrefs[key])} onChange={(event) => setTeacherPrefs((current) => ({ ...current, [key]: event.target.checked }))} /></label>)}
+            <label><span>Language</span><select name="language" defaultValue={teacherProfile?.language || 'English'}><option>English</option><option>Arabic</option><option>Urdu</option></select></label>
+            <label><span>Timezone</span><select name="timezone" defaultValue={teacherProfile?.timezone || 'Africa/Cairo'}><option>Africa/Cairo</option><option>Europe/London</option><option>America/New_York</option><option>Asia/Riyadh</option></select></label>
+            <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper" disabled={savingAction === 'teacher-settings'}>{savingAction === 'teacher-settings' ? 'Saving' : 'Save Preferences'}</ActionButton></div>
           </form>
         </SectionCard>
         <SectionCard title="Security and Availability">
           <div className="student-security-list">
-            <button type="button"><Icon name="lock" size={16} />Change Password<Icon name="chevronRight" size={16} /></button>
-            <button type="button"><Icon name="calendar" size={16} />Request Availability Update<Icon name="chevronRight" size={16} /></button>
+            <button type="button" onClick={handlePasswordReset} disabled={savingAction === 'teacher-password'}><Icon name="lock" size={16} />Send Password Reset<Icon name="chevronRight" size={16} /></button>
           </div>
-          <form className="dashboard-form">
-            <label><span>Availability preferences</span><textarea rows={4} defaultValue="Weekday evenings, limited weekend availability by admin approval." /></label>
+          <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); handleAvailabilityRequest(new FormData(event.currentTarget)); }}>
+            <label><span>Availability preferences</span><textarea name="availabilityRequest" rows={4} defaultValue={teacherProfile?.availability || ''} required /></label>
+            <div className="dashboard-form-actions"><ActionButton type="submit" variant="secondary" disabled={savingAction === 'teacher-availability'}>{savingAction === 'teacher-availability' ? 'Sending' : 'Request Availability Update'}</ActionButton></div>
           </form>
         </SectionCard>
       </div>
