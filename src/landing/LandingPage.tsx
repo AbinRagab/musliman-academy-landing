@@ -1,4 +1,4 @@
-import { FormEvent, MouseEventHandler, useEffect, useState } from 'react';
+import { FormEvent, MouseEvent, MouseEventHandler, TouchEvent, useEffect, useRef, useState } from 'react';
 import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
@@ -7,6 +7,7 @@ import './styles/landing.css';
 import Icon, { IconName } from '../components/Icon';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import Logo from '../components/Logo';
+import { supportedLanguages, type SupportedLanguage } from '../i18n';
 import { buildWebsiteLeadPayload, type LandingBookingLeadData } from './services/leadPayload';
 import { trackGtmGenerateLead } from './services/googleTagManager';
 import { captureMarketingAttribution, getMarketingAttribution } from './services/marketingAttribution';
@@ -19,6 +20,7 @@ import {
   countryOptions,
   faqs,
   howSteps,
+  landingTeachers,
   navLinks,
   pricingData,
   programs as sitePrograms,
@@ -36,18 +38,25 @@ type DecorationVariant = 'light' | 'dark';
 type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'pricing' | 'why' | 'testimonials' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
 type VideoStory = {
   id: number;
-  label: string;
-  title: string;
-  description: string;
-  duration: string;
-  thumbnail: string;
   videoUrl: string;
-  type: 'embed' | 'mp4';
+  thumbnail: string;
+  title: string;
+  personName?: string;
+  country: string;
+  role: string;
+  duration?: string;
 };
 type OptimizedImage = {
   webp: string;
   width: number;
   height: number;
+};
+type TestimonialItem = (typeof testimonials)[number] & {
+  country?: string;
+  flag?: string;
+  photo?: string;
+  image?: string;
+  context?: string;
 };
 
 type DecorationItem =
@@ -99,6 +108,22 @@ const qualificationOptions = ['quranTeacher', 'arabicTeacher', 'islamicStudiesTe
 const trainingGoalOptions = ['teachNonArabic', 'onlineTeaching', 'lessonPlanning', 'studentFollowUp', 'joinAcademy', 'other'];
 const studentAgeOptions = ['child', 'teenager', 'adult'];
 const preferredTimeOptions = ['morning', 'afternoon', 'evening', 'flexible'];
+const heroLanguageLabels: Record<SupportedLanguage, string> = {
+  en: 'English',
+  ar: 'Arabic',
+  es: 'Spanish',
+  de: 'German',
+  it: 'Italian',
+  ur: 'Urdu',
+  tr: 'Turkish',
+};
+const aboutBenefits: Array<{ key: string; icon: IconName }> = [
+  { key: 'oneOnOne', icon: 'users' },
+  { key: 'personalizedPlan', icon: 'route' },
+  { key: 'realTimeFeedback', icon: 'messageCircle' },
+  { key: 'flexibleSchedule', icon: 'clock' },
+  { key: 'progressTracking', icon: 'progress' },
+];
 const imageAssets: Record<string, OptimizedImage> = {
   '/assets/hero-bg.png': { webp: '/assets/optimized/hero-bg.webp', width: 1672, height: 941 },
   '/assets/about-visual.png': { webp: '/assets/optimized/about-visual.webp', width: 1086, height: 1448 },
@@ -116,43 +141,43 @@ const imageAssets: Record<string, OptimizedImage> = {
 const videoStories: VideoStory[] = [
   {
     id: 1,
-    label: 'Student Story',
-    title: 'From First Letters to Confident Quran Reading',
-    description: 'Step-by-step progress with Tajweed',
-    duration: '1:24',
-    thumbnail: '/assets/hero-bg.png',
     videoUrl: '/videos/student-story.mp4',
-    type: 'mp4',
+    thumbnail: '/assets/hero-bg.png',
+    title: 'A Quran Learning Journey',
+    personName: 'Student Story',
+    country: 'Country not provided',
+    role: 'Quran Reading Student',
+    duration: '1:24',
   },
   {
     id: 2,
-    label: 'Parent Feedback',
-    title: 'Parent Feedback',
-    description: 'How our team supports every learner',
-    duration: '1:15',
+    videoUrl: '/videos/parent-feedback.mp4',
     thumbnail: '/assets/why-choose-visual.png',
-    videoUrl: 'https://www.youtube.com/embed/YOUTUBE_VIDEO_ID',
-    type: 'embed',
+    title: 'A Parent Shares Their Experience',
+    personName: 'Parent Story',
+    country: 'Country not provided',
+    role: 'Parent of a Quran Student',
+    duration: '1:15',
   },
   {
     id: 3,
-    label: 'Arabic Beginner',
-    title: 'Arabic Beginner',
-    description: 'Learning Arabic with clarity',
-    duration: '1:07',
-    thumbnail: '/assets/about-visual.png',
     videoUrl: '/videos/arabic-beginner.mp4',
-    type: 'mp4',
+    thumbnail: '/assets/about-visual.png',
+    title: 'Growing in Arabic with Confidence',
+    personName: 'Student Story',
+    country: 'Country not provided',
+    role: 'Arabic Language Student',
+    duration: '1:07',
   },
   {
     id: 4,
-    label: 'Teacher Training',
-    title: 'Teacher Training',
-    description: 'Training teachers to guide with confidence',
-    duration: '1:42',
+    videoUrl: '/videos/parent-learning-story.mp4',
     thumbnail: '/assets/teacher-training-visual.jpg',
-    videoUrl: '/videos/teacher-training.mp4',
-    type: 'mp4',
+    title: 'Learning with Care and Consistency',
+    personName: 'Parent Story',
+    country: 'Country not provided',
+    role: 'Parent of an Online Learner',
+    duration: '1:42',
   },
 ];
 
@@ -428,30 +453,35 @@ function SectionDecorations({ variant = 'light', type = 'default' }: { variant?:
 function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: BookingType) => void }) {
   const { t } = useTranslation();
 
+  function handleBookTrialClick(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    onSelectBookingType('trial');
+    document.getElementById('book-trial')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   return (
     <section className="hero section-dark" id="home">
       <div className="hero__overlay" />
       <div className="hero__pattern" />
       <div className="container hero__inner">
         <div className="hero__content">
-          <div className="hero__eyebrow">
-            <span>{t('hero.eyebrow.live')}</span>
-            <i />
-            <span>{t('hero.eyebrow.personalized')}</span>
-            <i />
-            <span>{t('hero.eyebrow.trusted')}</span>
-          </div>
-          <h1>
-            {t('hero.headlineLine1')}<br />
-            {t('hero.headlineLine2')}<br />
-            <span>{t('hero.headlineAccent')}</span>
-          </h1>
+          <div className="hero__eyebrow">{t('hero.eyebrow')}</div>
+          <h1>{t('hero.headline')}</h1>
           <p>{t('hero.description')}</p>
-          <Button href="#book-trial" icon="calendar" className="hero__cta" onClick={(event) => { event.preventDefault(); onSelectBookingType('trial'); document.getElementById('book-trial')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>{t('hero.cta')}</Button>
-          <div className="hero-trust">
-            <div><Icon name="laptop" /><span>{t('hero.trust.online')}</span></div>
-            <div><Icon name="clock" /><span>{t('hero.trust.schedule')}</span></div>
-            <div><Icon name="star" /><span>{t('hero.trust.levels')}</span></div>
+          <div className="hero__actions">
+            <Button href="#book-trial" icon="calendar" className="hero__cta" onClick={handleBookTrialClick}>{t('hero.cta')}</Button>
+            <a className="btn hero__cta-secondary" href="#programs">
+              <Icon name="bookOpen" />
+              <span>{t('hero.secondaryCta')}</span>
+            </a>
+          </div>
+          <div className="hero-languages" aria-label={t('hero.languagesTitle')}>
+            <span className="hero-languages__title">{t('hero.languagesTitle')}</span>
+            <div className="hero-languages__list">
+              {supportedLanguages.map((language) => (
+                <span className="hero-languages__item" key={language}>{heroLanguageLabels[language]}</span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -788,20 +818,31 @@ function AboutSection() {
       <SectionDecorations variant="light" type="about" />
       <div className="container about-container about-section__grid">
         <div className="about-visual">
-          <OptimizedPicture
-            src="/assets/about-visual.png"
-            alt={t('about.imageAlt')}
-            className="about-visual__image"
+          <iframe
+            className="about-video"
+            src="https://www.youtube-nocookie.com/embed/hfY3wG7ddbQ"
+            title={t('about.videoTitle')}
             loading="lazy"
-            decoding="async"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
           />
         </div>
         <div className="about-content">
-          <SectionBadge icon="star">{t('about.badge')}</SectionBadge>
           <h2>{t('about.heading')}</h2>
           <p className="about-lead">{t('about.lead')}</p>
-          <p>{t('about.paragraph1')}</p>
-          <p>{t('about.paragraph2')}</p>
+          <div className="about-benefits">
+            {aboutBenefits.map((benefit) => (
+              <div className="about-benefit" key={benefit.key}>
+                <span className="about-benefit__icon">
+                  <Icon name={benefit.icon} />
+                </span>
+                <span className="about-benefit__content">
+                  <strong>{t(`about.benefits.${benefit.key}.title`)}</strong>
+                  <span>{t(`about.benefits.${benefit.key}.text`)}</span>
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -1059,129 +1100,237 @@ function WhyChooseSection() {
 
 function TestimonialsSection() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [cardsPerView, setCardsPerView] = useState(3);
+  const touchStartX = useRef<number | null>(null);
+  const verifiedTestimonials = (testimonials as TestimonialItem[]).filter((item) => (
+    Boolean(item.quote?.trim() && item.name?.trim())
+  ));
+  const hasCarousel = verifiedTestimonials.length > cardsPerView;
 
   function goNext() {
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
+    if (!verifiedTestimonials.length) {
+      return;
+    }
+
+    setActiveIndex((prev) => (prev + 1) % verifiedTestimonials.length);
   }
 
   function goPrev() {
-    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+    if (!verifiedTestimonials.length) {
+      return;
+    }
+
+    setActiveIndex((prev) => (prev === 0 ? verifiedTestimonials.length - 1 : prev - 1));
   }
 
   useEffect(() => {
-    if (isPaused || prefersReducedMotion()) {
-      return undefined;
+    function updateCardsPerView() {
+      if (window.innerWidth <= 640) {
+        setCardsPerView(1);
+        return;
+      }
+
+      if (window.innerWidth <= 980) {
+        setCardsPerView(2);
+        return;
+      }
+
+      setCardsPerView(window.innerWidth >= 1280 ? 4 : 3);
     }
 
-    const interval = window.setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % testimonials.length);
-    }, 4000);
+    updateCardsPerView();
+    window.addEventListener('resize', updateCardsPerView);
+    return () => window.removeEventListener('resize', updateCardsPerView);
+  }, []);
 
-    return () => window.clearInterval(interval);
-  }, [isPaused]);
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [cardsPerView, verifiedTestimonials.length]);
 
-  const visibleTestimonials = Array.from({ length: 3 }, (_, offset) => testimonials[(activeIndex + offset) % testimonials.length]);
+  function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  }
+
+  function handleTouchEnd(event: TouchEvent<HTMLDivElement>) {
+    if (touchStartX.current === null) {
+      return;
+    }
+
+    const distance = (event.changedTouches[0]?.clientX ?? touchStartX.current) - touchStartX.current;
+    touchStartX.current = null;
+
+    if (Math.abs(distance) < 45) {
+      return;
+    }
+
+    if (distance < 0) {
+      goNext();
+    } else {
+      goPrev();
+    }
+  }
+
+  const visibleTestimonials = hasCarousel
+    ? Array.from({ length: cardsPerView }, (_, offset) => verifiedTestimonials[(activeIndex + offset) % verifiedTestimonials.length])
+    : verifiedTestimonials;
 
   return (
     <section className="testimonials-section section-light" id="testimonials">
       <SectionDecorations variant="light" type="testimonials" />
       <div className="container testimonials-container">
         <div className="section-heading testimonials-heading">
-          <SectionBadge icon="star">Student & Parent Stories</SectionBadge>
-          <h2>What Our Learners Say</h2>
-          <p>Real feedback from learners and parents who started their Quran and Arabic learning journey with Musliman Academy.</p>
+          <SectionBadge icon="star">STUDENT STORIES</SectionBadge>
+          <h2>Loved by Learners Around the World</h2>
+          <p>See what students and parents say about their learning experience with Musliman Academy.</p>
         </div>
 
-        <div
-          className="testimonials-slider-area"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          <div className="testimonials-controls">
-            <button type="button" className="testimonial-btn" onClick={goPrev} aria-label="Previous testimonial">
-              <Icon name="chevronLeft" />
-            </button>
-            <button type="button" className="testimonial-btn" onClick={goNext} aria-label="Next testimonial">
-              <Icon name="chevronRight" />
-            </button>
-          </div>
+        {visibleTestimonials.length > 0 ? (
+          <div
+            className="testimonials-slider-area"
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Student and parent testimonials"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {hasCarousel && (
+              <div className="testimonials-controls">
+                <button type="button" className="testimonial-btn" onClick={goPrev} aria-label="Previous testimonial">
+                  <Icon name="chevronLeft" />
+                </button>
+                <button type="button" className="testimonial-btn" onClick={goNext} aria-label="Next testimonial">
+                  <Icon name="chevronRight" />
+                </button>
+              </div>
+            )}
 
+            <div className="testimonials-grid" aria-live="polite">
+              {visibleTestimonials.map((item, index) => {
+                const photo = item.photo || item.image;
+                const context = item.context || item.role || item.program;
+                const initials = item.name
+                  .split(' ')
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .map((part) => part[0])
+                  .join('')
+                  .toUpperCase();
+
+                return (
+                  <article
+                    className="testimonial-card"
+                    key={`${item.name}-${item.country || item.program || index}`}
+                  >
+                    <div className="testimonial-card__top">
+                      <div className="testimonial-avatar">
+                        {photo ? (
+                          <img src={photo} alt={item.name} loading="lazy" decoding="async" />
+                        ) : (
+                          <span>{initials}</span>
+                        )}
+                      </div>
+
+                      <div className="testimonial-profile">
+                        <h3>{item.name}</h3>
+                        {(item.country || item.flag) && (
+                          <span className="testimonial-country">
+                            {item.flag && <span aria-hidden="true">{item.flag}</span>}
+                            {item.country}
+                          </span>
+                        )}
+                        {context && <span className="testimonial-context">{context}</span>}
+                      </div>
+                    </div>
+
+                    <p className="testimonial-quote">{item.quote}</p>
+
+                    {typeof item.rating === 'number' && item.rating > 0 && (
+                      <div className="testimonial-rating" role="img" aria-label={`${item.rating} star rating`}>
+                        {Array.from({ length: item.rating }).map((_, starIndex) => (
+                          <Icon key={starIndex} name="star" />
+                        ))}
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+
+            {hasCarousel && (
+              <div className="testimonial-dots">
+                {verifiedTestimonials.map((_, index) => (
+                  <button
+                    type="button"
+                    key={index}
+                    className={`testimonial-dot ${index === activeIndex ? 'is-active' : ''}`}
+                    onClick={() => setActiveIndex(index)}
+                    aria-label={`Show testimonial ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
           <div className="testimonials-grid">
-            {visibleTestimonials.map((item, index) => (
-              <article
-                className={`testimonial-card ${index === 1 ? 'is-featured' : ''}`}
-                key={`${item.name}-${item.program}-${index}`}
-              >
-                <div className="testimonial-quote-mark" aria-hidden="true" />
-
-                <div className="testimonial-rating" role="img" aria-label={`${item.rating} star rating`}>
-                  {Array.from({ length: item.rating }).map((_, starIndex) => (
-                    <Icon key={starIndex} name="star" />
-                  ))}
+            <article className="testimonial-card testimonial-card--empty">
+              <div className="testimonial-card__top">
+                <div className="testimonial-avatar">
+                  <Icon name="user" />
                 </div>
-
-                <p className="testimonial-quote">{item.quote}</p>
-
-                <div className="testimonial-footer">
-                  <div className="testimonial-avatar">
-                    <Icon name="user" />
-                  </div>
-
-                  <div>
-                    <h3>{item.name}</h3>
-                    <p>{item.role}</p>
-                  </div>
+                <div className="testimonial-profile">
+                  <h3>Verified feedback pending</h3>
+                  <span className="testimonial-context">Student and parent stories</span>
                 </div>
-
-                <span className="testimonial-program">{item.program}</span>
-              </article>
-            ))}
+              </div>
+              <p className="testimonial-quote">
+                Verified testimonials with names, countries, and photos will appear here once they are added to the site data.
+              </p>
+            </article>
           </div>
-
-          <div className="testimonial-dots">
-            {testimonials.map((_, index) => (
-              <button
-                type="button"
-                key={index}
-                className={`testimonial-dot ${index === activeIndex ? 'is-active' : ''}`}
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Show testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="testimonials-cta">
-          <p>Ready to start your learning journey?</p>
-          <Button href="#book-trial" icon="calendar">Book a Free Trial</Button>
-        </div>
+        )}
       </div>
     </section>
   );
 }
 
 function VideoStoriesSection() {
-  const [activeVideo, setActiveVideo] = useState<VideoStory>(videoStories[0]);
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [videoOrder, setVideoOrder] = useState(videoStories);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const activeVideo = videoOrder[0];
+  const sideVideos = videoOrder.slice(1, 3);
 
-  useEffect(() => {
-    if (!isVideoOpen) {
-      return undefined;
-    }
+  function getYouTubeEmbedUrl(url: string) {
+    const match = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|shorts\/))([^?&/]+)/);
+    return match?.[1] ? `https://www.youtube-nocookie.com/embed/${match[1]}?autoplay=1` : null;
+  }
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setIsVideoOpen(false);
+  function selectVideo(index: number) {
+    setVideoOrder((current) => {
+      const next = [...current];
+      [next[0], next[index]] = [next[index], next[0]];
+      return next;
+    });
+    setIsPlaying(false);
+  }
+
+  function rotatePlaylist(direction: 'next' | 'prev') {
+    setVideoOrder((current) => {
+      const [featured, ...playlist] = current;
+      if (playlist.length < 2) {
+        return current;
       }
-    }
 
-    window.addEventListener('keydown', handleKeyDown);
+      if (direction === 'next') {
+        playlist.push(playlist.shift() as VideoStory);
+      } else {
+        playlist.unshift(playlist.pop() as VideoStory);
+      }
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isVideoOpen]);
+      return [featured, ...playlist];
+    });
+  }
+
+  const activeYouTubeUrl = getYouTubeEmbedUrl(activeVideo.videoUrl);
 
   return (
     <section className="video-stories-section section-dark" id="video-stories">
@@ -1192,153 +1341,84 @@ function VideoStoriesSection() {
         <div className="video-stories-header">
           <div className="section-badge section-badge--dark">
             <Icon name="play" />
-            <span>Real Learning Moments</span>
+            <span>VIDEO TESTIMONIALS</span>
           </div>
 
-          <h2>Watch How Our Students Learn with Confidence</h2>
+          <h2>Hear From Our Students &amp; Parents</h2>
 
           <div className="section-divider" aria-hidden="true" />
 
-          <p>
-            Short video stories from students, parents, and teachers showing how Musliman Academy supports Quran, Arabic, and Islamic learning step by step.
-          </p>
+          <p>Real experiences from learners and families who have been part of Musliman Academy.</p>
         </div>
 
-        <div className="video-stories-layout">
-          <div className="video-feature-card">
-            <OptimizedPicture
-              src={activeVideo.thumbnail}
-              alt={activeVideo.title}
-              className="video-feature-card__image"
-              loading="lazy"
-              decoding="async"
-            />
-
-            <div className="video-feature-card__overlay" />
-
-            <div className="video-feature-card__top">
-              <span className="video-label">
-                <Icon name="users" />
-                {activeVideo.label}
-              </span>
-
-              <span className="video-duration">{activeVideo.duration}</span>
+        <div className="video-featured-layout">
+          <article className="video-featured-card" aria-live="polite">
+            <div className="video-featured-card__media">
+              {isPlaying ? (
+                activeYouTubeUrl ? (
+                  <iframe
+                    src={activeYouTubeUrl}
+                    title={activeVideo.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video controls autoPlay playsInline poster={activeVideo.thumbnail}>
+                    <source src={activeVideo.videoUrl} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )
+              ) : (
+                <button type="button" className="video-featured-card__poster" onClick={() => setIsPlaying(true)} aria-label={`Play ${activeVideo.title}`}>
+                  <OptimizedPicture src={activeVideo.thumbnail} alt="" loading="lazy" decoding="async" />
+                  <span className="video-featured-card__overlay" aria-hidden="true" />
+                  <span className="video-featured-card__play" aria-hidden="true"><Icon name="play" /></span>
+                  <span className="video-featured-card__status">Now Playing</span>
+                  {activeVideo.duration && <span className="video-featured-card__duration">{activeVideo.duration}</span>}
+                </button>
+              )}
             </div>
-
-            <button
-              type="button"
-              className="video-play-button"
-              aria-label={`Play ${activeVideo.title}`}
-              onClick={() => setIsVideoOpen(true)}
-            >
-              <Icon name="play" />
-            </button>
-
-            <div className="video-feature-card__content">
+            <div className="video-featured-card__body">
               <h3>{activeVideo.title}</h3>
-
-              <div className="video-progress-line" aria-hidden="true">
-                <span />
+              <div className="video-featured-card__meta">
+                {activeVideo.personName && <strong>{activeVideo.personName}</strong>}
+                <span>{activeVideo.country}</span>
+                <span>{activeVideo.role}</span>
               </div>
             </div>
-          </div>
+          </article>
 
-          <aside className="video-playlist-card">
-            <div className="video-playlist-title">
-              <Icon name="list" />
-              <span>Video Playlist</span>
+          <aside className="video-side-playlist" aria-label="More video testimonials">
+            <div className="video-side-playlist__heading">
+              <span>More stories</span>
+              {videoOrder.length > 3 && (
+                <div className="video-side-playlist__controls">
+                  <button type="button" onClick={() => rotatePlaylist('prev')} aria-label="Previous testimonial choices"><Icon name="chevronLeft" /></button>
+                  <button type="button" onClick={() => rotatePlaylist('next')} aria-label="Next testimonial choices"><Icon name="chevronRight" /></button>
+                </div>
+              )}
             </div>
 
-            <div className="video-playlist-list">
-              {videoStories.map((item, index) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  className={`video-playlist-item ${activeVideo.id === item.id ? 'is-active' : ''}`}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setActiveVideo(item);
-                    setIsVideoOpen(true);
-                  }}
-                >
-                  <span className="video-playlist-number">
-                    {String(index + 1).padStart(2, '0')}
+            <div className="video-side-playlist__items">
+              {sideVideos.map((video, index) => (
+                <button type="button" className="video-side-item" key={video.id} onClick={() => selectVideo(index + 1)}>
+                  <span className="video-side-item__thumb">
+                    <OptimizedPicture src={video.thumbnail} alt="" loading="lazy" decoding="async" />
+                    <span className="video-side-item__overlay" aria-hidden="true" />
+                    <span className="video-side-item__play" aria-hidden="true"><Icon name="play" /></span>
+                    {video.duration && <span className="video-side-item__duration">{video.duration}</span>}
                   </span>
-
-                  <span className="video-playlist-thumb">
-                    <OptimizedPicture src={item.thumbnail} alt="" loading="lazy" decoding="async" />
-                    <span className="video-playlist-thumb__play">
-                      <Icon name="play" />
-                    </span>
+                  <span className="video-side-item__content">
+                    <strong>{video.title}</strong>
+                    <small>{video.personName && `${video.personName} · `}{video.country}</small>
+                    <span>{video.role}</span>
                   </span>
-
-                  <span className="video-playlist-text">
-                    <strong>{item.title}</strong>
-                    <small>{item.description}</small>
-                  </span>
-
-                  <span className="video-playlist-duration">{item.duration}</span>
                 </button>
               ))}
             </div>
           </aside>
         </div>
-
-        <div className="video-stories-cta">
-          <div className="video-stories-cta__icon">
-            <Icon name="star" />
-          </div>
-
-          <div>
-            <h3>Want your child to start their journey?</h3>
-            <p>Book a free trial class and experience the difference.</p>
-          </div>
-
-          <Button href="#book-trial" icon="calendar" className="video-stories-cta__button">
-            Book a Free Trial Class
-          </Button>
-        </div>
       </div>
-
-      {isVideoOpen && (
-        <div
-          className="video-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label={activeVideo.title}
-          onClick={() => setIsVideoOpen(false)}
-        >
-          <div
-            className="video-modal__content"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="video-modal__close"
-              aria-label="Close video"
-              onClick={() => setIsVideoOpen(false)}
-            >
-              <Icon name="x" />
-            </button>
-
-            <div className="video-modal__player">
-              {activeVideo.type === 'embed' ? (
-                <iframe
-                  src={activeVideo.videoUrl}
-                  title={activeVideo.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : (
-                <video controls autoPlay poster={activeVideo.thumbnail}>
-                  <source src={activeVideo.videoUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
@@ -1365,6 +1445,134 @@ function HowItWorksSection() {
             </article>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function TeachersSection() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [cardsPerView, setCardsPerView] = useState(3);
+  const touchStartX = useRef<number | null>(null);
+  const publishedTeachers = landingTeachers.filter((teacher) => (
+    teacher.fullName.trim() && teacher.specialization.trim() && teacher.photo.trim()
+  ));
+  const hasCarousel = publishedTeachers.length > cardsPerView;
+
+  useEffect(() => {
+    function updateCardsPerView() {
+      if (window.innerWidth <= 640) {
+        setCardsPerView(1);
+      } else if (window.innerWidth <= 980) {
+        setCardsPerView(2);
+      } else {
+        setCardsPerView(3);
+      }
+    }
+
+    updateCardsPerView();
+    window.addEventListener('resize', updateCardsPerView);
+    return () => window.removeEventListener('resize', updateCardsPerView);
+  }, []);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [cardsPerView, publishedTeachers.length]);
+
+  function goNext() {
+    setActiveIndex((current) => (current + 1) % publishedTeachers.length);
+  }
+
+  function goPrev() {
+    setActiveIndex((current) => (current === 0 ? publishedTeachers.length - 1 : current - 1));
+  }
+
+  function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  }
+
+  function handleTouchEnd(event: TouchEvent<HTMLDivElement>) {
+    if (touchStartX.current === null || !hasCarousel) {
+      touchStartX.current = null;
+      return;
+    }
+
+    const distance = (event.changedTouches[0]?.clientX ?? touchStartX.current) - touchStartX.current;
+    touchStartX.current = null;
+
+    if (Math.abs(distance) < 45) {
+      return;
+    }
+
+    if (distance < 0) {
+      goNext();
+    } else {
+      goPrev();
+    }
+  }
+
+  const visibleTeachers = hasCarousel
+    ? Array.from({ length: cardsPerView }, (_, offset) => publishedTeachers[(activeIndex + offset) % publishedTeachers.length])
+    : publishedTeachers;
+
+  return (
+    <section className="teachers-section section-light" id="teachers">
+      <div className="container teachers-container">
+        <div className="section-heading section-heading--center teachers-heading">
+          <span className="eyebrow-line">OUR TEACHERS</span>
+          <h2>Learn from Experienced &amp; Caring Teachers</h2>
+          <p>Learn with qualified teachers who combine strong Islamic knowledge, teaching experience, and a personal approach to every student.</p>
+        </div>
+
+        {visibleTeachers.length > 0 ? (
+          <div
+            className="teachers-carousel"
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Musliman Academy teachers"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {hasCarousel && (
+              <div className="teachers-carousel__controls">
+                <button type="button" onClick={goPrev} aria-label="Previous teachers"><Icon name="chevronLeft" /></button>
+                <button type="button" onClick={goNext} aria-label="Next teachers"><Icon name="chevronRight" /></button>
+              </div>
+            )}
+
+            <div className="teachers-grid" aria-live="polite">
+              {visibleTeachers.map((teacher) => (
+                <article className="teacher-card" key={teacher.id}>
+                  <div className="teacher-card__photo">
+                    <img
+                      src={teacher.photo}
+                      alt={teacher.fullName}
+                      loading="lazy"
+                      decoding="async"
+                      style={{ objectPosition: teacher.photoPosition || 'center 22%' }}
+                    />
+                  </div>
+                  <div className="teacher-card__content">
+                    <h3>{teacher.fullName}</h3>
+                    <p className="teacher-card__specialization">{teacher.specialization}</p>
+                    {(teacher.experience || teacher.qualification) && (
+                      <div className="teacher-card__details">
+                        {teacher.experience && <span><Icon name="clock" />{teacher.experience}</span>}
+                        {teacher.qualification && <span><Icon name="award" />{teacher.qualification}</span>}
+                      </div>
+                    )}
+                    {teacher.languages && teacher.languages.length > 0 && (
+                      <div className="teacher-card__languages">
+                        <strong>Languages</strong>
+                        {teacher.languages.map((language) => <span key={language}>{language}</span>)}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     </section>
   );
@@ -1609,6 +1817,7 @@ export default function LandingPage() {
         <TestimonialsSection />
         <VideoStoriesSection />
         <HowItWorksSection />
+        <TeachersSection />
         <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />
         <FAQSection />
       </main>

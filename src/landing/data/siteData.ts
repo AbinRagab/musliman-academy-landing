@@ -363,9 +363,60 @@ export const reasons: Array<{ key: string; icon: IconName }> = [
 ];
 
 export const howSteps: Array<{ step: string; key: string; icon: IconName }> = [
-  { step: '01', key: 'bookTrial', icon: 'calendar' },
-  { step: '02', key: 'meetTeacher', icon: 'video' },
-  { step: '03', key: 'startLearning', icon: 'book' },
+  { step: '01', key: 'freeTrial', icon: 'gift' },
+  { step: '02', key: 'findPlan', icon: 'route' },
+  { step: '03', key: 'setSchedule', icon: 'clock' },
+  { step: '04', key: 'startLearning', icon: 'book' },
+];
+
+export type LandingTeacher = {
+  id: string;
+  fullName: string;
+  specialization: string;
+  photo: string;
+  photoPosition?: string;
+  experience?: string;
+  qualification?: string;
+  languages?: string[];
+};
+
+export const landingTeachers: LandingTeacher[] = [
+  {
+    id: 'teacher-design-1',
+    fullName: 'Teacher Name',
+    specialization: 'Quran & Tajweed Teacher',
+    photo: '/assets/teacher-placeholder.svg',
+    experience: '5+ Years Experience',
+    qualification: 'Al-Azhar Graduate',
+    languages: ['Arabic', 'English'],
+  },
+  {
+    id: 'teacher-design-2',
+    fullName: 'Teacher Name',
+    specialization: 'Arabic Language Teacher',
+    photo: '/assets/teacher-placeholder.svg',
+    experience: '4+ Years Experience',
+    qualification: 'Qualified Arabic Teacher',
+    languages: ['Arabic', 'English'],
+  },
+  {
+    id: 'teacher-design-3',
+    fullName: 'Teacher Name',
+    specialization: 'Islamic Studies Teacher',
+    photo: '/assets/teacher-placeholder.svg',
+    experience: '6+ Years Experience',
+    qualification: 'Islamic Studies Teacher',
+    languages: ['Arabic', 'English'],
+  },
+  {
+    id: 'teacher-design-4',
+    fullName: 'Teacher Name',
+    specialization: 'Quran Memorization Teacher',
+    photo: '/assets/teacher-placeholder.svg',
+    experience: '5+ Years Experience',
+    qualification: 'Quran Teacher',
+    languages: ['Arabic', 'English'],
+  },
 ];
 
 export const trainingIncludes: Array<{ key: string; icon: IconName }> = [

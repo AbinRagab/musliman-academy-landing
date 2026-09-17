@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title description">
+  <title id="title">Temporary teacher portrait placeholder</title>
+  <desc id="description">A neutral abstract silhouette for the teacher card design</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3eadf"/>
+      <stop offset="1" stop-color="#dfcfbb"/>
+    </linearGradient>
+    <linearGradient id="arch" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c58a56" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#b87333" stop-opacity=".08"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#background)"/>
+  <circle cx="112" cy="96" r="150" fill="#fffaf2" opacity=".38"/>
+  <circle cx="720" cy="540" r="190" fill="#b87333" opacity=".06"/>
+  <path d="M202 600V313c0-111 89-201 198-201s198 90 198 201v287Z" fill="url(#arch)"/>
+  <circle cx="400" cy="278" r="86" fill="#0b1f3a" opacity=".72"/>
+  <path d="M238 600c10-128 72-213 162-213s152 85 162 213Z" fill="#0b1f3a" opacity=".72"/>
+  <path d="M296 206c23-77 179-85 208 0-29-29-67-44-104-44s-75 15-104 44Z" fill="#b87333" opacity=".55"/>
+  <path d="M352 459h96" stroke="#f3eadf" stroke-width="8" stroke-linecap="round" opacity=".45"/>
+</svg>
