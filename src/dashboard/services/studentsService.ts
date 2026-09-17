@@ -6,7 +6,7 @@ import {
   replaceStudentClassSchedules,
 } from './classSchedulesService';
 import { getStudentDisplayName } from './displayNameUtils';
-import { fetchPrograms } from './programsService';
+import { fetchPrograms } from '../../shared/services/programsService';
 import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById, resolveTeacherProfileId } from './teachersService';
 import { getAcademyTodayDate, getNowIso } from './dateUtils';
 import type {

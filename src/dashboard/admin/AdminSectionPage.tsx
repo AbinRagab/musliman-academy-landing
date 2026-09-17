@@ -33,7 +33,7 @@ import {
   type StudentSchedulePayload,
 } from '../services/studentsService';
 import { fetchAdminTeacherRows } from '../services/teachersService';
-import { usePrograms } from '../services/programsService';
+import { usePrograms } from '../../shared/services/programsService';
 import {
   assignTrialTeacher,
   cancelClassOccurrence,

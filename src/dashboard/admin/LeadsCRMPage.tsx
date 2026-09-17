@@ -42,7 +42,7 @@ import {
   type UpdateLeadPayload,
 } from '../services/leadsService';
 import { getLeadAcquisition, leadMatchesAttributionSearch, marketingAttributionFieldKeys } from '../services/leadAttribution';
-import { usePrograms, type ProgramRecord } from '../services/programsService';
+import { usePrograms, type ProgramRecord } from '../../shared/services/programsService';
 
 type ProgramOption = ProgramRecord;
 type OwnerOption = { id: string; full_name: string; email: string; role: string; status: string };

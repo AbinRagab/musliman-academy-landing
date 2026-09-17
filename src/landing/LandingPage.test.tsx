@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { initializeI18n } from '../i18n';
 import LandingPage from './LandingPage';
 
-vi.mock('../dashboard/services/programsService', () => ({
+vi.mock('../shared/services/programsService', () => ({
   usePrograms: () => ({ loading: false, error: null, programs: [], refetch: vi.fn() }),
 }));
 

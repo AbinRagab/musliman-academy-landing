@@ -2,7 +2,7 @@ import { supabase } from '../../lib/supabaseClient';
 import type { AuthRole } from '../auth/AuthProvider';
 import { getAcademyTodayDate } from './dateUtils';
 import { leadMatchesAttributionSearch } from './leadAttribution';
-import { fetchPrograms as fetchActivePrograms } from './programsService';
+import { fetchPrograms as fetchActivePrograms } from '../../shared/services/programsService';
 import { fetchActiveTeacherOptions, resolveOperationalTeacherId, resolveTeacherNamesById } from './teachersService';
 
 export type LeadStatus =

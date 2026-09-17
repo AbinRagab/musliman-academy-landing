@@ -6524,3 +6524,43 @@ body.dark-mode .program-card p {
     transition-duration: 0.01ms !important;
   }
 }
+/* Route-level 404 fallback used during client-side navigation and local preview. */
+.route-not-found {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  color: #0b1f3a;
+  background: #f7f4ec;
+}
+
+.route-not-found img {
+  width: min(230px, 70vw);
+  height: auto;
+}
+
+.route-not-found__code {
+  margin: 0;
+  color: #b7924b;
+  font-size: clamp(4rem, 12vw, 7rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.route-not-found h1,
+.route-not-found p {
+  margin: 0;
+}
+
+.route-not-found a {
+  margin-top: 0.5rem;
+  padding: 0.8rem 1.25rem;
+  border-radius: 999px;
+  color: #fff;
+  background: #0b1f3a;
+  text-decoration: none;
+  font-weight: 700;
+}

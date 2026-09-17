@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
+# Dashboard pages remain crawlable so search engines can read their
+# X-Robots-Tag: noindex response header.
 Sitemap: https://www.muslimanacademy.com/sitemap.xml
