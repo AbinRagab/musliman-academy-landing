@@ -3,7 +3,6 @@ import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
 import type { IconType } from 'react-icons';
-import './styles/landing.css';
 import Icon, { IconName } from '../components/Icon';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import Logo from '../components/Logo';
@@ -1757,7 +1756,7 @@ export function Footer({ anchorPrefix = '', logoHref = '#home' }: { anchorPrefix
   );
 }
 
-export default function LandingPage() {
+export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean }) {
   const { i18n, t } = useTranslation();
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') {
@@ -1788,6 +1787,10 @@ export default function LandingPage() {
   }, [theme]);
 
   useEffect(() => {
+    if (!manageSeo) {
+      return;
+    }
+
     applyPageSeo({
       title: t('seo.title'),
       description: t('seo.description'),
@@ -1797,7 +1800,7 @@ export default function LandingPage() {
       ogImageAlt: 'Musliman Academy online Quran and Arabic learning',
       jsonLd: undefined,
     });
-  }, [i18n.resolvedLanguage, t]);
+  }, [i18n.resolvedLanguage, manageSeo, t]);
 
   function toggleTheme() {
     setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
