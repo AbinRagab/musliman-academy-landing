@@ -17,5 +17,10 @@ describe('LandingPage', () => {
 
     expect(screen.getAllByLabelText(/Musliman Academy home/i).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /whatsapp/i }).length).toBeGreaterThan(0);
+    expect(screen.getByText('Live · Personalized · Trusted')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Start Your Quran and Arabic Learning Journey Now/i })).toBeInTheDocument();
+    expect(screen.getByText('One-to-One Learning')).toBeInTheDocument();
+    expect(screen.queryByText(/returned an object instead of string/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^(hero|about)\./i)).not.toBeInTheDocument();
   });
 });

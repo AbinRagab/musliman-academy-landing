@@ -56,13 +56,13 @@ export async function loadLanguageResource(language: string) {
   }
 }
 
-export function initializeI18n() {
+export function initializeI18n(initialLanguageOverride?: SupportedLanguage) {
   if (i18nReady) {
     return i18nReady;
   }
 
   i18nReady = (async () => {
-    let initialLanguage = detectInitialLanguage();
+    let initialLanguage = initialLanguageOverride ?? detectInitialLanguage();
     let initialTranslation: LocaleResource | null = null;
 
     if (initialLanguage !== 'en') {

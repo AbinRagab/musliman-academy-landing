@@ -3,7 +3,6 @@ import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
 import type { IconType } from 'react-icons';
-import './styles/landing.css';
 import Icon, { IconName } from '../components/Icon';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import Logo from '../components/Logo';
@@ -452,6 +451,11 @@ function SectionDecorations({ variant = 'light', type = 'default' }: { variant?:
 
 function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: BookingType) => void }) {
   const { t } = useTranslation();
+  const eyebrow = [
+    t('hero.eyebrow.live'),
+    t('hero.eyebrow.personalized'),
+    t('hero.eyebrow.trusted'),
+  ].join(' · ');
 
   function handleBookTrialClick(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
@@ -465,8 +469,12 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
       <div className="hero__pattern" />
       <div className="container hero__inner">
         <div className="hero__content">
-          <div className="hero__eyebrow">{t('hero.eyebrow')}</div>
-          <h1>{t('hero.headline')}</h1>
+          <div className="hero__eyebrow">{eyebrow}</div>
+          <h1>
+            {t('hero.headlineLine1')}
+            <br />
+            {t('hero.headlineLine2')} <span>{t('hero.headlineAccent')}</span>
+          </h1>
           <p>{t('hero.description')}</p>
           <div className="hero__actions">
             <Button href="#book-trial" icon="calendar" className="hero__cta" onClick={handleBookTrialClick}>{t('hero.cta')}</Button>
@@ -1757,7 +1765,7 @@ export function Footer({ anchorPrefix = '', logoHref = '#home' }: { anchorPrefix
   );
 }
 
-export default function LandingPage() {
+export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean }) {
   const { i18n, t } = useTranslation();
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') {
@@ -1788,6 +1796,10 @@ export default function LandingPage() {
   }, [theme]);
 
   useEffect(() => {
+    if (!manageSeo) {
+      return;
+    }
+
     applyPageSeo({
       title: t('seo.title'),
       description: t('seo.description'),
@@ -1797,7 +1809,7 @@ export default function LandingPage() {
       ogImageAlt: 'Musliman Academy online Quran and Arabic learning',
       jsonLd: undefined,
     });
-  }, [i18n.resolvedLanguage, t]);
+  }, [i18n.resolvedLanguage, manageSeo, t]);
 
   function toggleTheme() {
     setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));

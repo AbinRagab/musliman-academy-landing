@@ -52,6 +52,8 @@
     "description": "Book a free trial class to learn Quran online with qualified Egyptian Quran teachers through live, one-to-one online Quran classes for non-Arabic speakers.",
     "imageAlt": "Online Quran classes with qualified Egyptian Quran teachers at Musliman Academy",
     "cta": "Book Your Free Trial Class",
+    "secondaryCta": "Explore Our Programs",
+    "languagesTitle": "Classes available in",
     "trust": {
       "online": "Online Classes",
       "schedule": "Flexible Schedule",
@@ -166,7 +168,30 @@
     "lead": "At Musliman Academy, we make learning simple, clear, and achievable through the right method, patient guidance, and step-by-step support for every student who wants to learn Quran online.",
     "paragraph1": "At Musliman Academy, we believe that every learner has a way. Every student learns differently, so we provide simple, patient, and step-by-step online Quran classes and Arabic classes for beginners designed around each learner's level and needs.",
     "paragraph2": "The Academy offers Quran reading for children, Online Tajweed classes, Arabic, Islamic Studies for children, Quran Memorization, Quran Tafseer, Tarteel Qaidah, and teacher training for Quran teachers through qualified Egyptian Quran teachers with Al-Azhar educational background.",
-    "imageAlt": "Quran learning visual"
+    "imageAlt": "Quran learning visual",
+    "videoTitle": "Discover Musliman Academy",
+    "benefits": {
+      "oneOnOne": {
+        "title": "One-to-One Learning",
+        "text": "Focused lessons tailored to each learner's level and goals."
+      },
+      "personalizedPlan": {
+        "title": "Personalized Learning Plan",
+        "text": "A clear path built around the learner's needs and pace."
+      },
+      "realTimeFeedback": {
+        "title": "Real-Time Feedback",
+        "text": "Direct correction and guidance throughout every class."
+      },
+      "flexibleSchedule": {
+        "title": "Flexible Schedule",
+        "text": "Class times that work across different routines and time zones."
+      },
+      "progressTracking": {
+        "title": "Progress Tracking",
+        "text": "Regular follow-up to keep learning consistent and measurable."
+      }
+    }
   },
   "trust": {
     "experiencedTeachers": "Experienced Egyptian Teachers",
