@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { usePrograms } from '../services/programsService';
+import { usePrograms } from '../../shared/services/programsService';
 
 type ProgramSelectProps = {
   value?: string | null;

@@ -13,7 +13,7 @@ import { trackGtmGenerateLead } from './services/googleTagManager';
 import { captureMarketingAttribution, getMarketingAttribution } from './services/marketingAttribution';
 import { getMetaLeadTrackingData, trackMetaEvent, trackWhatsAppContact } from './services/metaPixel';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
-import { usePrograms } from '../dashboard/services/programsService';
+import { usePrograms } from '../shared/services/programsService';
 import { applyPageSeo } from './seo';
 import {
   contact,
