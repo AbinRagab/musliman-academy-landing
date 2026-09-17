@@ -451,6 +451,11 @@ function SectionDecorations({ variant = 'light', type = 'default' }: { variant?:
 
 function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: BookingType) => void }) {
   const { t } = useTranslation();
+  const eyebrow = [
+    t('hero.eyebrow.live'),
+    t('hero.eyebrow.personalized'),
+    t('hero.eyebrow.trusted'),
+  ].join(' · ');
 
   function handleBookTrialClick(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
@@ -464,8 +469,12 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
       <div className="hero__pattern" />
       <div className="container hero__inner">
         <div className="hero__content">
-          <div className="hero__eyebrow">{t('hero.eyebrow')}</div>
-          <h1>{t('hero.headline')}</h1>
+          <div className="hero__eyebrow">{eyebrow}</div>
+          <h1>
+            {t('hero.headlineLine1')}
+            <br />
+            {t('hero.headlineLine2')} <span>{t('hero.headlineAccent')}</span>
+          </h1>
           <p>{t('hero.description')}</p>
           <div className="hero__actions">
             <Button href="#book-trial" icon="calendar" className="hero__cta" onClick={handleBookTrialClick}>{t('hero.cta')}</Button>
