@@ -39,6 +39,9 @@ describe('LandingPage', () => {
     expect(screen.getByText('قصص الطلاب')).toBeInTheDocument();
     expect(screen.getByText('معلمونا')).toBeInTheDocument();
     expect(screen.getByText('هل الحصص أونلاين؟')).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'أنتيغوا وباربودا' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'البوسنة والهرسك' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'ميانمار' })).toBeInTheDocument();
     expect(screen.queryByText('Schedule & Fee')).not.toBeInTheDocument();
     expect(screen.queryByText(/^(hero|about|how|training|faq)\./i)).not.toBeInTheDocument();
     expect(screen.queryByText(/returned an object instead of string/i)).not.toBeInTheDocument();
