@@ -12,9 +12,9 @@ import { trackGtmGenerateLead } from './services/googleTagManager';
 import { captureMarketingAttribution, getMarketingAttribution } from './services/marketingAttribution';
 import { getMetaLeadTrackingData, trackMetaEvent, trackWhatsAppContact } from './services/metaPixel';
 import { submitWebsiteLeadToCrm } from './services/websiteLeadService';
-import { usePrograms } from '../shared/services/programsService';
 import { applyPageSeo } from './seo';
 import {
+  bookingProgramOptions,
   contact,
   countryOptions,
   faqs,
@@ -591,7 +591,6 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
 
 export function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
   const { t, i18n } = useTranslation();
-  const { programs: bookingPrograms, loading: programsLoading, error: programsError } = usePrograms();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedLead, setSubmittedLead] = useState<BookingLeadData | null>(null);
@@ -623,13 +622,8 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
     return value ? t(`booking.options.${group}.${value}`, { defaultValue: value }) : '';
   }
 
-  function getSelectedProgram(programId: string) {
-    return bookingPrograms.find((program) => program.id === programId);
-  }
-
-  function getProgramName(programName: string) {
-    const translationKey = pricingTrackTranslationKeys[programName];
-    return translationKey ? t(translationKey) : programName;
+  function getSelectedProgram(programKey: string) {
+    return bookingProgramOptions.find((program) => program.key === programKey);
   }
 
   function buildWhatsAppUrl(leadData: BookingLeadData) {
@@ -711,7 +705,7 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
         country: getFormValue(formData, 'country'),
         age: getOptionLabel('studentAge', getFormValue(formData, 'age')),
         program: getSelectedProgram(getFormValue(formData, 'program'))?.name || '',
-        programId: getFormValue(formData, 'program'),
+        programId: undefined,
         preferredTime: getOptionLabel('preferredTime', getFormValue(formData, 'preferredTime')),
         message: getFormValue(formData, 'message'),
         source: 'Musliman Academy Website',
@@ -883,11 +877,11 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
                     </label>
                     <label>
                       <span>{t('booking.fields.program')}</span>
-                      <select name="program" defaultValue="" aria-invalid={Boolean(errors.program)} disabled={programsLoading || Boolean(programsError) || bookingPrograms.length === 0}>
-                        <option value="" disabled>{programsLoading ? t('booking.programStatus.loading') : programsError ? t('booking.programStatus.error') : bookingPrograms.length ? t('booking.placeholders.program') : t('booking.programStatus.empty')}</option>
-                        {bookingPrograms.map((program) => (
-                          <option value={program.id} key={program.id}>
-                            {getProgramName(program.name)}
+                      <select name="program" defaultValue="" aria-invalid={Boolean(errors.program)}>
+                        <option value="" disabled>{t('booking.placeholders.program')}</option>
+                        {bookingProgramOptions.map((program) => (
+                          <option value={program.key} key={program.key}>
+                            {t(`programs.items.${program.key}.title`)}
                           </option>
                         ))}
                       </select>

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import i18n, { initializeI18n, loadLanguageResource } from '../i18n';
 import LandingPage from './LandingPage';
@@ -26,6 +26,11 @@ describe('LandingPage', () => {
     expect(screen.getByText('One-to-One Learning')).toBeInTheDocument();
     expect(screen.queryByText(/returned an object instead of string/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^(hero|about)\./i)).not.toBeInTheDocument();
+
+    const programSelect = screen.getByRole('option', { name: 'Select a program' }).parentElement as HTMLSelectElement;
+    expect(programSelect).toBeEnabled();
+    expect(within(programSelect).getByRole('option', { name: 'Quran Reading' })).toBeInTheDocument();
+    expect(within(programSelect).getAllByRole('option')).toHaveLength(9);
   });
 
   it('renders the Arabic experience without English fallbacks or raw translation keys', async () => {
@@ -42,6 +47,10 @@ describe('LandingPage', () => {
     expect(screen.getByRole('option', { name: 'أنتيغوا وباربودا' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'البوسنة والهرسك' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'ميانمار' })).toBeInTheDocument();
+    const programSelect = screen.getByRole('option', { name: 'اختر برنامجا' }).parentElement as HTMLSelectElement;
+    expect(programSelect).toBeEnabled();
+    expect(within(programSelect).getByRole('option', { name: 'قراءة القرآن' })).toBeInTheDocument();
+    expect(within(programSelect).getAllByRole('option')).toHaveLength(9);
     expect(screen.queryByText('Schedule & Fee')).not.toBeInTheDocument();
     expect(screen.queryByText(/^(hero|about|how|training|faq)\./i)).not.toBeInTheDocument();
     expect(screen.queryByText(/returned an object instead of string/i)).not.toBeInTheDocument();
