@@ -228,6 +228,17 @@ export const programs: Array<{ number: string; key: string; icon: IconName; imag
   { number: '8', key: 'islamicValues', icon: 'heartHandshake', image: '/assets/programs/islamic-values-children.png' },
 ];
 
+export const bookingProgramOptions: Array<{ key: string; name: string }> = [
+  { key: 'quranReading', name: 'Quran Reading' },
+  { key: 'tarteelQaidah', name: 'Tarteel Qaidah' },
+  { key: 'quranMemorization', name: 'Quran Memorization' },
+  { key: 'tajweed', name: 'Tajweed' },
+  { key: 'quranTafseer', name: 'Quran Tafseer' },
+  { key: 'arabicLanguage', name: 'Arabic Language' },
+  { key: 'islamicStudies', name: 'Islamic Studies' },
+  { key: 'islamicValues', name: 'Islamic Values for Children' },
+];
+
 export type PricingCurrency = 'USD' | 'CAD' | 'GBP' | 'AUD';
 export type PricingTier = 'Foundational' | 'Standard' | 'Specialized';
 
