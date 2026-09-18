@@ -315,6 +315,7 @@ export const trustItems: Array<{ key: string; icon: IconName }> = [
 // TODO: Replace placeholder testimonials with real verified reviews before final launch.
 export const testimonials = [
   {
+    key: 'parentReading',
     quote: 'The teacher was very patient and helped my son improve his Quran reading step by step.',
     name: 'A Parent',
     role: 'Parent of a Quran Reading student',
@@ -322,6 +323,7 @@ export const testimonials = [
     rating: 5,
   },
   {
+    key: 'parentTajweed',
     quote: 'My daughter feels more confident now and enjoys her online Quran lessons.',
     name: 'A Parent',
     role: 'Parent of a Tajweed student',
@@ -329,6 +331,7 @@ export const testimonials = [
     rating: 5,
   },
   {
+    key: 'adultArabic',
     quote: 'The lessons are clear, organized, and suitable for beginners.',
     name: 'Adult Learner',
     role: 'Arabic beginner',
@@ -336,6 +339,7 @@ export const testimonials = [
     rating: 5,
   },
   {
+    key: 'parentFollowUp',
     quote: 'I appreciate the regular follow-up and the simple way of explaining.',
     name: 'A Parent',
     role: 'Parent follow-up',
@@ -343,6 +347,7 @@ export const testimonials = [
     rating: 5,
   },
   {
+    key: 'parentTrial',
     quote: 'The trial class helped us understand the right learning plan for our child.',
     name: 'A Parent',
     role: 'Free trial experience',
@@ -363,14 +368,14 @@ export const reasons: Array<{ key: string; icon: IconName }> = [
 ];
 
 export const howSteps: Array<{ step: string; key: string; icon: IconName }> = [
-  { step: '01', key: 'freeTrial', icon: 'gift' },
-  { step: '02', key: 'findPlan', icon: 'route' },
-  { step: '03', key: 'setSchedule', icon: 'clock' },
-  { step: '04', key: 'startLearning', icon: 'book' },
+  { step: '01', key: 'bookTrial', icon: 'gift' },
+  { step: '02', key: 'meetTeacher', icon: 'route' },
+  { step: '03', key: 'startLearning', icon: 'book' },
 ];
 
 export type LandingTeacher = {
   id: string;
+  key: string;
   fullName: string;
   specialization: string;
   photo: string;
@@ -383,6 +388,7 @@ export type LandingTeacher = {
 export const landingTeachers: LandingTeacher[] = [
   {
     id: 'teacher-design-1',
+    key: 'quranTajweed',
     fullName: 'Teacher Name',
     specialization: 'Quran & Tajweed Teacher',
     photo: '/assets/teacher-placeholder.svg',
@@ -392,6 +398,7 @@ export const landingTeachers: LandingTeacher[] = [
   },
   {
     id: 'teacher-design-2',
+    key: 'arabic',
     fullName: 'Teacher Name',
     specialization: 'Arabic Language Teacher',
     photo: '/assets/teacher-placeholder.svg',
@@ -401,6 +408,7 @@ export const landingTeachers: LandingTeacher[] = [
   },
   {
     id: 'teacher-design-3',
+    key: 'islamicStudies',
     fullName: 'Teacher Name',
     specialization: 'Islamic Studies Teacher',
     photo: '/assets/teacher-placeholder.svg',
@@ -410,6 +418,7 @@ export const landingTeachers: LandingTeacher[] = [
   },
   {
     id: 'teacher-design-4',
+    key: 'memorization',
     fullName: 'Teacher Name',
     specialization: 'Quran Memorization Teacher',
     photo: '/assets/teacher-placeholder.svg',
