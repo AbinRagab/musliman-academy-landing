@@ -150,6 +150,16 @@ const countryCodeOverrides: Record<string, string> = {
   'Vatican City': 'VA',
   Vietnam: 'VN',
 };
+const arabicCountryNameOverrides: Record<string, string> = {
+  'Antigua and Barbuda': 'أنتيغوا وباربودا',
+  'Bosnia and Herzegovina': 'البوسنة والهرسك',
+  Myanmar: 'ميانمار',
+  'Saint Kitts and Nevis': 'سانت كيتس ونيفيس',
+  'Saint Lucia': 'سانت لوسيا',
+  'Saint Vincent and the Grenadines': 'سانت فنسنت والغرينادين',
+  'Sao Tome and Principe': 'ساو تومي وبرينسيبي',
+  'Trinidad and Tobago': 'ترينيداد وتوباغو',
+};
 let countryCodeByEnglishName: Map<string, string> | null = null;
 
 function getCountryCodeByEnglishName() {
@@ -178,6 +188,10 @@ function getCountryCodeByEnglishName() {
 function getLocalizedCountryName(country: string, language: string, otherLabel: string) {
   if (country === 'Other') {
     return otherLabel;
+  }
+
+  if (language.startsWith('ar') && arabicCountryNameOverrides[country]) {
+    return arabicCountryNameOverrides[country];
   }
 
   try {
