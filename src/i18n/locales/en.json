@@ -107,7 +107,15 @@
       "message": "Tell us anything else we should know...",
       "email": "Enter your email"
     },
+    "programStatus": {
+      "loading": "Loading programs...",
+      "error": "Unable to load programs",
+      "empty": "No programs found"
+    },
     "options": {
+      "country": {
+        "other": "Other"
+      },
       "experience": {
         "none": "No experience",
         "lessThanOne": "Less than 1 year",
@@ -249,6 +257,12 @@
     "heading": "Schedule & Fee",
     "subtitle": "Each class is 30 minutes. Monthly plans are calculated based on 4 total learning hours per month.",
     "currencyAria": "Select currency",
+    "currencies": {
+      "USD": "USA Dollars",
+      "CAD": "Canadian Dollars",
+      "GBP": "UK Pounds",
+      "AUD": "Australian Dollars"
+    },
     "columns": {
       "program": "Program",
       "tier": "Tier",
@@ -256,6 +270,16 @@
       "group": "Group Class",
       "monthly": "Monthly Plan"
     },
+    "tiers": {
+      "Foundational": "Foundational",
+      "Standard": "Standard",
+      "Specialized": "Specialized"
+    },
+    "units": {
+      "hour": "Hour",
+      "month": "Month"
+    },
+    "scrollHint": "Swipe to view all pricing details",
     "note": "All prices are starting prices and may vary depending on the selected program, class type, and learning plan.",
     "ctaText": "Flexible plans designed for different learning goals.",
     "cta": "Book a Free Trial"
@@ -373,6 +397,7 @@
     "heading": "Train Teachers to Teach with Confidence",
     "description": "A practical online training program designed for Quran, Arabic, and Islamic Studies teachers who want to improve their teaching methods for non-Arabic speakers.",
     "cta": "Join Teacher Training",
+    "imageAlt": "Online Quran teacher training program",
     "includes": {
       "methods": "Teaching methods for non-Arabic speakers",
       "online": "Online teaching techniques",
@@ -386,6 +411,131 @@
       "impact": "Grow Your Impact as a Teacher"
     }
   },
+  "testimonials": {
+    "badge": "STUDENT STORIES",
+    "heading": "Loved by Learners Around the World",
+    "description": "See what students and parents say about their learning experience with Musliman Academy.",
+    "aria": {
+      "region": "Student and parent testimonials",
+      "previous": "Previous testimonial",
+      "next": "Next testimonial",
+      "show": "Show testimonial {{index}}",
+      "rating": "{{rating}} star rating"
+    },
+    "empty": {
+      "title": "Verified feedback pending",
+      "context": "Student and parent stories",
+      "text": "Verified testimonials with names, countries, and photos will appear here once they are added to the site data."
+    },
+    "items": {
+      "parentReading": {
+        "name": "A Parent",
+        "context": "Parent of a Quran Reading student",
+        "quote": "The teacher was very patient and helped my son improve his Quran reading step by step."
+      },
+      "parentTajweed": {
+        "name": "A Parent",
+        "context": "Parent of a Tajweed student",
+        "quote": "My daughter feels more confident now and enjoys her online Quran lessons."
+      },
+      "adultArabic": {
+        "name": "Adult Learner",
+        "context": "Arabic beginner",
+        "quote": "The lessons are clear, organized, and suitable for beginners."
+      },
+      "parentFollowUp": {
+        "name": "A Parent",
+        "context": "Parent follow-up",
+        "quote": "I appreciate the regular follow-up and the simple way of explaining."
+      },
+      "parentTrial": {
+        "name": "A Parent",
+        "context": "Free trial experience",
+        "quote": "The trial class helped us understand the right learning plan for our child."
+      }
+    }
+  },
+  "videoTestimonials": {
+    "badge": "VIDEO TESTIMONIALS",
+    "heading": "Hear From Our Students & Parents",
+    "description": "Real experiences from learners and families who have been part of Musliman Academy.",
+    "nowPlaying": "Now Playing",
+    "moreStories": "More stories",
+    "videoUnsupported": "Your browser does not support the video tag.",
+    "play": "Play {{title}}",
+    "aria": {
+      "more": "More video testimonials",
+      "previous": "Previous testimonial choices",
+      "next": "Next testimonial choices"
+    },
+    "items": {
+      "quranJourney": {
+        "title": "A Quran Learning Journey",
+        "personName": "Student Story",
+        "country": "Country not provided",
+        "role": "Quran Reading Student"
+      },
+      "parentExperience": {
+        "title": "A Parent Shares Their Experience",
+        "personName": "Parent Story",
+        "country": "Country not provided",
+        "role": "Parent of a Quran Student"
+      },
+      "arabicConfidence": {
+        "title": "Growing in Arabic with Confidence",
+        "personName": "Student Story",
+        "country": "Country not provided",
+        "role": "Arabic Language Student"
+      },
+      "careConsistency": {
+        "title": "Learning with Care and Consistency",
+        "personName": "Parent Story",
+        "country": "Country not provided",
+        "role": "Parent of an Online Learner"
+      }
+    }
+  },
+  "teachers": {
+    "badge": "OUR TEACHERS",
+    "heading": "Learn from Experienced & Caring Teachers",
+    "description": "Learn with qualified teachers who combine strong Islamic knowledge, teaching experience, and a personal approach to every student.",
+    "languagesLabel": "Languages",
+    "languages": {
+      "Arabic": "Arabic",
+      "English": "English"
+    },
+    "aria": {
+      "region": "Musliman Academy teachers",
+      "previous": "Previous teachers",
+      "next": "Next teachers"
+    },
+    "items": {
+      "quranTajweed": {
+        "name": "Teacher Name",
+        "specialization": "Quran & Tajweed Teacher",
+        "experience": "5+ Years Experience",
+        "qualification": "Al-Azhar Graduate"
+      },
+      "arabic": {
+        "name": "Teacher Name",
+        "specialization": "Arabic Language Teacher",
+        "experience": "4+ Years Experience",
+        "qualification": "Qualified Arabic Teacher"
+      },
+      "islamicStudies": {
+        "name": "Teacher Name",
+        "specialization": "Islamic Studies Teacher",
+        "experience": "6+ Years Experience",
+        "qualification": "Islamic Studies Teacher"
+      },
+      "memorization": {
+        "name": "Teacher Name",
+        "specialization": "Quran Memorization Teacher",
+        "experience": "5+ Years Experience",
+        "qualification": "Quran Teacher"
+      }
+    }
+  },
   "faq": {
     "eyebrow": "FAQ",
     "heading": "Frequently Asked Questions",
@@ -394,6 +544,9 @@
     "cardText": "We're here to help you on your learning journey.",
     "whatsappCta": "Contact us on WhatsApp",
     "trust": "Trusted support from real people",
+    "followSocial": "Follow us on social media",
+    "socialAria": "Musliman Academy social media links",
+    "followPlatform": "Follow Musliman Academy on {{platform}}",
     "q1": {
       "question": "Are the classes online?",
       "answer": "Yes, all our classes are 100% online. You can learn from the comfort of your home, at a time that suits you, from anywhere in the world."
