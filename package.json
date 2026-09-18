@@ -2,6 +2,9 @@
   "name": "musliman-academy-platform",
   "private": true,
   "version": "1.0.0",
+  "workspaces": [
+    "apps/public-site"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
