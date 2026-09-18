@@ -37,6 +37,7 @@ type DecorationVariant = 'light' | 'dark';
 type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'pricing' | 'why' | 'testimonials' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
 type VideoStory = {
   id: number;
+  key: string;
   videoUrl: string;
   thumbnail: string;
   title: string;
@@ -107,15 +108,87 @@ const qualificationOptions = ['quranTeacher', 'arabicTeacher', 'islamicStudiesTe
 const trainingGoalOptions = ['teachNonArabic', 'onlineTeaching', 'lessonPlanning', 'studentFollowUp', 'joinAcademy', 'other'];
 const studentAgeOptions = ['child', 'teenager', 'adult'];
 const preferredTimeOptions = ['morning', 'afternoon', 'evening', 'flexible'];
-const heroLanguageLabels: Record<SupportedLanguage, string> = {
-  en: 'English',
-  ar: 'Arabic',
-  es: 'Spanish',
-  de: 'German',
-  it: 'Italian',
-  ur: 'Urdu',
-  tr: 'Turkish',
+const heroLanguageTranslationKeys: Record<SupportedLanguage, string> = {
+  en: 'language.english',
+  ar: 'language.arabic',
+  es: 'language.spanish',
+  de: 'language.german',
+  it: 'language.italian',
+  ur: 'language.urdu',
+  tr: 'language.turkish',
 };
+const pricingTrackTranslationKeys: Record<string, string> = {
+  'Tarteel Qaidah': 'programs.items.tarteelQaidah.title',
+  'Arabic Language': 'programs.items.arabicLanguage.title',
+  'Islamic Values for Children': 'programs.items.islamicValues.title',
+  'Quran Reading': 'programs.items.quranReading.title',
+  Tajweed: 'programs.items.tajweed.title',
+  'Islamic Studies': 'programs.items.islamicStudies.title',
+  'Quran Memorization': 'programs.items.quranMemorization.title',
+  'Quran Tafseer': 'programs.items.quranTafseer.title',
+  'Teacher Training': 'footer.teacherTraining',
+};
+const countryCodeOverrides: Record<string, string> = {
+  Bolivia: 'BO',
+  Brunei: 'BN',
+  'Cabo Verde': 'CV',
+  Congo: 'CG',
+  'Democratic Republic of the Congo': 'CD',
+  'Ivory Coast': 'CI',
+  Kosovo: 'XK',
+  Laos: 'LA',
+  Micronesia: 'FM',
+  Moldova: 'MD',
+  'North Korea': 'KP',
+  Palestine: 'PS',
+  Russia: 'RU',
+  'South Korea': 'KR',
+  Syria: 'SY',
+  Taiwan: 'TW',
+  Tanzania: 'TZ',
+  Turkey: 'TR',
+  'Vatican City': 'VA',
+  Vietnam: 'VN',
+};
+let countryCodeByEnglishName: Map<string, string> | null = null;
+
+function getCountryCodeByEnglishName() {
+  if (countryCodeByEnglishName) {
+    return countryCodeByEnglishName;
+  }
+
+  const displayNames = new Intl.DisplayNames(['en'], { type: 'region' });
+  const entries: Array<[string, string]> = [];
+
+  for (let first = 65; first <= 90; first += 1) {
+    for (let second = 65; second <= 90; second += 1) {
+      const code = `${String.fromCharCode(first)}${String.fromCharCode(second)}`;
+      const name = displayNames.of(code);
+
+      if (name && name !== code) {
+        entries.push([name, code]);
+      }
+    }
+  }
+
+  countryCodeByEnglishName = new Map(entries);
+  return countryCodeByEnglishName;
+}
+
+function getLocalizedCountryName(country: string, language: string, otherLabel: string) {
+  if (country === 'Other') {
+    return otherLabel;
+  }
+
+  try {
+    const countryCode = countryCodeOverrides[country] || getCountryCodeByEnglishName().get(country);
+    return countryCode
+      ? new Intl.DisplayNames([language], { type: 'region' }).of(countryCode) || country
+      : country;
+  } catch {
+    return country;
+  }
+}
 const aboutBenefits: Array<{ key: string; icon: IconName }> = [
   { key: 'oneOnOne', icon: 'users' },
   { key: 'personalizedPlan', icon: 'route' },
@@ -140,6 +213,7 @@ const imageAssets: Record<string, OptimizedImage> = {
 const videoStories: VideoStory[] = [
   {
     id: 1,
+    key: 'quranJourney',
     videoUrl: '/videos/student-story.mp4',
     thumbnail: '/assets/hero-bg.png',
     title: 'A Quran Learning Journey',
@@ -150,6 +224,7 @@ const videoStories: VideoStory[] = [
   },
   {
     id: 2,
+    key: 'parentExperience',
     videoUrl: '/videos/parent-feedback.mp4',
     thumbnail: '/assets/why-choose-visual.png',
     title: 'A Parent Shares Their Experience',
@@ -160,6 +235,7 @@ const videoStories: VideoStory[] = [
   },
   {
     id: 3,
+    key: 'arabicConfidence',
     videoUrl: '/videos/arabic-beginner.mp4',
     thumbnail: '/assets/about-visual.png',
     title: 'Growing in Arabic with Confidence',
@@ -170,6 +246,7 @@ const videoStories: VideoStory[] = [
   },
   {
     id: 4,
+    key: 'careConsistency',
     videoUrl: '/videos/parent-learning-story.mp4',
     thumbnail: '/assets/teacher-training-visual.jpg',
     title: 'Learning with Care and Consistency',
@@ -487,7 +564,7 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
             <span className="hero-languages__title">{t('hero.languagesTitle')}</span>
             <div className="hero-languages__list">
               {supportedLanguages.map((language) => (
-                <span className="hero-languages__item" key={language}>{heroLanguageLabels[language]}</span>
+                <span className="hero-languages__item" key={language}>{t(heroLanguageTranslationKeys[language])}</span>
               ))}
             </div>
           </div>
@@ -499,7 +576,7 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
 }
 
 export function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { programs: bookingPrograms, loading: programsLoading, error: programsError } = usePrograms();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -534,6 +611,11 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
 
   function getSelectedProgram(programId: string) {
     return bookingPrograms.find((program) => program.id === programId);
+  }
+
+  function getProgramName(programName: string) {
+    const translationKey = pricingTrackTranslationKeys[programName];
+    return translationKey ? t(translationKey) : programName;
   }
 
   function buildWhatsAppUrl(leadData: BookingLeadData) {
@@ -739,7 +821,11 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
                   <span>{t('booking.fields.country')}</span>
                   <select name="country" defaultValue="" aria-invalid={Boolean(errors.country)}>
                     <option value="" disabled>{t('booking.placeholders.country')}</option>
-                    {countryOptions.map((country) => <option key={country}>{country}</option>)}
+                    {countryOptions.map((country) => (
+                      <option value={country} key={country}>
+                        {getLocalizedCountryName(country, i18n.resolvedLanguage || i18n.language, t('booking.options.country.other'))}
+                      </option>
+                    ))}
                   </select>
                   {getFieldError('country')}
                 </label>
@@ -784,8 +870,12 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
                     <label>
                       <span>{t('booking.fields.program')}</span>
                       <select name="program" defaultValue="" aria-invalid={Boolean(errors.program)} disabled={programsLoading || Boolean(programsError) || bookingPrograms.length === 0}>
-                        <option value="" disabled>{programsLoading ? 'Loading programs...' : programsError ? 'Unable to load programs' : bookingPrograms.length ? t('booking.placeholders.program') : 'No programs found'}</option>
-                        {bookingPrograms.map((program) => <option value={program.id} key={program.id}>{program.name}</option>)}
+                        <option value="" disabled>{programsLoading ? t('booking.programStatus.loading') : programsError ? t('booking.programStatus.error') : bookingPrograms.length ? t('booking.placeholders.program') : t('booking.programStatus.empty')}</option>
+                        {bookingPrograms.map((program) => (
+                          <option value={program.id} key={program.id}>
+                            {getProgramName(program.name)}
+                          </option>
+                        ))}
                       </select>
                       {getFieldError('program')}
                     </label>
@@ -919,6 +1009,12 @@ function PricingSection() {
   const currentPricing = pricingData[activeCurrency];
   const currencyEntries = Object.entries(pricingData) as Array<[PricingCurrency, (typeof pricingData)[PricingCurrency]]>;
 
+  function localizePrice(price: string) {
+    return price
+      .replace(' / Hour', ` / ${t('pricing.units.hour')}`)
+      .replace(' / Month', ` / ${t('pricing.units.month')}`);
+  }
+
   return (
     <section className="pricing-section section-light" id="schedule-fee">
       <SectionDecorations variant="light" type="pricing" />
@@ -940,13 +1036,13 @@ function PricingSection() {
                 className={`pricing-tab ${activeCurrency === key ? 'is-active' : ''}`}
                 onClick={() => setActiveCurrency(key)}
               >
-                {currency.label}
+                {t(`pricing.currencies.${key}`, { defaultValue: currency.label })}
               </button>
             ))}
           </div>
         </div>
 
-        <p className="pricing-scroll-hint">Swipe to view all pricing details</p>
+        <p className="pricing-scroll-hint">{t('pricing.scrollHint')}</p>
 
         <div className="pricing-table-card">
           <div className="pricing-table-scroll">
@@ -963,15 +1059,15 @@ function PricingSection() {
               <tbody>
                 {currentPricing.rows.map((row) => (
                   <tr key={row.track}>
-                    <td>{row.track}</td>
+                    <td>{t(pricingTrackTranslationKeys[row.track], { defaultValue: row.track })}</td>
                     <td>
                       <span className={`tier-badge tier-badge--${row.tier.toLowerCase()}`}>
-                        {row.tier}
+                        {t(`pricing.tiers.${row.tier}`, { defaultValue: row.tier })}
                       </span>
                     </td>
-                    <td>{row.oneOnOne}</td>
-                    <td>{row.group}</td>
-                    <td className="pricing-table__monthly">{row.monthly}</td>
+                    <td>{localizePrice(row.oneOnOne)}</td>
+                    <td>{localizePrice(row.group)}</td>
+                    <td className="pricing-table__monthly">{localizePrice(row.monthly)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1107,6 +1203,7 @@ function WhyChooseSection() {
 }
 
 function TestimonialsSection() {
+  const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(3);
   const touchStartX = useRef<number | null>(null);
@@ -1187,9 +1284,9 @@ function TestimonialsSection() {
       <SectionDecorations variant="light" type="testimonials" />
       <div className="container testimonials-container">
         <div className="section-heading testimonials-heading">
-          <SectionBadge icon="star">STUDENT STORIES</SectionBadge>
-          <h2>Loved by Learners Around the World</h2>
-          <p>See what students and parents say about their learning experience with Musliman Academy.</p>
+          <SectionBadge icon="star">{t('testimonials.badge')}</SectionBadge>
+          <h2>{t('testimonials.heading')}</h2>
+          <p>{t('testimonials.description')}</p>
         </div>
 
         {visibleTestimonials.length > 0 ? (
@@ -1197,16 +1294,16 @@ function TestimonialsSection() {
             className="testimonials-slider-area"
             role="region"
             aria-roledescription="carousel"
-            aria-label="Student and parent testimonials"
+            aria-label={t('testimonials.aria.region')}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
             {hasCarousel && (
               <div className="testimonials-controls">
-                <button type="button" className="testimonial-btn" onClick={goPrev} aria-label="Previous testimonial">
+                <button type="button" className="testimonial-btn" onClick={goPrev} aria-label={t('testimonials.aria.previous')}>
                   <Icon name="chevronLeft" />
                 </button>
-                <button type="button" className="testimonial-btn" onClick={goNext} aria-label="Next testimonial">
+                <button type="button" className="testimonial-btn" onClick={goNext} aria-label={t('testimonials.aria.next')}>
                   <Icon name="chevronRight" />
                 </button>
               </div>
@@ -1215,8 +1312,11 @@ function TestimonialsSection() {
             <div className="testimonials-grid" aria-live="polite">
               {visibleTestimonials.map((item, index) => {
                 const photo = item.photo || item.image;
-                const context = item.context || item.role || item.program;
-                const initials = item.name
+                const itemKey = `testimonials.items.${item.key}`;
+                const name = t(`${itemKey}.name`, { defaultValue: item.name });
+                const context = t(`${itemKey}.context`, { defaultValue: item.context || item.role || item.program });
+                const quote = t(`${itemKey}.quote`, { defaultValue: item.quote });
+                const initials = name
                   .split(' ')
                   .filter(Boolean)
                   .slice(0, 2)
@@ -1227,19 +1327,19 @@ function TestimonialsSection() {
                 return (
                   <article
                     className="testimonial-card"
-                    key={`${item.name}-${item.country || item.program || index}`}
+                    key={`${item.key}-${item.country || item.program || index}`}
                   >
                     <div className="testimonial-card__top">
                       <div className="testimonial-avatar">
                         {photo ? (
-                          <img src={photo} alt={item.name} loading="lazy" decoding="async" />
+                          <img src={photo} alt={name} loading="lazy" decoding="async" />
                         ) : (
                           <span>{initials}</span>
                         )}
                       </div>
 
                       <div className="testimonial-profile">
-                        <h3>{item.name}</h3>
+                        <h3>{name}</h3>
                         {(item.country || item.flag) && (
                           <span className="testimonial-country">
                             {item.flag && <span aria-hidden="true">{item.flag}</span>}
@@ -1250,10 +1350,10 @@ function TestimonialsSection() {
                       </div>
                     </div>
 
-                    <p className="testimonial-quote">{item.quote}</p>
+                    <p className="testimonial-quote">{quote}</p>
 
                     {typeof item.rating === 'number' && item.rating > 0 && (
-                      <div className="testimonial-rating" role="img" aria-label={`${item.rating} star rating`}>
+                      <div className="testimonial-rating" role="img" aria-label={t('testimonials.aria.rating', { rating: item.rating })}>
                         {Array.from({ length: item.rating }).map((_, starIndex) => (
                           <Icon key={starIndex} name="star" />
                         ))}
@@ -1272,7 +1372,7 @@ function TestimonialsSection() {
                     key={index}
                     className={`testimonial-dot ${index === activeIndex ? 'is-active' : ''}`}
                     onClick={() => setActiveIndex(index)}
-                    aria-label={`Show testimonial ${index + 1}`}
+                    aria-label={t('testimonials.aria.show', { index: index + 1 })}
                   />
                 ))}
               </div>
@@ -1286,13 +1386,11 @@ function TestimonialsSection() {
                   <Icon name="user" />
                 </div>
                 <div className="testimonial-profile">
-                  <h3>Verified feedback pending</h3>
-                  <span className="testimonial-context">Student and parent stories</span>
+                  <h3>{t('testimonials.empty.title')}</h3>
+                  <span className="testimonial-context">{t('testimonials.empty.context')}</span>
                 </div>
               </div>
-              <p className="testimonial-quote">
-                Verified testimonials with names, countries, and photos will appear here once they are added to the site data.
-              </p>
+              <p className="testimonial-quote">{t('testimonials.empty.text')}</p>
             </article>
           </div>
         )}
@@ -1302,10 +1400,15 @@ function TestimonialsSection() {
 }
 
 function VideoStoriesSection() {
+  const { t } = useTranslation();
   const [videoOrder, setVideoOrder] = useState(videoStories);
   const [isPlaying, setIsPlaying] = useState(false);
   const activeVideo = videoOrder[0];
   const sideVideos = videoOrder.slice(1, 3);
+
+  function getVideoText(video: VideoStory, field: 'title' | 'personName' | 'country' | 'role') {
+    return t(`videoTestimonials.items.${video.key}.${field}`, { defaultValue: video[field] || '' });
+  }
 
   function getYouTubeEmbedUrl(url: string) {
     const match = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|shorts\/))([^?&/]+)/);
@@ -1349,14 +1452,14 @@ function VideoStoriesSection() {
         <div className="video-stories-header">
           <div className="section-badge section-badge--dark">
             <Icon name="play" />
-            <span>VIDEO TESTIMONIALS</span>
+            <span>{t('videoTestimonials.badge')}</span>
           </div>
 
-          <h2>Hear From Our Students &amp; Parents</h2>
+          <h2>{t('videoTestimonials.heading')}</h2>
 
           <div className="section-divider" aria-hidden="true" />
 
-          <p>Real experiences from learners and families who have been part of Musliman Academy.</p>
+          <p>{t('videoTestimonials.description')}</p>
         </div>
 
         <div className="video-featured-layout">
@@ -1366,43 +1469,43 @@ function VideoStoriesSection() {
                 activeYouTubeUrl ? (
                   <iframe
                     src={activeYouTubeUrl}
-                    title={activeVideo.title}
+                    title={getVideoText(activeVideo, 'title')}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
                 ) : (
                   <video controls autoPlay playsInline poster={activeVideo.thumbnail}>
                     <source src={activeVideo.videoUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
+                    {t('videoTestimonials.videoUnsupported')}
                   </video>
                 )
               ) : (
-                <button type="button" className="video-featured-card__poster" onClick={() => setIsPlaying(true)} aria-label={`Play ${activeVideo.title}`}>
+                <button type="button" className="video-featured-card__poster" onClick={() => setIsPlaying(true)} aria-label={t('videoTestimonials.play', { title: getVideoText(activeVideo, 'title') })}>
                   <OptimizedPicture src={activeVideo.thumbnail} alt="" loading="lazy" decoding="async" />
                   <span className="video-featured-card__overlay" aria-hidden="true" />
                   <span className="video-featured-card__play" aria-hidden="true"><Icon name="play" /></span>
-                  <span className="video-featured-card__status">Now Playing</span>
+                  <span className="video-featured-card__status">{t('videoTestimonials.nowPlaying')}</span>
                   {activeVideo.duration && <span className="video-featured-card__duration">{activeVideo.duration}</span>}
                 </button>
               )}
             </div>
             <div className="video-featured-card__body">
-              <h3>{activeVideo.title}</h3>
+              <h3>{getVideoText(activeVideo, 'title')}</h3>
               <div className="video-featured-card__meta">
-                {activeVideo.personName && <strong>{activeVideo.personName}</strong>}
-                <span>{activeVideo.country}</span>
-                <span>{activeVideo.role}</span>
+                {activeVideo.personName && <strong>{getVideoText(activeVideo, 'personName')}</strong>}
+                <span>{getVideoText(activeVideo, 'country')}</span>
+                <span>{getVideoText(activeVideo, 'role')}</span>
               </div>
             </div>
           </article>
 
-          <aside className="video-side-playlist" aria-label="More video testimonials">
+          <aside className="video-side-playlist" aria-label={t('videoTestimonials.aria.more')}>
             <div className="video-side-playlist__heading">
-              <span>More stories</span>
+              <span>{t('videoTestimonials.moreStories')}</span>
               {videoOrder.length > 3 && (
                 <div className="video-side-playlist__controls">
-                  <button type="button" onClick={() => rotatePlaylist('prev')} aria-label="Previous testimonial choices"><Icon name="chevronLeft" /></button>
-                  <button type="button" onClick={() => rotatePlaylist('next')} aria-label="Next testimonial choices"><Icon name="chevronRight" /></button>
+                  <button type="button" onClick={() => rotatePlaylist('prev')} aria-label={t('videoTestimonials.aria.previous')}><Icon name="chevronLeft" /></button>
+                  <button type="button" onClick={() => rotatePlaylist('next')} aria-label={t('videoTestimonials.aria.next')}><Icon name="chevronRight" /></button>
                 </div>
               )}
             </div>
@@ -1417,9 +1520,9 @@ function VideoStoriesSection() {
                     {video.duration && <span className="video-side-item__duration">{video.duration}</span>}
                   </span>
                   <span className="video-side-item__content">
-                    <strong>{video.title}</strong>
-                    <small>{video.personName && `${video.personName} · `}{video.country}</small>
-                    <span>{video.role}</span>
+                    <strong>{getVideoText(video, 'title')}</strong>
+                    <small>{video.personName && `${getVideoText(video, 'personName')} · `}{getVideoText(video, 'country')}</small>
+                    <span>{getVideoText(video, 'role')}</span>
                   </span>
                 </button>
               ))}
@@ -1459,6 +1562,7 @@ function HowItWorksSection() {
 }
 
 function TeachersSection() {
+  const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(3);
   const touchStartX = useRef<number | null>(null);
@@ -1527,9 +1631,9 @@ function TeachersSection() {
     <section className="teachers-section section-light" id="teachers">
       <div className="container teachers-container">
         <div className="section-heading section-heading--center teachers-heading">
-          <span className="eyebrow-line">OUR TEACHERS</span>
-          <h2>Learn from Experienced &amp; Caring Teachers</h2>
-          <p>Learn with qualified teachers who combine strong Islamic knowledge, teaching experience, and a personal approach to every student.</p>
+          <span className="eyebrow-line">{t('teachers.badge')}</span>
+          <h2>{t('teachers.heading')}</h2>
+          <p>{t('teachers.description')}</p>
         </div>
 
         {visibleTeachers.length > 0 ? (
@@ -1537,47 +1641,52 @@ function TeachersSection() {
             className="teachers-carousel"
             role="region"
             aria-roledescription="carousel"
-            aria-label="Musliman Academy teachers"
+            aria-label={t('teachers.aria.region')}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
             {hasCarousel && (
               <div className="teachers-carousel__controls">
-                <button type="button" onClick={goPrev} aria-label="Previous teachers"><Icon name="chevronLeft" /></button>
-                <button type="button" onClick={goNext} aria-label="Next teachers"><Icon name="chevronRight" /></button>
+                <button type="button" onClick={goPrev} aria-label={t('teachers.aria.previous')}><Icon name="chevronLeft" /></button>
+                <button type="button" onClick={goNext} aria-label={t('teachers.aria.next')}><Icon name="chevronRight" /></button>
               </div>
             )}
 
             <div className="teachers-grid" aria-live="polite">
-              {visibleTeachers.map((teacher) => (
+              {visibleTeachers.map((teacher) => {
+                const teacherKey = `teachers.items.${teacher.key}`;
+                const fullName = t(`${teacherKey}.name`, { defaultValue: teacher.fullName });
+
+                return (
                 <article className="teacher-card" key={teacher.id}>
                   <div className="teacher-card__photo">
                     <img
                       src={teacher.photo}
-                      alt={teacher.fullName}
+                      alt={fullName}
                       loading="lazy"
                       decoding="async"
                       style={{ objectPosition: teacher.photoPosition || 'center 22%' }}
                     />
                   </div>
                   <div className="teacher-card__content">
-                    <h3>{teacher.fullName}</h3>
-                    <p className="teacher-card__specialization">{teacher.specialization}</p>
+                    <h3>{fullName}</h3>
+                    <p className="teacher-card__specialization">{t(`${teacherKey}.specialization`, { defaultValue: teacher.specialization })}</p>
                     {(teacher.experience || teacher.qualification) && (
                       <div className="teacher-card__details">
-                        {teacher.experience && <span><Icon name="clock" />{teacher.experience}</span>}
-                        {teacher.qualification && <span><Icon name="award" />{teacher.qualification}</span>}
+                        {teacher.experience && <span><Icon name="clock" />{t(`${teacherKey}.experience`, { defaultValue: teacher.experience })}</span>}
+                        {teacher.qualification && <span><Icon name="award" />{t(`${teacherKey}.qualification`, { defaultValue: teacher.qualification })}</span>}
                       </div>
                     )}
                     {teacher.languages && teacher.languages.length > 0 && (
                       <div className="teacher-card__languages">
-                        <strong>Languages</strong>
-                        {teacher.languages.map((language) => <span key={language}>{language}</span>)}
+                        <strong>{t('teachers.languagesLabel')}</strong>
+                        {teacher.languages.map((language) => <span key={language}>{t(`teachers.languages.${language}`, { defaultValue: language })}</span>)}
                       </div>
                     )}
                   </div>
                 </article>
-              ))}
+                );
+              })}
             </div>
           </div>
         ) : null}
@@ -1607,7 +1716,7 @@ function TeacherTrainingSection({ onSelectBookingType }: { onSelectBookingType: 
         <div className="teacher-training-visual">
           <OptimizedPicture
             src="/assets/teacher-training-visual.jpg"
-            alt="Online Quran teacher training program"
+            alt={t('training.imageAlt')}
             loading="lazy"
             decoding="async"
           />
@@ -1666,8 +1775,8 @@ function FAQSection() {
             </a>
             <div className="faq-card__trust"><Icon name="shieldCheck" />{t('faq.trust')}</div>
             <div className="faq-social-block">
-              <span className="faq-social-title">Follow us on social media</span>
-              <div className="faq-social-links" aria-label="Musliman Academy social media links">
+              <span className="faq-social-title">{t('faq.followSocial')}</span>
+              <div className="faq-social-links" aria-label={t('faq.socialAria')}>
                 {faqSocialLinks.map((item) => {
                   const SocialIcon = item.icon;
 
@@ -1678,7 +1787,7 @@ function FAQSection() {
                       className={`faq-social-link faq-social-link--${item.className}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`Follow Musliman Academy on ${item.name}`}
+                      aria-label={t('faq.followPlatform', { platform: item.name })}
                     >
                       <SocialIcon aria-hidden="true" />
                     </a>
