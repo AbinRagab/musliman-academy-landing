@@ -714,46 +714,44 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
     const metaLeadTrackingData = isTraining ? null : getMetaLeadTrackingData();
     const marketingAttribution = getMarketingAttribution();
 
-    try {
-      await submitWebsiteLeadToCrm({
+    const [crmResult, sheetResult] = await Promise.allSettled([
+      submitWebsiteLeadToCrm({
         ...buildWebsiteLeadPayload(leadData, isTraining),
         ...marketingAttribution,
         ...(metaLeadTrackingData || {}),
-      });
-
-      trackGtmGenerateLead(isTraining ? 'teacher_training' : 'free_trial');
-
-      if (metaLeadTrackingData) {
-        trackMetaEvent('Lead', undefined, { eventID: metaLeadTrackingData.meta_event_id });
-      }
-
-      setSubmittedLead(leadData);
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('Website CRM lead submission failed:', error);
-      }
-
-      setSubmitError(t('booking.validation.submitError'));
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      await fetch(GOOGLE_SCRIPT_URL, {
+      }),
+      fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8',
         },
         body: JSON.stringify(leadData),
-      });
-    } catch (sheetError) {
-      if (import.meta.env.DEV) {
-        console.warn('Google Sheet backup submission failed:', sheetError);
-      }
-    } finally {
-      setIsSubmitting(false);
+      }),
+    ]);
+
+    if (import.meta.env.DEV && crmResult.status === 'rejected') {
+      console.warn('Website CRM lead submission failed; Google Sheet fallback was attempted:', crmResult.reason);
     }
+
+    if (import.meta.env.DEV && sheetResult.status === 'rejected') {
+      console.warn('Google Sheet backup submission failed:', sheetResult.reason);
+    }
+
+    if (crmResult.status === 'rejected' && sheetResult.status === 'rejected') {
+      setSubmitError(t('booking.validation.submitError'));
+      setIsSubmitting(false);
+      return;
+    }
+
+    trackGtmGenerateLead(isTraining ? 'teacher_training' : 'free_trial');
+
+    if (metaLeadTrackingData) {
+      trackMetaEvent('Lead', undefined, { eventID: metaLeadTrackingData.meta_event_id });
+    }
+
+    setSubmittedLead(leadData);
+    setIsSubmitting(false);
   }
 
   function resetRequest() {
