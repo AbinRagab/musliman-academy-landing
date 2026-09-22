@@ -190,14 +190,23 @@ function getLocalizedCountryName(country: string, language: string, otherLabel: 
     return otherLabel;
   }
 
-  if (language.startsWith('ar') && arabicCountryNameOverrides[country]) {
+  const normalizedLanguage = language.toLowerCase();
+
+  // Keep the server-rendered English labels deterministic. Node and browsers can
+  // ship different ICU region names (for example, Palestine vs Palestinian
+  // Territories), which otherwise causes a hydration text mismatch.
+  if (normalizedLanguage.startsWith('en')) {
+    return country;
+  }
+
+  if (normalizedLanguage.startsWith('ar') && arabicCountryNameOverrides[country]) {
     return arabicCountryNameOverrides[country];
   }
 
   try {
     const countryCode = countryCodeOverrides[country] || getCountryCodeByEnglishName().get(country);
     return countryCode
-      ? new Intl.DisplayNames([language], { type: 'region' }).of(countryCode) || country
+      ? new Intl.DisplayNames([normalizedLanguage], { type: 'region' }).of(countryCode) || country
       : country;
   } catch {
     return country;
