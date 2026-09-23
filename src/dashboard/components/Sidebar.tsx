@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import type { DashboardRole } from '../types';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 type SidebarLink = {
   label: string;
@@ -58,13 +59,17 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
+  const { t } = useDashboardLanguage();
   return (
     <>
       <aside className={`dashboard-sidebar ${isOpen ? 'is-open' : ''}`}>
         <div className="dashboard-sidebar__brand">
           <img src="/assets/musliman-logo-dark-bg-transparent.png" alt="Musliman Academy" />
         </div>
-        <nav className="dashboard-sidebar__nav" aria-label={`${role} dashboard navigation`}>
+        <nav
+          className="dashboard-sidebar__nav"
+          aria-label={t('{{role}} dashboard navigation', { role: t(roleLabel(role)) })}
+        >
           {linksByRole[role].map((link) => (
             <NavLink
               key={link.label}
@@ -74,22 +79,26 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
               className={({ isActive }) => `dashboard-sidebar__link ${isActive ? 'is-active' : ''}`}
             >
               <Icon name={link.icon} size={19} />
-              <span>{link.label}</span>
+              <span>{t(link.label)}</span>
             </NavLink>
           ))}
         </nav>
         <div className="dashboard-sidebar__quote">
-          <span>Quran Reflection</span>
-          <p>"And say, My Lord, increase me in knowledge."</p>
-          <small>Surah Taha 20:114</small>
+          <span>{t('Quran Reflection')}</span>
+          <p>{t('“And say, My Lord, increase me in knowledge.”')}</p>
+          <small>{t('Surah Taha 20:114')}</small>
         </div>
       </aside>
       <button
         className={`dashboard-sidebar-backdrop ${isOpen ? 'is-open' : ''}`}
         type="button"
-        aria-label="Close dashboard menu"
+        aria-label={t('Close dashboard menu')}
         onClick={onClose}
       />
     </>
   );
+}
+
+function roleLabel(role: DashboardRole) {
+  return role === 'admin' ? 'Admin' : role === 'teacher' ? 'Teacher' : 'Student';
 }

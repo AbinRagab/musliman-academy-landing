@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import type { InAppNotification } from '../services/notificationsService';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 type TopbarAccountMenuProps = {
   userName: string;
@@ -36,6 +37,7 @@ export default function TopbarAccountMenu({
   onMarkAllNotificationsRead,
   onSignOut,
 }: TopbarAccountMenuProps) {
+  const { t, language } = useDashboardLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -48,7 +50,7 @@ export default function TopbarAccountMenu({
   const [notificationPosition, setNotificationPosition] = useState<CSSProperties>({});
   const [accountPosition, setAccountPosition] = useState<CSSProperties>({});
 
-  const roleLabel = roleLabels[userRole] || titleCase(userRole);
+  const roleLabel = t(roleLabels[userRole] || titleCase(userRole));
   const initials = useMemo(() => getInitials(userName), [userName]);
 
   useEffect(() => {
@@ -136,7 +138,9 @@ export default function TopbarAccountMenu({
   }
 
   async function handleMarkAllRead() {
-    const unreadIds = notifications.filter((notification) => !notification.read_at).map((notification) => notification.id);
+    const unreadIds = notifications
+      .filter((notification) => !notification.read_at)
+      .map((notification) => notification.id);
     await onMarkAllNotificationsRead(unreadIds);
   }
 
@@ -162,7 +166,7 @@ export default function TopbarAccountMenu({
           ref={notificationButtonRef}
           className="topbar-notification-button"
           type="button"
-          aria-label="Notifications"
+          aria-label={t('Notifications')}
           aria-expanded={notificationsOpen}
           onClick={() => {
             setNotificationsOpen((current) => !current);
@@ -170,39 +174,50 @@ export default function TopbarAccountMenu({
           }}
         >
           <Icon name="bell" size={18} />
-          {unreadNotificationsCount > 0 && <span>{unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}</span>}
+          {unreadNotificationsCount > 0 && (
+            <span>{unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}</span>
+          )}
         </button>
         <TopbarPortal open={notificationsOpen}>
           <div
             ref={notificationDropdownRef}
             className="dashboard-notification-dropdown"
             role="dialog"
-            aria-label="Notifications"
+            aria-label={t('Notifications')}
             style={notificationPosition}
           >
             <div className="dashboard-notification-dropdown__header">
               <div>
-                <strong>Notifications</strong>
-                {unreadNotificationsCount > 0 && <span>{unreadNotificationsCount} unread</span>}
+                <strong>{t('Notifications')}</strong>
+                {unreadNotificationsCount > 0 && (
+                  <span>{t('{{count}} unread', { count: unreadNotificationsCount })}</span>
+                )}
               </div>
               <button type="button" onClick={handleMarkAllRead} disabled={unreadNotificationsCount === 0}>
-                Mark all read
+                {t('Mark all read')}
               </button>
             </div>
             <div className="dashboard-notification-list">
-              {notifications.length ? notifications.map((notification) => (
-                <button
-                  type="button"
-                  key={notification.id}
-                  className={`dashboard-notification-item ${notification.read_at ? '' : 'is-unread'}`}
-                  onClick={() => handleNotificationClick(notification)}
-                >
-                  <span><StatusDot type={notification.type} />{notification.title}</span>
-                  <p>{notification.message}</p>
-                  <small>{new Date(notification.created_at).toLocaleString()}</small>
-                </button>
-              )) : (
-                <div className="dashboard-notification-empty">No notifications yet.</div>
+              {notifications.length ? (
+                notifications.map((notification) => (
+                  <button
+                    type="button"
+                    key={notification.id}
+                    className={`dashboard-notification-item ${notification.read_at ? '' : 'is-unread'}`}
+                    onClick={() => handleNotificationClick(notification)}
+                  >
+                    <span>
+                      <StatusDot type={notification.type} />
+                      {notification.title}
+                    </span>
+                    <p>{notification.message}</p>
+                    <small>
+                      {new Date(notification.created_at).toLocaleString(language === 'ar' ? 'ar-EG' : 'en')}
+                    </small>
+                  </button>
+                ))
+              ) : (
+                <div className="dashboard-notification-empty">{t('No notifications yet.')}</div>
               )}
             </div>
           </div>
@@ -214,16 +229,14 @@ export default function TopbarAccountMenu({
           ref={accountButtonRef}
           className="topbar-account-button"
           type="button"
-          aria-label="Account menu"
+          aria-label={t('Account menu')}
           aria-expanded={accountOpen}
           onClick={() => {
             setAccountOpen((current) => !current);
             setNotificationsOpen(false);
           }}
         >
-          <span className="topbar-account-avatar">
-            {userAvatarUrl ? <img src={userAvatarUrl} alt="" /> : initials}
-          </span>
+          <span className="topbar-account-avatar">{userAvatarUrl ? <img src={userAvatarUrl} alt="" /> : initials}</span>
           <span className="topbar-account-text">
             <strong>{userName}</strong>
             <small>{roleLabel}</small>
@@ -236,24 +249,20 @@ export default function TopbarAccountMenu({
             ref={accountDropdownRef}
             className="topbar-account-dropdown"
             role="menu"
-            aria-label="Account actions"
+            aria-label={t('Account actions')}
             style={accountPosition}
           >
             <button type="button" role="menuitem" onClick={goToProfile}>
               <Icon name="user" size={16} />
-              View Profile
+              {t('View Profile')}
             </button>
             <button type="button" role="menuitem" onClick={goToSettings}>
               <Icon name="settings" size={16} />
-              Account Settings
+              {t('Account Settings')}
             </button>
-            <button
-              type="button"
-              role="menuitem"
-              onClick={openNotificationsFromAccount}
-            >
+            <button type="button" role="menuitem" onClick={openNotificationsFromAccount}>
               <Icon name="bell" size={16} />
-              Notifications
+              {t('Notifications')}
             </button>
             <span className="topbar-account-dropdown__divider" />
             <button
@@ -266,7 +275,7 @@ export default function TopbarAccountMenu({
               }}
             >
               <Icon name="logOut" size={16} />
-              Sign out
+              {t('Sign out')}
             </button>
           </div>
         </TopbarPortal>
@@ -283,7 +292,11 @@ function TopbarPortal({ open, children }: { open: boolean; children: ReactNode }
   return createPortal(children, document.body);
 }
 
-function calculateDropdownPosition(button: HTMLElement | null, dropdownWidth: number, dropdownHeight: number): CSSProperties {
+function calculateDropdownPosition(
+  button: HTMLElement | null,
+  dropdownWidth: number,
+  dropdownHeight: number,
+): CSSProperties {
   if (!button || typeof window === 'undefined') {
     return {};
   }
@@ -291,16 +304,12 @@ function calculateDropdownPosition(button: HTMLElement | null, dropdownWidth: nu
   const rect = button.getBoundingClientRect();
   const viewportPadding = 12;
   const width = Math.min(dropdownWidth, window.innerWidth - viewportPadding * 2);
-  const left = Math.min(
-    Math.max(viewportPadding, rect.right - width),
-    window.innerWidth - width - viewportPadding,
-  );
+  const left = Math.min(Math.max(viewportPadding, rect.right - width), window.innerWidth - width - viewportPadding);
 
   const belowTop = rect.bottom + 8;
   const aboveTop = rect.top - dropdownHeight - 8;
-  const top = belowTop + dropdownHeight > window.innerHeight - viewportPadding
-    ? Math.max(viewportPadding, aboveTop)
-    : belowTop;
+  const top =
+    belowTop + dropdownHeight > window.innerHeight - viewportPadding ? Math.max(viewportPadding, aboveTop) : belowTop;
 
   return {
     top,
@@ -319,7 +328,10 @@ function getInitials(name: string) {
     return 'MA';
   }
 
-  return parts.slice(0, 2).map((part) => part[0]?.toUpperCase()).join('');
+  return parts
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
 }
 
 function titleCase(value: string) {

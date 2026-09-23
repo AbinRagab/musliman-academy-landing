@@ -41,8 +41,13 @@ import {
   type TeacherOption,
   type UpdateLeadPayload,
 } from '../services/leadsService';
-import { getLeadAcquisition, leadMatchesAttributionSearch, marketingAttributionFieldKeys } from '../services/leadAttribution';
+import {
+  getLeadAcquisition,
+  leadMatchesAttributionSearch,
+  marketingAttributionFieldKeys,
+} from '../services/leadAttribution';
 import { usePrograms, type ProgramRecord } from '../../shared/services/programsService';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 type ProgramOption = ProgramRecord;
 type OwnerOption = { id: string; full_name: string; email: string; role: string; status: string };
@@ -72,16 +77,24 @@ const statusLabels: Record<LeadStatus, string> = {
 
 const leadManagerRoles: AuthRole[] = ['super_admin', 'admin', 'admissions', 'academic_manager'];
 const teacherTrainingStatuses: LeadStatus[] = ['new', 'contacted', 'follow_up_later', 'lost'];
-const studentPipelineStatuses: LeadStatus[] = ['new', 'contacted', 'no_response', 'follow_up_later', 'trial_scheduled', 'trial_completed', 'lost'];
+const studentPipelineStatuses: LeadStatus[] = [
+  'new',
+  'contacted',
+  'no_response',
+  'follow_up_later',
+  'trial_scheduled',
+  'trial_completed',
+  'lost',
+];
 const pageSizeOptions = [25, 50, 100];
 type LeadsSortKey = 'created_desc' | 'created_asc' | 'follow_up_asc' | 'name_asc' | 'status_asc';
 
-function formatDate(value?: string | null) {
+function formatDate(value?: string | null, locale = 'en') {
   if (!value) {
     return '-';
   }
 
-  return new Intl.DateTimeFormat('en', {
+  return new Intl.DateTimeFormat(locale, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -115,10 +128,7 @@ function exportLeadRows(rows: LeadRecord[]) {
     'created_at',
     ...marketingAttributionFieldKeys,
   ];
-  const csv = [
-    keys.join(','),
-    ...rows.map((row) => keys.map((key) => csvEscape(row[key])).join(',')),
-  ].join('\n');
+  const csv = [keys.join(','), ...rows.map((row) => keys.map((key) => csvEscape(row[key])).join(','))].join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -172,14 +182,13 @@ function LeadActions({
   onConvert: () => void;
 }) {
   const isTeacherTraining = lead.lead_type === 'teacher_training';
-  const primaryLabel = lead.status === 'trial_scheduled'
-    ? 'View Trial'
-    : lead.status === 'trial_completed'
-      ? 'Convert to Student'
-      : 'View Details';
-  const primaryAction = lead.status === 'trial_completed' && !isTeacherTraining
-    ? onConvert
-    : onDetails;
+  const primaryLabel =
+    lead.status === 'trial_scheduled'
+      ? 'View Trial'
+      : lead.status === 'trial_completed'
+        ? 'Convert to Student'
+        : 'View Details';
+  const primaryAction = lead.status === 'trial_completed' && !isTeacherTraining ? onConvert : onDetails;
 
   return (
     <DashboardActionMenu
@@ -195,15 +204,15 @@ function LeadActions({
         { label: isTeacherTraining ? 'Assign Reviewer' : 'Assign Owner', onClick: onOwner },
         ...(isTeacherTraining
           ? [
-            { label: 'Review Application', onClick: onDetails },
-            { label: 'Contact Applicant', onClick: onFollowUp },
-          ]
+              { label: 'Review Application', onClick: onDetails },
+              { label: 'Contact Applicant', onClick: onFollowUp },
+            ]
           : [
-            { label: 'Assign Teacher', onClick: onTeacher },
-            { label: 'Schedule Trial', onClick: onTrial },
-            { label: 'Add Follow-up', onClick: onFollowUp },
-            { label: 'Convert to Student', onClick: onConvert, hidden: lead.status === 'trial_completed' },
-          ]),
+              { label: 'Assign Teacher', onClick: onTeacher },
+              { label: 'Schedule Trial', onClick: onTrial },
+              { label: 'Add Follow-up', onClick: onFollowUp },
+              { label: 'Convert to Student', onClick: onConvert, hidden: lead.status === 'trial_completed' },
+            ]),
         { label: 'Mark Lost', onClick: onLost, danger: true },
       ]}
     />
@@ -211,6 +220,8 @@ function LeadActions({
 }
 
 export default function LeadsCRMPage() {
+  const { t, language } = useDashboardLanguage();
+  const locale = language === 'ar' ? 'ar-EG' : 'en';
   const { role } = useAuth();
   const { programs } = usePrograms();
   const [leads, setLeads] = useState<LeadRecord[]>([]);
@@ -336,13 +347,15 @@ export default function LeadsCRMPage() {
     const query = search.trim().toLowerCase();
 
     return leads.filter((lead) => {
-      const matchesSearch = !query
-        || lead.full_name.toLowerCase().includes(query)
-        || (lead.whatsapp || '').toLowerCase().includes(query)
-        || leadMatchesAttributionSearch(lead, query);
+      const matchesSearch =
+        !query ||
+        lead.full_name.toLowerCase().includes(query) ||
+        (lead.whatsapp || '').toLowerCase().includes(query) ||
+        leadMatchesAttributionSearch(lead, query);
       const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
       const matchesLeadType = leadTypeFilter === 'all' || (lead.lead_type || 'student') === leadTypeFilter;
-      const matchesProgram = programFilter === 'all' || lead.program_id === programFilter || lead.programName === programFilter;
+      const matchesProgram =
+        programFilter === 'all' || lead.program_id === programFilter || lead.programName === programFilter;
       const matchesSource = sourceFilter === 'all' || (lead.source || 'website') === sourceFilter;
       const matchesOwner = ownerFilter === 'all' || lead.assigned_to === ownerFilter;
       const matchesTeacher = teacherFilter === 'all' || lead.assigned_teacher_id === teacherFilter;
@@ -350,9 +363,32 @@ export default function LeadsCRMPage() {
       const createdTime = new Date(lead.created_at).getTime();
       const matchesDateFrom = !dateFrom || createdTime >= new Date(`${dateFrom}T00:00:00`).getTime();
       const matchesDateTo = !dateTo || createdTime <= new Date(`${dateTo}T23:59:59`).getTime();
-      return matchesSearch && matchesStatus && matchesLeadType && matchesProgram && matchesSource && matchesOwner && matchesTeacher && matchesFollowUp && matchesDateFrom && matchesDateTo;
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesLeadType &&
+        matchesProgram &&
+        matchesSource &&
+        matchesOwner &&
+        matchesTeacher &&
+        matchesFollowUp &&
+        matchesDateFrom &&
+        matchesDateTo
+      );
     });
-  }, [dateFrom, dateTo, followUpToday, leadTypeFilter, leads, ownerFilter, programFilter, search, sourceFilter, statusFilter, teacherFilter]);
+  }, [
+    dateFrom,
+    dateTo,
+    followUpToday,
+    leadTypeFilter,
+    leads,
+    ownerFilter,
+    programFilter,
+    search,
+    sourceFilter,
+    statusFilter,
+    teacherFilter,
+  ]);
 
   const sortedLeads = useMemo(() => {
     return [...filteredLeads].sort((first, second) => {
@@ -361,8 +397,12 @@ export default function LeadsCRMPage() {
       }
 
       if (sortBy === 'follow_up_asc') {
-        const firstTime = first.next_follow_up_at ? new Date(first.next_follow_up_at).getTime() : Number.MAX_SAFE_INTEGER;
-        const secondTime = second.next_follow_up_at ? new Date(second.next_follow_up_at).getTime() : Number.MAX_SAFE_INTEGER;
+        const firstTime = first.next_follow_up_at
+          ? new Date(first.next_follow_up_at).getTime()
+          : Number.MAX_SAFE_INTEGER;
+        const secondTime = second.next_follow_up_at
+          ? new Date(second.next_follow_up_at).getTime()
+          : Number.MAX_SAFE_INTEGER;
         return firstTime - secondTime;
       }
 
@@ -388,7 +428,20 @@ export default function LeadsCRMPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [dateFrom, dateTo, followUpToday, leadTypeFilter, ownerFilter, pageSize, programFilter, search, sortBy, sourceFilter, statusFilter, teacherFilter]);
+  }, [
+    dateFrom,
+    dateTo,
+    followUpToday,
+    leadTypeFilter,
+    ownerFilter,
+    pageSize,
+    programFilter,
+    search,
+    sortBy,
+    sourceFilter,
+    statusFilter,
+    teacherFilter,
+  ]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -407,20 +460,20 @@ export default function LeadsCRMPage() {
     const dueToday = leads.filter((lead) => isDueToday(lead.next_follow_up_at)).length;
 
     return [
-      { label: 'Total Leads', value: total, trend: 'All admissions inquiries', icon: 'chart' },
-      { label: 'Student Free Trial Leads', value: studentLeads, trend: 'Trial pipeline', icon: 'student' },
-      { label: 'Teacher Training Leads', value: trainingLeads, trend: 'Training applications', icon: 'teacher' },
-      { label: 'New Leads', value: newCount, trend: 'Awaiting first contact', icon: 'gift' },
-      { label: 'Trials Scheduled', value: trials, trend: 'Assigned to teachers', icon: 'calendar' },
-      { label: 'Enrolled Students', value: enrolled, trend: 'Converted students', icon: 'checkCircle' },
-      { label: 'Conversion Rate', value: `${conversionRate}%`, trend: 'Lead to enrollment', icon: 'chart' },
-      { label: 'Follow-ups Due Today', value: dueToday, trend: 'Admissions action', icon: 'clock' },
+      { label: t('Total Leads'), value: total, trend: t('All admissions inquiries'), icon: 'chart' },
+      { label: t('Student Free Trial Leads'), value: studentLeads, trend: t('Trial pipeline'), icon: 'student' },
+      { label: t('Teacher Training Leads'), value: trainingLeads, trend: t('Training applications'), icon: 'teacher' },
+      { label: t('New Leads'), value: newCount, trend: t('Awaiting first contact'), icon: 'gift' },
+      { label: t('Trials Scheduled'), value: trials, trend: t('Assigned to teachers'), icon: 'calendar' },
+      { label: t('Enrolled Students'), value: enrolled, trend: t('Converted students'), icon: 'checkCircle' },
+      { label: t('Conversion Rate'), value: `${conversionRate}%`, trend: t('Lead to enrollment'), icon: 'chart' },
+      { label: t('Follow-ups Due Today'), value: dueToday, trend: t('Admissions action'), icon: 'clock' },
     ];
-  }, [leads]);
+  }, [leads, t]);
 
   async function handleStatusChange(lead: LeadRecord, status: LeadStatus) {
     if (usingMockFallback) {
-      setLeads((current) => current.map((item) => item.id === lead.id ? { ...item, status } : item));
+      setLeads((current) => current.map((item) => (item.id === lead.id ? { ...item, status } : item)));
       setToast({ type: 'success', message: 'Lead status updated locally.' });
       return;
     }
@@ -445,7 +498,11 @@ export default function LeadsCRMPage() {
       return;
     }
 
-    if ((lead.lead_type || 'student') === 'student' && status !== 'enrolled' && !studentPipelineStatuses.includes(status)) {
+    if (
+      (lead.lead_type || 'student') === 'student' &&
+      status !== 'enrolled' &&
+      !studentPipelineStatuses.includes(status)
+    ) {
       setToast({ type: 'error', message: 'This status is not available for student leads.' });
       return;
     }
@@ -460,7 +517,7 @@ export default function LeadsCRMPage() {
     }
 
     try {
-    if (!usingMockFallback) {
+      if (!usingMockFallback) {
         const updated = await updateLeadStatus(lead.id, status, oldStatus);
         setLeads((current) => current.map((item) => (item.id === lead.id ? { ...item, ...updated } : item)));
         if (selectedLead?.id === lead.id) {
@@ -486,7 +543,17 @@ export default function LeadsCRMPage() {
     if (!followUpLead) return;
 
     if (usingMockFallback) {
-      setLeads((current) => current.map((lead) => lead.id === followUpLead.id ? { ...lead, next_follow_up_at: new Date(dateTime).toISOString(), notes: [lead.notes, note].filter(Boolean).join('\n\n') } : lead));
+      setLeads((current) =>
+        current.map((lead) =>
+          lead.id === followUpLead.id
+            ? {
+                ...lead,
+                next_follow_up_at: new Date(dateTime).toISOString(),
+                notes: [lead.notes, note].filter(Boolean).join('\n\n'),
+              }
+            : lead,
+        ),
+      );
     } else {
       await addLeadFollowUp(followUpLead.id, new Date(dateTime).toISOString(), note || 'Follow-up added.');
     }
@@ -506,7 +573,9 @@ export default function LeadsCRMPage() {
       await loadLeads();
     }
 
-    setSelectedLead((current) => current ? { ...current, notes: [current.notes, note].filter(Boolean).join('\n\n') } : current);
+    setSelectedLead((current) =>
+      current ? { ...current, notes: [current.notes, note].filter(Boolean).join('\n\n') } : current,
+    );
     setToast({ type: 'success', message: 'Lead note added.' });
   }
 
@@ -519,11 +588,13 @@ export default function LeadsCRMPage() {
     }
 
     if (usingMockFallback) {
-      setLeads((current) => current.map((lead) => (
-        lead.id === lostLead.id
-          ? { ...lead, status: 'lost', lost_reason: lostReason.trim(), updated_at: new Date().toISOString() }
-          : lead
-      )));
+      setLeads((current) =>
+        current.map((lead) =>
+          lead.id === lostLead.id
+            ? { ...lead, status: 'lost', lost_reason: lostReason.trim(), updated_at: new Date().toISOString() }
+            : lead,
+        ),
+      );
       setToast({ type: 'success', message: 'Lead marked lost locally.' });
     } else {
       await updateLead(lostLead.id, { status: 'lost', lost_reason: lostReason.trim() });
@@ -536,19 +607,33 @@ export default function LeadsCRMPage() {
   }
 
   const tableColumns: Array<DataTableColumn<LeadRecord>> = [
-    { header: 'Lead', accessor: (row) => <CompactCell primary={row.full_name} secondary={row.country || 'Country not set'} /> },
-    { header: 'Contact', accessor: (row) => <CompactCell primary={row.whatsapp || '-'} secondary={row.source || 'website'} /> },
     {
-      header: 'Program',
+      header: t('Lead'),
+      accessor: (row) => <CompactCell primary={row.full_name} secondary={row.country || t('Country not set')} />,
+    },
+    {
+      header: t('Contact'),
+      accessor: (row) => <CompactCell primary={row.whatsapp || '-'} secondary={row.source || t('website')} />,
+    },
+    {
+      header: t('Program'),
       accessor: (row) => (
-        <CompactCell secondary={row.form_type === 'teacher_training' ? 'Teacher Training form' : row.form_type === 'free_trial' ? 'Free Trial form' : row.form_type || undefined}>
+        <CompactCell
+          secondary={
+            row.form_type === 'teacher_training'
+              ? t('Teacher Training form')
+              : row.form_type === 'free_trial'
+                ? t('Free Trial form')
+                : row.form_type || undefined
+          }
+        >
           <strong>{row.programName || '-'}</strong>
           <LeadTypeBadge type={row.lead_type} />
         </CompactCell>
       ),
     },
     {
-      header: 'Acquisition',
+      header: t('Acquisition'),
       accessor: (row) => {
         const acquisition = getLeadAcquisition(row);
 
@@ -561,27 +646,41 @@ export default function LeadsCRMPage() {
         );
       },
     },
-    { header: 'Status', accessor: (row) => <LeadStatusBadge status={row.status} /> },
+    { header: t('Status'), accessor: (row) => <LeadStatusBadge status={row.status} /> },
     {
-      header: 'Assignment',
+      header: t('Assignment'),
       accessor: (row) => (
         <CompactCell
-          primary={row.assignedOwnerName || 'Unassigned'}
-          secondary={row.lead_type === 'teacher_training' ? 'Reviewer' : row.assignedTeacherName || 'No teacher'}
+          primary={row.assignedOwnerName || t('Unassigned')}
+          secondary={row.lead_type === 'teacher_training' ? t('Reviewer') : row.assignedTeacherName || t('No teacher')}
         />
       ),
     },
-    { header: 'Dates', accessor: (row) => <CompactCell primary={formatDate(row.next_follow_up_at)} secondary={`Created ${formatDate(row.created_at)}`} /> },
     {
-      header: 'Actions',
+      header: t('Dates'),
+      accessor: (row) => (
+        <CompactCell
+          primary={formatDate(row.next_follow_up_at, locale)}
+          secondary={t('Created {{date}}', { date: formatDate(row.created_at, locale) })}
+        />
+      ),
+    },
+    {
+      header: t('Actions'),
       accessor: (row) => (
         <LeadActions
           lead={row}
           onDetails={() => openLead(row, 'view')}
           onEdit={() => openLead(row, 'edit')}
           onStatus={(status) => handleStatusChange(row, status)}
-          onOwner={() => { setOwnerLead(row); setSelectedOwnerId(row.assigned_to || owners[0]?.id || ''); }}
-          onTeacher={() => { setTeacherLead(row); setSelectedTeacherId(row.assigned_teacher_id || teachers[0]?.id || ''); }}
+          onOwner={() => {
+            setOwnerLead(row);
+            setSelectedOwnerId(row.assigned_to || owners[0]?.id || '');
+          }}
+          onTeacher={() => {
+            setTeacherLead(row);
+            setSelectedTeacherId(row.assigned_teacher_id || teachers[0]?.id || '');
+          }}
           onTrial={() => setTrialLead(row)}
           onFollowUp={() => setFollowUpLead(row)}
           onLost={() => setLostLead(row)}
@@ -616,47 +715,133 @@ export default function LeadsCRMPage() {
     <div className="dashboard-page dashboard-page--leads">
       <Toast toast={toast} onClose={() => setToast(null)} />
       <DashboardPageHeader
-        eyebrow="LEADS CRM"
-        title="Admissions Pipeline"
-        subtitle="Track new inquiries, parent follow-ups, sources, trial readiness, and enrollment progress."
-        action={(
+        eyebrow={t('LEADS CRM')}
+        title={t('Admissions Pipeline')}
+        subtitle={t('Track new inquiries, parent follow-ups, sources, trial readiness, and enrollment progress.')}
+        action={
           <div className="dashboard-page-actions">
-            <ActionButton variant="copper" onClick={() => setAddLeadOpen(true)}><Icon name="plus" size={18} /> Add Lead</ActionButton>
-            <ActionButton variant="secondary" onClick={() => exportLeadRows(sortedLeads)}><Icon name="download" size={18} /> Export Leads</ActionButton>
-            <ActionButton variant="secondary" onClick={loadLeads}><Icon name="shieldCheck" size={18} /> Refresh</ActionButton>
+            <ActionButton variant="copper" onClick={() => setAddLeadOpen(true)}>
+              <Icon name="plus" size={18} /> {t('Add Lead')}
+            </ActionButton>
+            <ActionButton variant="secondary" onClick={() => exportLeadRows(sortedLeads)}>
+              <Icon name="download" size={18} /> {t('Export Leads')}
+            </ActionButton>
+            <ActionButton variant="secondary" onClick={loadLeads}>
+              <Icon name="shieldCheck" size={18} /> {t('Refresh')}
+            </ActionButton>
           </div>
-        )}
+        }
       />
 
       <div className="dashboard-stats-grid dashboard-stats-grid--leads">
-        {stats.map((stat) => <StatCard key={stat.label} {...stat} />)}
+        {stats.map((stat) => (
+          <StatCard key={stat.label} {...stat} />
+        ))}
       </div>
 
       <SectionCard className="dashboard-card--lead-workspace">
         <div className="lead-toolbar">
           <FilterBar search={search} onSearchChange={setSearch}>
-            <label><span>Status</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as LeadStatus | 'all')}>{statusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-            <label><span>Lead Type</span><select value={leadTypeFilter} onChange={(event) => setLeadTypeFilter(event.target.value as LeadType | 'all')}><option value="all">All lead types</option><option value="student">Student</option><option value="teacher_training">Teacher Training</option></select></label>
-            <ProgramSelect label="Program" value={programFilter} onChange={setProgramFilter} includeAllOption />
-            <label><span>Source</span><select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)}><option value="all">All sources</option>{sources.map((source) => <option key={source} value={source}>{source}</option>)}</select></label>
-            <label><span>Owner</span><select value={ownerFilter} onChange={(event) => setOwnerFilter(event.target.value)}><option value="all">All owners</option>{owners.map((owner) => <option key={owner.id} value={owner.id}>{owner.full_name}</option>)}</select></label>
-            <label><span>Teacher</span><select value={teacherFilter} onChange={(event) => setTeacherFilter(event.target.value)}><option value="all">All teachers</option>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name}</option>)}</select></label>
+            <label>
+              <span>{t('Status')}</span>
+              <select
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value as LeadStatus | 'all')}
+              >
+                {statusOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {t(option.label)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>{t('Lead Type')}</span>
+              <select
+                value={leadTypeFilter}
+                onChange={(event) => setLeadTypeFilter(event.target.value as LeadType | 'all')}
+              >
+                <option value="all">{t('All lead types')}</option>
+                <option value="student">{t('Student')}</option>
+                <option value="teacher_training">{t('Teacher Training')}</option>
+              </select>
+            </label>
+            <ProgramSelect label={t('Program')} value={programFilter} onChange={setProgramFilter} includeAllOption />
+            <label>
+              <span>{t('Source')}</span>
+              <select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)}>
+                <option value="all">{t('All sources')}</option>
+                {sources.map((source) => (
+                  <option key={source} value={source}>
+                    {source}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>{t('Owner')}</span>
+              <select value={ownerFilter} onChange={(event) => setOwnerFilter(event.target.value)}>
+                <option value="all">{t('All owners')}</option>
+                {owners.map((owner) => (
+                  <option key={owner.id} value={owner.id}>
+                    {owner.full_name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>{t('Teacher')}</span>
+              <select value={teacherFilter} onChange={(event) => setTeacherFilter(event.target.value)}>
+                <option value="all">{t('All teachers')}</option>
+                {teachers.map((teacher) => (
+                  <option key={teacher.id} value={teacher.id}>
+                    {teacher.full_name}
+                  </option>
+                ))}
+              </select>
+            </label>
           </FilterBar>
           <div className="lead-toolbar__bottom">
-            <label className="dashboard-check-filter"><input type="checkbox" checked={followUpToday} onChange={(event) => setFollowUpToday(event.target.checked)} /> Follow-up due today</label>
+            <label className="dashboard-check-filter">
+              <input
+                type="checkbox"
+                checked={followUpToday}
+                onChange={(event) => setFollowUpToday(event.target.checked)}
+              />{' '}
+              {t('Follow-up due today')}
+            </label>
             <div className="lead-date-range">
-              <label><span>From</span><input type="date" value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} /></label>
-              <label><span>To</span><input type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} /></label>
+              <label>
+                <span>{t('From')}</span>
+                <input type="date" value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} />
+              </label>
+              <label>
+                <span>{t('To')}</span>
+                <input type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} />
+              </label>
             </div>
             <div className="dashboard-view-toggle">
-              <button className={view === 'table' ? 'is-active' : ''} type="button" onClick={() => setView('table')}>Table</button>
-              <button className={view === 'pipeline' ? 'is-active' : ''} type="button" onClick={() => setView('pipeline')}>Pipeline</button>
+              <button className={view === 'table' ? 'is-active' : ''} type="button" onClick={() => setView('table')}>
+                {t('Table')}
+              </button>
+              <button
+                className={view === 'pipeline' ? 'is-active' : ''}
+                type="button"
+                onClick={() => setView('pipeline')}
+              >
+                {t('Pipeline')}
+              </button>
             </div>
           </div>
         </div>
 
-        {loading && <DashboardSkeleton cards={4} rows={7} label="Loading admissions pipeline" />}
-        {!loading && filteredLeads.length === 0 && <EmptyState title="No leads found" description="New website form submissions and manually added leads will appear here." />}
+        {loading && <DashboardSkeleton cards={4} rows={7} label={t('Loading admissions pipeline')} />}
+        {!loading && filteredLeads.length === 0 && (
+          <EmptyState
+            title={t('No leads found')}
+            description={t('New website form submissions and manually added leads will appear here.')}
+          />
+        )}
         {!loading && filteredLeads.length > 0 && view === 'pipeline' && (
           <LeadKanbanBoard
             leads={filteredLeads}
@@ -670,31 +855,53 @@ export default function LeadsCRMPage() {
           <>
             <div className="lead-table-operations">
               <div>
-                <strong>{sortedLeads.length} leads</strong>
-                <span>Showing {tableStart}-{tableEnd}</span>
+                <strong>{t('{{count}} leads', { count: sortedLeads.length })}</strong>
+                <span>{t('Showing {{start}}-{{end}}', { start: tableStart, end: tableEnd })}</span>
               </div>
               <label>
-                Sort
+                {t('Sort')}
                 <select value={sortBy} onChange={(event) => setSortBy(event.target.value as LeadsSortKey)}>
-                  <option value="created_desc">Newest first</option>
-                  <option value="created_asc">Oldest first</option>
-                  <option value="follow_up_asc">Follow-up due</option>
-                  <option value="name_asc">Name A-Z</option>
-                  <option value="status_asc">Status A-Z</option>
+                  <option value="created_desc">{t('Newest first')}</option>
+                  <option value="created_asc">{t('Oldest first')}</option>
+                  <option value="follow_up_asc">{t('Follow-up due')}</option>
+                  <option value="name_asc">{t('Name A-Z')}</option>
+                  <option value="status_asc">{t('Status A-Z')}</option>
                 </select>
               </label>
               <label>
-                Rows
+                {t('Rows')}
                 <select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))}>
-                  {pageSizeOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                  {pageSizeOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
                 </select>
               </label>
             </div>
-            <DataTable className="lead-crm-table-wrap" tableClassName="lead-crm-table" columns={tableColumns} rows={paginatedLeads} getRowKey={(row) => row.id} />
+            <DataTable
+              className="lead-crm-table-wrap"
+              tableClassName="lead-crm-table"
+              columns={tableColumns}
+              rows={paginatedLeads}
+              getRowKey={(row) => row.id}
+            />
             <div className="lead-table-pagination">
-              <ActionButton variant="secondary" disabled={currentPage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}>Previous</ActionButton>
-              <span>Page {currentPage} of {totalPages}</span>
-              <ActionButton variant="secondary" disabled={currentPage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}>Next</ActionButton>
+              <ActionButton
+                variant="secondary"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              >
+                {t('Previous')}
+              </ActionButton>
+              <span>{t('Page {{current}} of {{total}}', { current: currentPage, total: totalPages })}</span>
+              <ActionButton
+                variant="secondary"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              >
+                {t('Next')}
+              </ActionButton>
             </div>
           </>
         )}
@@ -713,8 +920,14 @@ export default function LeadsCRMPage() {
           onEdit={() => setDrawerMode('edit')}
           onSave={handleLeadSave}
           onAddFollowUp={() => setFollowUpLead(selectedLead)}
-          onAssignOwner={() => { setOwnerLead(selectedLead); setSelectedOwnerId(selectedLead.assigned_to || owners[0]?.id || ''); }}
-          onAssignTeacher={() => { setTeacherLead(selectedLead); setSelectedTeacherId(selectedLead.assigned_teacher_id || teachers[0]?.id || ''); }}
+          onAssignOwner={() => {
+            setOwnerLead(selectedLead);
+            setSelectedOwnerId(selectedLead.assigned_to || owners[0]?.id || '');
+          }}
+          onAssignTeacher={() => {
+            setTeacherLead(selectedLead);
+            setSelectedTeacherId(selectedLead.assigned_teacher_id || teachers[0]?.id || '');
+          }}
           onScheduleTrial={() => setTrialLead(selectedLead)}
           onAddNote={handleAddNote}
           onMarkLost={() => setLostLead(selectedLead)}
@@ -722,18 +935,92 @@ export default function LeadsCRMPage() {
         />
       )}
 
-      {teacherLead && <AssignTeacherModal lead={teacherLead} teachers={teachers} selectedTeacherId={selectedTeacherId} onSelectTeacher={setSelectedTeacherId} onClose={() => setTeacherLead(null)} onSave={async () => { await assignLeadTeacher(teacherLead.id, selectedTeacherId); setTeacherLead(null); setToast({ type: 'success', message: 'Teacher assigned.' }); await loadLeads(); }} />}
-      {followUpLead && <FollowUpModal lead={followUpLead} onClose={() => setFollowUpLead(null)} onSave={handleFollowUpSave} />}
-      {trialLead && <ScheduleTrialModal lead={trialLead} teachers={teachers} onClose={() => setTrialLead(null)} onSave={async (payload) => { await scheduleFreeTrial({ leadId: trialLead.id, ...payload }); setTrialLead(null); setToast({ type: 'success', message: 'Free trial scheduled.' }); await loadLeads(); }} />}
-      {convertLead && <ConvertLeadModal lead={convertLead} teachers={teachers} onClose={() => setConvertLead(null)} onSave={async (payload) => { await convertLeadToStudent(convertLead.id, payload); setConvertLead(null); setToast({ type: 'success', message: 'Lead converted to student.' }); await loadLeads(); }} />}
+      {teacherLead && (
+        <AssignTeacherModal
+          lead={teacherLead}
+          teachers={teachers}
+          selectedTeacherId={selectedTeacherId}
+          onSelectTeacher={setSelectedTeacherId}
+          onClose={() => setTeacherLead(null)}
+          onSave={async () => {
+            await assignLeadTeacher(teacherLead.id, selectedTeacherId);
+            setTeacherLead(null);
+            setToast({ type: 'success', message: 'Teacher assigned.' });
+            await loadLeads();
+          }}
+        />
+      )}
+      {followUpLead && (
+        <FollowUpModal lead={followUpLead} onClose={() => setFollowUpLead(null)} onSave={handleFollowUpSave} />
+      )}
+      {trialLead && (
+        <ScheduleTrialModal
+          lead={trialLead}
+          teachers={teachers}
+          onClose={() => setTrialLead(null)}
+          onSave={async (payload) => {
+            await scheduleFreeTrial({ leadId: trialLead.id, ...payload });
+            setTrialLead(null);
+            setToast({ type: 'success', message: 'Free trial scheduled.' });
+            await loadLeads();
+          }}
+        />
+      )}
+      {convertLead && (
+        <ConvertLeadModal
+          lead={convertLead}
+          teachers={teachers}
+          onClose={() => setConvertLead(null)}
+          onSave={async (payload) => {
+            await convertLeadToStudent(convertLead.id, payload);
+            setConvertLead(null);
+            setToast({ type: 'success', message: 'Lead converted to student.' });
+            await loadLeads();
+          }}
+        />
+      )}
 
       {ownerLead && (
-        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Assign owner to ${ownerLead.full_name}`}>
+        <div
+          className="dashboard-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Assign owner to ${ownerLead.full_name}`}
+        >
           <div className="dashboard-modal__panel dashboard-modal__panel--small">
-            <div className="dashboard-card__header"><div><h2>Assign Owner</h2><p>{ownerLead.full_name}</p></div></div>
+            <div className="dashboard-card__header">
+              <div>
+                <h2>Assign Owner</h2>
+                <p>{ownerLead.full_name}</p>
+              </div>
+            </div>
             <div className="dashboard-form">
-              <label><span>Admissions owner</span><select value={selectedOwnerId} onChange={(event) => setSelectedOwnerId(event.target.value)}>{owners.map((owner) => <option key={owner.id} value={owner.id}>{owner.full_name} - {owner.role}</option>)}</select></label>
-              <div className="dashboard-form-actions"><ActionButton variant="copper" onClick={async () => { await assignLeadOwner(ownerLead.id, selectedOwnerId); setOwnerLead(null); setToast({ type: 'success', message: 'Owner assigned.' }); await loadLeads(); }}>Save Owner</ActionButton><ActionButton variant="secondary" onClick={() => setOwnerLead(null)}>Cancel</ActionButton></div>
+              <label>
+                <span>Admissions owner</span>
+                <select value={selectedOwnerId} onChange={(event) => setSelectedOwnerId(event.target.value)}>
+                  {owners.map((owner) => (
+                    <option key={owner.id} value={owner.id}>
+                      {owner.full_name} - {owner.role}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="dashboard-form-actions">
+                <ActionButton
+                  variant="copper"
+                  onClick={async () => {
+                    await assignLeadOwner(ownerLead.id, selectedOwnerId);
+                    setOwnerLead(null);
+                    setToast({ type: 'success', message: 'Owner assigned.' });
+                    await loadLeads();
+                  }}
+                >
+                  Save Owner
+                </ActionButton>
+                <ActionButton variant="secondary" onClick={() => setOwnerLead(null)}>
+                  Cancel
+                </ActionButton>
+              </div>
             </div>
           </div>
         </div>
@@ -742,7 +1029,12 @@ export default function LeadsCRMPage() {
       {lostLead && (
         <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Mark ${lostLead.full_name} lost`}>
           <div className="dashboard-modal__panel dashboard-modal__panel--small">
-            <div className="dashboard-card__header"><div><h2>Mark Lost</h2><p>This closes the lead without enrollment.</p></div></div>
+            <div className="dashboard-card__header">
+              <div>
+                <h2>Mark Lost</h2>
+                <p>This closes the lead without enrollment.</p>
+              </div>
+            </div>
             <div className="dashboard-form">
               <label>
                 <span>Lost reason</span>
@@ -754,8 +1046,18 @@ export default function LeadsCRMPage() {
                 />
               </label>
               <div className="dashboard-form-actions">
-                <ActionButton variant="danger" onClick={handleMarkLost}>Confirm Mark Lost</ActionButton>
-                <ActionButton variant="secondary" onClick={() => { setLostLead(null); setLostReason(''); }}>Cancel</ActionButton>
+                <ActionButton variant="danger" onClick={handleMarkLost}>
+                  Confirm Mark Lost
+                </ActionButton>
+                <ActionButton
+                  variant="secondary"
+                  onClick={() => {
+                    setLostLead(null);
+                    setLostReason('');
+                  }}
+                >
+                  Cancel
+                </ActionButton>
               </div>
             </div>
           </div>
@@ -765,17 +1067,56 @@ export default function LeadsCRMPage() {
       {addLeadOpen && (
         <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label="Add lead">
           <div className="dashboard-modal__panel">
-            <div className="dashboard-card__header"><div><h2>Add Lead</h2><p>Create a manual admissions lead.</p></div><ActionButton variant="ghost" onClick={() => setAddLeadOpen(false)}>Close</ActionButton></div>
+            <div className="dashboard-card__header">
+              <div>
+                <h2>Add Lead</h2>
+                <p>Create a manual admissions lead.</p>
+              </div>
+              <ActionButton variant="ghost" onClick={() => setAddLeadOpen(false)}>
+                Close
+              </ActionButton>
+            </div>
             <form className="dashboard-form" onSubmit={handleAddLead}>
-              <label><span>Full name</span><input name="full_name" required /></label>
-              <label><span>WhatsApp</span><input name="whatsapp" /></label>
-              <label><span>Country</span><input name="country" /></label>
-              <label><span>Lead type</span><select name="lead_type" defaultValue="student"><option value="student">Student free trial</option><option value="teacher_training">Teacher training</option></select></label>
+              <label>
+                <span>Full name</span>
+                <input name="full_name" required />
+              </label>
+              <label>
+                <span>WhatsApp</span>
+                <input name="whatsapp" />
+              </label>
+              <label>
+                <span>Country</span>
+                <input name="country" />
+              </label>
+              <label>
+                <span>Lead type</span>
+                <select name="lead_type" defaultValue="student">
+                  <option value="student">Student free trial</option>
+                  <option value="teacher_training">Teacher training</option>
+                </select>
+              </label>
               <ProgramSelect label="Program" name="program_id" />
-              <label><span>Program name fallback</span><input name="program_name" placeholder="Used if no program is selected" /></label>
-              <label><span>Preferred time</span><input name="preferred_time" /></label>
-              <label><span>Message</span><textarea name="message" rows={3} /></label>
-              <div className="dashboard-form-actions"><ActionButton variant="copper" type="submit">Create Lead</ActionButton><ActionButton variant="secondary" type="button" onClick={() => setAddLeadOpen(false)}>Cancel</ActionButton></div>
+              <label>
+                <span>Program name fallback</span>
+                <input name="program_name" placeholder="Used if no program is selected" />
+              </label>
+              <label>
+                <span>Preferred time</span>
+                <input name="preferred_time" />
+              </label>
+              <label>
+                <span>Message</span>
+                <textarea name="message" rows={3} />
+              </label>
+              <div className="dashboard-form-actions">
+                <ActionButton variant="copper" type="submit">
+                  Create Lead
+                </ActionButton>
+                <ActionButton variant="secondary" type="button" onClick={() => setAddLeadOpen(false)}>
+                  Cancel
+                </ActionButton>
+              </div>
             </form>
           </div>
         </div>
