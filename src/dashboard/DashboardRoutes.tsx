@@ -17,6 +17,7 @@ import ActionButton from './components/ActionButton';
 import type { DashboardRole } from './types';
 import { DashboardLanguageProvider, useDashboardLanguage } from './i18n/DashboardLanguageProvider';
 import './styles/dashboard.css';
+import './styles/dashboard-i18n.css';
 
 const AccountsRolesPage = lazy(() => import('./admin/AccountsRolesPage'));
 const AdminCompliancePage = lazy(() => import('./admin/AdminCompliancePage'));
