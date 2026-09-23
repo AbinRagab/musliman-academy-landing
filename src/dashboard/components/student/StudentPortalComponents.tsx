@@ -7,6 +7,7 @@ import SectionCard from '../SectionCard';
 import StatCard from '../StatCard';
 import StatusBadge from '../StatusBadge';
 import ProgressBar from '../ProgressBar';
+import { useDashboardLanguage } from '../../i18n/DashboardLanguageProvider';
 import {
   openExternalLink,
   type StudentAttendanceStatus,
@@ -53,16 +54,18 @@ export function StudentStatCard({
 }
 
 export function StudentModal({ title, description, children, footer, onClose, wide = false }: ModalProps) {
+  const { t } = useDashboardLanguage();
+
   return (
-    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={title}>
-      <button className="dashboard-modal__backdrop" type="button" aria-label="Close modal" onClick={onClose} />
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={t(title)}>
+      <button className="dashboard-modal__backdrop" type="button" aria-label={t('Close modal')} onClick={onClose} />
       <section className={`dashboard-modal__panel ${wide ? 'dashboard-modal__panel--wide' : ''}`}>
         <div className="dashboard-modal__header">
           <div>
-            <h2>{title}</h2>
-            {description && <p>{description}</p>}
+            <h2>{t(title)}</h2>
+            {description && <p>{t(description)}</p>}
           </div>
-          <button type="button" className="dashboard-icon-button" aria-label="Close modal" onClick={onClose}>
+          <button type="button" className="dashboard-icon-button" aria-label={t('Close modal')} onClick={onClose}>
             <Icon name="x" size={17} />
           </button>
         </div>
@@ -78,25 +81,29 @@ export function AttendanceBadge({ status }: { status: StudentAttendanceStatus | 
 }
 
 export function EmptyState({ title, description, action }: { title: string; description: string; action?: ReactNode }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <div className="student-empty-state">
       <Icon name="sparkles" size={24} />
-      <h3>{title}</h3>
-      <p>{description}</p>
+      <h3>{t(title)}</h3>
+      <p>{t(description)}</p>
       {action}
     </div>
   );
 }
 
 export function FeatureUnavailableModal({ feature, onClose }: { feature: string; onClose: () => void }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <StudentModal
-      title={`${feature} Unavailable`}
+      title={t('{{feature}} Unavailable', { feature: t(feature) })}
       description="This feature is not enabled for the current portal configuration."
       onClose={onClose}
       footer={<ActionButton onClick={onClose}>Close</ActionButton>}
     >
-      <p className="student-modal-copy">Contact the academy team if this feature should be enabled for your account.</p>
+      <p className="student-modal-copy">{t('Contact the academy team if this feature should be enabled for your account.')}</p>
     </StudentModal>
   );
 }
@@ -110,14 +117,16 @@ export function NextClassCard({
   onContact: () => void;
   compact?: boolean;
 }) {
+  const { t } = useDashboardLanguage();
+
   if (!classSession) {
     return (
       <SectionCard title="Next Class" subtitle="No upcoming class is scheduled yet.">
         <div className="student-next-class student-next-class--empty">
-          <p>Your timetable will appear here when the academy team confirms your next session.</p>
+          <p>{t('Your timetable will appear here when the academy team confirms your next session.')}</p>
           <ActionButton variant="secondary" onClick={onContact}>
             <Icon name="support" size={16} />
-            Contact Academy Team
+            {t('Contact Academy Team')}
           </ActionButton>
         </div>
       </SectionCard>
@@ -148,7 +157,7 @@ export function NextClassCard({
           }}
         >
           <Icon name={canJoin ? 'video' : 'support'} size={16} />
-          {canJoin ? 'Join Class' : 'Contact Academy Team'}
+          {canJoin ? t('Join Class') : t('Contact Academy Team')}
         </ActionButton>
       </div>
     </SectionCard>
@@ -170,6 +179,7 @@ export function ClassListCard({
   onViewHomework?: (session: StudentClassSession) => void;
   onMeetingLinkUnavailable?: (session: StudentClassSession) => void;
 }) {
+  const { t } = useDashboardLanguage();
   const canJoin = (session.status === 'scheduled' || session.status === 'live') && Boolean(session.meetingLink);
   const isUpcoming = session.status === 'scheduled' || session.status === 'live';
   const completed = session.status === 'completed';
@@ -198,9 +208,9 @@ export function ClassListCard({
       </div>
       {variant === 'history' && (
         <div className="student-class-summary-grid">
-          <span>Lesson covered <strong>{session.lessonCovered || 'Not recorded yet'}</strong></span>
-          <span>Homework <strong>{session.homeworkAssigned || 'No homework assigned'}</strong></span>
-          <span>Teacher notes <strong>{session.teacherNotes || 'No notes published'}</strong></span>
+          <span>{t('Lesson covered')} <strong>{session.lessonCovered || t('Not recorded yet')}</strong></span>
+          <span>{t('Homework')} <strong>{session.homeworkAssigned || t('No homework assigned')}</strong></span>
+          <span>{t('Teacher notes')} <strong>{session.teacherNotes || t('No notes published')}</strong></span>
         </div>
       )}
       <div className="student-card-actions">
@@ -236,6 +246,7 @@ export function HomeworkCard({
   onViewFeedback: (homework: StudentHomeworkItem) => void;
   onViewFile?: (homework: StudentHomeworkItem) => void;
 }) {
+  const { t } = useDashboardLanguage();
   const needsUpload = homework.status === 'pending' || homework.status === 'overdue';
   const hasFile = Boolean(homework.filePath || homework.submissionUrl);
 
@@ -250,10 +261,10 @@ export function HomeworkCard({
       </div>
       <p>{homework.instructions}</p>
       <div className="student-info-grid student-info-grid--compact">
-        <span>Due date <strong>{homework.dueDate}</strong></span>
-        <span>Submission <strong>{homework.submittedAt || 'Not submitted'}</strong></span>
-        <span>File <strong>{homework.fileName || 'No file uploaded'}</strong></span>
-        <span>Size <strong>{homework.fileSize ? `${(homework.fileSize / 1024 / 1024).toFixed(1)} MB` : '-'}</strong></span>
+        <span>{t('Due date')} <strong>{homework.dueDate}</strong></span>
+        <span>{t('Submission')} <strong>{homework.submittedAt || t('Not submitted')}</strong></span>
+        <span>{t('File')} <strong>{homework.fileName || t('No file uploaded')}</strong></span>
+        <span>{t('Size')} <strong>{homework.fileSize ? `${(homework.fileSize / 1024 / 1024).toFixed(1)} MB` : '-'}</strong></span>
       </div>
       {homework.teacherFeedback && <div className="student-feedback-note">{homework.teacherFeedback}</div>}
       <div className="student-card-actions">
@@ -296,6 +307,7 @@ export function MessageList({
   selectedId: string;
   onSelect: (message: StudentMessage) => void;
 }) {
+  const { t } = useDashboardLanguage();
   if (!messages.length) {
     return <EmptyState title="No messages in this tab" description="Messages from your teacher and academy team will appear here." />;
   }
@@ -319,7 +331,7 @@ export function MessageList({
             <span>{message.dateTime}</span>
             <StatusBadge label={message.unread ? 'Unread' : 'Read'} tone={message.unread ? 'warning' : 'neutral'} />
           </footer>
-          {message.relatedClass && <small>Related class: {message.relatedClass}</small>}
+          {message.relatedClass && <small>{t('Related class')}: {message.relatedClass}</small>}
         </button>
       ))}
     </div>
@@ -327,6 +339,8 @@ export function MessageList({
 }
 
 export function MessageDetailPanel({ message, onReply }: { message: StudentMessage; onReply: () => void }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <div className="student-message-detail">
       <div className="student-message-detail__header">
@@ -339,13 +353,13 @@ export function MessageDetailPanel({ message, onReply }: { message: StudentMessa
       </div>
       <p>{message.body}</p>
       <div className="student-info-grid">
-        <span>Related class <strong>{message.relatedClass || '-'}</strong></span>
-        <span>Program <strong>{message.program || '-'}</strong></span>
-        <span>Sender role <strong>{message.senderRole}</strong></span>
+        <span>{t('Related class')} <strong>{message.relatedClass || '-'}</strong></span>
+        <span>{t('Program')} <strong>{message.program || '-'}</strong></span>
+        <span>{t('Sender role')} <strong>{t(message.senderRole)}</strong></span>
       </div>
       <ActionButton variant="secondary" onClick={onReply}>
         <Icon name="send" size={16} />
-        Reply
+        {t('Reply')}
       </ActionButton>
     </div>
   );
@@ -362,6 +376,8 @@ export function ComposeMessageModal({
   onSend: (payload: { to: string; subject: string; message: string }) => void;
   onClose: () => void;
 }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <StudentModal
       title="Compose Message"
@@ -373,7 +389,7 @@ export function ComposeMessageModal({
           form="student-compose-form"
         >
           <Icon name="send" size={16} />
-          Send Message
+          {t('Send Message')}
         </ActionButton>
       )}
     >
@@ -391,21 +407,21 @@ export function ComposeMessageModal({
         }}
       >
         <label>
-          <span>To</span>
+          <span>{t('To')}</span>
           <select name="to" defaultValue={to}>
-            <option>Teacher</option>
-            <option>Academy Team</option>
-            <option>Scheduling Team</option>
-            <option>Finance Team</option>
+            <option value="Teacher">{t('Teacher')}</option>
+            <option value="Academy Team">{t('Academy Team')}</option>
+            <option value="Scheduling Team">{t('Scheduling Team')}</option>
+            <option value="Finance Team">{t('Finance Team')}</option>
           </select>
         </label>
         <label>
-          <span>Subject</span>
+          <span>{t('Subject')}</span>
           <input name="subject" defaultValue={subject} />
         </label>
         <label>
-          <span>Message</span>
-          <textarea name="message" rows={5} placeholder="Write your message..." required />
+          <span>{t('Message')}</span>
+          <textarea name="message" rows={5} placeholder={t('Write your message...')} required />
         </label>
       </form>
     </StudentModal>
@@ -413,23 +429,25 @@ export function ComposeMessageModal({
 }
 
 export function PaymentSummaryCard({ payment, onContact, onReceipt }: { payment: StudentPayment; onContact: () => void; onReceipt?: () => void }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <SectionCard title="Current Package" subtitle="View-only package and renewal summary" action={<StatusBadge label={payment.status} />}>
       <div className="student-payment-package">
         <div>
           <h3>{payment.packageName}</h3>
-          <p>{payment.sessions} sessions - {payment.remainingSessions} remaining</p>
+          <p>{t('{{sessions}} sessions - {{remaining}} remaining', { sessions: payment.sessions, remaining: payment.remainingSessions })}</p>
         </div>
         <div className="student-payment-meter" style={{ '--sessions-left': `${Math.max(0, Math.min(100, (payment.remainingSessions / payment.sessions) * 100))}%` } as CSSProperties}>
           <span>{payment.remainingSessions}</span>
-          <small>left</small>
+          <small>{t('left')}</small>
         </div>
       </div>
       <div className="student-info-grid">
-        <span>Start date <strong>{payment.startDate}</strong></span>
-        <span>Valid until <strong>{payment.validUntil}</strong></span>
-        <span>Next due date <strong>{payment.nextDueDate}</strong></span>
-        <span>Payment method <strong>{payment.method}</strong></span>
+        <span>{t('Start date')} <strong>{payment.startDate}</strong></span>
+        <span>{t('Valid until')} <strong>{payment.validUntil}</strong></span>
+        <span>{t('Next due date')} <strong>{payment.nextDueDate}</strong></span>
+        <span>{t('Payment method')} <strong>{t(payment.method)}</strong></span>
       </div>
       <div className="student-card-actions">
         <DashboardActionMenu
@@ -454,11 +472,13 @@ export function StudentTabs<T extends string>({
   activeTab: T;
   onChange: (tab: T) => void;
 }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <div className="student-message-tabs" role="tablist">
       {tabs.map((tab) => (
         <button key={tab} className={activeTab === tab ? 'is-active' : ''} type="button" onClick={() => onChange(tab)}>
-          {tab}
+          {t(tab)}
         </button>
       ))}
     </div>
