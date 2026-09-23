@@ -6,14 +6,8 @@ import SupabaseSetupPage from './pages/SupabaseSetupPage';
 import { useAuth, type AuthRole } from './AuthProvider';
 import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
-export default function ProtectedRoute({
-  allowedRoles,
-  children,
-}: {
-  allowedRoles: AuthRole[];
-  children: ReactNode;
-}) {
-  const { user, role, isReady, isConfigured } = useAuth();
+export default function ProtectedRoute({ allowedRoles, children }: { allowedRoles: AuthRole[]; children: ReactNode }) {
+  const { user, profile, role, isReady, isConfigured } = useAuth();
   const location = useLocation();
 
   if (!isConfigured) {
@@ -25,9 +19,15 @@ export default function ProtectedRoute({
       <div className="dashboard-auth-screen">
         <div className="dashboard-auth-card dashboard-auth-card--compact">
           <img src="/assets/musliman-logo-light-bg-transparent.png" alt="Musliman Academy" />
-          <h1><DashboardText>Loading dashboard</DashboardText></h1>
-          <p><DashboardText>Checking your academy account and permissions.</DashboardText></p>
-          <ActionButton disabled><DashboardText>Loading</DashboardText></ActionButton>
+          <h1>
+            <DashboardText>Loading dashboard</DashboardText>
+          </h1>
+          <p>
+            <DashboardText>Checking your academy account and permissions.</DashboardText>
+          </p>
+          <ActionButton disabled>
+            <DashboardText>Loading</DashboardText>
+          </ActionButton>
         </div>
       </div>
     );
@@ -37,7 +37,7 @@ export default function ProtectedRoute({
     return <Navigate to="/dashboard/login" replace state={{ from: location }} />;
   }
 
-  if (!role || !allowedRoles.includes(role)) {
+  if (!profile || profile.status !== 'active' || !role || !allowedRoles.includes(role)) {
     return <AccessDeniedPage />;
   }
 

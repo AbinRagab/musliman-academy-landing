@@ -37,8 +37,6 @@ from (
     ('admin'::public.user_role, 'view_reports'),
     ('admin'::public.user_role, 'manage_accounts'),
     ('admissions'::public.user_role, 'manage_free_trials'),
-    ('admissions'::public.user_role, 'manage_students'),
-    ('admissions'::public.user_role, 'view_reports'),
     ('academic_manager'::public.user_role, 'manage_students'),
     ('academic_manager'::public.user_role, 'manage_teachers'),
     ('academic_manager'::public.user_role, 'manage_classes'),

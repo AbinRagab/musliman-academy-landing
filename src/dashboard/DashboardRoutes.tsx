@@ -2,7 +2,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { lazy, Suspense, type ReactNode } from 'react';
 import {
   AuthProvider,
-  accountsRoles,
   adminAreaRoles,
   getDashboardPath,
   studentRoles,
@@ -11,6 +10,7 @@ import {
   type AuthRole,
 } from './auth/AuthProvider';
 import ProtectedRoute from './auth/ProtectedRoute';
+import { adminAreaAccess } from './auth/accessControl';
 import DashboardLayout from './layouts/DashboardLayout';
 import EmptyState from './components/EmptyState';
 import ActionButton from './components/ActionButton';
@@ -103,11 +103,18 @@ export default function DashboardRoutes() {
             />
             <Route path="login" element={<LoginPage />} />
             <Route path="admin" element={<ProtectedDashboardShell allowedRoles={adminAreaRoles} layoutRole="admin" />}>
-              <Route index element={<AdminDashboard />} />
+              <Route
+                index
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.dashboard]}>
+                    <AdminDashboard />
+                  </ProtectedPage>
+                }
+              />
               <Route
                 path="accounts"
                 element={
-                  <ProtectedPage allowedRoles={accountsRoles}>
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.accounts]}>
                     <AccountsRolesPage />
                   </ProtectedPage>
                 }
@@ -115,25 +122,99 @@ export default function DashboardRoutes() {
               <Route
                 path="leads"
                 element={
-                  <ProtectedPage allowedRoles={['super_admin', 'admin', 'admissions', 'academic_manager']}>
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.leads]}>
                     <LeadsCRMPage />
                   </ProtectedPage>
                 }
               />
-              <Route path="students" element={<AdminSectionPage section="students" />} />
-              <Route path="students/:studentId" element={<StudentRecordPage portalRole="admin" />} />
+              <Route
+                path="students"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.students]}>
+                    <AdminSectionPage section="students" />
+                  </ProtectedPage>
+                }
+              />
+              <Route
+                path="students/:studentId"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.students]}>
+                    <StudentRecordPage portalRole="admin" />
+                  </ProtectedPage>
+                }
+              />
               <Route
                 path="students/:studentId/payments"
-                element={<StudentRecordPage portalRole="admin" initialTab="payments" />}
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.studentPayments]}>
+                    <StudentRecordPage portalRole="admin" initialTab="payments" />
+                  </ProtectedPage>
+                }
               />
-              <Route path="teachers" element={<AdminSectionPage section="teachers" />} />
-              <Route path="free-trials" element={<AdminSectionPage section="free-trials" />} />
-              <Route path="classes" element={<AdminSectionPage section="classes" />} />
-              <Route path="attendance" element={<AdminSectionPage section="attendance" />} />
-              <Route path="compliance" element={<AdminCompliancePage />} />
-              <Route path="payments" element={<AdminSectionPage section="payments" />} />
-              <Route path="reports" element={<AdminSectionPage section="reports" />} />
-              <Route path="settings" element={<AdminSectionPage section="settings" />} />
+              <Route
+                path="teachers"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.teachers]}>
+                    <AdminSectionPage section="teachers" />
+                  </ProtectedPage>
+                }
+              />
+              <Route
+                path="free-trials"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.freeTrials]}>
+                    <AdminSectionPage section="free-trials" />
+                  </ProtectedPage>
+                }
+              />
+              <Route
+                path="classes"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.classes]}>
+                    <AdminSectionPage section="classes" />
+                  </ProtectedPage>
+                }
+              />
+              <Route
+                path="attendance"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.attendance]}>
+                    <AdminSectionPage section="attendance" />
+                  </ProtectedPage>
+                }
+              />
+              <Route
+                path="compliance"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.compliance]}>
+                    <AdminCompliancePage />
+                  </ProtectedPage>
+                }
+              />
+              <Route
+                path="payments"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.payments]}>
+                    <AdminSectionPage section="payments" />
+                  </ProtectedPage>
+                }
+              />
+              <Route
+                path="reports"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.reports]}>
+                    <AdminSectionPage section="reports" />
+                  </ProtectedPage>
+                }
+              />
+              <Route
+                path="settings"
+                element={
+                  <ProtectedPage allowedRoles={[...adminAreaAccess.settings]}>
+                    <AdminSectionPage section="settings" />
+                  </ProtectedPage>
+                }
+              />
               <Route path=":section" element={<SectionUnavailable role="admin" />} />
             </Route>
             <Route
