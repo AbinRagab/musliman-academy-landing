@@ -7,7 +7,7 @@ import SectionCard from '../SectionCard';
 import StatCard from '../StatCard';
 import StatusBadge from '../StatusBadge';
 import ProgressBar from '../ProgressBar';
-import { useDashboardLanguage } from '../../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../../i18n/DashboardLanguageProvider';
 import {
   openExternalLink,
   type StudentAttendanceStatus,
@@ -101,7 +101,7 @@ export function FeatureUnavailableModal({ feature, onClose }: { feature: string;
       title={t('{{feature}} Unavailable', { feature: t(feature) })}
       description="This feature is not enabled for the current portal configuration."
       onClose={onClose}
-      footer={<ActionButton onClick={onClose}>Close</ActionButton>}
+      footer={<ActionButton onClick={onClose}><DashboardText>Close</DashboardText></ActionButton>}
     >
       <p className="student-modal-copy">{t('Contact the academy team if this feature should be enabled for your account.')}</p>
     </StudentModal>
@@ -139,14 +139,14 @@ export function NextClassCard({
     <SectionCard
       className={compact ? 'student-next-class-card student-next-class-card--compact' : 'student-next-class-card'}
       title="Next Class"
-      subtitle={`${classSession.date} at ${classSession.time} (${classSession.timezone})`}
+      subtitle={t('{{date}} at {{time}} ({{timezone}})', { date: classSession.date, time: classSession.time, timezone: classSession.timezone })}
       action={<StatusBadge label={classSession.status} />}
     >
       <div className="student-next-class">
         <div>
-          <h3>{classSession.title}</h3>
+          <h3>{t(classSession.title)}</h3>
           <p>{classSession.teacher} - {classSession.platform}</p>
-          <span>{classSession.program} / {classSession.level}</span>
+          <span>{t(classSession.program)} / {t(classSession.level)}</span>
         </div>
         <ActionButton
           variant={canJoin ? 'primary' : 'secondary'}
@@ -197,8 +197,8 @@ export function ClassListCard({
           <span>{session.time}</span>
         </div>
         <div>
-          <h3>{session.title}</h3>
-          <p>{session.teacher} - {session.platform}</p>
+          <h3>{t(session.title)}</h3>
+          <p>{session.teacher} - {t(session.platform)}</p>
           <div className="student-meta-row">
             <StatusBadge label={session.status} />
             {session.attendanceStatus && <AttendanceBadge status={session.attendanceStatus} />}
@@ -254,8 +254,8 @@ export function HomeworkCard({
     <article className="student-homework-card">
       <div className="student-homework-card__header">
         <div>
-          <h3>{homework.title}</h3>
-          <p>{homework.relatedClass} - {homework.teacher}</p>
+          <h3>{t(homework.title)}</h3>
+          <p>{t(homework.relatedClass)} - {homework.teacher}</p>
         </div>
         <StatusBadge label={homework.status} />
       </div>
@@ -287,13 +287,15 @@ export function HomeworkCard({
 }
 
 export function ProgressSkillCard({ skill }: { skill: StudentSkillRating }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <article className="student-skill-card">
       <div>
-        <strong>{skill.label}</strong>
+        <strong>{t(skill.label)}</strong>
         <span>{skill.value}%</span>
       </div>
-      <ProgressBar value={skill.value} label={skill.note} />
+      <ProgressBar value={skill.value} label={t(skill.note)} />
     </article>
   );
 }

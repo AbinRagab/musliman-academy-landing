@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import ActionButton from './ActionButton';
 import type { LeadRecord } from '../services/leadsService';
-import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function FollowUpModal({
   lead,
@@ -38,7 +38,7 @@ export default function FollowUpModal({
           <label><span>{t('Follow-up notes')}</span><textarea rows={4} value={note} onChange={(event) => setNote(event.target.value)} placeholder={t('Parent preference, contact attempt, next step')} /></label>
           <div className="dashboard-form-actions">
             <ActionButton type="submit" variant="copper" disabled={saving}>{t(saving ? 'Saving' : 'Save Follow-up')}</ActionButton>
-            <ActionButton type="button" variant="secondary" onClick={onClose}>Cancel</ActionButton>
+            <ActionButton type="button" variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
           </div>
         </form>
       </div>

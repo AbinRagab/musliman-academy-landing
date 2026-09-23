@@ -42,7 +42,9 @@ export default function DataTable<T>({ columns, rows, getRowKey, className = '',
   const displayColumns = columns.filter((column) => getColumnClassName(column.header) !== 'actions-cell');
 
   function renderCell(column: DataTableColumn<T>, row: T) {
-    return typeof column.accessor === 'function' ? column.accessor(row) : String(row[column.accessor] ?? '');
+    if (typeof column.accessor === 'function') return column.accessor(row);
+    const value = row[column.accessor];
+    return typeof value === 'string' ? t(value) : String(value ?? '');
   }
 
   return (

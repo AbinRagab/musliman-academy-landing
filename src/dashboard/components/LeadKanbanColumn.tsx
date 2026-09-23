@@ -3,6 +3,7 @@ import { useState } from 'react';
 import LeadStatusBadge from './LeadStatusBadge';
 import LeadKanbanCard from './LeadKanbanCard';
 import type { LeadRecord, LeadStatus } from '../services/leadsService';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 export type LeadKanbanColumnConfig = {
   status: LeadStatus;
@@ -50,12 +51,12 @@ export default function LeadKanbanColumn({
             ))}
             {hiddenCount > 0 && (
               <button className="lead-kanban__show-more" type="button" onClick={() => setVisibleCount((current) => current + 10)}>
-                Show 10 more ({hiddenCount} hidden)
+                <DashboardText>Show 10 more (</DashboardText>{hiddenCount} <DashboardText>hidden)</DashboardText>
               </button>
             )}
           </>
         ) : (
-          <div className="lead-kanban__empty">No {column.label.toLowerCase()} leads</div>
+          <div className="lead-kanban__empty"><DashboardText>No</DashboardText> {column.label.toLowerCase()} <DashboardText>leads</DashboardText></div>
         )}
       </div>
     </section>

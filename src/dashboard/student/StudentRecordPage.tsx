@@ -25,6 +25,7 @@ import {
 import { resolveCurrentStudentProfile } from '../services/studentService';
 import { addClassReport, addEvaluation, markAttendance, submitTrialFeedback } from '../services/teacherStudentService';
 import { updateStudentPayment } from '../services/paymentsService';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 const ownershipLabel: Record<StudentRecordOwner, string> = {
   Admin: 'Managed by Admin',
@@ -300,10 +301,10 @@ export default function StudentRecordPage({
                 <FieldGrid fields={section.fields} values={drafts[sectionKey] || {}} onChange={(key, value) => updateDraft(section, key, value)} role={role} />
                 {canSave ? (
                   <div className="dashboard-form-actions">
-                    <ActionButton type="submit" variant="copper">Save {section.title}</ActionButton>
+                    <ActionButton type="submit" variant="copper"><DashboardText>Save</DashboardText> {section.title}</ActionButton>
                   </div>
                 ) : (
-                  <p className="student-record-readonly">View only for your role.</p>
+                  <p className="student-record-readonly"><DashboardText>View only for your role.</DashboardText></p>
                 )}
               </form>
             </SectionCard>

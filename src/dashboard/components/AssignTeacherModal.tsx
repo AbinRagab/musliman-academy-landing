@@ -1,6 +1,6 @@
 import ActionButton from './ActionButton';
 import type { LeadRecord, TeacherOption } from '../services/leadsService';
-import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function AssignTeacherModal({
   lead,
@@ -44,8 +44,8 @@ export default function AssignTeacherModal({
           ))}
         </div>
         <div className="dashboard-form-actions">
-          <ActionButton variant="copper" onClick={onSave}>Save Teacher</ActionButton>
-          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+          <ActionButton variant="copper" onClick={onSave}><DashboardText>Save Teacher</DashboardText></ActionButton>
+          <ActionButton variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
         </div>
       </div>
     </div>

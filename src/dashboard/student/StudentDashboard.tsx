@@ -81,7 +81,7 @@ export default function StudentDashboard() {
       <div className="dashboard-greeting-card student-hero-banner">
         <div>
           <span>{t('Assalamu Alaikum, {{name}}', { name: data.profile.name })}</span>
-          <h2>{nextClass ? nextClass.title : t('Your learning plan is being scheduled')}</h2>
+          <h2>{nextClass ? t(nextClass.title) : t('Your learning plan is being scheduled')}</h2>
           <p>
             {nextClass
               ? t('{{date}} at {{time}} with {{teacher}}', { date: nextClass.date, time: nextClass.time, teacher: nextClass.teacher })
@@ -104,13 +104,13 @@ export default function StudentDashboard() {
 
       <div className="dashboard-stats-grid">
         <StudentStatCard label="Upcoming Classes" value={upcomingClasses.length} trend="Confirmed sessions" icon="calendar" />
-        <StudentStatCard label="Enrollment Status" value={t(data.trial.status === 'converted' ? 'Enrolled' : data.trial.status)} trend={data.trial.result} icon="gift" />
-        <StudentStatCard label="Assigned Teacher" value={data.profile.teacher.replace('Ust. ', '').replace('Sh. ', '')} trend={data.profile.program} icon="teacher" />
+        <StudentStatCard label="Enrollment Status" value={t(data.trial.status === 'converted' ? 'Enrolled' : data.trial.status)} trend={t(data.trial.result)} icon="gift" />
+        <StudentStatCard label="Assigned Teacher" value={data.profile.teacher.replace('Ust. ', '').replace('Sh. ', '')} trend={t(data.profile.program)} icon="teacher" />
         <StudentStatCard label="Attendance Rate" value={data.profile.attendanceRate} trend="Calculated by system" icon="clipboard" />
       </div>
 
       <div className="dashboard-stats-grid">
-        <StudentStatCard label="Current Level" value={data.profile.level} trend={data.profile.program} icon="quran" />
+        <StudentStatCard label="Current Level" value={t(data.profile.level)} trend={t(data.profile.program)} icon="quran" />
         <StudentStatCard label="Completed Lessons" value={data.profile.completedLessons} trend="From completed class records" icon="book" />
         <StudentStatCard label="Pending Homework" value={data.sectionErrors?.homework ? t('Error') : pendingHomework} trend={data.sectionErrors?.homework || 'Needs student action'} icon="document" />
         <StudentStatCard label="Remaining Sessions" value={data.sectionErrors?.payments ? t('Error') : payment?.remainingSessions ?? t('Not provided')} trend={data.sectionErrors?.payments || payment?.packageName || 'Package pending'} icon="award" />
@@ -127,14 +127,14 @@ export default function StudentDashboard() {
               <article key={session.id}>
                 <span>{session.date}</span>
                 <strong>{session.time}</strong>
-                <p>{session.title}</p>
+                <p>{t(session.title)}</p>
                 <small>{session.teacher}</small>
               </article>
             ))}
           </div>
         </SectionCard>
 
-        <SectionCard title="Course Progress" subtitle={`${data.profile.program} / ${data.profile.level}`}>
+        <SectionCard title="Course Progress" subtitle={`${t(data.profile.program)} / ${t(data.profile.level)}`}>
           <div className="dashboard-progress-summary student-progress-summary">
             <div className="dashboard-progress-ring" style={{ '--progress': `${data.profile.overallProgress}%` } as CSSProperties}>
               <span>{data.profile.overallProgress}%</span>

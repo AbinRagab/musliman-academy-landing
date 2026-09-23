@@ -18,7 +18,7 @@ export default function StatCard({ label, value, trend, icon = 'chart' }: StatCa
       </div>
       <div>
         <span>{t(label)}</span>
-        <strong>{value}</strong>
+        <strong>{typeof value === 'string' ? t(value) : value}</strong>
         {trend && <small>{t(trend)}</small>}
       </div>
     </article>

@@ -47,7 +47,7 @@ import {
   marketingAttributionFieldKeys,
 } from '../services/leadAttribution';
 import { usePrograms, type ProgramRecord } from '../../shared/services/programsService';
-import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 type ProgramOption = ProgramRecord;
 type OwnerOption = { id: string; full_name: string; email: string; role: string; status: string };
@@ -1018,7 +1018,7 @@ export default function LeadsCRMPage() {
                   {t('Save Owner')}
                 </ActionButton>
                 <ActionButton variant="secondary" onClick={() => setOwnerLead(null)}>
-                  Cancel
+                  <DashboardText>Cancel</DashboardText>
                 </ActionButton>
               </div>
             </div>
@@ -1056,7 +1056,7 @@ export default function LeadsCRMPage() {
                     setLostReason('');
                   }}
                 >
-                  Cancel
+                  <DashboardText>Cancel</DashboardText>
                 </ActionButton>
               </div>
             </div>
@@ -1073,7 +1073,7 @@ export default function LeadsCRMPage() {
                 <p>{t('Create a manual admissions lead.')}</p>
               </div>
               <ActionButton variant="ghost" onClick={() => setAddLeadOpen(false)}>
-                Close
+                <DashboardText>Close</DashboardText>
               </ActionButton>
             </div>
             <form className="dashboard-form" onSubmit={handleAddLead}>
@@ -1082,7 +1082,7 @@ export default function LeadsCRMPage() {
                 <input name="full_name" required />
               </label>
               <label>
-                <span>WhatsApp</span>
+                <span><DashboardText>WhatsApp</DashboardText></span>
                 <input name="whatsapp" />
               </label>
               <label>
@@ -1114,7 +1114,7 @@ export default function LeadsCRMPage() {
                   {t('Create Lead')}
                 </ActionButton>
                 <ActionButton variant="secondary" type="button" onClick={() => setAddLeadOpen(false)}>
-                  Cancel
+                  <DashboardText>Cancel</DashboardText>
                 </ActionButton>
               </div>
             </form>

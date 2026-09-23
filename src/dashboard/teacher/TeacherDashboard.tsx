@@ -21,6 +21,7 @@ import {
   type TeacherDashboardData,
   type TeacherDashboardEvaluation as EvaluationRow,
 } from '../services/teacherDashboardService';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 function getScheduledStartAt(time: string) {
   const normalized = time.replace(/^Today\s+/i, '').trim();
@@ -30,6 +31,8 @@ function getScheduledStartAt(time: string) {
 }
 
 function EvaluationModal({ evaluation, onClose, onSubmit }: { evaluation: EvaluationRow; onClose: () => void; onSubmit: (formData: FormData) => void }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Evaluate ${evaluation.student}`}>
       <div className="dashboard-modal__panel dashboard-modal__panel--wide">
@@ -44,26 +47,26 @@ function EvaluationModal({ evaluation, onClose, onSubmit }: { evaluation: Evalua
         </div>
         <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
           <div className="teacher-form-grid">
-            <label><span>Reading accuracy</span><input name="recitationRating" type="range" min="1" max="5" defaultValue="4" /></label>
-            <label><span>Tajweed</span><input name="tajweedRating" type="range" min="1" max="5" defaultValue="4" /></label>
-            <label><span>Understanding</span><input name="understandingRating" type="range" min="1" max="5" defaultValue="4" /></label>
-            <label><span>Behavior</span><input name="behaviorRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span><DashboardText>Reading accuracy</DashboardText></span><input name="recitationRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span><DashboardText>Tajweed</DashboardText></span><input name="tajweedRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span><DashboardText>Understanding</DashboardText></span><input name="understandingRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span><DashboardText>Behavior</DashboardText></span><input name="behaviorRating" type="range" min="1" max="5" defaultValue="4" /></label>
             <label>
-              <span>Evaluation date</span>
+              <span><DashboardText>Evaluation date</DashboardText></span>
               <input type="date" defaultValue={getAcademyTodayDate()} readOnly />
             </label>
             <label className="teacher-form-grid__wide">
-              <span>Strengths / progress notes</span>
-              <textarea name="progressNotes" rows={3} placeholder="Record strengths from recent classes." />
+              <span><DashboardText>Strengths / progress notes</DashboardText></span>
+              <textarea name="progressNotes" rows={3} placeholder={t('Record strengths from recent classes.')} />
             </label>
             <label className="teacher-form-grid__wide">
-              <span>Teacher recommendation</span>
-              <textarea name="recommendation" rows={3} placeholder="Recommend next focus, level change, or admin review." />
+              <span><DashboardText>Teacher recommendation</DashboardText></span>
+              <textarea name="recommendation" rows={3} placeholder={t('Recommend next focus, level change, or admin review.')} />
             </label>
           </div>
           <div className="dashboard-form-actions">
-            <ActionButton variant="secondary" disabled>Draft saving unavailable</ActionButton>
-            <ActionButton type="submit" variant="copper">Submit Evaluation</ActionButton>
+            <ActionButton variant="secondary" disabled><DashboardText>Draft saving unavailable</DashboardText></ActionButton>
+            <ActionButton type="submit" variant="copper"><DashboardText>Submit Evaluation</DashboardText></ActionButton>
           </div>
         </form>
       </div>
@@ -72,12 +75,14 @@ function EvaluationModal({ evaluation, onClose, onSubmit }: { evaluation: Evalua
 }
 
 function ClassReportModal({ classItem, onClose, onSubmit }: { classItem: TeacherClass; onClose: () => void; onSubmit: (formData: FormData) => void }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Class report for ${classItem.student}`}>
       <div className="dashboard-modal__panel">
         <div className="dashboard-card__header">
           <div>
-            <h2>Add Class Report</h2>
+            <h2><DashboardText>Add Class Report</DashboardText></h2>
             <p>{classItem.student} - {classItem.program}</p>
           </div>
           <button type="button" className="dashboard-icon-button" aria-label="Close report" onClick={onClose}>
@@ -85,13 +90,13 @@ function ClassReportModal({ classItem, onClose, onSubmit }: { classItem: Teacher
           </button>
         </div>
         <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
-          <label><span>Lesson covered</span><input name="lessonCovered" placeholder="Example: Madd letters review" required /></label>
-          <label><span>Homework assigned</span><textarea name="homework" rows={3} placeholder="Describe homework for the next session." /></label>
-          <label><span>Class notes</span><textarea name="notes" rows={4} placeholder="Summarize class outcome and support needs." /></label>
-          <label><span>Next lesson plan</span><textarea name="nextLessonPlan" rows={3} placeholder="Define the next teaching plan." /></label>
+          <label><span><DashboardText>Lesson covered</DashboardText></span><input name="lessonCovered" placeholder={t('Example: Madd letters review')} required /></label>
+          <label><span><DashboardText>Homework assigned</DashboardText></span><textarea name="homework" rows={3} placeholder={t('Describe homework for the next session.')} /></label>
+          <label><span><DashboardText>Class notes</DashboardText></span><textarea name="notes" rows={4} placeholder={t('Summarize class outcome and support needs.')} /></label>
+          <label><span><DashboardText>Next lesson plan</DashboardText></span><textarea name="nextLessonPlan" rows={3} placeholder={t('Define the next teaching plan.')} /></label>
           <div className="dashboard-form-actions">
-            <ActionButton type="submit" variant="copper">Save Class Report</ActionButton>
-            <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+            <ActionButton type="submit" variant="copper"><DashboardText>Save Class Report</DashboardText></ActionButton>
+            <ActionButton variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
           </div>
         </form>
       </div>
@@ -104,16 +109,16 @@ function TeacherClassDetailsModal({ classItem, onClose }: { classItem: TeacherCl
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Class details for ${classItem.student}`}>
       <div className="dashboard-modal__panel">
         <div className="dashboard-card__header">
-          <div><h2>Class Details</h2><p>{classItem.student} - {classItem.program}</p></div>
+          <div><h2><DashboardText>Class Details</DashboardText></h2><p>{classItem.student} - {classItem.program}</p></div>
           <button type="button" className="dashboard-icon-button" aria-label="Close class details" onClick={onClose}><Icon name="x" /></button>
         </div>
         <div className="student-info-grid">
-          <span>Time <strong>{classItem.time}</strong></span>
-          <span>Status <strong><StatusBadge label={classItem.status} /></strong></span>
-          <span>Platform <strong>{classItem.platform}</strong></span>
-          <span>Attendance <strong>{classItem.attendanceStatus}</strong></span>
-          <span>Report <strong>{classItem.reportStatus}</strong></span>
-          <span>Meeting link <strong>{classItem.meetingLink || 'No meeting link recorded'}</strong></span>
+          <span><DashboardText>Time</DashboardText> <strong>{classItem.time}</strong></span>
+          <span><DashboardText>Status</DashboardText> <strong><StatusBadge label={classItem.status} /></strong></span>
+          <span><DashboardText>Platform</DashboardText> <strong>{classItem.platform}</strong></span>
+          <span><DashboardText>Attendance</DashboardText> <strong>{classItem.attendanceStatus}</strong></span>
+          <span><DashboardText>Report</DashboardText> <strong>{classItem.reportStatus}</strong></span>
+          <span><DashboardText>Meeting link</DashboardText> <strong>{classItem.meetingLink || 'No meeting link recorded'}</strong></span>
         </div>
       </div>
     </div>
@@ -125,15 +130,15 @@ function TeacherEvaluationDetailsModal({ evaluation, onClose }: { evaluation: Ev
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Evaluation details for ${evaluation.student}`}>
       <div className="dashboard-modal__panel">
         <div className="dashboard-card__header">
-          <div><h2>Evaluation Details</h2><p>{evaluation.student} - {evaluation.program}</p></div>
+          <div><h2><DashboardText>Evaluation Details</DashboardText></h2><p>{evaluation.student} - {evaluation.program}</p></div>
           <button type="button" className="dashboard-icon-button" aria-label="Close evaluation details" onClick={onClose}><Icon name="x" /></button>
         </div>
         <div className="student-info-grid">
-          <span>Related class <strong>{evaluation.relatedClass}</strong></span>
-          <span>Recitation <strong>{evaluation.recitation || 0}/5</strong></span>
-          <span>Tajweed <strong>{evaluation.tajweed || 0}/5</strong></span>
-          <span>Understanding <strong>{evaluation.understanding || 0}/5</strong></span>
-          <span>Status <strong><StatusBadge label={evaluation.status} /></strong></span>
+          <span><DashboardText>Related class</DashboardText> <strong>{evaluation.relatedClass}</strong></span>
+          <span><DashboardText>Recitation</DashboardText> <strong>{evaluation.recitation || 0}/5</strong></span>
+          <span><DashboardText>Tajweed</DashboardText> <strong>{evaluation.tajweed || 0}/5</strong></span>
+          <span><DashboardText>Understanding</DashboardText> <strong>{evaluation.understanding || 0}/5</strong></span>
+          <span><DashboardText>Status</DashboardText> <strong><StatusBadge label={evaluation.status} /></strong></span>
         </div>
       </div>
     </div>
@@ -147,16 +152,16 @@ function TeacherTrialDetailsModal({ trial, onClose }: { trial: Record<string, un
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label="Trial details">
       <div className="dashboard-modal__panel">
         <div className="dashboard-card__header">
-          <div><h2>{lead?.full_name || String(trial.student || 'Trial student')}</h2><p>Assigned free trial details.</p></div>
+          <div><h2>{lead?.full_name || String(trial.student || 'Trial student')}</h2><p><DashboardText>Assigned free trial details.</DashboardText></p></div>
           <button type="button" className="dashboard-icon-button" aria-label="Close trial details" onClick={onClose}><Icon name="x" /></button>
         </div>
         <div className="student-info-grid">
-          <span>Program <strong>{lead?.programName || String(trial.program || 'Program not assigned')}</strong></span>
-          <span>WhatsApp <strong>{lead?.whatsapp || '-'}</strong></span>
-          <span>Date <strong>{String(trial.trial_date || 'Date pending')}</strong></span>
-          <span>Time <strong>{String(trial.trial_time || '')}</strong></span>
-          <span>Status <strong><StatusBadge label={String(trial.status || 'scheduled')} /></strong></span>
-          <span>Meeting link <strong>{String(trial.meeting_link || 'No meeting link recorded')}</strong></span>
+          <span><DashboardText>Program</DashboardText> <strong>{lead?.programName || String(trial.program || 'Program not assigned')}</strong></span>
+          <span><DashboardText>WhatsApp</DashboardText> <strong>{lead?.whatsapp || '-'}</strong></span>
+          <span><DashboardText>Date</DashboardText> <strong>{String(trial.trial_date || 'Date pending')}</strong></span>
+          <span><DashboardText>Time</DashboardText> <strong>{String(trial.trial_time || '')}</strong></span>
+          <span><DashboardText>Status</DashboardText> <strong><StatusBadge label={String(trial.status || 'scheduled')} /></strong></span>
+          <span><DashboardText>Meeting link</DashboardText> <strong>{String(trial.meeting_link || 'No meeting link recorded')}</strong></span>
         </div>
       </div>
     </div>
@@ -332,13 +337,13 @@ export default function TeacherDashboard() {
       <Toast toast={toast} onClose={() => setToast(null)} />
       <div className="dashboard-page-header">
         <div>
-          <span className="dashboard-eyebrow">Teacher Workspace</span>
-          <h1>Teacher Dashboard</h1>
-          <p>Daily view for classes, assigned students, attendance, evaluations, trials, and academy messages.</p>
+          <span className="dashboard-eyebrow"><DashboardText>Teacher Workspace</DashboardText></span>
+          <h1><DashboardText>Teacher Dashboard</DashboardText></h1>
+          <p><DashboardText>Daily view for classes, assigned students, attendance, evaluations, trials, and academy messages.</DashboardText></p>
         </div>
         <ActionButton onClick={() => navigate('/dashboard/teacher/schedule')}>
           <Icon name="calendar" size={18} />
-          Open Schedule
+          <DashboardText>Open Schedule</DashboardText>
         </ActionButton>
       </div>
 
@@ -347,21 +352,21 @@ export default function TeacherDashboard() {
       <SectionCard className="teacher-next-class-card">
         {contextError ? (
           <div className="teacher-empty-card">
-            <span className="dashboard-eyebrow">Teacher Account</span>
-            <h2>Teacher profile is not connected</h2>
-            <p>Please contact admin so this login can be linked to an operational teacher record.</p>
+            <span className="dashboard-eyebrow"><DashboardText>Teacher Account</DashboardText></span>
+            <h2><DashboardText>Teacher profile is not connected</DashboardText></h2>
+            <p><DashboardText>Please contact admin so this login can be linked to an operational teacher record.</DashboardText></p>
           </div>
         ) : nextClass ? (
           <div className="teacher-next-class">
             <div>
-              <span className="dashboard-eyebrow">Next Class</span>
+              <span className="dashboard-eyebrow"><DashboardText>Next Class</DashboardText></span>
               <h2>{nextClass.student}</h2>
               <p>{nextClass.program} - {nextClass.time}</p>
             </div>
             <div className="teacher-next-class__details">
-              <span><strong>Status</strong><StatusBadge label={nextClass.status} /></span>
-              <span><strong>Meeting platform</strong>{nextClass.platform}</span>
-              <span><strong>Attendance</strong>{nextClass.attendanceStatus}</span>
+              <span><strong><DashboardText>Status</DashboardText></strong><StatusBadge label={nextClass.status} /></span>
+              <span><strong><DashboardText>Meeting platform</DashboardText></strong>{nextClass.platform}</span>
+              <span><strong><DashboardText>Attendance</DashboardText></strong>{nextClass.attendanceStatus}</span>
             </div>
             <div className="teacher-action-row">
               <DashboardActionMenu
@@ -379,10 +384,10 @@ export default function TeacherDashboard() {
           </div>
         ) : (
           <div className="teacher-empty-card">
-            <span className="dashboard-eyebrow">Next Class</span>
-            <h2>No classes assigned for today</h2>
-            <p>Assigned classes from Supabase will appear here when scheduled.</p>
-            <ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/schedule')}>Open Schedule</ActionButton>
+            <span className="dashboard-eyebrow"><DashboardText>Next Class</DashboardText></span>
+            <h2><DashboardText>No classes assigned for today</DashboardText></h2>
+            <p><DashboardText>Assigned classes from Supabase will appear here when scheduled.</DashboardText></p>
+            <ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/schedule')}><DashboardText>Open Schedule</DashboardText></ActionButton>
           </div>
         )}
       </SectionCard>
@@ -393,14 +398,14 @@ export default function TeacherDashboard() {
         ))}
       </div>
 
-      <SectionCard title="Today's Schedule" subtitle="Classes assigned to you today." action={<ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/schedule')}>View Full Timetable</ActionButton>}>
+      <SectionCard title="Today's Schedule" subtitle="Classes assigned to you today." action={<ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/schedule')}><DashboardText>View Full Timetable</DashboardText></ActionButton>}>
         <DataTable columns={scheduleColumns} rows={todaysClasses} getRowKey={(row) => row.id} />
       </SectionCard>
 
       <div className="dashboard-grid dashboard-grid--teacher teacher-dashboard-middle-grid">
         <SectionCard title="My Students Needing Attention" subtitle="Assigned students with support signals.">
           <div className="teacher-compact-list">
-            {assignedStudents.length === 0 && <p className="dashboard-empty-copy">No assigned students yet.</p>}
+            {assignedStudents.length === 0 && <p className="dashboard-empty-copy"><DashboardText>No assigned students yet.</DashboardText></p>}
             {assignedStudents.filter((student) => student.progress === 'Needs support' || student.nextClass.includes('Today')).map((student) => (
               <article className="teacher-compact-row" key={student.id}>
                 <div className="teacher-compact-row__main">
@@ -433,14 +438,14 @@ export default function TeacherDashboard() {
 
         <SectionCard title="Attendance to Submit" subtitle="Class attendance awaiting submission.">
           <div className="teacher-task-list">
-            {todaysClasses.filter((classItem) => classItem.attendanceStatus === 'Pending').length === 0 && <p className="dashboard-empty-copy">No attendance records are pending.</p>}
+            {todaysClasses.filter((classItem) => classItem.attendanceStatus === 'Pending').length === 0 && <p className="dashboard-empty-copy"><DashboardText>No attendance records are pending.</DashboardText></p>}
             {todaysClasses.filter((classItem) => classItem.attendanceStatus === 'Pending').map((classItem) => (
               <article key={classItem.id}>
                 <div>
                   <strong>{classItem.student}</strong>
                   <span>{classItem.program} - {classItem.time}</span>
                 </div>
-                <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}>Mark Attendance</ActionButton>
+                <ActionButton variant="ghost" onClick={() => navigate('/dashboard/teacher/attendance')}><DashboardText>Mark Attendance</DashboardText></ActionButton>
               </article>
             ))}
           </div>
@@ -450,7 +455,7 @@ export default function TeacherDashboard() {
       <div className="dashboard-grid dashboard-grid--two">
         <SectionCard title="Pending Evaluations" subtitle="Academic evaluations ready for teacher input.">
           <div className="teacher-compact-list">
-            {evaluationQueue.length === 0 && <p className="dashboard-empty-copy">No pending evaluations.</p>}
+            {evaluationQueue.length === 0 && <p className="dashboard-empty-copy"><DashboardText>No pending evaluations.</DashboardText></p>}
             {evaluationQueue.map((evaluation) => (
               <article className="teacher-compact-row" key={evaluation.id}>
                 <div className="teacher-compact-row__main">
@@ -488,7 +493,7 @@ export default function TeacherDashboard() {
               ))}
             </div>
           ) : (
-            <p className="dashboard-empty-copy">No free trials assigned.</p>
+            <p className="dashboard-empty-copy"><DashboardText>No free trials assigned.</DashboardText></p>
           )}
         </SectionCard>
       </div>

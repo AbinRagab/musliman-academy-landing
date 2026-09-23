@@ -106,7 +106,7 @@ export default function ProgramSelect({
 
   return (
     <label>
-      <span>{label}</span>
+      <span>{t(label)}</span>
       {select}
     </label>
   );

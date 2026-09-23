@@ -9,6 +9,7 @@ import { ComposeMessageModal, PaymentSummaryCard, StudentPageHeader, StudentStat
 import { sendStudentMessage } from '../services/studentMessagesService';
 import { fetchStudentPaymentsData, getStudentPaymentReceiptUrl } from '../services/studentPaymentsService';
 import { openExternalLink, type StudentPayment } from '../services/studentService';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 export default function StudentPayments() {
   const [payments, setPayments] = useState<StudentPayment[]>([]);
@@ -86,7 +87,7 @@ export default function StudentPayments() {
         action={(
           <ActionButton onClick={() => setCompose({ to: 'Finance Team', subject: 'Payment support request' })}>
             <Icon name="support" size={17} />
-            Contact Finance
+            <DashboardText>Contact Finance</DashboardText>
           </ActionButton>
         )}
       />
@@ -101,9 +102,9 @@ export default function StudentPayments() {
       </div>
 
       <SectionCard title="Payment History" subtitle="Finance records are view-only in the student portal.">
-        {loading && <p className="dashboard-empty-copy">Loading payment records...</p>}
+        {loading && <p className="dashboard-empty-copy"><DashboardText>Loading payment records...</DashboardText></p>}
         {!loading && error && <p className="dashboard-inline-error">{error}</p>}
-        {!loading && !error && payments.length === 0 && <p className="dashboard-empty-copy">No payment records yet.</p>}
+        {!loading && !error && payments.length === 0 && <p className="dashboard-empty-copy"><DashboardText>No payment records yet.</DashboardText></p>}
         {!loading && !error && payments.length > 0 && <DataTable columns={columns} rows={payments} getRowKey={(row) => row.id} />}
       </SectionCard>
 

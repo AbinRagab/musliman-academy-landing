@@ -4,7 +4,7 @@ import ProgramSelect from './ProgramSelect';
 import SectionCard from './SectionCard';
 import StatusBadge from './StatusBadge';
 import type { ConvertLeadPayload, LeadRecord, TeacherOption } from '../services/leadsService';
-import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function ConvertLeadModal({
   lead,
@@ -109,7 +109,7 @@ export default function ConvertLeadModal({
           <SectionCard title="Data from Lead/Form" subtitle="Website submissions create leads only. Admin reviews this data before conversion.">
             <div className="convert-readonly-grid">
               <span>{t('Name')} <strong>{lead.full_name}</strong></span>
-              <span>WhatsApp <strong>{lead.whatsapp || '-'}</strong></span>
+              <span><DashboardText>WhatsApp</DashboardText> <strong>{lead.whatsapp || '-'}</strong></span>
               <span>{t('Country')} <strong>{lead.country || '-'}</strong></span>
               <span>{t('Age')} <strong>{lead.student_age || '-'}</strong></span>
               <span>{t('Program interested')} <strong>{lead.programName || '-'}</strong></span>
@@ -123,7 +123,7 @@ export default function ConvertLeadModal({
               <label><span>{t('Student Name')}</span><input value={form.student_name} onChange={(event) => setForm((current) => ({ ...current, student_name: event.target.value }))} required /></label>
               <label><span>{t('Parent Name')}</span><input value={form.parent_name} onChange={(event) => setForm((current) => ({ ...current, parent_name: event.target.value }))} required /></label>
               <label><span>{t('Parent Email')}</span><input type="email" value={form.parent_email} onChange={(event) => setForm((current) => ({ ...current, parent_email: event.target.value }))} required /></label>
-              <label><span>WhatsApp</span><input value={form.whatsapp} onChange={(event) => setForm((current) => ({ ...current, whatsapp: event.target.value }))} /></label>
+              <label><span><DashboardText>WhatsApp</DashboardText></span><input value={form.whatsapp} onChange={(event) => setForm((current) => ({ ...current, whatsapp: event.target.value }))} /></label>
               <label><span>{t('Country')}</span><input value={form.country} onChange={(event) => setForm((current) => ({ ...current, country: event.target.value }))} /></label>
               <label><span>{t('Age')}</span><input value={form.age} onChange={(event) => setForm((current) => ({ ...current, age: event.target.value }))} /></label>
               <ProgramSelect label={t('Approved Program')} value={form.approved_program_id} onChange={(value) => setForm((current) => ({ ...current, approved_program_id: value }))} required />
@@ -164,7 +164,7 @@ export default function ConvertLeadModal({
 
           <div className="dashboard-form-actions">
             <ActionButton type="submit" variant="copper" disabled={saving || !confirmed || !requiredComplete}>{t(saving ? 'Converting' : 'Convert to Student')}</ActionButton>
-            <ActionButton type="button" variant="secondary" onClick={onClose}>Cancel</ActionButton>
+            <ActionButton type="button" variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
           </div>
         </form>
       </div>

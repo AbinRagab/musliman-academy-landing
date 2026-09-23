@@ -1,4 +1,5 @@
 import Icon from '../../components/Icon';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export type ToastMessage = {
   type: 'success' | 'error' | 'info';
@@ -12,6 +13,8 @@ export default function Toast({
   toast: ToastMessage | null;
   onClose: () => void;
 }) {
+  const { t } = useDashboardLanguage();
+
   if (!toast) {
     return null;
   }
@@ -19,8 +22,8 @@ export default function Toast({
   return (
     <div className={`dashboard-toast dashboard-toast--${toast.type}`} role="status">
       <Icon name={toast.type === 'success' ? 'checkCircle' : 'shieldCheck'} size={18} />
-      <span>{toast.message}</span>
-      <button type="button" aria-label="Dismiss message" onClick={onClose}>
+      <span>{t(toast.message)}</span>
+      <button type="button" aria-label={t('Dismiss message')} onClick={onClose}>
         <Icon name="x" size={16} />
       </button>
     </div>

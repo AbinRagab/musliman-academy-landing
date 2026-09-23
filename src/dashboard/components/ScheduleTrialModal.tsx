@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import ActionButton from './ActionButton';
 import ProgramSelect from './ProgramSelect';
 import type { LeadRecord, TeacherOption } from '../services/leadsService';
-import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function ScheduleTrialModal({
   lead,
@@ -49,7 +49,7 @@ export default function ScheduleTrialModal({
           <label><span>{t('Notes')}</span><textarea rows={3} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder={t('Trial preparation notes')} /></label>
           <div className="dashboard-form-actions">
             <ActionButton type="submit" variant="copper" disabled={saving}>{t(saving ? 'Scheduling' : 'Schedule Trial')}</ActionButton>
-            <ActionButton type="button" variant="secondary" onClick={onClose}>Cancel</ActionButton>
+            <ActionButton type="button" variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
           </div>
         </form>
       </div>

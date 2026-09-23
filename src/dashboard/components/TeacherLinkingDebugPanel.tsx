@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 type DebugState = {
   loading: boolean;
@@ -190,24 +191,24 @@ export default function TeacherLinkingDebugPanel({ route }: { route: string }) {
     <section className="teacher-link-debug-panel" aria-label="Teacher linking debug panel">
       <div className="teacher-link-debug-panel__header">
         <div>
-          <span className="dashboard-eyebrow">DEV ONLY</span>
-          <h2>Teacher Linking Debug</h2>
+          <span className="dashboard-eyebrow"><DashboardText>DEV ONLY</DashboardText></span>
+          <h2><DashboardText>Teacher Linking Debug</DashboardText></h2>
           <p>{route}</p>
         </div>
-        {debugState.loading && <strong>Loading...</strong>}
+        {debugState.loading && <strong><DashboardText>Loading...</DashboardText></strong>}
       </div>
 
       {debugState.error && <p className="teacher-link-debug-panel__warning">{debugState.error}</p>}
 
       <div className="teacher-link-debug-panel__grid">
         <article>
-          <h3>Current Auth User</h3>
+          <h3><DashboardText>Current Auth User</DashboardText></h3>
           <DebugLine label="auth user id" value={debugState.authUser.id} />
           <DebugLine label="auth email" value={debugState.authUser.email} />
         </article>
 
         <article>
-          <h3>Current Profile</h3>
+          <h3><DashboardText>Current Profile</DashboardText></h3>
           <DebugLine label="profile id" value={valueOf(debugState.profile, 'id')} />
           <DebugLine label="full_name" value={valueOf(debugState.profile, 'full_name')} />
           <DebugLine label="email" value={valueOf(debugState.profile, 'email')} />
@@ -216,7 +217,7 @@ export default function TeacherLinkingDebugPanel({ route }: { route: string }) {
         </article>
 
         <article>
-          <h3>Current Teacher Record</h3>
+          <h3><DashboardText>Current Teacher Record</DashboardText></h3>
           <DebugLine label="teacher id" value={valueOf(debugState.teacher, 'id')} />
           <DebugLine label="teacher profile_id" value={valueOf(debugState.teacher, 'profile_id')} />
           <DebugLine label="teacher status" value={valueOf(debugState.teacher, 'status')} />
@@ -224,7 +225,7 @@ export default function TeacherLinkingDebugPanel({ route }: { route: string }) {
         </article>
 
         <article>
-          <h3>Assigned Students Query</h3>
+          <h3><DashboardText>Assigned Students Query</DashboardText></h3>
           <DebugLine label="query filter used" value={debugState.students.filter} />
           <DebugLine label="assigned_teacher_id value used" value={debugState.students.assignedTeacherProfileId} />
           <DebugLine label="students returned" value={debugState.students.count} />
@@ -232,7 +233,7 @@ export default function TeacherLinkingDebugPanel({ route }: { route: string }) {
         </article>
 
         <article>
-          <h3>Classes Query</h3>
+          <h3><DashboardText>Classes Query</DashboardText></h3>
           <DebugLine label="teacher_id value used" value={debugState.classes.teacherId} />
           <DebugLine label="classes returned" value={debugState.classes.count} />
           <DebugLine label="Supabase error" value={debugState.classes.error} />

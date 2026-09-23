@@ -10,7 +10,7 @@ import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
 import Toast, { type ToastMessage } from '../components/Toast';
-import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 import {
   fetchComplianceDashboardData,
   runTeacherComplianceCheck,
@@ -145,7 +145,7 @@ export default function AdminCompliancePage() {
     { header: 'Period', accessor: (row) => `${row.periodDays} days` },
     { header: 'Action', accessor: 'actionAfterLimit' },
     { header: 'Status', accessor: (row) => <StatusBadge label={row.isActive ? 'active' : 'inactive'} /> },
-    { header: 'Actions', accessor: (row) => <ActionButton variant="ghost" onClick={() => setEditingRule(row)}>Edit Rule</ActionButton> },
+    { header: 'Actions', accessor: (row) => <ActionButton variant="ghost" onClick={() => setEditingRule(row)}><DashboardText>Edit Rule</DashboardText></ActionButton> },
   ];
 
   const templateColumns: Array<DataTableColumn<NotificationTemplateRow>> = [
@@ -154,7 +154,7 @@ export default function AdminCompliancePage() {
     { header: 'Title', accessor: 'title' },
     { header: 'WhatsApp Template', accessor: (row) => row.whatsappTemplateName || '-' },
     { header: 'Status', accessor: (row) => <StatusBadge label={row.isActive ? 'active' : 'inactive'} /> },
-    { header: 'Actions', accessor: (row) => <ActionButton variant="ghost" onClick={() => setEditingTemplate(row)}>Edit Template</ActionButton> },
+    { header: 'Actions', accessor: (row) => <ActionButton variant="ghost" onClick={() => setEditingTemplate(row)}><DashboardText>Edit Template</DashboardText></ActionButton> },
   ];
 
   const logColumns: Array<DataTableColumn<NotificationLogRow>> = [
@@ -184,11 +184,11 @@ export default function AdminCompliancePage() {
           <div className="dashboard-page-actions">
             <ActionButton variant="secondary" onClick={async () => { await runTeacherComplianceCheck(); notify(t('Compliance check completed.'), 'success'); await loadData(); }}>
               <Icon name="shieldCheck" size={17} />
-              Run Compliance Check
+              <DashboardText>Run Compliance Check</DashboardText>
             </ActionButton>
             <ActionButton variant="copper" onClick={async () => { await sendTestNotification('in_app'); notify(t('Test in-app notification sent.'), 'success'); await loadData(); }}>
               <Icon name="bell" size={17} />
-              Send Test Notification
+              <DashboardText>Send Test Notification</DashboardText>
             </ActionButton>
           </div>
         )}
@@ -207,8 +207,8 @@ export default function AdminCompliancePage() {
           <span>{t('Default cron cadence')} <strong>{t('Every 5 minutes')}</strong></span>
         </div>
         <div className="dashboard-form-actions">
-          <ActionButton variant="secondary" onClick={async () => { await sendTestNotification('email'); notify(t('Email test queued. Check logs for provider result.'), 'success'); await loadData(); }}>Test Email</ActionButton>
-          <ActionButton variant="secondary" onClick={async () => { await sendTestNotification('whatsapp'); notify(t('WhatsApp test queued. Check logs for provider result.'), 'success'); await loadData(); }}>Test WhatsApp</ActionButton>
+          <ActionButton variant="secondary" onClick={async () => { await sendTestNotification('email'); notify(t('Email test queued. Check logs for provider result.'), 'success'); await loadData(); }}><DashboardText>Test Email</DashboardText></ActionButton>
+          <ActionButton variant="secondary" onClick={async () => { await sendTestNotification('whatsapp'); notify(t('WhatsApp test queued. Check logs for provider result.'), 'success'); await loadData(); }}><DashboardText>Test WhatsApp</DashboardText></ActionButton>
         </div>
       </SectionCard>
 

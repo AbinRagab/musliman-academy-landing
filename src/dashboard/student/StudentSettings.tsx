@@ -15,6 +15,7 @@ import {
   saveStudentSettings,
   type StudentSettings as StudentSettingsData,
 } from '../services/studentService';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 function SettingToggle({ label, description, enabled, name, onChange }: { label: string; description: string; enabled: boolean; name: string; onChange: (checked: boolean) => void }) {
   return (
@@ -62,12 +63,12 @@ export default function StudentSettings() {
   return (
     <div className="dashboard-page dashboard-page--management dashboard-page--student-settings">
       {saved && (
-        <StudentModal title="Preferences Saved" description="Your editable student portal preferences were saved." onClose={() => setSaved(false)} footer={<ActionButton onClick={() => setSaved(false)}>Close</ActionButton>}>
-          <p className="student-modal-copy">Admin-managed academic, attendance, payment, and teacher assignment fields remain view-only.</p>
+        <StudentModal title="Preferences Saved" description="Your editable student portal preferences were saved." onClose={() => setSaved(false)} footer={<ActionButton onClick={() => setSaved(false)}><DashboardText>Close</DashboardText></ActionButton>}>
+          <p className="student-modal-copy"><DashboardText>Admin-managed academic, attendance, payment, and teacher assignment fields remain view-only.</DashboardText></p>
         </StudentModal>
       )}
       {securityMessage && (
-        <StudentModal title="Security Action" onClose={() => setSecurityMessage('')} footer={<ActionButton onClick={() => setSecurityMessage('')}>Close</ActionButton>}>
+        <StudentModal title="Security Action" onClose={() => setSecurityMessage('')} footer={<ActionButton onClick={() => setSecurityMessage('')}><DashboardText>Close</DashboardText></ActionButton>}>
           <p className="student-modal-copy">{securityMessage}</p>
         </StudentModal>
       )}
@@ -87,9 +88,9 @@ export default function StudentSettings() {
       >
         <SectionCard title="Account Settings" subtitle="Contact changes are request-based if academy records need updating.">
           <div className="student-settings-fields">
-            <label><span>Display name</span><input value={settings.displayName} onChange={(event) => setSettings((current) => ({ ...current, displayName: event.target.value }))} /></label>
-            <label><span>Email</span><input value={settings.email} onChange={(event) => setSettings((current) => ({ ...current, email: event.target.value }))} /></label>
-            <label><span>WhatsApp</span><input value={settings.whatsapp} onChange={(event) => setSettings((current) => ({ ...current, whatsapp: event.target.value }))} /></label>
+            <label><span><DashboardText>Display name</DashboardText></span><input value={settings.displayName} onChange={(event) => setSettings((current) => ({ ...current, displayName: event.target.value }))} /></label>
+            <label><span><DashboardText>Email</DashboardText></span><input value={settings.email} onChange={(event) => setSettings((current) => ({ ...current, email: event.target.value }))} /></label>
+            <label><span><DashboardText>WhatsApp</DashboardText></span><input value={settings.whatsapp} onChange={(event) => setSettings((current) => ({ ...current, whatsapp: event.target.value }))} /></label>
             <div className="student-card-actions">
               <DashboardActionMenu
                 primaryAction={{ label: 'Change Password', icon: <Icon name="lock" size={15} />, onClick: handlePasswordReset }}
@@ -128,9 +129,9 @@ export default function StudentSettings() {
 
         <SectionCard title="Learning Preferences">
           <div className="student-settings-fields">
-            <label><span>Preferred class time</span><select value={settings.preferredClassTime} onChange={(event) => setSettings((current) => ({ ...current, preferredClassTime: event.target.value }))}><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label>
-            <label><span>Preferred language</span><select value={settings.preferredLanguage} onChange={(event) => setSettings((current) => ({ ...current, preferredLanguage: event.target.value }))}><option>English with Arabic terms</option><option>Arabic</option><option>English</option><option>Urdu</option></select></label>
-            <label><span>Timezone</span><select value={settings.timezone} onChange={(event) => setSettings((current) => ({ ...current, timezone: event.target.value }))}><option>Africa/Cairo</option><option>Europe/London</option><option>America/New_York</option><option>Asia/Dubai</option></select></label>
+            <label><span><DashboardText>Preferred class time</DashboardText></span><select value={settings.preferredClassTime} onChange={(event) => setSettings((current) => ({ ...current, preferredClassTime: event.target.value }))}><option><DashboardText>Morning</DashboardText></option><option><DashboardText>Afternoon</DashboardText></option><option><DashboardText>Evening</DashboardText></option></select></label>
+            <label><span><DashboardText>Preferred language</DashboardText></span><select value={settings.preferredLanguage} onChange={(event) => setSettings((current) => ({ ...current, preferredLanguage: event.target.value }))}><option><DashboardText>English with Arabic terms</DashboardText></option><option><DashboardText>Arabic</DashboardText></option><option><DashboardText>English</DashboardText></option><option><DashboardText>Urdu</DashboardText></option></select></label>
+            <label><span><DashboardText>Timezone</DashboardText></span><select value={settings.timezone} onChange={(event) => setSettings((current) => ({ ...current, timezone: event.target.value }))}><option><DashboardText>Africa/Cairo</DashboardText></option><option><DashboardText>Europe/London</DashboardText></option><option><DashboardText>America/New_York</DashboardText></option><option><DashboardText>Asia/Dubai</DashboardText></option></select></label>
           </div>
         </SectionCard>
 
@@ -144,9 +145,9 @@ export default function StudentSettings() {
 
         <SectionCard title="Privacy & Security">
           <div className="student-security-list">
-            <button type="button" onClick={handlePasswordReset}><Icon name="lock" size={17} /><span>Change password</span><Icon name="chevronRight" size={16} /></button>
-            <button type="button" disabled title="This feature requires database setup."><Icon name="laptop" size={17} /><span>Active sessions require setup</span><Icon name="chevronRight" size={16} /></button>
-            <button type="button" disabled title="This feature requires database setup."><Icon name="shieldCheck" size={17} /><span>Two-factor authentication requires setup</span><Icon name="chevronRight" size={16} /></button>
+            <button type="button" onClick={handlePasswordReset}><Icon name="lock" size={17} /><span><DashboardText>Change password</DashboardText></span><Icon name="chevronRight" size={16} /></button>
+            <button type="button" disabled title="This feature requires database setup."><Icon name="laptop" size={17} /><span><DashboardText>Active sessions require setup</DashboardText></span><Icon name="chevronRight" size={16} /></button>
+            <button type="button" disabled title="This feature requires database setup."><Icon name="shieldCheck" size={17} /><span><DashboardText>Two-factor authentication requires setup</DashboardText></span><Icon name="chevronRight" size={16} /></button>
           </div>
         </SectionCard>
 

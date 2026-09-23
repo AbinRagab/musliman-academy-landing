@@ -7,7 +7,7 @@ import LeadTimeline from './LeadTimeline';
 import NotesBox from './NotesBox';
 import ProgramSelect from './ProgramSelect';
 import StatusBadge from './StatusBadge';
-import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 import type { LeadActivity, LeadRecord, LeadStatus, LeadType, TeacherOption, UpdateLeadPayload } from '../services/leadsService';
 import { getMarketingAttributionDisplayItems, hasMarketingAttribution } from '../services/leadAttribution';
 
@@ -143,7 +143,7 @@ export default function LeadDetailDrawer({
             <p>{lead.programName || t('Program not assigned')} - {lead.country || t('Country not set')}</p>
           </div>
           <div className="lead-drawer__header-actions">
-            {mode === 'view' && onEdit && <ActionButton variant="secondary" onClick={onEdit}>Edit Lead</ActionButton>}
+            {mode === 'view' && onEdit && <ActionButton variant="secondary" onClick={onEdit}><DashboardText>Edit Lead</DashboardText></ActionButton>}
             <button className="dashboard-icon-button" type="button" aria-label={t('Close lead details')} onClick={onClose}>
               <Icon name="x" />
             </button>
@@ -153,7 +153,7 @@ export default function LeadDetailDrawer({
         {mode === 'edit' ? (
           <form className="dashboard-form lead-edit-form" onSubmit={handleSubmit}>
             <label><span>{t('Full Name')}</span><input name="full_name" defaultValue={lead.full_name} required /></label>
-            <label><span>WhatsApp</span><input name="whatsapp" defaultValue={lead.whatsapp || ''} /></label>
+            <label><span><DashboardText>WhatsApp</DashboardText></span><input name="whatsapp" defaultValue={lead.whatsapp || ''} /></label>
             <label><span>{t('Country')}</span><input name="country" defaultValue={lead.country || ''} /></label>
             <label>
               <span>{t('Program')}</span>
@@ -191,7 +191,7 @@ export default function LeadDetailDrawer({
             <label><span>{t('Next Follow-up')}</span><input name="next_follow_up_at" type="datetime-local" defaultValue={toDateTimeInput(lead.next_follow_up_at)} /></label>
             <label className="dashboard-form__wide"><span>{t('Notes')}</span><textarea name="notes" rows={5} defaultValue={lead.notes || ''} /></label>
             <div className="lead-drawer__footer lead-drawer__footer--sticky">
-              <ActionButton variant="secondary" type="button" onClick={onClose}>Cancel</ActionButton>
+              <ActionButton variant="secondary" type="button" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
               <ActionButton variant="copper" type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save Changes'}</ActionButton>
             </div>
           </form>
@@ -199,7 +199,7 @@ export default function LeadDetailDrawer({
           <>
             <div className="lead-drawer__section">
               <div className="lead-summary-grid">
-                <span>WhatsApp <strong>{lead.whatsapp || '-'}</strong></span>
+                <span><DashboardText>WhatsApp</DashboardText> <strong>{lead.whatsapp || '-'}</strong></span>
                 <span>{t('Age')} <strong>{lead.student_age || '-'}</strong></span>
                 <span>{t('Preferred Time')} <strong>{lead.preferred_time || '-'}</strong></span>
                 <span>{t('Source')} <strong>{t(lead.source || 'website')}</strong></span>
@@ -212,7 +212,7 @@ export default function LeadDetailDrawer({
             <div className="lead-drawer__section">
               <div className="lead-drawer__section-header">
                 <h3>{t('Contact / Follow-up')}</h3>
-                <ActionButton variant="ghost" onClick={onAddFollowUp}>Add Follow-up</ActionButton>
+                <ActionButton variant="ghost" onClick={onAddFollowUp}><DashboardText>Add Follow-up</DashboardText></ActionButton>
               </div>
               <div className="lead-summary-grid">
                 <span>{t('Last contact')} <strong>{formatDate(lead.last_contact_at, language)}</strong></span>
@@ -238,7 +238,7 @@ export default function LeadDetailDrawer({
               <div className="lead-drawer__section">
                 <div className="lead-drawer__section-header">
                   <h3>{t('Application Review')}</h3>
-                  <ActionButton variant="copper" onClick={onAddFollowUp}>Contact Applicant</ActionButton>
+                  <ActionButton variant="copper" onClick={onAddFollowUp}><DashboardText>Contact Applicant</DashboardText></ActionButton>
                 </div>
                 <div className="lead-trial-placeholder">
                   <StatusBadge label="teacher training" />
@@ -249,7 +249,7 @@ export default function LeadDetailDrawer({
               <div className="lead-drawer__section">
                 <div className="lead-drawer__section-header">
                   <h3>{t('Trial Section')}</h3>
-                  <ActionButton variant="copper" onClick={onScheduleTrial}>Schedule Free Trial</ActionButton>
+                  <ActionButton variant="copper" onClick={onScheduleTrial}><DashboardText>Schedule Free Trial</DashboardText></ActionButton>
                 </div>
                 <div className="lead-trial-placeholder">
                   <StatusBadge label={lead.status === 'trial_scheduled' ? 'scheduled' : 'not scheduled'} />
@@ -284,8 +284,8 @@ export default function LeadDetailDrawer({
             </div>
 
             <div className="lead-drawer__footer">
-              <ActionButton variant="danger" onClick={onMarkLost}>Mark Lost</ActionButton>
-              {!isTeacherTraining && <ActionButton variant="copper" onClick={onConvert}>Convert to Student</ActionButton>}
+              <ActionButton variant="danger" onClick={onMarkLost}><DashboardText>Mark Lost</DashboardText></ActionButton>
+              {!isTeacherTraining && <ActionButton variant="copper" onClick={onConvert}><DashboardText>Convert to Student</DashboardText></ActionButton>}
             </div>
           </>
         )}

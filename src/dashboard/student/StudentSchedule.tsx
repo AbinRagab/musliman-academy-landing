@@ -22,6 +22,8 @@ import {
   type StudentClassSession,
   type StudentPortalProfile,
 } from '../services/studentService';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 type ScheduleData = {
   profile: StudentPortalProfile;
@@ -37,6 +39,7 @@ function weekdayFromDate(dateLabel: string) {
 }
 
 export default function StudentSchedule() {
+  const { t } = useDashboardLanguage();
   const [data, setData] = useState<ScheduleData | null>(null);
   const [rescheduleClass, setRescheduleClass] = useState<StudentClassSession | null>(null);
   const [selectedClassForDetails, setSelectedClassForDetails] = useState<StudentClassSession | null>(null);
@@ -87,7 +90,7 @@ export default function StudentSchedule() {
           footer={(
             <ActionButton type="submit" form="student-reschedule-form">
               <Icon name="send" size={16} />
-              Submit Request
+              <DashboardText>Submit Request</DashboardText>
             </ActionButton>
           )}
         >
@@ -105,15 +108,15 @@ export default function StudentSchedule() {
             }}
           >
             <label>
-              <span>Selected class</span>
+              <span><DashboardText>Selected class</DashboardText></span>
               <input readOnly value={`${rescheduleClass.title} - ${rescheduleClass.date} ${rescheduleClass.time}`} />
             </label>
             <label>
-              <span>Preferred new date/time</span>
+              <span><DashboardText>Preferred new date/time</DashboardText></span>
               <input name="preferredDateTime" type="datetime-local" required />
             </label>
             <label>
-              <span>Reason</span>
+              <span><DashboardText>Reason</DashboardText></span>
               <textarea name="reason" rows={4} required />
             </label>
           </form>
@@ -144,7 +147,7 @@ export default function StudentSchedule() {
           onClose={() => setSelectedClassWithoutMeetingLink(null)}
           footer={(
             <div className="student-card-actions">
-              <ActionButton variant="secondary" onClick={() => setSelectedClassWithoutMeetingLink(null)}>Close</ActionButton>
+              <ActionButton variant="secondary" onClick={() => setSelectedClassWithoutMeetingLink(null)}><DashboardText>Close</DashboardText></ActionButton>
               <ActionButton
                 onClick={() => {
                   setCompose({ to: 'Academy Team', subject: `Meeting link request: ${selectedClassWithoutMeetingLink.title}` });
@@ -152,12 +155,12 @@ export default function StudentSchedule() {
                 }}
               >
                 <Icon name="support" size={16} />
-                Contact Academy Team
+                <DashboardText>Contact Academy Team</DashboardText>
               </ActionButton>
             </div>
           )}
         >
-          <p className="student-modal-copy">Meeting link is not available. Please contact the academy team.</p>
+          <p className="student-modal-copy"><DashboardText>Meeting link is not available. Please contact the academy team.</DashboardText></p>
         </StudentModal>
       )}
 
@@ -167,7 +170,7 @@ export default function StudentSchedule() {
         action={(
           <ActionButton variant="secondary" onClick={() => nextClass ? setRescheduleClass(nextClass) : setCompose({ to: 'Academy Team', subject: 'Schedule request' })}>
             <Icon name="calendar" size={17} />
-            Request Reschedule
+            <DashboardText>Request Reschedule</DashboardText>
           </ActionButton>
         )}
       />
@@ -185,14 +188,14 @@ export default function StudentSchedule() {
         <div className="student-week-grid">
           {weekly.map((day) => (
             <article key={day.day}>
-              <h3>{day.day}</h3>
+              <h3>{t(day.day)}</h3>
               {day.sessions.length ? day.sessions.map((session) => (
                 <div key={session.id}>
                   <strong>{session.time}</strong>
                   <span>{session.title}</span>
                   <small>{session.teacher}</small>
                 </div>
-              )) : <p>No class scheduled</p>}
+              )) : <p><DashboardText>No class scheduled</DashboardText></p>}
             </article>
           ))}
         </div>

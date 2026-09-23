@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import ActionButton from './ActionButton';
-import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function TrialFeedbackModal({
   title,
@@ -63,7 +63,7 @@ export default function TrialFeedbackModal({
           <label><span>{t('Trial result')}</span><select value={form.result} onChange={(event) => setForm((current) => ({ ...current, result: event.target.value as typeof form.result }))}><option value="recommended">{t('Recommended')}</option><option value="needs_follow_up">{t('Needs follow-up')}</option><option value="not_suitable">{t('Not suitable')}</option><option value="no_show">{t('No show')}</option></select></label>
           <div className="dashboard-form-actions">
             <ActionButton type="submit" variant="copper" disabled={saving}>{t(saving ? 'Saving' : 'Save Feedback')}</ActionButton>
-            <ActionButton type="button" variant="secondary" onClick={onClose}>Cancel</ActionButton>
+            <ActionButton type="button" variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
           </div>
         </form>
       </div>

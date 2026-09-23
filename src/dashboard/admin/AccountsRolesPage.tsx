@@ -14,7 +14,7 @@ import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
 import Toast, { type ToastMessage } from '../components/Toast';
-import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 import {
   createUserAccount,
   fetchProfiles,
@@ -534,7 +534,7 @@ export default function AccountsRolesPage() {
 
               <div className="account-drawer__footer">
                 <ActionButton type="submit" variant="copper" disabled={submitting}>{t(submitting ? 'Creating Account' : 'Create Account')}</ActionButton>
-                <ActionButton type="button" variant="secondary" onClick={closeCreateDrawer}>Cancel</ActionButton>
+                <ActionButton type="button" variant="secondary" onClick={closeCreateDrawer}><DashboardText>Cancel</DashboardText></ActionButton>
               </div>
             </form>
           </aside>
@@ -586,8 +586,8 @@ export default function AccountsRolesPage() {
                 </select>
               </label>
               <div className="dashboard-form-actions">
-                <ActionButton onClick={handleRoleChange}>Save Role</ActionButton>
-                <ActionButton variant="secondary" onClick={() => setRoleProfile(null)}>Cancel</ActionButton>
+                <ActionButton onClick={handleRoleChange}><DashboardText>Save Role</DashboardText></ActionButton>
+                <ActionButton variant="secondary" onClick={() => setRoleProfile(null)}><DashboardText>Cancel</DashboardText></ActionButton>
               </div>
             </div>
           </div>

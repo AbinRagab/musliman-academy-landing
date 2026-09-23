@@ -41,6 +41,7 @@ import {
   saveTeacherSettings,
   type TeacherProfileData,
 } from '../services/teacherProfileService';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 type TeacherSection =
   | 'students'
@@ -113,27 +114,27 @@ function TeacherEvaluationModal({ evaluation, onClose, onSubmit }: { evaluation:
       <div className="dashboard-modal__panel dashboard-modal__panel--wide">
         <div className="dashboard-card__header">
           <div>
-            <h2>Evaluate Student</h2>
+            <h2><DashboardText>Evaluate Student</DashboardText></h2>
             <p>{evaluation.student} - {evaluation.program}</p>
           </div>
           <button type="button" className="dashboard-icon-button" aria-label="Close evaluation" onClick={onClose}><Icon name="x" /></button>
         </div>
         <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
           <div className="teacher-form-grid">
-            <label><span>Student</span><input value={evaluation.student} readOnly /></label>
-            <label><span>Related class</span><input value={evaluation.relatedClass} readOnly /></label>
-            <label><span>Program</span><input value={evaluation.program} readOnly /></label>
-            <label><span>Evaluation date</span><input type="date" defaultValue={getAcademyTodayDate()} readOnly /></label>
-            <label><span>Reading accuracy</span><input name="recitationRating" type="range" min="1" max="5" defaultValue="4" /></label>
-            <label><span>Tajweed</span><input name="tajweedRating" type="range" min="1" max="5" defaultValue="4" /></label>
-            <label><span>Understanding</span><input name="understandingRating" type="range" min="1" max="5" defaultValue="4" /></label>
-            <label><span>Behavior</span><input name="behaviorRating" type="range" min="1" max="5" defaultValue="4" /></label>
-            <label className="teacher-form-grid__wide"><span>Strengths / progress notes</span><textarea name="progressNotes" rows={3} /></label>
-            <label className="teacher-form-grid__wide"><span>Teacher recommendation</span><textarea name="recommendation" rows={3} /></label>
+            <label><span><DashboardText>Student</DashboardText></span><input value={evaluation.student} readOnly /></label>
+            <label><span><DashboardText>Related class</DashboardText></span><input value={evaluation.relatedClass} readOnly /></label>
+            <label><span><DashboardText>Program</DashboardText></span><input value={evaluation.program} readOnly /></label>
+            <label><span><DashboardText>Evaluation date</DashboardText></span><input type="date" defaultValue={getAcademyTodayDate()} readOnly /></label>
+            <label><span><DashboardText>Reading accuracy</DashboardText></span><input name="recitationRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span><DashboardText>Tajweed</DashboardText></span><input name="tajweedRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span><DashboardText>Understanding</DashboardText></span><input name="understandingRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label><span><DashboardText>Behavior</DashboardText></span><input name="behaviorRating" type="range" min="1" max="5" defaultValue="4" /></label>
+            <label className="teacher-form-grid__wide"><span><DashboardText>Strengths / progress notes</DashboardText></span><textarea name="progressNotes" rows={3} /></label>
+            <label className="teacher-form-grid__wide"><span><DashboardText>Teacher recommendation</DashboardText></span><textarea name="recommendation" rows={3} /></label>
           </div>
           <div className="dashboard-form-actions">
-            <ActionButton variant="secondary" disabled>Draft saving unavailable</ActionButton>
-            <ActionButton type="submit" variant="copper">Submit Evaluation</ActionButton>
+            <ActionButton variant="secondary" disabled><DashboardText>Draft saving unavailable</DashboardText></ActionButton>
+            <ActionButton type="submit" variant="copper"><DashboardText>Submit Evaluation</DashboardText></ActionButton>
           </div>
         </form>
       </div>
@@ -146,15 +147,15 @@ function ClassReportModal({ classItem, onClose, onSubmit }: { classItem: ClassRo
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Report for ${classItem.student}`}>
       <div className="dashboard-modal__panel">
         <div className="dashboard-card__header">
-          <div><h2>Add Class Report</h2><p>{classItem.student} - {classItem.dateTime}</p></div>
+          <div><h2><DashboardText>Add Class Report</DashboardText></h2><p>{classItem.student} - {classItem.dateTime}</p></div>
           <button type="button" className="dashboard-icon-button" aria-label="Close report" onClick={onClose}><Icon name="x" /></button>
         </div>
         <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
-          <label><span>Lesson covered</span><input name="lessonCovered" defaultValue={classItem.lessonCovered === 'Planned lesson' ? '' : classItem.lessonCovered} required /></label>
-          <label><span>Homework assigned</span><textarea name="homework" rows={3} defaultValue={classItem.homeworkAssigned === 'Set after class' ? '' : classItem.homeworkAssigned} /></label>
-          <label><span>Next lesson plan</span><textarea name="nextLessonPlan" rows={3} defaultValue="" /></label>
-          <label><span>Class notes</span><textarea name="notes" rows={4} defaultValue={classItem.notes} /></label>
-          <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper">Save Class Report</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
+          <label><span><DashboardText>Lesson covered</DashboardText></span><input name="lessonCovered" defaultValue={classItem.lessonCovered === 'Planned lesson' ? '' : classItem.lessonCovered} required /></label>
+          <label><span><DashboardText>Homework assigned</DashboardText></span><textarea name="homework" rows={3} defaultValue={classItem.homeworkAssigned === 'Set after class' ? '' : classItem.homeworkAssigned} /></label>
+          <label><span><DashboardText>Next lesson plan</DashboardText></span><textarea name="nextLessonPlan" rows={3} defaultValue="" /></label>
+          <label><span><DashboardText>Class notes</DashboardText></span><textarea name="notes" rows={4} defaultValue={classItem.notes} /></label>
+          <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper"><DashboardText>Save Class Report</DashboardText></ActionButton><ActionButton variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton></div>
         </form>
       </div>
     </div>
@@ -162,22 +163,24 @@ function ClassReportModal({ classItem, onClose, onSubmit }: { classItem: ClassRo
 }
 
 function ClassDetailsModal({ classItem, onClose }: { classItem: ClassRow; onClose: () => void }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Class details for ${classItem.student}`}>
       <div className="dashboard-modal__panel">
         <div className="dashboard-card__header">
-          <div><h2>Class Details</h2><p>{classItem.student} - {classItem.dateTime}</p></div>
+          <div><h2><DashboardText>Class Details</DashboardText></h2><p>{classItem.student} - {classItem.dateTime}</p></div>
           <button type="button" className="dashboard-icon-button" aria-label="Close class details" onClick={onClose}><Icon name="x" /></button>
         </div>
         <div className="student-info-grid">
-          <span>Program<strong>{classItem.program}</strong></span>
-          <span>Status<strong><StatusBadge label={classItem.status} /></strong></span>
-          <span>Platform<strong>{classItem.platform}</strong></span>
-          <span>Attendance<strong>{classItem.attendanceStatus}</strong></span>
-          <span>Lesson covered<strong>{classItem.lessonCovered || 'Not recorded yet'}</strong></span>
-          <span>Homework<strong>{classItem.homeworkAssigned || 'No homework assigned'}</strong></span>
-          <span>Report status<strong>{classItem.reportStatus}</strong></span>
-          <span>Notes<strong>{classItem.notes || 'No notes recorded'}</strong></span>
+          <span><DashboardText>Program</DashboardText><strong>{classItem.program}</strong></span>
+          <span><DashboardText>Status</DashboardText><strong><StatusBadge label={classItem.status} /></strong></span>
+          <span><DashboardText>Platform</DashboardText><strong>{classItem.platform}</strong></span>
+          <span><DashboardText>Attendance</DashboardText><strong>{classItem.attendanceStatus}</strong></span>
+          <span><DashboardText>Lesson covered</DashboardText><strong>{classItem.lessonCovered || t('Not recorded yet')}</strong></span>
+          <span><DashboardText>Homework</DashboardText><strong>{classItem.homeworkAssigned || t('No homework assigned')}</strong></span>
+          <span><DashboardText>Report status</DashboardText><strong>{classItem.reportStatus}</strong></span>
+          <span><DashboardText>Notes</DashboardText><strong>{classItem.notes || t('No notes recorded')}</strong></span>
         </div>
       </div>
     </div>
@@ -203,16 +206,16 @@ function ComposeModal({
     <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label="New message">
       <div className="dashboard-modal__panel">
         <div className="dashboard-card__header">
-          <div><h2>New Message</h2><p>Messages to parents are routed through the academy when direct messaging is restricted.</p></div>
+          <div><h2><DashboardText>New Message</DashboardText></h2><p><DashboardText>Messages to parents are routed through the academy when direct messaging is restricted.</DashboardText></p></div>
           <button type="button" className="dashboard-icon-button" aria-label="Close message" onClick={onClose}><Icon name="x" /></button>
         </div>
         <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
-          <label><span>Route</span><select name="category" defaultValue={selectedMessage ? 'teacher_reply' : 'teacher_message'}><option value="teacher_message">Message academy/admin</option><option value="parent_note_review">Send parent note for admin review</option><option value="teacher_reply">Reply</option></select></label>
-          <label><span>Related student</span><select name="relatedStudentId" defaultValue={selectedMessage?.relatedStudentId || ''}><option value="">None</option>{students.map((student) => <option key={student.id} value={student.id}>{student.student}</option>)}</select></label>
-          <label><span>Related class</span><select name="relatedClassId" defaultValue={selectedMessage?.relatedClassId || ''}><option value="">None</option>{classRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.program} - {classItem.dateTime}</option>)}</select></label>
-          <label><span>Subject</span><input name="subject" defaultValue={selectedMessage ? `Re: ${selectedMessage.subject.replace(/^Re:\s*/i, '')}` : ''} required /></label>
-          <label><span>Message</span><textarea name="body" rows={5} required /></label>
-          <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper" disabled={sending}>{sending ? 'Sending' : 'Send Message'}</ActionButton><ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton></div>
+          <label><span><DashboardText>Route</DashboardText></span><select name="category" defaultValue={selectedMessage ? 'teacher_reply' : 'teacher_message'}><option value="teacher_message"><DashboardText>Message academy/admin</DashboardText></option><option value="parent_note_review"><DashboardText>Send parent note for admin review</DashboardText></option><option value="teacher_reply"><DashboardText>Reply</DashboardText></option></select></label>
+          <label><span><DashboardText>Related student</DashboardText></span><select name="relatedStudentId" defaultValue={selectedMessage?.relatedStudentId || ''}><option value=""><DashboardText>None</DashboardText></option>{students.map((student) => <option key={student.id} value={student.id}>{student.student}</option>)}</select></label>
+          <label><span><DashboardText>Related class</DashboardText></span><select name="relatedClassId" defaultValue={selectedMessage?.relatedClassId || ''}><option value=""><DashboardText>None</DashboardText></option>{classRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.program} - {classItem.dateTime}</option>)}</select></label>
+          <label><span><DashboardText>Subject</DashboardText></span><input name="subject" defaultValue={selectedMessage ? `Re: ${selectedMessage.subject.replace(/^Re:\s*/i, '')}` : ''} required /></label>
+          <label><span><DashboardText>Message</DashboardText></span><textarea name="body" rows={5} required /></label>
+          <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper" disabled={sending}>{sending ? 'Sending' : 'Send Message'}</ActionButton><ActionButton variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton></div>
         </form>
       </div>
     </div>
@@ -221,6 +224,7 @@ function ComposeModal({
 
 export default function TeacherSectionPage({ section }: { section: TeacherSection }) {
   const navigate = useNavigate();
+  const { t } = useDashboardLanguage();
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [search, setSearch] = useState('');
   const [activeClassTab, setActiveClassTab] = useState('Today');
@@ -534,7 +538,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       action={section === 'schedule' ? undefined : (
         <ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/schedule')}>
           <Icon name="calendar" size={18} />
-          Open Schedule
+          <DashboardText>Open Schedule</DashboardText>
         </ActionButton>
       )}
     />
@@ -609,13 +613,13 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         {commonHeader}
         <TeacherLinkingDebugPanel route="/dashboard/teacher/students" />
         <FilterBar search={search} onSearchChange={setSearch}>
-          <label><span>Status</span><select defaultValue="all"><option value="all">All assigned</option><option value="needs">Needs support</option><option value="active">Active</option></select></label>
+          <label><span><DashboardText>Status</DashboardText></span><select defaultValue="all"><option value="all"><DashboardText>All assigned</DashboardText></option><option value="needs"><DashboardText>Needs support</DashboardText></option><option value="active"><DashboardText>Active</DashboardText></option></select></label>
         </FilterBar>
         <SectionCard title="Assigned Students" subtitle="Parent contact is handled through academy-approved messaging.">
           {filteredStudents.length > 0 ? (
             <DataTable columns={studentColumns} rows={filteredStudents} getRowKey={(row) => row.id} />
           ) : (
-            <p className="dashboard-empty-copy">No assigned students yet. Students assigned by the academy team will appear here.</p>
+            <p className="dashboard-empty-copy"><DashboardText>No assigned students yet. Students assigned by the academy team will appear here.</DashboardText></p>
           )}
         </SectionCard>
         {evaluationModal && <TeacherEvaluationModal evaluation={evaluationModal} onClose={() => setEvaluationModal(null)} onSubmit={(formData) => handleEvaluationSubmit(evaluationModal, formData)} />}
@@ -646,7 +650,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                     setTeacherTrials(await fetchTeacherTrials() as Array<Record<string, unknown>>);
                   }}
                 />
-              )) : <p className="dashboard-empty-copy">No free trials assigned yet.</p>}
+              )) : <p className="dashboard-empty-copy"><DashboardText>No free trials assigned yet.</DashboardText></p>}
             </div>
           </SectionCard>
           <SectionCard title="Trial Feedback Checklist">
@@ -660,14 +664,14 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         {trialDetails && (
           <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label="Trial details">
             <div className="dashboard-modal__panel">
-              <div className="dashboard-card__header"><div><h2>{String(('lead' in trialDetails && typeof trialDetails.lead === 'object' ? (trialDetails.lead as { full_name?: string }).full_name : (trialDetails as TrialRow).lead) || 'Trial student')}</h2><p>Trial details and academy contact policy.</p></div><button type="button" className="dashboard-icon-button" aria-label="Close trial details" onClick={() => setTrialDetails(null)}><Icon name="x" /></button></div>
+              <div className="dashboard-card__header"><div><h2>{String(('lead' in trialDetails && typeof trialDetails.lead === 'object' ? (trialDetails.lead as { full_name?: string }).full_name : (trialDetails as TrialRow).lead) || 'Trial student')}</h2><p><DashboardText>Trial details and academy contact policy.</DashboardText></p></div><button type="button" className="dashboard-icon-button" aria-label="Close trial details" onClick={() => setTrialDetails(null)}><Icon name="x" /></button></div>
               <div className="student-info-grid">
-                <span>Program interest<strong>{String((trialDetails as TrialRow).program || ((trialDetails.lead as { programName?: string } | undefined)?.programName) || 'Program not assigned')}</strong></span>
-                <span>Trial time<strong>{String((trialDetails as TrialRow).dateTime || `${(trialDetails as Record<string, unknown>).trial_date || 'Date pending'} ${(trialDetails as Record<string, unknown>).trial_time || ''}`)}</strong></span>
-                <span>Status<strong><StatusBadge label={String(trialDetails.status || 'scheduled')} /></strong></span>
-                <span>Admin owner<strong>{String((trialDetails as TrialRow).adminOwner || 'Admissions Team')}</strong></span>
-                <span>Meeting link<strong>{String((trialDetails as Record<string, unknown>).meeting_link || 'Available from schedule when assigned')}</strong></span>
-                <span>Parent contact policy<strong>Message via Academy</strong></span>
+                <span><DashboardText>Program interest</DashboardText><strong>{String((trialDetails as TrialRow).program || ((trialDetails.lead as { programName?: string } | undefined)?.programName) || 'Program not assigned')}</strong></span>
+                <span><DashboardText>Trial time</DashboardText><strong>{String((trialDetails as TrialRow).dateTime || `${(trialDetails as Record<string, unknown>).trial_date || 'Date pending'} ${(trialDetails as Record<string, unknown>).trial_time || ''}`)}</strong></span>
+                <span><DashboardText>Status</DashboardText><strong><StatusBadge label={String(trialDetails.status || 'scheduled')} /></strong></span>
+                <span><DashboardText>Admin owner</DashboardText><strong>{String((trialDetails as TrialRow).adminOwner || 'Admissions Team')}</strong></span>
+                <span><DashboardText>Meeting link</DashboardText><strong>{String((trialDetails as Record<string, unknown>).meeting_link || 'Available from schedule when assigned')}</strong></span>
+                <span><DashboardText>Parent contact policy</DashboardText><strong><DashboardText>Message via Academy</DashboardText></strong></span>
               </div>
             </div>
           </div>
@@ -722,7 +726,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           {classRows.filter((row) => row.dateTime.startsWith('Today')).length > 0 ? (
             <DataTable columns={scheduleColumns} rows={classRows.filter((row) => row.dateTime.startsWith('Today'))} getRowKey={(row) => row.id} />
           ) : (
-            <p className="dashboard-empty-copy">No classes scheduled today.</p>
+            <p className="dashboard-empty-copy"><DashboardText>No classes scheduled today.</DashboardText></p>
           )}
         </SectionCard>
         <SectionCard title="Upcoming Classes" subtitle="Timetable view for assigned live and upcoming classes.">
@@ -748,7 +752,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                 </div>
               </article>
             ))}
-            {classRows.filter((row) => ['Live', 'Upcoming', 'Scheduled'].includes(row.status)).length === 0 && <p className="dashboard-empty-copy">No classes scheduled yet.</p>}
+            {classRows.filter((row) => ['Live', 'Upcoming', 'Scheduled'].includes(row.status)).length === 0 && <p className="dashboard-empty-copy"><DashboardText>No classes scheduled yet.</DashboardText></p>}
           </div>
         </SectionCard>
         {reportModal && <ClassReportModal classItem={reportModal} onClose={() => setReportModal(null)} onSubmit={(formData) => handleClassReportSubmit(reportModal, formData)} />}
@@ -805,7 +809,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           {rowsByTab.length > 0 ? (
             <DataTable columns={columns} rows={rowsByTab} getRowKey={(row) => row.id} />
           ) : (
-            <p className="dashboard-empty-copy">No class records found for this filter.</p>
+            <p className="dashboard-empty-copy"><DashboardText>No class records found for this filter.</DashboardText></p>
           )}
         </SectionCard>
         {reportModal && <ClassReportModal classItem={reportModal} onClose={() => setReportModal(null)} onSubmit={(formData) => handleClassReportSubmit(reportModal, formData)} />}
@@ -825,8 +829,8 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           {selectedClass ? (
             <form className="dashboard-form">
               <div className="teacher-form-grid">
-                <label><span>Class</span><select value={selectedClassId} onChange={(event) => setSelectedClassId(event.target.value)}>{attendanceClassRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.student} - {classItem.dateTime}</option>)}</select></label>
-                <label><span>Date</span><input type="text" value={selectedClass.dateTime} readOnly /></label>
+                <label><span><DashboardText>Class</DashboardText></span><select value={selectedClassId} onChange={(event) => setSelectedClassId(event.target.value)}>{attendanceClassRows.map((classItem) => <option key={classItem.id} value={classItem.id}>{classItem.student} - {classItem.dateTime}</option>)}</select></label>
+                <label><span><DashboardText>Date</DashboardText></span><input type="text" value={selectedClass.dateTime} readOnly /></label>
               </div>
               <div className="dashboard-attendance-list">
                 {[selectedClass.student].map((student) => (
@@ -843,7 +847,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                         /> {status}
                       </label>
                     ))}
-                    <input value={attendanceNotes} onChange={(event) => setAttendanceNotes(event.target.value)} placeholder="Attendance note" />
+                    <input value={attendanceNotes} onChange={(event) => setAttendanceNotes(event.target.value)} placeholder={t('Attendance note')} />
                     <StatusBadge label={selectedClass.attendanceStatus === 'Submitted' ? 'submitted' : 'pending'} />
                   </div>
                 ))}
@@ -880,7 +884,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
               </div>
             </form>
           ) : (
-            <p className="dashboard-empty-copy">No assigned classes need attendance.</p>
+            <p className="dashboard-empty-copy"><DashboardText>No assigned classes need attendance.</DashboardText></p>
           )}
         </SectionCard>
         <SectionCard title="Completion Health">
@@ -899,7 +903,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
       { header: 'Program', accessor: 'program' },
       { header: 'Related Class', accessor: 'relatedClass' },
       { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
-      { header: 'Action', accessor: (row) => <ActionButton variant="ghost" onClick={() => setEvaluationModal(row)}>Evaluate</ActionButton> },
+      { header: 'Action', accessor: (row) => <ActionButton variant="ghost" onClick={() => setEvaluationModal(row)}><DashboardText>Evaluate</DashboardText></ActionButton> },
     ];
 
     return (
@@ -907,7 +911,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
         <Toast toast={toast} onClose={() => setToast(null)} />
         {commonHeader}
         <FilterBar search={search} onSearchChange={setSearch}>
-          <label><span>Status</span><select defaultValue="pending"><option>Pending evaluations</option><option>Drafts</option><option>Submitted</option><option>Needs review</option></select></label>
+          <label><span><DashboardText>Status</DashboardText></span><select defaultValue="pending"><option><DashboardText>Pending evaluations</DashboardText></option><option><DashboardText>Drafts</DashboardText></option><option><DashboardText>Submitted</DashboardText></option><option><DashboardText>Needs review</DashboardText></option></select></label>
         </FilterBar>
         <SectionCard title="Evaluation Queue">
           <DataTable columns={columns} rows={evaluationRows} getRowKey={(row) => row.id} />
@@ -939,10 +943,10 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           </SectionCard>
           <SectionCard title="Report Actions">
             <div className="teacher-checklist">
-              <button type="button" onClick={() => window.print()}><Icon name="download" size={16} />Export My Report</button>
-              <button type="button" onClick={() => navigate('/dashboard/teacher/evaluations')}><Icon name="clipboard" size={16} />View Pending Evaluations</button>
-              <button type="button" onClick={() => navigate('/dashboard/teacher/students')}><Icon name="users" size={16} />View Students Needing Support</button>
-              <button type="button" onClick={() => navigate('/dashboard/teacher/classes')}><Icon name="fileText" size={16} />View Pending Class Reports</button>
+              <button type="button" onClick={() => window.print()}><Icon name="download" size={16} /><DashboardText>Export My Report</DashboardText></button>
+              <button type="button" onClick={() => navigate('/dashboard/teacher/evaluations')}><Icon name="clipboard" size={16} /><DashboardText>View Pending Evaluations</DashboardText></button>
+              <button type="button" onClick={() => navigate('/dashboard/teacher/students')}><Icon name="users" size={16} /><DashboardText>View Students Needing Support</DashboardText></button>
+              <button type="button" onClick={() => navigate('/dashboard/teacher/classes')}><Icon name="fileText" size={16} /><DashboardText>View Pending Class Reports</DashboardText></button>
             </div>
           </SectionCard>
         </div>
@@ -961,16 +965,16 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
     return (
       <div className="dashboard-page dashboard-page--management">
         <Toast toast={toast} onClose={() => setToast(null)} />
-        <DashboardPageHeader eyebrow="TEACHER PORTAL" title="Messages" subtitle={subtitleBySection.messages} action={<ActionButton variant="copper" onClick={() => setComposeOpen(true)}><Icon name="send" size={16} />New Message</ActionButton>} />
+        <DashboardPageHeader eyebrow="TEACHER PORTAL" title="Messages" subtitle={subtitleBySection.messages} action={<ActionButton variant="copper" onClick={() => setComposeOpen(true)}><Icon name="send" size={16} /><DashboardText>New Message</DashboardText></ActionButton>} />
         <FilterBar search={search} onSearchChange={setSearch}>
-          <label><span>Filter by student</span><select defaultValue="all"><option>All students</option>{students.map((student) => <option key={student.id}>{student.student}</option>)}</select></label>
+          <label><span><DashboardText>Filter by student</DashboardText></span><select defaultValue="all"><option><DashboardText>All students</DashboardText></option>{students.map((student) => <option key={student.id}>{student.student}</option>)}</select></label>
         </FilterBar>
         <div className="dashboard-grid dashboard-grid--two student-messages-layout">
           <SectionCard title="Inbox">
             <div className="student-messages-list">
-              {messagesLoading && <p className="dashboard-empty-copy">Loading messages...</p>}
+              {messagesLoading && <p className="dashboard-empty-copy"><DashboardText>Loading messages...</DashboardText></p>}
               {messagesError && <p className="dashboard-inline-error">{messagesError}</p>}
-              {!messagesLoading && filteredMessages.length === 0 && <p className="dashboard-empty-copy">No messages yet.</p>}
+              {!messagesLoading && filteredMessages.length === 0 && <p className="dashboard-empty-copy"><DashboardText>No messages yet.</DashboardText></p>}
               {filteredMessages.map((thread) => (
                 <button className={`student-message-card ${selectedThread && thread.id === selectedThread.id ? 'is-selected' : ''}`} type="button" key={thread.id} onClick={() => selectTeacherMessage(thread)}>
                   <div><strong>{thread.direction === 'incoming' ? thread.from : `To ${thread.to}`}</strong>{thread.unread && <StatusBadge label="new" />}</div>
@@ -997,7 +1001,7 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
                 <p>{selectedThread.body}</p>
               </div>
             ) : (
-              <p className="dashboard-empty-copy">Select a message when one is available.</p>
+              <p className="dashboard-empty-copy"><DashboardText>Select a message when one is available.</DashboardText></p>
             )}
           </SectionCard>
         </div>
@@ -1016,16 +1020,16 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
           <ProfilePanel name={teacherProfile?.name || 'Teacher Profile'} subtitle={teacherProfile?.email || 'Teacher profile'} role="teacher" status={teacherProfile?.status || 'Loading'} items={[{ label: 'Languages', value: teacherProfile?.languages.join(', ') || 'Not set' }, { label: 'Availability', value: teacherProfile?.availability || 'Not set' }, { label: 'Assigned students', value: String(teacherProfile?.assignedStudents ?? students.length) }, { label: 'Classes', value: String(teacherProfile?.classesCount ?? classRows.length) }, { label: 'Specialization', value: teacherProfile?.specialization || 'Not set' }, { label: 'Phone', value: teacherProfile?.phone || 'Not set' }]} />
           <SectionCard title="Academic Profile">
             <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); handleProfileSave(new FormData(event.currentTarget)); }}>
-              <label><span>Specialization</span><input name="specialization" defaultValue={teacherProfile?.specialization || ''} /></label>
-              <label><span>Languages</span><input name="languages" defaultValue={teacherProfile?.languages.join(', ') || ''} placeholder="Arabic, English" /></label>
-              <label><span>Bio</span><textarea name="bio" rows={4} defaultValue={teacherProfile?.bio || ''} /></label>
-              <label><span>Profile photo</span><input type="file" disabled title="Profile photo storage is not configured for teacher images yet." /></label>
+              <label><span><DashboardText>Specialization</DashboardText></span><input name="specialization" defaultValue={teacherProfile?.specialization || ''} /></label>
+              <label><span><DashboardText>Languages</DashboardText></span><input name="languages" defaultValue={teacherProfile?.languages.join(', ') || ''} placeholder={t('Arabic, English')} /></label>
+              <label><span><DashboardText>Bio</DashboardText></span><textarea name="bio" rows={4} defaultValue={teacherProfile?.bio || ''} /></label>
+              <label><span><DashboardText>Profile photo</DashboardText></span><input type="file" disabled title="Profile photo storage is not configured for teacher images yet." /></label>
               <div className="teacher-checklist">
-                <span><Icon name="certificate" size={16} />Ijazah document on file</span>
-                <span><Icon name="document" size={16} />Identity document verified</span>
-                <span><Icon name="shieldCheck" size={16} />Hourly rate, role, status, assigned students, and permissions are admin-managed</span>
+                <span><Icon name="certificate" size={16} /><DashboardText>Ijazah document on file</DashboardText></span>
+                <span><Icon name="document" size={16} /><DashboardText>Identity document verified</DashboardText></span>
+                <span><Icon name="shieldCheck" size={16} /><DashboardText>Hourly rate, role, status, assigned students, and permissions are admin-managed</DashboardText></span>
               </div>
-              <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper" disabled={savingAction === 'teacher-profile'}>{savingAction === 'teacher-profile' ? 'Saving' : 'Save Profile'}</ActionButton><ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/settings')}>Notification Preferences</ActionButton></div>
+              <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper" disabled={savingAction === 'teacher-profile'}>{savingAction === 'teacher-profile' ? 'Saving' : 'Save Profile'}</ActionButton><ActionButton variant="secondary" onClick={() => navigate('/dashboard/teacher/settings')}><DashboardText>Notification Preferences</DashboardText></ActionButton></div>
             </form>
           </SectionCard>
         </div>
@@ -1047,18 +1051,18 @@ export default function TeacherSectionPage({ section }: { section: TeacherSectio
               ['evaluationReminders', 'Evaluation reminders'],
               ['whatsapp', 'WhatsApp notifications'],
               ['email', 'Email notifications'],
-            ].map(([key, label]) => <label className="student-setting-toggle" key={key}><span><strong>{label}</strong><small>Stored on your profile preferences.</small></span><input type="checkbox" checked={Boolean(teacherPrefs[key])} onChange={(event) => setTeacherPrefs((current) => ({ ...current, [key]: event.target.checked }))} /></label>)}
-            <label><span>Language</span><select name="language" defaultValue={teacherProfile?.language || 'English'}><option>English</option><option>Arabic</option><option>Urdu</option></select></label>
-            <label><span>Timezone</span><select name="timezone" defaultValue={teacherProfile?.timezone || 'Africa/Cairo'}><option>Africa/Cairo</option><option>Europe/London</option><option>America/New_York</option><option>Asia/Riyadh</option></select></label>
+            ].map(([key, label]) => <label className="student-setting-toggle" key={key}><span><strong>{label}</strong><small><DashboardText>Stored on your profile preferences.</DashboardText></small></span><input type="checkbox" checked={Boolean(teacherPrefs[key])} onChange={(event) => setTeacherPrefs((current) => ({ ...current, [key]: event.target.checked }))} /></label>)}
+            <label><span><DashboardText>Language</DashboardText></span><select name="language" defaultValue={teacherProfile?.language || 'English'}><option><DashboardText>English</DashboardText></option><option><DashboardText>Arabic</DashboardText></option><option><DashboardText>Urdu</DashboardText></option></select></label>
+            <label><span><DashboardText>Timezone</DashboardText></span><select name="timezone" defaultValue={teacherProfile?.timezone || 'Africa/Cairo'}><option><DashboardText>Africa/Cairo</DashboardText></option><option><DashboardText>Europe/London</DashboardText></option><option><DashboardText>America/New_York</DashboardText></option><option><DashboardText>Asia/Riyadh</DashboardText></option></select></label>
             <div className="dashboard-form-actions"><ActionButton type="submit" variant="copper" disabled={savingAction === 'teacher-settings'}>{savingAction === 'teacher-settings' ? 'Saving' : 'Save Preferences'}</ActionButton></div>
           </form>
         </SectionCard>
         <SectionCard title="Security and Availability">
           <div className="student-security-list">
-            <button type="button" onClick={handlePasswordReset} disabled={savingAction === 'teacher-password'}><Icon name="lock" size={16} />Send Password Reset<Icon name="chevronRight" size={16} /></button>
+            <button type="button" onClick={handlePasswordReset} disabled={savingAction === 'teacher-password'}><Icon name="lock" size={16} /><DashboardText>Send Password Reset</DashboardText><Icon name="chevronRight" size={16} /></button>
           </div>
           <form className="dashboard-form" onSubmit={(event) => { event.preventDefault(); handleAvailabilityRequest(new FormData(event.currentTarget)); }}>
-            <label><span>Availability preferences</span><textarea name="availabilityRequest" rows={4} defaultValue={teacherProfile?.availability || ''} required /></label>
+            <label><span><DashboardText>Availability preferences</DashboardText></span><textarea name="availabilityRequest" rows={4} defaultValue={teacherProfile?.availability || ''} required /></label>
             <div className="dashboard-form-actions"><ActionButton type="submit" variant="secondary" disabled={savingAction === 'teacher-availability'}>{savingAction === 'teacher-availability' ? 'Sending' : 'Request Availability Update'}</ActionButton></div>
           </form>
         </SectionCard>
