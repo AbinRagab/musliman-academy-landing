@@ -13,6 +13,7 @@ import {
 } from '../components/student/StudentPortalComponents';
 import { fetchStudentMessagesData, markMessageRead, sendStudentMessage, type StudentMessageCategory } from '../services/studentMessagesService';
 import { type StudentMessage } from '../services/studentService';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 const messageTabs = ['All', 'Teacher', 'Admin', 'Payments', 'Class Updates', 'Homework'] as const;
 
@@ -73,7 +74,7 @@ export default function StudentMessages() {
         action={(
           <ActionButton onClick={() => setCompose({ to: 'Teacher', subject: 'Message from student portal' })}>
             <Icon name="send" size={17} />
-            Message Teacher
+            <DashboardText>Message Teacher</DashboardText>
           </ActionButton>
         )}
       />
@@ -89,9 +90,9 @@ export default function StudentMessages() {
 
       <div className="dashboard-grid dashboard-grid--two student-messages-layout">
         <SectionCard title="Message List" subtitle="Select a message to read the full detail">
-          {loading && <p className="dashboard-empty-copy">Loading messages...</p>}
+          {loading && <p className="dashboard-empty-copy"><DashboardText>Loading messages...</DashboardText></p>}
           {!loading && error && <p className="dashboard-empty-copy">{error}</p>}
-          {!loading && !error && filteredMessages.length === 0 && <p className="dashboard-empty-copy">No messages yet.</p>}
+          {!loading && !error && filteredMessages.length === 0 && <p className="dashboard-empty-copy"><DashboardText>No messages yet.</DashboardText></p>}
           {!loading && !error && filteredMessages.length > 0 && <MessageList messages={filteredMessages} selectedId={selectedMessage?.id || ''} onSelect={(message) => {
             setSelectedId(message.id);
             if (message.unread) {
@@ -107,7 +108,7 @@ export default function StudentMessages() {
         </SectionCard>
 
         <SectionCard title="Message Detail" subtitle="Full communication record">
-          {selectedMessage ? <MessageDetailPanel message={selectedMessage} onReply={() => setCompose({ to: selectedMessage.senderRole, subject: `Re: ${selectedMessage.subject}` })} /> : <p className="dashboard-empty-copy">Select a message when one is available.</p>}
+          {selectedMessage ? <MessageDetailPanel message={selectedMessage} onReply={() => setCompose({ to: selectedMessage.senderRole, subject: `Re: ${selectedMessage.subject}` })} /> : <p className="dashboard-empty-copy"><DashboardText>Select a message when one is available.</DashboardText></p>}
         </SectionCard>
       </div>
 

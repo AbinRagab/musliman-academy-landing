@@ -9,6 +9,7 @@ import StatusBadge from '../components/StatusBadge';
 import { ComposeMessageModal, StudentModal, StudentPageHeader, StudentStatCard } from '../components/student/StudentPortalComponents';
 import { sendStudentMessage } from '../services/studentMessagesService';
 import { fetchStudentDashboardData, openExternalLink, type StudentTrial } from '../services/studentService';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 export default function StudentFreeTrial() {
   const navigate = useNavigate();
@@ -44,10 +45,10 @@ export default function StudentFreeTrial() {
         />
       )}
       {feedbackOpen && (
-        <StudentModal title="Trial Feedback" onClose={() => setFeedbackOpen(false)} footer={<ActionButton onClick={() => setFeedbackOpen(false)}>Close</ActionButton>}>
+        <StudentModal title="Trial Feedback" onClose={() => setFeedbackOpen(false)} footer={<ActionButton onClick={() => setFeedbackOpen(false)}><DashboardText>Close</DashboardText></ActionButton>}>
           <div className="student-info-grid">
-            <span>Recommended level <strong>{trial.recommendedLevel}</strong></span>
-            <span>Result <strong>{trial.result}</strong></span>
+            <span><DashboardText>Recommended level</DashboardText> <strong>{trial.recommendedLevel}</strong></span>
+            <span><DashboardText>Result</DashboardText> <strong>{trial.result}</strong></span>
           </div>
           <p className="student-modal-copy">{trial.teacherFeedback}</p>
           <p className="student-modal-copy">{trial.recommendation}</p>
@@ -60,7 +61,7 @@ export default function StudentFreeTrial() {
         action={(
           <ActionButton variant="secondary" onClick={() => setCompose({ to: 'Academy Team', subject: 'Free trial question' })}>
             <Icon name="support" size={17} />
-            Contact Academy Team
+            <DashboardText>Contact Academy Team</DashboardText>
           </ActionButton>
         )}
       />
@@ -78,9 +79,9 @@ export default function StudentFreeTrial() {
         {isScheduled && (
           <SectionCard title="Before Your Trial" subtitle="Prepare for a calm and useful placement session">
             <div className="student-checklist">
-              <span><Icon name="check" size={16} /> Join 5 minutes early.</span>
-              <span><Icon name="check" size={16} /> Keep Quran or reading material nearby.</span>
-              <span><Icon name="check" size={16} /> Parent may stay nearby for setup.</span>
+              <span><Icon name="check" size={16} /> <DashboardText>Join 5 minutes early.</DashboardText></span>
+              <span><Icon name="check" size={16} /> <DashboardText>Keep Quran or reading material nearby.</DashboardText></span>
+              <span><Icon name="check" size={16} /> <DashboardText>Parent may stay nearby for setup.</DashboardText></span>
             </div>
             <div className="student-card-actions">
               <DashboardActionMenu
@@ -101,8 +102,8 @@ export default function StudentFreeTrial() {
           <SectionCard title="Teacher Feedback" subtitle="Placement result and recommended next step">
             <div className="student-feedback-note">{trial.teacherFeedback}</div>
             <div className="student-info-grid">
-              <span>Recommended level <strong>{trial.recommendedLevel}</strong></span>
-              <span>Recommendation <strong>{trial.recommendation}</strong></span>
+              <span><DashboardText>Recommended level</DashboardText> <strong>{trial.recommendedLevel}</strong></span>
+              <span><DashboardText>Recommendation</DashboardText> <strong>{trial.recommendation}</strong></span>
             </div>
             <div className="student-card-actions">
               <DashboardActionMenu
@@ -119,14 +120,14 @@ export default function StudentFreeTrial() {
         {isEnrolled && (
           <SectionCard title="Enrollment Active" subtitle="You are now enrolled">
             <div className="student-info-grid">
-              <span>Start date <strong>{trial.enrollmentDate || 'Confirmed by academy'}</strong></span>
-              <span>Current program <strong>{trial.program}</strong></span>
-              <span>Level <strong>{trial.recommendedLevel}</strong></span>
-              <span>Teacher <strong>{trial.teacher}</strong></span>
+              <span><DashboardText>Start date</DashboardText> <strong>{trial.enrollmentDate || 'Confirmed by academy'}</strong></span>
+              <span><DashboardText>Current program</DashboardText> <strong>{trial.program}</strong></span>
+              <span><DashboardText>Level</DashboardText> <strong>{trial.recommendedLevel}</strong></span>
+              <span><DashboardText>Teacher</DashboardText> <strong>{trial.teacher}</strong></span>
             </div>
             <ActionButton onClick={() => navigate('/dashboard/student/schedule')}>
               <Icon name="calendar" size={16} />
-              Go to Schedule
+              <DashboardText>Go to Schedule</DashboardText>
             </ActionButton>
           </SectionCard>
         )}

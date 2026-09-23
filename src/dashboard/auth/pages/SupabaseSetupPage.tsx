@@ -1,5 +1,6 @@
 import Icon from '../../../components/Icon';
 import { supabaseConfigMessage } from '../../../lib/supabaseClient';
+import { DashboardText } from '../../i18n/DashboardLanguageProvider';
 
 export default function SupabaseSetupPage() {
   return (
@@ -8,11 +9,11 @@ export default function SupabaseSetupPage() {
         <div className="dashboard-empty__icon">
           <Icon name="shieldCheck" />
         </div>
-        <h1>Supabase setup required</h1>
+        <h1><DashboardText>Supabase setup required</DashboardText></h1>
         <p>{supabaseConfigMessage}</p>
         <div className="dashboard-env-list">
-          <code>VITE_SUPABASE_URL</code>
-          <code>VITE_SUPABASE_ANON_KEY</code>
+          <code><DashboardText>VITE_SUPABASE_URL</DashboardText></code>
+          <code><DashboardText>VITE_SUPABASE_ANON_KEY</DashboardText></code>
         </div>
       </section>
     </main>

@@ -13,11 +13,13 @@ import {
 import { fetchStudentHomeworkData, uploadHomeworkSubmission } from '../services/studentHomeworkService';
 import { getSignedFileUrl, HOMEWORK_BUCKET } from '../services/storageService';
 import { resolveCurrentStudentProfile, type StudentHomeworkItem, type StudentPortalProfile } from '../services/studentService';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 const homeworkTabs = ['Pending', 'Submitted', 'Reviewed', 'Overdue'] as const;
 type HomeworkTab = (typeof homeworkTabs)[number];
 
 export default function StudentHomework() {
+  const { t } = useDashboardLanguage();
   const [homework, setHomework] = useState<StudentHomeworkItem[]>([]);
   const [profile, setProfile] = useState<StudentPortalProfile | null>(null);
   const [activeTab, setActiveTab] = useState<HomeworkTab>('Pending');
@@ -102,9 +104,9 @@ export default function StudentHomework() {
             }}
           >
             <label>
-              <span>Homework / class</span>
+              <span><DashboardText>Homework / class</DashboardText></span>
               <select name="classId" defaultValue={selectedHomework.classId || ''} required>
-                <option value="" disabled>Select homework or class</option>
+                <option value="" disabled><DashboardText>Select homework or class</DashboardText></option>
                 {homework.map((item) => (
                   <option key={item.id} value={item.classId || ''} disabled={!item.classId}>
                     {item.title} - {item.relatedClass}
@@ -113,35 +115,35 @@ export default function StudentHomework() {
               </select>
             </label>
             <label>
-              <span>Upload file</span>
+              <span><DashboardText>Upload file</DashboardText></span>
               <input name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.mp3,.mp4,.doc,.docx,application/pdf,image/jpeg,image/png,audio/mpeg,video/mp4,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
             </label>
             <label>
-              <span>Note to teacher</span>
-              <textarea name="note" rows={4} placeholder="Add a short note..." />
+              <span><DashboardText>Note to teacher</DashboardText></span>
+              <textarea name="note" rows={4} placeholder={t('Add a short note...')} />
             </label>
             {uploadError && <p className="student-form-error">{uploadError}</p>}
           </form>
         </StudentModal>
       )}
       {selectedHomework && modalMode === 'instructions' && (
-        <StudentModal title="Homework Instructions" onClose={() => setModalMode(null)} footer={<ActionButton onClick={() => setModalMode(null)}>Close</ActionButton>}>
+        <StudentModal title="Homework Instructions" onClose={() => setModalMode(null)} footer={<ActionButton onClick={() => setModalMode(null)}><DashboardText>Close</DashboardText></ActionButton>}>
           <div className="student-info-grid">
-            <span>Homework <strong>{selectedHomework.title}</strong></span>
-            <span>Due date <strong>{selectedHomework.dueDate}</strong></span>
-            <span>Related class <strong>{selectedHomework.relatedClass}</strong></span>
-            <span>Teacher <strong>{selectedHomework.teacher}</strong></span>
+            <span><DashboardText>Homework</DashboardText> <strong>{selectedHomework.title}</strong></span>
+            <span><DashboardText>Due date</DashboardText> <strong>{selectedHomework.dueDate}</strong></span>
+            <span><DashboardText>Related class</DashboardText> <strong>{selectedHomework.relatedClass}</strong></span>
+            <span><DashboardText>Teacher</DashboardText> <strong>{selectedHomework.teacher}</strong></span>
           </div>
           <p className="student-modal-copy">{selectedHomework.instructions}</p>
         </StudentModal>
       )}
       {selectedHomework && modalMode === 'feedback' && (
-        <StudentModal title="Teacher Feedback" onClose={() => setModalMode(null)} footer={<ActionButton onClick={() => setModalMode(null)}>Close</ActionButton>}>
-          <p className="student-modal-copy">{selectedHomework.teacherFeedback || 'Teacher feedback has not been published yet.'}</p>
+        <StudentModal title="Teacher Feedback" onClose={() => setModalMode(null)} footer={<ActionButton onClick={() => setModalMode(null)}><DashboardText>Close</DashboardText></ActionButton>}>
+          <p className="student-modal-copy">{selectedHomework.teacherFeedback || t('Teacher feedback has not been published yet.')}</p>
         </StudentModal>
       )}
       {fileViewError && (
-        <StudentModal title="File Unavailable" onClose={() => setFileViewError('')} footer={<ActionButton onClick={() => setFileViewError('')}>Close</ActionButton>}>
+        <StudentModal title="File Unavailable" onClose={() => setFileViewError('')} footer={<ActionButton onClick={() => setFileViewError('')}><DashboardText>Close</DashboardText></ActionButton>}>
           <p className="student-modal-copy">{fileViewError}</p>
         </StudentModal>
       )}
@@ -157,7 +159,7 @@ export default function StudentHomework() {
 
       <StudentTabs tabs={homeworkTabs} activeTab={activeTab} onChange={setActiveTab} />
 
-      <SectionCard title={`${activeTab} Homework`} subtitle="Homework is connected to class records and teacher feedback.">
+      <SectionCard title={t('{{tab}} Homework', { tab: t(activeTab) })} subtitle="Homework is connected to class records and teacher feedback.">
         <div className="student-card-list">
           {visibleHomework.length ? visibleHomework.map((item) => (
             <HomeworkCard
@@ -193,7 +195,7 @@ export default function StudentHomework() {
                   });
               }}
             />
-          )) : <EmptyState title={`No ${activeTab.toLowerCase()} homework`} description="Homework will appear here when your teacher assigns or reviews it." />}
+          )) : <EmptyState title={t('No {{tab}} homework', { tab: t(activeTab.toLowerCase()) })} description="Homework will appear here when your teacher assigns or reviews it." />}
         </div>
       </SectionCard>
 
@@ -204,15 +206,15 @@ export default function StudentHomework() {
               <div className="student-homework-card__header">
                 <div>
                   <h3>{item.fileName || item.title}</h3>
-                  <p>{item.relatedClass} - {item.submittedAt || 'Upload date pending'}</p>
+                  <p>{item.relatedClass} - {item.submittedAt || t('Upload date pending')}</p>
                 </div>
                 <span className="dashboard-status dashboard-status--success">{item.teacherFeedback ? 'reviewed' : item.status}</span>
               </div>
               <div className="student-info-grid student-info-grid--compact">
-                <span>File type <strong>{item.fileType || '-'}</strong></span>
-                <span>File size <strong>{item.fileSize ? `${(item.fileSize / 1024 / 1024).toFixed(1)} MB` : '-'}</strong></span>
-                <span>Teacher feedback <strong>{item.teacherFeedback || 'No feedback yet'}</strong></span>
-                <span>Notes <strong>{item.notes || 'No note added'}</strong></span>
+                <span><DashboardText>File type</DashboardText> <strong>{item.fileType || '-'}</strong></span>
+                <span><DashboardText>File size</DashboardText> <strong>{item.fileSize ? `${(item.fileSize / 1024 / 1024).toFixed(1)} MB` : '-'}</strong></span>
+                <span><DashboardText>Teacher feedback</DashboardText> <strong>{item.teacherFeedback || t('No feedback yet')}</strong></span>
+                <span><DashboardText>Notes</DashboardText> <strong>{item.notes || t('No note added')}</strong></span>
               </div>
               <ActionButton
                 variant="secondary"
@@ -233,7 +235,7 @@ export default function StudentHomework() {
                 }}
               >
                 <Icon name="eye" size={16} />
-                View File
+                <DashboardText>View File</DashboardText>
               </ActionButton>
             </article>
           )) : (

@@ -3,6 +3,7 @@ import ActionButton from '../ActionButton';
 import StatusBadge from '../StatusBadge';
 import { openExternalLink, type StudentClassSession } from '../../services/studentService';
 import { StudentModal } from './StudentPortalComponents';
+import { DashboardText, useDashboardLanguage } from '../../i18n/DashboardLanguageProvider';
 
 export default function ClassDetailsModal({
   classSession,
@@ -11,22 +12,24 @@ export default function ClassDetailsModal({
   classSession: StudentClassSession;
   onClose: () => void;
 }) {
+  const { t } = useDashboardLanguage();
+
   return (
-    <StudentModal title="Class Details" onClose={onClose} footer={<ActionButton onClick={onClose}>Close</ActionButton>}>
+    <StudentModal title="Class Details" onClose={onClose} footer={<ActionButton onClick={onClose}><DashboardText>Close</DashboardText></ActionButton>}>
       <div className="student-info-grid">
-        <span>Class <strong>{classSession.title}</strong></span>
-        <span>Teacher <strong>{classSession.teacher}</strong></span>
-        <span>Date/time <strong>{classSession.date} {classSession.time}</strong></span>
-        <span>Platform <strong>{classSession.platform}</strong></span>
-        <span>Status <strong><StatusBadge label={classSession.status} /></strong></span>
-        <span>Timezone <strong>{classSession.timezone}</strong></span>
-        <span>Meeting link <strong>{classSession.meetingLink || 'Not available'}</strong></span>
-        <span>Notes <strong>{classSession.teacherNotes || classSession.lessonCovered || 'No notes published yet'}</strong></span>
+        <span><DashboardText>Class</DashboardText> <strong>{classSession.title}</strong></span>
+        <span><DashboardText>Teacher</DashboardText> <strong>{classSession.teacher}</strong></span>
+        <span><DashboardText>Date/time</DashboardText> <strong>{classSession.date} {classSession.time}</strong></span>
+        <span><DashboardText>Platform</DashboardText> <strong>{classSession.platform}</strong></span>
+        <span><DashboardText>Status</DashboardText> <strong><StatusBadge label={classSession.status} /></strong></span>
+        <span><DashboardText>Timezone</DashboardText> <strong>{classSession.timezone}</strong></span>
+        <span><DashboardText>Meeting link</DashboardText> <strong>{classSession.meetingLink || t('Not available')}</strong></span>
+        <span><DashboardText>Notes</DashboardText> <strong>{classSession.teacherNotes || classSession.lessonCovered || t('No notes published yet')}</strong></span>
       </div>
       {classSession.meetingLink && (
         <ActionButton onClick={() => openExternalLink(classSession.meetingLink)}>
           <Icon name="video" size={16} />
-          Join Class
+          <DashboardText>Join Class</DashboardText>
         </ActionButton>
       )}
     </StudentModal>

@@ -15,7 +15,7 @@ import DashboardLayout from './layouts/DashboardLayout';
 import EmptyState from './components/EmptyState';
 import ActionButton from './components/ActionButton';
 import type { DashboardRole } from './types';
-import { DashboardLanguageProvider, useDashboardLanguage } from './i18n/DashboardLanguageProvider';
+import { DashboardText, DashboardLanguageProvider, useDashboardLanguage } from './i18n/DashboardLanguageProvider';
 import './styles/dashboard.css';
 import './styles/dashboard-i18n.css';
 
@@ -56,7 +56,7 @@ function SectionUnavailable({ role }: { role: DashboardRole }) {
       description={`This ${role} dashboard section is not enabled for the current configuration.`}
       action={
         <ActionButton variant="secondary" disabled>
-          Requires Database Setup
+          <DashboardText>Requires Database Setup</DashboardText>
         </ActionButton>
       }
     />

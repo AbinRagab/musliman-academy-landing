@@ -14,6 +14,7 @@ import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
 import Toast, { type ToastMessage } from '../components/Toast';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 import {
   createUserAccount,
   fetchProfiles,
@@ -69,7 +70,8 @@ const initialFormState: FormState = {
 };
 
 function PermissionMark({ enabled }: { enabled: boolean }) {
-  return <span className={`dashboard-permission-mark ${enabled ? 'is-enabled' : ''}`}>{enabled ? 'Yes' : 'No'}</span>;
+  const { t } = useDashboardLanguage();
+  return <span className={`dashboard-permission-mark ${enabled ? 'is-enabled' : ''}`}>{t(enabled ? 'Yes' : 'No')}</span>;
 }
 
 function getStatusTone(status: string) {
@@ -95,12 +97,12 @@ function formatRole(role: string) {
     .join(' ');
 }
 
-function formatDate(value?: string) {
+function formatDate(value: string | undefined, locale: string) {
   if (!value) {
     return '-';
   }
 
-  return new Intl.DateTimeFormat('en', {
+  return new Intl.DateTimeFormat(locale, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -157,9 +159,11 @@ function AccountActionsMenu({
   onToggleStatus: () => void;
   onResetPassword: () => void;
 }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <DashboardActionMenu
-      label={`Actions for ${profile.full_name}`}
+      label={t('Actions for {{name}}', { name: profile.full_name })}
       primaryAction={{ label: 'View Profile', onClick: onView }}
       actions={[
         { label: 'Change Role', onClick: onChangeRole, disabled: profile.role === 'super_admin' },
@@ -180,6 +184,7 @@ const permissionColumns: Array<DataTableColumn<PermissionRow>> = [
 
 export default function AccountsRolesPage() {
   const { role: currentRole } = useAuth();
+  const { language, t } = useDashboardLanguage();
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -203,7 +208,7 @@ export default function AccountsRolesPage() {
       const rows = await fetchProfiles();
       setProfiles(rows);
     } catch (profilesError) {
-      setError(profilesError instanceof Error ? profilesError.message : 'Unable to load profiles.');
+      setError(profilesError instanceof Error ? profilesError.message : t('Unable to load profiles.'));
     } finally {
       setLoading(false);
     }
@@ -236,10 +241,10 @@ export default function AccountsRolesPage() {
 
   const userColumns: Array<DataTableColumn<ProfileRow>> = [
     { header: 'User', accessor: (row) => <AccountCell primary={row.full_name} secondary={row.email} /> },
-    { header: 'Contact', accessor: (row) => <AccountCell primary={row.phone || '-'} secondary={`Created ${formatDate(row.created_at)}`} /> },
+    { header: 'Contact', accessor: (row) => <AccountCell primary={row.phone || '-'} secondary={t('Created {{date}}', { date: formatDate(row.created_at, language) })} /> },
     { header: 'Role', accessor: (row) => <RoleBadge role={row.role} /> },
     { header: 'Status', accessor: (row) => <StatusBadge label={row.status} tone={getStatusTone(row.status)} /> },
-    { header: 'Permissions', accessor: (row) => <span className="account-permission-summary">{getPermissionSummary(row.role)}</span> },
+    { header: 'Permissions', accessor: (row) => <span className="account-permission-summary">{t(getPermissionSummary(row.role))}</span> },
     {
       header: 'Actions',
       accessor: (row) => (
@@ -266,15 +271,15 @@ export default function AccountsRolesPage() {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!form.full_name.trim()) {
-      nextErrors.full_name = 'Full name is required.';
+      nextErrors.full_name = t('Full name is required.');
     }
 
     if (!emailPattern.test(form.email.trim())) {
-      nextErrors.email = 'Enter a valid email address.';
+      nextErrors.email = t('Enter a valid email address.');
     }
 
     if (form.password.length < 8) {
-      nextErrors.password = 'Temporary password must be at least 8 characters.';
+      nextErrors.password = t('Temporary password must be at least 8 characters.');
     }
 
     setFieldErrors(nextErrors);
@@ -300,13 +305,13 @@ export default function AccountsRolesPage() {
         role: form.role,
         status: form.status,
       });
-      setToast({ type: 'success', message: 'Account created successfully' });
+      setToast({ type: 'success', message: t('Account created successfully') });
       setForm(initialFormState);
       setFieldErrors({});
       setCreateDrawerOpen(false);
       await loadProfiles();
     } catch (createError) {
-      const message = createError instanceof Error ? createError.message : 'Unable to create account.';
+      const message = createError instanceof Error ? createError.message : t('Unable to create account.');
       setToast({ type: 'error', message });
     } finally {
       setSubmitting(false);
@@ -319,9 +324,9 @@ export default function AccountsRolesPage() {
     try {
       const updatedProfile = await updateUserStatus(profile.id, nextStatus);
       setProfiles((current) => current.map((row) => (row.id === updatedProfile.id ? updatedProfile : row)));
-      setToast({ type: 'success', message: `Account ${nextStatus === 'active' ? 'activated' : 'deactivated'} successfully.` });
+      setToast({ type: 'success', message: t(nextStatus === 'active' ? 'Account activated successfully.' : 'Account deactivated successfully.') });
     } catch (statusError) {
-      setToast({ type: 'error', message: statusError instanceof Error ? statusError.message : 'Unable to update status.' });
+      setToast({ type: 'error', message: statusError instanceof Error ? statusError.message : t('Unable to update status.') });
     }
   }
 
@@ -334,15 +339,15 @@ export default function AccountsRolesPage() {
       const updatedProfile = await updateUserRole(roleProfile.id, selectedRole);
       setProfiles((current) => current.map((row) => (row.id === updatedProfile.id ? updatedProfile : row)));
       setRoleProfile(null);
-      setToast({ type: 'success', message: 'Role updated successfully.' });
+      setToast({ type: 'success', message: t('Role updated successfully.') });
     } catch (roleError) {
-      setToast({ type: 'error', message: roleError instanceof Error ? roleError.message : 'Unable to update role.' });
+      setToast({ type: 'error', message: roleError instanceof Error ? roleError.message : t('Unable to update role.') });
     }
   }
 
   async function handleResetPassword(profile: ProfileRow) {
     if (!supabase) {
-      setToast({ type: 'error', message: 'Supabase is not configured for password reset emails.' });
+      setToast({ type: 'error', message: t('Supabase is not configured for password reset emails.') });
       return;
     }
 
@@ -354,9 +359,9 @@ export default function AccountsRolesPage() {
         throw resetError;
       }
 
-      setToast({ type: 'success', message: `Password reset email sent to ${profile.email}.` });
+      setToast({ type: 'success', message: t('Password reset email sent to {{email}}.', { email: profile.email }) });
     } catch (resetError) {
-      setToast({ type: 'error', message: resetError instanceof Error ? resetError.message : 'Unable to send password reset email.' });
+      setToast({ type: 'error', message: resetError instanceof Error ? resetError.message : t('Unable to send password reset email.') });
     }
   }
 
@@ -372,13 +377,13 @@ export default function AccountsRolesPage() {
 
       <div className="dashboard-page-header dashboard-page-header--accounts">
         <div>
-          <span className="dashboard-eyebrow">ADMIN AREA</span>
-          <h1>Admin Control Center</h1>
-          <p>Manage users, roles, permissions and academy operations</p>
+          <span className="dashboard-eyebrow">{t('ADMIN AREA')}</span>
+          <h1>{t('Admin Control Center')}</h1>
+          <p>{t('Manage users, roles, permissions and academy operations')}</p>
         </div>
         <ActionButton variant="secondary" onClick={loadProfiles}>
           <Icon name="shieldCheck" size={18} />
-          Refresh Accounts
+          {t('Refresh Accounts')}
         </ActionButton>
       </div>
 
@@ -395,36 +400,36 @@ export default function AccountsRolesPage() {
         action={(
           <ActionButton variant="copper" onClick={() => setCreateDrawerOpen(true)}>
             <Icon name="plus" size={17} />
-            Create Account
+            {t('Create Account')}
           </ActionButton>
         )}
       >
         <div className="dashboard-filters dashboard-filters--accounts">
           <label>
-            <span>Search</span>
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search name or email" />
+            <span>{t('Search')}</span>
+            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t('Search name or email')} />
           </label>
           <label>
-            <span>Role</span>
+            <span>{t('Role')}</span>
             <select value={roleFilter} onChange={(event) => setRoleFilter(event.target.value as AuthRole | 'all')}>
               {filterRoleOptions.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
+                <option key={option.value} value={option.value}>{t(option.label)}</option>
               ))}
             </select>
           </label>
           <label>
-            <span>Status</span>
+            <span>{t('Status')}</span>
             <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as AccountStatus | 'all')}>
-              <option value="all">All statuses</option>
-              <option value="active">Active</option>
-              <option value="pending">Pending</option>
-              <option value="inactive">Inactive</option>
-              <option value="suspended">Suspended</option>
+              <option value="all">{t('All statuses')}</option>
+              <option value="active">{t('Active')}</option>
+              <option value="pending">{t('Pending')}</option>
+              <option value="inactive">{t('Inactive')}</option>
+              <option value="suspended">{t('Suspended')}</option>
             </select>
           </label>
         </div>
 
-        {loading && <DashboardSkeleton cards={4} rows={6} label="Loading academy accounts" />}
+        {loading && <DashboardSkeleton cards={4} rows={6} label={t('Loading academy accounts')} />}
         {error && <div className="dashboard-inline-error">{error}</div>}
         {!loading && !error && filteredProfiles.length === 0 && (
           <EmptyState title="No accounts found" description="Create a dashboard account or adjust your filters." />
@@ -439,34 +444,34 @@ export default function AccountsRolesPage() {
       </SectionCard>
 
       {createDrawerOpen && (
-        <div className="account-drawer" role="dialog" aria-modal="true" aria-label="Create New Account">
-          <button type="button" className="account-drawer__backdrop" aria-label="Close create account drawer" onClick={closeCreateDrawer} />
+        <div className="account-drawer" role="dialog" aria-modal="true" aria-label={t('Create New Account')}>
+          <button type="button" className="account-drawer__backdrop" aria-label={t('Close create account drawer')} onClick={closeCreateDrawer} />
           <aside className="account-drawer__panel">
             <form className="dashboard-form account-drawer__form" onSubmit={handleSubmit}>
               <div className="account-drawer__header">
                 <div>
-                  <span className="dashboard-eyebrow">ACCOUNTS</span>
-                  <h2>Create New Account</h2>
-                  <p>Create secure Supabase Auth users through the server-side Edge Function.</p>
+                  <span className="dashboard-eyebrow">{t('ACCOUNTS')}</span>
+                  <h2>{t('Create New Account')}</h2>
+                  <p>{t('Create secure Supabase Auth users through the server-side Edge Function.')}</p>
                 </div>
-                <button type="button" className="dashboard-icon-button" aria-label="Close create account drawer" onClick={closeCreateDrawer}>
+                <button type="button" className="dashboard-icon-button" aria-label={t('Close create account drawer')} onClick={closeCreateDrawer}>
                   <Icon name="x" />
                 </button>
               </div>
 
               <div className="account-drawer__body">
                 <label>
-                  <span>Full Name</span>
+                  <span>{t('Full Name')}</span>
                   <input
                     type="text"
                     value={form.full_name}
                     onChange={(event) => setForm((current) => ({ ...current, full_name: event.target.value }))}
-                    placeholder="Enter full name"
+                    placeholder={t('Enter full name')}
                   />
                   {fieldErrors.full_name && <small className="dashboard-field-error">{fieldErrors.full_name}</small>}
                 </label>
                 <label>
-                  <span>Email Address</span>
+                  <span>{t('Email Address')}</span>
                   <input
                     type="email"
                     value={form.email}
@@ -476,7 +481,7 @@ export default function AccountsRolesPage() {
                   {fieldErrors.email && <small className="dashboard-field-error">{fieldErrors.email}</small>}
                 </label>
                 <label>
-                  <span>Phone / WhatsApp</span>
+                  <span>{t('Phone / WhatsApp')}</span>
                   <input
                     type="tel"
                     value={form.phone}
@@ -485,51 +490,51 @@ export default function AccountsRolesPage() {
                   />
                 </label>
                 <label>
-                  <span>Temporary Password</span>
+                  <span>{t('Temporary Password')}</span>
                   <input
                     type="password"
                     value={form.password}
                     onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
-                    placeholder="Minimum 8 characters"
+                    placeholder={t('Minimum 8 characters')}
                     autoComplete="new-password"
                   />
                   {fieldErrors.password && <small className="dashboard-field-error">{fieldErrors.password}</small>}
                 </label>
                 <label>
-                  <span>Role</span>
+                  <span>{t('Role')}</span>
                   <select value={form.role} onChange={(event) => setForm((current) => ({ ...current, role: event.target.value as CreateAccountPayload['role'] }))}>
                     {createRoleOptions.map((option) => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
+                      <option key={option.value} value={option.value}>{t(option.label)}</option>
                     ))}
                   </select>
                 </label>
                 <label>
-                  <span>Status</span>
+                  <span>{t('Status')}</span>
                   <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as CreateAccountPayload['status'] }))}>
-                    <option value="active">Active</option>
-                    <option value="pending">Pending</option>
+                    <option value="active">{t('Active')}</option>
+                    <option value="pending">{t('Pending')}</option>
                   </select>
                 </label>
                 <details className="dashboard-advanced-permissions">
                   <summary>
-                    <span>Advanced Permissions</span>
+                    <span>{t('Advanced Permissions')}</span>
                     <Icon name="chevronRight" size={17} />
                   </summary>
                   <div className="dashboard-toggle-group">
                     {permissionToggles.map((permission) => (
                       <label className="dashboard-toggle" key={permission}>
-                        <span>{permission}</span>
+                        <span>{t(permission)}</span>
                         <input type="checkbox" defaultChecked={['Manage Students', 'View Reports', 'Manage Classes'].includes(permission)} disabled />
                       </label>
                     ))}
-                    <small>Permission editing is not available yet. Role assignment is saved now.</small>
+                    <small>{t('Permission editing is not available yet. Role assignment is saved now.')}</small>
                   </div>
                 </details>
               </div>
 
               <div className="account-drawer__footer">
-                <ActionButton type="submit" variant="copper" disabled={submitting}>{submitting ? 'Creating Account' : 'Create Account'}</ActionButton>
-                <ActionButton type="button" variant="secondary" onClick={closeCreateDrawer}>Cancel</ActionButton>
+                <ActionButton type="submit" variant="copper" disabled={submitting}>{t(submitting ? 'Creating Account' : 'Create Account')}</ActionButton>
+                <ActionButton type="button" variant="secondary" onClick={closeCreateDrawer}><DashboardText>Cancel</DashboardText></ActionButton>
               </div>
             </form>
           </aside>
@@ -537,52 +542,52 @@ export default function AccountsRolesPage() {
       )}
 
       {viewProfile && (
-        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Profile for ${viewProfile.full_name}`}>
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={t('Profile for {{name}}', { name: viewProfile.full_name })}>
           <div className="dashboard-modal__panel">
             <div className="dashboard-card__header">
               <div>
                 <h2>{viewProfile.full_name}</h2>
-                <p>Read-only account profile</p>
+                <p>{t('Read-only account profile')}</p>
               </div>
-              <button type="button" className="dashboard-icon-button" aria-label="Close profile" onClick={() => setViewProfile(null)}>
+              <button type="button" className="dashboard-icon-button" aria-label={t('Close profile')} onClick={() => setViewProfile(null)}>
                 <Icon name="x" />
               </button>
             </div>
             <div className="dashboard-profile-details">
-              <span>Email <strong>{viewProfile.email}</strong></span>
-              <span>Phone <strong>{viewProfile.phone || '-'}</strong></span>
-              <span>Role <RoleBadge role={viewProfile.role} /></span>
-              <span>Status <StatusBadge label={viewProfile.status} tone={getStatusTone(viewProfile.status)} /></span>
-              <span>Created <strong>{formatDate(viewProfile.created_at)}</strong></span>
+              <span>{t('Email')} <strong>{viewProfile.email}</strong></span>
+              <span>{t('Phone')} <strong>{viewProfile.phone || '-'}</strong></span>
+              <span>{t('Role')} <RoleBadge role={viewProfile.role} /></span>
+              <span>{t('Status')} <StatusBadge label={viewProfile.status} tone={getStatusTone(viewProfile.status)} /></span>
+              <span>{t('Created')} <strong>{formatDate(viewProfile.created_at, language)}</strong></span>
             </div>
           </div>
         </div>
       )}
 
       {roleProfile && (
-        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Change role for ${roleProfile.full_name}`}>
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={t('Change role for {{name}}', { name: roleProfile.full_name })}>
           <div className="dashboard-modal__panel dashboard-modal__panel--small">
             <div className="dashboard-card__header">
               <div>
-                <h2>Change Role</h2>
+                <h2>{t('Change Role')}</h2>
                 <p>{roleProfile.full_name}</p>
               </div>
-              <button type="button" className="dashboard-icon-button" aria-label="Close role editor" onClick={() => setRoleProfile(null)}>
+              <button type="button" className="dashboard-icon-button" aria-label={t('Close role editor')} onClick={() => setRoleProfile(null)}>
                 <Icon name="x" />
               </button>
             </div>
             <div className="dashboard-form">
               <label>
-                <span>New Role</span>
+                <span>{t('New Role')}</span>
                 <select value={selectedRole} onChange={(event) => setSelectedRole(event.target.value as CreateAccountPayload['role'])}>
                   {createRoleOptions.map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
+                    <option key={option.value} value={option.value}>{t(option.label)}</option>
                   ))}
                 </select>
               </label>
               <div className="dashboard-form-actions">
-                <ActionButton onClick={handleRoleChange}>Save Role</ActionButton>
-                <ActionButton variant="secondary" onClick={() => setRoleProfile(null)}>Cancel</ActionButton>
+                <ActionButton onClick={handleRoleChange}><DashboardText>Save Role</DashboardText></ActionButton>
+                <ActionButton variant="secondary" onClick={() => setRoleProfile(null)}><DashboardText>Cancel</DashboardText></ActionButton>
               </div>
             </div>
           </div>

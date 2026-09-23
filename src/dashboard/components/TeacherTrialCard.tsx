@@ -1,6 +1,7 @@
 import Icon from '../../components/Icon';
 import DashboardActionMenu from './DashboardActionMenu';
 import StatusBadge from './StatusBadge';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function TeacherTrialCard({
   trial,
@@ -21,6 +22,7 @@ export default function TeacherTrialCard({
   onFeedback: () => void;
   onNoShow: () => void;
 }) {
+  const { t } = useDashboardLanguage();
   const normalizedStatus = (trial.status || 'scheduled').toLowerCase();
   const feedbackSubmitted = Boolean(trial.teacher_feedback) || normalizedStatus === 'completed';
   const canJoin = Boolean(trial.meeting_link) && ['scheduled', 'live'].includes(normalizedStatus);
@@ -36,11 +38,11 @@ export default function TeacherTrialCard({
   return (
     <article className="teacher-trial-card">
       <div>
-        <h3>{trial.lead?.full_name || 'Trial student'}</h3>
-        <p>{trial.lead?.programName || 'Program not assigned'}</p>
+        <h3>{trial.lead?.full_name || t('Trial student')}</h3>
+        <p>{trial.lead?.programName || t('Program not assigned')}</p>
       </div>
       <div className="teacher-trial-card__meta">
-        <span><Icon name="calendar" size={15} /> {trial.trial_date || 'Date pending'} {trial.trial_time || ''}</span>
+        <span><Icon name="calendar" size={15} /> {trial.trial_date || t('Date pending')} {trial.trial_time || ''}</span>
         <span><Icon name="phone" size={15} /> {trial.lead?.whatsapp || '-'}</span>
       </div>
       <StatusBadge label={trial.status || 'scheduled'} />

@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react';
 import Icon from '../../components/Icon';
 import ActionButton from './ActionButton';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export type DashboardDrawerAction = {
   label: string;
@@ -42,6 +43,7 @@ export default function DashboardDrawer({
   size?: 'sm' | 'md' | 'lg' | 'xl';
   panelClassName?: string;
 }) {
+  const { t } = useDashboardLanguage();
   useEffect(() => {
     if (!open) {
       return undefined;
@@ -64,16 +66,16 @@ export default function DashboardDrawer({
   const resolvedSize = size || (width === 'wide' ? 'lg' : 'md');
 
   return (
-    <div className="dashboard-drawer" role="dialog" aria-modal="true" aria-label={title}>
-      <button type="button" className="dashboard-drawer__backdrop" aria-label="Close drawer" onClick={onClose} />
+    <div className="dashboard-drawer" role="dialog" aria-modal="true" aria-label={t(title)}>
+      <button type="button" className="dashboard-drawer__backdrop" aria-label={t('Close drawer')} onClick={onClose} />
       <aside className={`dashboard-drawer__panel dashboard-drawer__panel--${width} dashboard-drawer__panel--${resolvedSize} ${panelClassName}`.trim()}>
         <header className="dashboard-drawer__header">
           <div>
-            {eyebrow && <span className="dashboard-eyebrow">{eyebrow}</span>}
-            <h2>{title}</h2>
-            {subtitle && <p>{subtitle}</p>}
+            {eyebrow && <span className="dashboard-eyebrow">{t(eyebrow)}</span>}
+            <h2>{t(title)}</h2>
+            {subtitle && <p>{t(subtitle)}</p>}
           </div>
-          <button type="button" className="dashboard-icon-button" aria-label="Close drawer" onClick={onClose}>
+          <button type="button" className="dashboard-icon-button" aria-label={t('Close drawer')} onClick={onClose}>
             <Icon name="x" size={17} />
           </button>
         </header>
@@ -82,7 +84,7 @@ export default function DashboardDrawer({
 
         {sections.map((section) => (
           <section className="dashboard-drawer__section" key={section.title}>
-            <h3>{section.title}</h3>
+            <h3>{t(section.title)}</h3>
             {section.children}
           </section>
         ))}
@@ -98,7 +100,7 @@ export default function DashboardDrawer({
                 onClick={action.onClick}
               >
                 {action.icon && <Icon name={action.icon} size={16} />}
-                {action.label}
+                {t(action.label)}
               </ActionButton>
             ))}
           </footer>

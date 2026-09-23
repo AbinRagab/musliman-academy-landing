@@ -9,6 +9,7 @@ import ScheduleCard from '../components/ScheduleCard';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 type StudentSection =
   | 'classes'
@@ -174,19 +175,19 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
     messages: (
       <ActionButton variant="secondary">
         <Icon name="send" size={18} />
-        Message Teacher
+        <DashboardText>Message Teacher</DashboardText>
       </ActionButton>
     ),
     settings: (
       <ActionButton variant="secondary">
         <Icon name="shieldCheck" size={18} />
-        Security
+        <DashboardText>Security</DashboardText>
       </ActionButton>
     ),
     profile: (
       <ActionButton variant="secondary">
         <Icon name="user" size={18} />
-        Student Record
+        <DashboardText>Student Record</DashboardText>
       </ActionButton>
     ),
   };
@@ -199,7 +200,7 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
       action={headerActionBySection[section] || (
         <ActionButton variant="secondary">
           <Icon name="video" size={18} />
-          Join Next Class
+          <DashboardText>Join Next Class</DashboardText>
         </ActionButton>
       )}
     />
@@ -212,12 +213,12 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
           <DashboardModal
             title="Class Details"
             onClose={() => setScheduleDetails(null)}
-            footer={<ActionButton onClick={() => setScheduleDetails(null)}>Close</ActionButton>}
+            footer={<ActionButton onClick={() => setScheduleDetails(null)}><DashboardText>Close</DashboardText></ActionButton>}
           >
             <div className="student-info-grid">
-              <span>Class <strong>{scheduleDetails.title}</strong></span>
-              <span>Time <strong>{scheduleDetails.time}</strong></span>
-              <span>Details <strong>{scheduleDetails.meta}</strong></span>
+              <span><DashboardText>Class</DashboardText> <strong>{scheduleDetails.title}</strong></span>
+              <span><DashboardText>Time</DashboardText> <strong>{scheduleDetails.time}</strong></span>
+              <span><DashboardText>Details</DashboardText> <strong>{scheduleDetails.meta}</strong></span>
             </div>
           </DashboardModal>
         )}
@@ -433,7 +434,7 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
                     <span>{message.dateTime}</span>
                     <StatusBadge label={message.unread ? 'Unread' : 'Read'} tone={message.unread ? 'warning' : 'neutral'} />
                   </footer>
-                  {message.relatedClass && <small>Related class: {message.relatedClass}</small>}
+                  {message.relatedClass && <small><DashboardText>Related class:</DashboardText> {message.relatedClass}</small>}
                 </button>
               ))}
             </div>
@@ -459,7 +460,7 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
               />
               <ActionButton variant="secondary">
                 <Icon name="send" size={16} />
-                Reply
+                <DashboardText>Reply</DashboardText>
               </ActionButton>
             </div>
           </SectionCard>
@@ -487,20 +488,20 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
           <SectionCard title="Account Settings" subtitle="Basic portal identity">
             <div className="student-settings-fields">
               <label>
-                <span>Display name</span>
+                <span><DashboardText>Display name</DashboardText></span>
                 <input defaultValue={studentDetails.name} />
               </label>
               <label>
-                <span>Email</span>
+                <span><DashboardText>Email</DashboardText></span>
                 <input defaultValue={studentDetails.parentEmail} />
               </label>
               <label>
-                <span>WhatsApp number</span>
+                <span><DashboardText>WhatsApp number</DashboardText></span>
                 <input defaultValue={studentDetails.parentWhatsapp} />
               </label>
               <ActionButton variant="secondary">
                 <Icon name="lock" size={16} />
-                Change password
+                <DashboardText>Change password</DashboardText>
               </ActionButton>
             </div>
           </SectionCard>
@@ -516,37 +517,37 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
           <SectionCard title="Learning Preferences">
             <div className="student-settings-fields">
               <label>
-                <span>Preferred class time</span>
+                <span><DashboardText>Preferred class time</DashboardText></span>
                 <select defaultValue={studentDetails.preferredClassTime}>
-                  <option>Morning</option>
-                  <option>Afternoon</option>
-                  <option>Evening</option>
+                  <option><DashboardText>Morning</DashboardText></option>
+                  <option><DashboardText>Afternoon</DashboardText></option>
+                  <option><DashboardText>Evening</DashboardText></option>
                 </select>
               </label>
               <label>
-                <span>Preferred teacher gender</span>
+                <span><DashboardText>Preferred teacher gender</DashboardText></span>
                 <select defaultValue="No preference">
-                  <option>No preference</option>
-                  <option>Female teacher</option>
-                  <option>Male teacher</option>
+                  <option><DashboardText>No preference</DashboardText></option>
+                  <option><DashboardText>Female teacher</DashboardText></option>
+                  <option><DashboardText>Male teacher</DashboardText></option>
                 </select>
               </label>
               <label>
-                <span>Preferred language</span>
+                <span><DashboardText>Preferred language</DashboardText></span>
                 <select defaultValue={studentDetails.languagePreference}>
-                  <option>English with Arabic terms</option>
-                  <option>Arabic</option>
-                  <option>English</option>
-                  <option>Urdu</option>
+                  <option><DashboardText>English with Arabic terms</DashboardText></option>
+                  <option><DashboardText>Arabic</DashboardText></option>
+                  <option><DashboardText>English</DashboardText></option>
+                  <option><DashboardText>Urdu</DashboardText></option>
                 </select>
               </label>
               <label>
-                <span>Timezone</span>
+                <span><DashboardText>Timezone</DashboardText></span>
                 <select defaultValue={studentDetails.timezone}>
-                  <option>Africa/Cairo</option>
-                  <option>Europe/London</option>
-                  <option>America/New_York</option>
-                  <option>Asia/Dubai</option>
+                  <option><DashboardText>Africa/Cairo</DashboardText></option>
+                  <option><DashboardText>Europe/London</DashboardText></option>
+                  <option><DashboardText>America/New_York</DashboardText></option>
+                  <option><DashboardText>Asia/Dubai</DashboardText></option>
                 </select>
               </label>
             </div>
@@ -580,34 +581,34 @@ export default function StudentSectionPage({ section }: { section: StudentSectio
           <SectionCard title="Portal Preferences">
             <div className="student-settings-fields">
               <label>
-                <span>Language</span>
+                <span><DashboardText>Language</DashboardText></span>
                 <select defaultValue="English">
-                  <option>English</option>
-                  <option>Arabic</option>
-                  <option>Urdu</option>
+                  <option><DashboardText>English</DashboardText></option>
+                  <option><DashboardText>Arabic</DashboardText></option>
+                  <option><DashboardText>Urdu</DashboardText></option>
                 </select>
               </label>
               <label>
-                <span>Theme</span>
+                <span><DashboardText>Theme</DashboardText></span>
                 <select defaultValue="Light">
-                  <option>Light</option>
-                  <option>System</option>
+                  <option><DashboardText>Light</DashboardText></option>
+                  <option><DashboardText>System</DashboardText></option>
                 </select>
               </label>
               <label>
-                <span>Calendar format</span>
+                <span><DashboardText>Calendar format</DashboardText></span>
                 <select defaultValue="Weekly">
-                  <option>Weekly</option>
-                  <option>Monthly</option>
+                  <option><DashboardText>Weekly</DashboardText></option>
+                  <option><DashboardText>Monthly</DashboardText></option>
                 </select>
               </label>
               <label>
-                <span>Timezone</span>
+                <span><DashboardText>Timezone</DashboardText></span>
                 <select defaultValue={studentDetails.timezone}>
-                  <option>Africa/Cairo</option>
-                  <option>Europe/London</option>
-                  <option>America/New_York</option>
-                  <option>Asia/Dubai</option>
+                  <option><DashboardText>Africa/Cairo</DashboardText></option>
+                  <option><DashboardText>Europe/London</DashboardText></option>
+                  <option><DashboardText>America/New_York</DashboardText></option>
+                  <option><DashboardText>Asia/Dubai</DashboardText></option>
                 </select>
               </label>
             </div>

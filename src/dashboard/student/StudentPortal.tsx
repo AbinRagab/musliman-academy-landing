@@ -6,6 +6,7 @@ import ProgressBar from '../components/ProgressBar';
 import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 const studentProfile = {
   name: 'Student',
@@ -24,7 +25,7 @@ const timetableColumns: Array<DataTableColumn<TimetableRow>> = [
   { header: 'Class', accessor: 'className' },
   { header: 'Teacher', accessor: 'teacher' },
   { header: 'Status', accessor: (row) => <StatusBadge label={row.status} /> },
-  { header: 'Join', accessor: () => <ActionButton variant="ghost">Join</ActionButton> },
+  { header: 'Join', accessor: () => <ActionButton variant="ghost"><DashboardText>Join</DashboardText></ActionButton> },
 ];
 
 const quickLinks = [
@@ -39,21 +40,21 @@ export default function StudentPortal() {
     <div className="dashboard-page">
       <div className="dashboard-page-header">
         <div>
-          <span className="dashboard-eyebrow">Student Learning Space</span>
-          <h1>Student Portal</h1>
-          <p>Follow classes, homework, attendance, progress, and learning resources.</p>
+          <span className="dashboard-eyebrow"><DashboardText>Student Learning Space</DashboardText></span>
+          <h1><DashboardText>Student Portal</DashboardText></h1>
+          <p><DashboardText>Follow classes, homework, attendance, progress, and learning resources.</DashboardText></p>
         </div>
       </div>
 
       <div className="dashboard-greeting-card">
         <div>
-          <span>Assalamu Alaikum, {studentProfile.name}</span>
-          <h2>Your next Quran class is ready</h2>
-          <p>Keep your materials nearby and join a few minutes early for recitation review.</p>
+          <span><DashboardText>Assalamu Alaikum,</DashboardText> {studentProfile.name}</span>
+          <h2><DashboardText>Your next Quran class is ready</DashboardText></h2>
+          <p><DashboardText>Keep your materials nearby and join a few minutes early for recitation review.</DashboardText></p>
         </div>
         <ActionButton>
           <Icon name="video" size={18} />
-          Join Class
+          <DashboardText>Join Class</DashboardText>
         </ActionButton>
       </div>
 
@@ -62,24 +63,24 @@ export default function StudentPortal() {
           <div className="dashboard-class-card">
             <CalendarMiniCard month="Jul" day="24" label="05:00 PM" />
             <div>
-              <h3>Quran Reading Level 3</h3>
-              <p>Teacher: {studentProfile.teacher}</p>
-              <ActionButton variant="secondary">Join Class</ActionButton>
+              <h3><DashboardText>Quran Reading Level 3</DashboardText></h3>
+              <p><DashboardText>Teacher:</DashboardText> {studentProfile.teacher}</p>
+              <ActionButton variant="secondary"><DashboardText>Join Class</DashboardText></ActionButton>
             </div>
           </div>
         </SectionCard>
         <SectionCard title="Free Trial Status">
           <div className="dashboard-status-large">
             <StatusBadge label="Completed" />
-            <p>Placement completed. Full course enrollment is active.</p>
+            <p><DashboardText>Placement completed. Full course enrollment is active.</DashboardText></p>
           </div>
         </SectionCard>
         <SectionCard title="Teacher">
           <div className="dashboard-teacher-card">
-            <div className="dashboard-avatar">MA</div>
+            <div className="dashboard-avatar"><DashboardText>MA</DashboardText></div>
             <div>
               <h3>{studentProfile.teacher}</h3>
-              <p>Quran Reading and Tajweed</p>
+              <p><DashboardText>Quran Reading and Tajweed</DashboardText></p>
             </div>
           </div>
         </SectionCard>
@@ -104,9 +105,9 @@ export default function StudentPortal() {
             </div>
             <ProgressBar value={74} label="Quran Reading Level 3" />
             <div className="dashboard-progress-facts">
-              <span>31 lessons completed</span>
-              <span>2 Juz completed</span>
-              <span>48 stars earned</span>
+              <span><DashboardText>31 lessons completed</DashboardText></span>
+              <span><DashboardText>2 Juz completed</DashboardText></span>
+              <span><DashboardText>48 stars earned</DashboardText></span>
             </div>
           </div>
         </SectionCard>

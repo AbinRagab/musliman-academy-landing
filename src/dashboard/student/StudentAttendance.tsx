@@ -12,6 +12,7 @@ import {
 } from '../components/student/StudentPortalComponents';
 import { fetchStudentAttendanceData, reportAttendanceIssue, type StudentAttendanceFilters } from '../services/studentAttendanceService';
 import { type StudentAttendanceRecord, type StudentAttendanceStatus } from '../services/studentService';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 export default function StudentAttendance() {
   const [records, setRecords] = useState<StudentAttendanceRecord[]>([]);
@@ -54,7 +55,7 @@ export default function StudentAttendance() {
           title="Report Attendance Issue"
           description="Attendance is view-only. Send a correction request if something looks wrong."
           onClose={() => setIssueRecord(null)}
-          footer={<ActionButton type="submit" form="student-attendance-issue-form">Submit Report</ActionButton>}
+          footer={<ActionButton type="submit" form="student-attendance-issue-form"><DashboardText>Submit Report</DashboardText></ActionButton>}
         >
           <form
             id="student-attendance-issue-form"
@@ -70,20 +71,20 @@ export default function StudentAttendance() {
             }}
           >
             <label>
-              <span>Selected attendance record</span>
+              <span><DashboardText>Selected attendance record</DashboardText></span>
               <input readOnly value={`${issueRecord.classDate} - ${issueRecord.className} - ${issueRecord.status}`} />
             </label>
             <label>
-              <span>Reason</span>
+              <span><DashboardText>Reason</DashboardText></span>
               <select name="reason">
-                <option>Status looks incorrect</option>
-                <option>I joined but was marked absent</option>
-                <option>Late record needs review</option>
-                <option>Other attendance issue</option>
+                <option><DashboardText>Status looks incorrect</DashboardText></option>
+                <option><DashboardText>I joined but was marked absent</DashboardText></option>
+                <option><DashboardText>Late record needs review</DashboardText></option>
+                <option><DashboardText>Other attendance issue</DashboardText></option>
               </select>
             </label>
             <label>
-              <span>Message</span>
+              <span><DashboardText>Message</DashboardText></span>
               <textarea name="message" rows={4} required />
             </label>
           </form>
@@ -102,21 +103,21 @@ export default function StudentAttendance() {
       <SectionCard title="Filters" subtitle="Filter history by month, status, and program">
         <div className="dashboard-filters">
           <label>
-            <span>Month</span>
+            <span><DashboardText>Month</DashboardText></span>
             <select value={filters.month} onChange={(event) => setFilters((current) => ({ ...current, month: event.target.value }))}>
-              <option value="all">All months</option>
-              <option value="Jul">July 2026</option>
-              <option value="Aug">August 2026</option>
+              <option value="all"><DashboardText>All months</DashboardText></option>
+              <option value="Jul"><DashboardText>July 2026</DashboardText></option>
+              <option value="Aug"><DashboardText>August 2026</DashboardText></option>
             </select>
           </label>
           <label>
-            <span>Status</span>
+            <span><DashboardText>Status</DashboardText></span>
             <select value={filters.status} onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value as StudentAttendanceStatus | 'all' }))}>
-              <option value="all">All statuses</option>
-              <option value="present">Present</option>
-              <option value="absent">Absent</option>
-              <option value="late">Late</option>
-              <option value="excused">Excused</option>
+              <option value="all"><DashboardText>All statuses</DashboardText></option>
+              <option value="present"><DashboardText>Present</DashboardText></option>
+              <option value="absent"><DashboardText>Absent</DashboardText></option>
+              <option value="late"><DashboardText>Late</DashboardText></option>
+              <option value="excused"><DashboardText>Excused</DashboardText></option>
             </select>
           </label>
           <ProgramSelect label="Program / class" value={filters.program} onChange={(value) => setFilters((current) => ({ ...current, program: value }))} includeAllOption />

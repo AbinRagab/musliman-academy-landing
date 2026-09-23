@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import ActionButton from './ActionButton';
 import ProgramSelect from './ProgramSelect';
 import type { LeadRecord, TeacherOption } from '../services/leadsService';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function ScheduleTrialModal({
   lead,
@@ -14,6 +15,7 @@ export default function ScheduleTrialModal({
   onClose: () => void;
   onSave: (payload: { teacherId: string; programId: string | null; trialDate: string; trialTime: string; meetingLink: string; notes: string }) => Promise<void>;
 }) {
+  const { t } = useDashboardLanguage();
   const [teacherId, setTeacherId] = useState(lead.assigned_teacher_id || teachers[0]?.id || '');
   const [programId, setProgramId] = useState(lead.program_id || '');
   const [trialDate, setTrialDate] = useState('');
@@ -30,24 +32,24 @@ export default function ScheduleTrialModal({
   }
 
   return (
-    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Schedule trial for ${lead.full_name}`}>
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={t('Schedule trial for {{name}}', { name: lead.full_name })}>
       <div className="dashboard-modal__panel">
         <div className="dashboard-card__header">
           <div>
-            <h2>Schedule Free Trial</h2>
+            <h2>{t('Schedule Free Trial')}</h2>
             <p>{lead.full_name} - {lead.programName}</p>
           </div>
         </div>
         <form className="dashboard-form" onSubmit={handleSubmit}>
-          <label><span>Teacher</span><select value={teacherId} onChange={(event) => setTeacherId(event.target.value)} required>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name} - {teacher.specialization}</option>)}</select></label>
-          <ProgramSelect label="Program" value={programId} onChange={setProgramId} required />
-          <label><span>Trial date</span><input type="date" value={trialDate} onChange={(event) => setTrialDate(event.target.value)} required /></label>
-          <label><span>Trial time</span><input type="time" value={trialTime} onChange={(event) => setTrialTime(event.target.value)} required /></label>
-          <label><span>Meeting link</span><input type="url" value={meetingLink} onChange={(event) => setMeetingLink(event.target.value)} placeholder="https://..." /></label>
-          <label><span>Notes</span><textarea rows={3} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Trial preparation notes" /></label>
+          <label><span>{t('Teacher')}</span><select value={teacherId} onChange={(event) => setTeacherId(event.target.value)} required>{teachers.map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name} - {teacher.specialization}</option>)}</select></label>
+          <ProgramSelect label={t('Program')} value={programId} onChange={setProgramId} required />
+          <label><span>{t('Trial date')}</span><input type="date" value={trialDate} onChange={(event) => setTrialDate(event.target.value)} required /></label>
+          <label><span>{t('Trial time')}</span><input type="time" value={trialTime} onChange={(event) => setTrialTime(event.target.value)} required /></label>
+          <label><span>{t('Meeting link')}</span><input type="url" value={meetingLink} onChange={(event) => setMeetingLink(event.target.value)} placeholder="https://..." /></label>
+          <label><span>{t('Notes')}</span><textarea rows={3} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder={t('Trial preparation notes')} /></label>
           <div className="dashboard-form-actions">
-            <ActionButton type="submit" variant="copper" disabled={saving}>{saving ? 'Scheduling' : 'Schedule Trial'}</ActionButton>
-            <ActionButton type="button" variant="secondary" onClick={onClose}>Cancel</ActionButton>
+            <ActionButton type="submit" variant="copper" disabled={saving}>{t(saving ? 'Scheduling' : 'Schedule Trial')}</ActionButton>
+            <ActionButton type="button" variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
           </div>
         </form>
       </div>

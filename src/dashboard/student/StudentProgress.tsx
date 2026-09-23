@@ -7,6 +7,7 @@ import StatusBadge from '../components/StatusBadge';
 import { ProgressSkillCard, StudentPageHeader, StudentStatCard } from '../components/student/StudentPortalComponents';
 import { fetchStudentProgressData } from '../services/studentProgressService';
 import { type StudentPortalProfile, type StudentProgressTopic, type StudentSkillRating } from '../services/studentService';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 type ProgressData = {
   profile: StudentPortalProfile;
@@ -65,17 +66,17 @@ export default function StudentProgress() {
           <div className="student-recommendation-list">
             <article>
               <Icon name="star" size={17} />
-              <span>Next focus area</span>
+              <span><DashboardText>Next focus area</DashboardText></span>
               <p>{data.recommendations.focusArea}</p>
             </article>
             <article>
               <Icon name="book" size={17} />
-              <span>Revision advice</span>
+              <span><DashboardText>Revision advice</DashboardText></span>
               <p>{data.recommendations.revisionAdvice}</p>
             </article>
             <article>
               <Icon name="document" size={17} />
-              <span>Homework advice</span>
+              <span><DashboardText>Homework advice</DashboardText></span>
               <p>{data.recommendations.homeworkAdvice}</p>
             </article>
           </div>
@@ -86,7 +87,7 @@ export default function StudentProgress() {
         <div className="student-skills-grid">
           {data.skills.map((skill) => <ProgressSkillCard key={skill.label} skill={skill} />)}
         </div>
-        {data.skills.length === 0 && <p className="dashboard-empty-copy">No evaluation yet.</p>}
+        {data.skills.length === 0 && <p className="dashboard-empty-copy"><DashboardText>No evaluation yet.</DashboardText></p>}
       </SectionCard>
 
       <SectionCard title="Recent Lesson Topics" subtitle="Compact view without horizontal scrolling">
@@ -102,7 +103,7 @@ export default function StudentProgress() {
             </article>
           ))}
         </div>
-        {data.topics.length === 0 && <p className="dashboard-empty-copy">No evaluation yet.</p>}
+        {data.topics.length === 0 && <p className="dashboard-empty-copy"><DashboardText>No evaluation yet.</DashboardText></p>}
       </SectionCard>
     </div>
   );

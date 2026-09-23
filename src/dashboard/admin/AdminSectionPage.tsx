@@ -59,6 +59,7 @@ import {
   updateTrialOutcome,
   upsertProgram,
 } from '../services/adminOperationsService';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 type AdminSection =
   | 'leads'
@@ -258,7 +259,7 @@ function DetailDrawer({
       <aside className="lead-drawer__panel">
         <div className="lead-drawer__header">
           <div>
-            <span className="dashboard-eyebrow">ADMIN DETAILS</span>
+            <span className="dashboard-eyebrow"><DashboardText>ADMIN DETAILS</DashboardText></span>
             <h2>{content.title}</h2>
             <p>{content.subtitle}</p>
           </div>
@@ -330,9 +331,9 @@ function BasicTable({
     <>
       <FilterBar search={search} onSearchChange={setSearch}>
         <label>
-          <span>Status</span>
+          <span><DashboardText>Status</DashboardText></span>
           <select value={statusFilter} onChange={(event) => onStatusFilterChange(event.target.value)}>
-            <option value="all">All statuses</option>
+            <option value="all"><DashboardText>All statuses</DashboardText></option>
             {statuses.map((status) => (
               <option key={status} value={status.toLowerCase()}>{status}</option>
             ))}
@@ -643,10 +644,12 @@ function isUuid(value: unknown) {
 }
 
 function FieldValue({ label, value }: { label: string; value: ReactNode }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <span>
-      {label}
-      <strong>{value || '-'}</strong>
+      {t(label)}
+      <strong>{typeof value === 'string' ? t(value) : value || '-'}</strong>
     </span>
   );
 }
@@ -682,6 +685,7 @@ function SetProgramDrawer({
   onClose: () => void;
   onSubmit: (formData: FormData) => void;
 }) {
+  const { t } = useDashboardLanguage();
   const canWrite = isUuid(row.id);
   const formId = 'student-set-program-form';
 
@@ -693,17 +697,17 @@ function SetProgramDrawer({
       onClose={onClose}
       footer={(
         <>
-          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+          <ActionButton variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
           <ActionButton type="submit" form={formId} variant="copper" disabled={saving || !canWrite}>{saving ? 'Saving' : 'Save Program'}</ActionButton>
         </>
       )}
     >
-      {!canWrite && <p className="dashboard-inline-error">This action requires a live Supabase student record.</p>}
+      {!canWrite && <p className="dashboard-inline-error"><DashboardText>This action requires a live Supabase student record.</DashboardText></p>}
       <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
-        <label><span>Student</span><input value={String(row.name)} readOnly /></label>
-        <label><span>Current Program</span><input value={String(row.program || 'Program not assigned')} readOnly /></label>
+        <label><span><DashboardText>Student</DashboardText></span><input value={String(row.name)} readOnly /></label>
+        <label><span><DashboardText>Current Program</DashboardText></span><input value={String(row.program || t('Program not assigned'))} readOnly /></label>
         <ProgramSelect label="Program" name="programId" value={String(row.programId || '')} required />
-        <label><span>Optional note</span><textarea name="notes" rows={4} placeholder="Add an academic note about this program update..." /></label>
+        <label><span><DashboardText>Optional note</DashboardText></span><textarea name="notes" rows={4} placeholder={t('Add an academic note about this program update...')} /></label>
       </form>
     </DashboardDrawer>
   );
@@ -736,6 +740,7 @@ function StudentActionDrawer({
   onNavigateRecord: () => void;
   onSubmit: (formData: FormData) => void;
 }) {
+  const { t } = useDashboardLanguage();
   const canWrite = isUuid(row.id);
   const selectedTeacher = teachers.find((teacher) => teacher.profileId === row.assignedTeacherId);
   const selectedProgram = programs.find((program) => program.id === row.programId);
@@ -831,8 +836,8 @@ function StudentActionDrawer({
         onClose={onClose}
         footer={(
           <>
-            <ActionButton variant="secondary" onClick={onNavigateRecord}>Open Full Page</ActionButton>
-            <ActionButton variant="copper" onClick={onClose}>Done</ActionButton>
+            <ActionButton variant="secondary" onClick={onNavigateRecord}><DashboardText>Open Full Page</DashboardText></ActionButton>
+            <ActionButton variant="copper" onClick={onClose}><DashboardText>Done</DashboardText></ActionButton>
           </>
         )}
       >
@@ -920,7 +925,7 @@ function StudentActionDrawer({
 
   if (action === 'view_attendance') {
     return (
-      <DashboardDrawer title={`${row.name} Attendance`} subtitle="Read-only attendance summary." size="lg" onClose={onClose} footer={<ActionButton onClick={onClose}>Close</ActionButton>}>
+      <DashboardDrawer title={t('{{name}} Attendance', { name: String(row.name) })} subtitle="Read-only attendance summary." size="lg" onClose={onClose} footer={<ActionButton onClick={onClose}><DashboardText>Close</DashboardText></ActionButton>}>
         <div className="lead-summary-grid">
           <FieldValue label="Attendance rate" value={attendanceRate} />
           <FieldValue label="Total classes" value={attendanceTotal} />
@@ -945,7 +950,7 @@ function StudentActionDrawer({
 
   if (action === 'view_payments') {
     return (
-      <DashboardDrawer title={`${row.name} Payments`} subtitle="Package and payment history from finance records." size="lg" onClose={onClose} footer={<ActionButton onClick={onClose}>Close</ActionButton>}>
+      <DashboardDrawer title={t('{{name}} Payments', { name: String(row.name) })} subtitle="Package and payment history from finance records." size="lg" onClose={onClose} footer={<ActionButton onClick={onClose}><DashboardText>Close</DashboardText></ActionButton>}>
         <div className="lead-summary-grid">
           <FieldValue label="Current package" value={latestPayment?.notes || 'No package record'} />
           <FieldValue label="Payment status" value={latestPayment?.status || 'No payment record'} />
@@ -953,15 +958,15 @@ function StudentActionDrawer({
           <FieldValue label="Remaining sessions" value="-" />
         </div>
         <div className="dashboard-form-actions">
-          <ActionButton variant="secondary" disabled>Record Payment requires finance workflow</ActionButton>
-          <ActionButton variant="secondary" disabled>View Receipt requires receipt file</ActionButton>
-          <ActionButton variant="secondary" disabled={latestPayment?.status === 'overdue'}>Mark Overdue requires payment record</ActionButton>
+          <ActionButton variant="secondary" disabled><DashboardText>Record Payment requires finance workflow</DashboardText></ActionButton>
+          <ActionButton variant="secondary" disabled><DashboardText>View Receipt requires receipt file</DashboardText></ActionButton>
+          <ActionButton variant="secondary" disabled={latestPayment?.status === 'overdue'}><DashboardText>Mark Overdue requires payment record</DashboardText></ActionButton>
         </div>
         <div className="admin-action-list">
           {paymentRecords.map((payment) => (
             <article key={payment.id} className="admin-action-row">
               <strong>{payment.currency || 'USD'} {payment.amount ?? 0}</strong>
-              <span>{payment.payment_date || 'No payment date'} - next due {payment.next_due_date || '-'}</span>
+              <span>{payment.payment_date || 'No payment date'} <DashboardText>- next due</DashboardText> {payment.next_due_date || '-'}</span>
               <StatusBadge label={payment.status || 'pending'} tone={statusTone(payment.status || 'pending')} />
             </article>
           ))}
@@ -978,18 +983,18 @@ function StudentActionDrawer({
         <section className="dashboard-modal__panel dashboard-modal__panel--small">
           <div className="dashboard-modal__header">
             <div>
-              <h2>Deactivate Student</h2>
-              <p>This changes status only. Student records, attendance, and payments are not deleted.</p>
+              <h2><DashboardText>Deactivate Student</DashboardText></h2>
+              <p><DashboardText>This changes status only. Student records, attendance, and payments are not deleted.</DashboardText></p>
             </div>
             <button type="button" className="dashboard-icon-button" aria-label="Close" onClick={onClose}><Icon name="x" /></button>
           </div>
           <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
             <div className="lead-summary-grid"><FieldValue label="Student" value={row.name} /></div>
-            <label><span>Reason</span><textarea name="reason" rows={4} required /></label>
-            {!canWrite && <p className="dashboard-inline-error">This action requires a live Supabase student record.</p>}
+            <label><span><DashboardText>Reason</DashboardText></span><textarea name="reason" rows={4} required /></label>
+            {!canWrite && <p className="dashboard-inline-error"><DashboardText>This action requires a live Supabase student record.</DashboardText></p>}
             <div className="dashboard-form-actions">
               <ActionButton type="submit" variant="danger" disabled={saving || !canWrite}>{saving ? 'Deactivating' : 'Deactivate Student'}</ActionButton>
-              <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+              <ActionButton variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
             </div>
           </form>
         </section>
@@ -1006,75 +1011,75 @@ function StudentActionDrawer({
       footer={(
         <>
           <ActionButton type="submit" form={formId} variant="copper" disabled={saving || !canWrite}>{saving ? 'Saving' : 'Save'}</ActionButton>
-          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+          <ActionButton variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
         </>
       )}
     >
-      {!canWrite && <p className="dashboard-inline-error">This action requires a live Supabase student record.</p>}
+      {!canWrite && <p className="dashboard-inline-error"><DashboardText>This action requires a live Supabase student record.</DashboardText></p>}
       {action === 'complete_setup' && <MissingFields row={row} />}
       <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); handleActionSubmit(new FormData(event.currentTarget)); }}>
         {(action === 'complete_setup' || action === 'assign_teacher' || action === 'set_schedule') && (
           <>
-            <label><span>Student</span><input value={String(row.name)} readOnly /></label>
+            <label><span><DashboardText>Student</DashboardText></span><input value={String(row.name)} readOnly /></label>
             {(action === 'complete_setup' || action === 'set_schedule') && (
               <ProgramSelect label="Program" name="programId" value={String(row.programId || '')} />
             )}
-            <label><span>Teacher</span><select name="teacherProfileId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher' || action === 'set_schedule'}><option value="">Unassigned</option>{teachers.map((teacher) => <option key={teacher.teacherId} value={teacher.profileId}>{teacher.full_name}{teacher.email ? `  ${teacher.email}` : ''}</option>)}</select></label>
-            {action === 'assign_teacher' && <label><span>Current program</span><input value={String(row.program)} readOnly /></label>}
+            <label><span><DashboardText>Teacher</DashboardText></span><select name="teacherProfileId" defaultValue={String(row.assignedTeacherId || '')} required={action === 'assign_teacher' || action === 'set_schedule'}><option value=""><DashboardText>Unassigned</DashboardText></option>{teachers.map((teacher) => <option key={teacher.teacherId} value={teacher.profileId}>{teacher.full_name}{teacher.email ? `  ${teacher.email}` : ''}</option>)}</select></label>
+            {action === 'assign_teacher' && <label><span><DashboardText>Current program</DashboardText></span><input value={String(row.program)} readOnly /></label>}
           </>
         )}
         {(action === 'complete_setup' || action === 'update_level') && (
-          <label><span>{action === 'update_level' ? 'New level' : 'Level'}</span><input name="level" defaultValue={action === 'update_level' ? '' : String(row.level === 'Placement pending' ? '' : row.level)} required /></label>
+          <label><span>{t(action === 'update_level' ? 'New level' : 'Level')}</span><input name="level" defaultValue={action === 'update_level' ? '' : String(row.level === 'Placement pending' ? '' : row.level)} required /></label>
         )}
         {action === 'complete_setup' && (
           <>
-            <label><span>Class days</span><input name="classDays" defaultValue="" /></label>
-            <label><span>Class time</span><input name="classTime" type="time" /></label>
-            <label><span>Timezone</span><input name="timezone" defaultValue="Africa/Cairo" /></label>
-            <label><span>Session duration</span><input name="durationMinutes" type="number" min="15" step="15" defaultValue="30" /></label>
-            <label><span>Platform</span><select name="platform" defaultValue="Zoom"><option>Zoom</option><option>Google Meet</option><option>Academy Classroom</option></select></label>
-            <label><span>Meeting link</span><input name="meetingLink" type="url" /></label>
-            <label><span>Start date</span><input name="startDate" type="date" defaultValue={String(row.startDate || '')} /></label>
+            <label><span><DashboardText>Class days</DashboardText></span><input name="classDays" defaultValue="" /></label>
+            <label><span><DashboardText>Class time</DashboardText></span><input name="classTime" type="time" /></label>
+            <label><span><DashboardText>Timezone</DashboardText></span><input name="timezone" defaultValue="Africa/Cairo" /></label>
+            <label><span><DashboardText>Session duration</DashboardText></span><input name="durationMinutes" type="number" min="15" step="15" defaultValue="30" /></label>
+            <label><span><DashboardText>Platform</DashboardText></span><select name="platform" defaultValue="Zoom"><option><DashboardText>Zoom</DashboardText></option><option><DashboardText>Google Meet</DashboardText></option><option><DashboardText>Academy Classroom</DashboardText></option></select></label>
+            <label><span><DashboardText>Meeting link</DashboardText></span><input name="meetingLink" type="url" /></label>
+            <label><span><DashboardText>Start date</DashboardText></span><input name="startDate" type="date" defaultValue={String(row.startDate || '')} /></label>
           </>
         )}
         {action === 'set_schedule' && (
           <section className="weekly-schedule-builder" aria-label="Weekly class schedule">
             <div className="weekly-schedule-builder__header">
               <div>
-                <h3>Weekly Class Schedule</h3>
-                <p>Add one or more class days. Each day can have its own time.</p>
+                <h3><DashboardText>Weekly Class Schedule</DashboardText></h3>
+                <p><DashboardText>Add one or more class days. Each day can have its own time.</DashboardText></p>
               </div>
               <ActionButton type="button" variant="secondary" onClick={() => setScheduleRows((current) => [...current, createScheduleDraft()])}>
-                + Add class day
+                <DashboardText>+ Add class day</DashboardText>
               </ActionButton>
             </div>
             <input type="hidden" name="scheduleRows" value={serializedScheduleRows} />
-            <label className="weekly-schedule-builder__timezone"><span>Timezone</span><input name="timezone" defaultValue="Africa/Cairo" /></label>
+            <label className="weekly-schedule-builder__timezone"><span><DashboardText>Timezone</DashboardText></span><input name="timezone" defaultValue="Africa/Cairo" /></label>
             <div className="weekly-schedule-builder__rows">
               {scheduleRows.map((schedule) => (
                 <article key={schedule.key} className="weekly-schedule-row">
-                  <label><span>Day</span><select value={schedule.dayOfWeek} onChange={(event) => updateScheduleRow(schedule.key, { dayOfWeek: event.target.value })}><option value="">Select day</option>{scheduleDayOptions.map((day) => <option key={day} value={day}>{day}</option>)}</select></label>
-                  <label><span>Start time</span><input type="time" value={schedule.startTime} onChange={(event) => updateScheduleRow(schedule.key, { startTime: event.target.value })} /></label>
-                  <label><span>Duration</span><select value={schedule.durationMinutes} onChange={(event) => updateScheduleRow(schedule.key, { durationMinutes: Number(event.target.value) })}>{durationOptions.map((duration) => <option key={duration} value={duration}>{duration} minutes</option>)}</select></label>
-                  <label><span>Platform</span><select value={schedule.platform || 'Zoom'} onChange={(event) => updateScheduleRow(schedule.key, { platform: event.target.value })}>{platformOptions.map((platform) => <option key={platform} value={platform}>{platform}</option>)}</select></label>
-                  <label><span>Meeting link</span><input type="url" value={schedule.meetingLink || ''} onChange={(event) => updateScheduleRow(schedule.key, { meetingLink: event.target.value })} placeholder="Optional" /></label>
-                  <button type="button" className="weekly-schedule-row__remove" onClick={() => removeScheduleRow(schedule.key)} disabled={scheduleRows.length === 1}>Remove</button>
-                  {sameDayWarnings[schedule.key] && <p className="weekly-schedule-row__warning">{sameDayWarnings[schedule.key]}</p>}
+                  <label><span><DashboardText>Day</DashboardText></span><select value={schedule.dayOfWeek} onChange={(event) => updateScheduleRow(schedule.key, { dayOfWeek: event.target.value })}><option value=""><DashboardText>Select day</DashboardText></option>{scheduleDayOptions.map((day) => <option key={day} value={day}>{day}</option>)}</select></label>
+                  <label><span><DashboardText>Start time</DashboardText></span><input type="time" value={schedule.startTime} onChange={(event) => updateScheduleRow(schedule.key, { startTime: event.target.value })} /></label>
+                  <label><span><DashboardText>Duration</DashboardText></span><select value={schedule.durationMinutes} onChange={(event) => updateScheduleRow(schedule.key, { durationMinutes: Number(event.target.value) })}>{durationOptions.map((duration) => <option key={duration} value={duration}>{duration} <DashboardText>minutes</DashboardText></option>)}</select></label>
+                  <label><span><DashboardText>Platform</DashboardText></span><select value={schedule.platform || 'Zoom'} onChange={(event) => updateScheduleRow(schedule.key, { platform: event.target.value })}>{platformOptions.map((platform) => <option key={platform} value={platform}>{platform}</option>)}</select></label>
+                  <label><span><DashboardText>Meeting link</DashboardText></span><input type="url" value={schedule.meetingLink || ''} onChange={(event) => updateScheduleRow(schedule.key, { meetingLink: event.target.value })} placeholder={t('Optional')} /></label>
+                  <button type="button" className="weekly-schedule-row__remove" onClick={() => removeScheduleRow(schedule.key)} disabled={scheduleRows.length === 1}><DashboardText>Remove</DashboardText></button>
+                  {sameDayWarnings[schedule.key] && <p className="weekly-schedule-row__warning">{t(sameDayWarnings[schedule.key])}</p>}
                 </article>
               ))}
             </div>
             {scheduleErrors.length > 0 && (
               <div className="dashboard-inline-error">
-                {scheduleErrors.map((error) => <span key={error}>{error}</span>)}
+                {scheduleErrors.map((error) => <span key={error}>{t(error)}</span>)}
               </div>
             )}
           </section>
         )}
-        {action === 'complete_setup' && <label><span>Package/payment status</span><input name="paymentStatus" /></label>}
+        {action === 'complete_setup' && <label><span><DashboardText>Package/payment status</DashboardText></span><input name="paymentStatus" /></label>}
         {action === 'update_level' && (
           <>
-            <label><span>Current level</span><input value={String(row.level)} readOnly /></label>
-            <label><span>Effective date</span><input name="effectiveDate" type="date" /></label>
+            <label><span><DashboardText>Current level</DashboardText></span><input value={String(row.level)} readOnly /></label>
+            <label><span><DashboardText>Effective date</DashboardText></span><input name="effectiveDate" type="date" /></label>
           </>
         )}
         <label><span>{action === 'update_level' ? 'Reason / academic note' : 'Notes'}</span><textarea name="notes" rows={4} /></label>
@@ -1096,9 +1101,11 @@ function TimeInputField({
   defaultValue: string;
   disabled: boolean;
 }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <label className="availability-time-field">
-      <span>{label}</span>
+      <span>{t(label)}</span>
       <input type="time" name={name} defaultValue={defaultValue} disabled={disabled} />
     </label>
   );
@@ -1112,14 +1119,15 @@ function AvailabilityDayCard({
   defaultAvailable: boolean;
 }) {
   const [available, setAvailable] = useState(defaultAvailable);
+  const { t } = useDashboardLanguage();
   const fieldPrefix = day.toLowerCase();
 
   return (
     <section className={`availability-day-card ${available ? 'is-active' : 'is-muted'}`.trim()}>
       <div className="availability-day-card__header">
         <div>
-          <h3>{day}</h3>
-          <p>{available ? 'Available' : 'Not available'}</p>
+          <h3>{t(day)}</h3>
+          <p>{t(available ? 'Available' : 'Not available')}</p>
         </div>
         <label className="availability-switch">
           <input
@@ -1129,7 +1137,7 @@ function AvailabilityDayCard({
             onChange={(event) => setAvailable(event.target.checked)}
           />
           <span aria-hidden="true" />
-          <strong>{available ? 'Available' : 'Off'}</strong>
+          <strong>{t(available ? 'Available' : 'Off')}</strong>
         </label>
       </div>
 
@@ -1139,8 +1147,8 @@ function AvailabilityDayCard({
       </div>
 
       <label className="availability-notes-field">
-        <span>Notes</span>
-        <input name={`${fieldPrefix}Notes`} placeholder="Optional notes" disabled={!available} />
+        <span><DashboardText>Notes</DashboardText></span>
+        <input name={`${fieldPrefix}Notes`} placeholder={t('Optional notes')} disabled={!available} />
       </label>
     </section>
   );
@@ -1165,9 +1173,9 @@ function TeacherProfileDrawer({
       onClose={onClose}
       footer={(
         <>
-          <ActionButton variant="secondary" onClick={onViewStudents}>Assign Students</ActionButton>
-          <ActionButton variant="secondary" onClick={onViewSchedule}>View Schedule</ActionButton>
-          <ActionButton variant="copper" onClick={onClose}>Done</ActionButton>
+          <ActionButton variant="secondary" onClick={onViewStudents}><DashboardText>Assign Students</DashboardText></ActionButton>
+          <ActionButton variant="secondary" onClick={onViewSchedule}><DashboardText>View Schedule</DashboardText></ActionButton>
+          <ActionButton variant="copper" onClick={onClose}><DashboardText>Done</DashboardText></ActionButton>
         </>
       )}
     >
@@ -1175,7 +1183,7 @@ function TeacherProfileDrawer({
         <section className="admin-teacher-drawer__hero">
           <div className="admin-teacher-drawer__avatar">{String(row.name || 'T').slice(0, 1).toUpperCase()}</div>
           <div>
-            <span className="dashboard-eyebrow">TEACHER PROFILE</span>
+            <span className="dashboard-eyebrow"><DashboardText>TEACHER PROFILE</DashboardText></span>
             <h3>{row.name}</h3>
             <p>{row.email || 'Email not set'}</p>
           </div>
@@ -1183,7 +1191,7 @@ function TeacherProfileDrawer({
         </section>
 
         <section className="admin-teacher-drawer__section">
-          <h3>Academic Profile</h3>
+          <h3><DashboardText>Academic Profile</DashboardText></h3>
           <div className="lead-summary-grid">
             <FieldValue label="Specialization" value={row.specialization} />
             <FieldValue label="Availability" value={row.availability} />
@@ -1193,7 +1201,7 @@ function TeacherProfileDrawer({
         </section>
 
         <section className="admin-teacher-drawer__section">
-          <h3>Capacity</h3>
+          <h3><DashboardText>Capacity</DashboardText></h3>
           <div className="lead-summary-grid">
             <FieldValue label="Assigned students" value={row.students} />
             <FieldValue label="Upcoming classes" value={row.upcomingClasses} />
@@ -1229,32 +1237,32 @@ function TeacherAvailabilityDrawer({
       footer={(
         <>
           <ActionButton type="submit" form={formId} variant="copper" disabled={saving}>{saving ? 'Saving' : 'Save Availability'}</ActionButton>
-          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+          <ActionButton variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
         </>
       )}
     >
       <form id={formId} className="admin-availability-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
         <section className="availability-editor-section">
           <div>
-            <span className="dashboard-eyebrow">TEACHER</span>
+            <span className="dashboard-eyebrow"><DashboardText>TEACHER</DashboardText></span>
             <h3>{row.name || 'Teacher'}</h3>
             <p>{row.email || row.specialization || 'Availability profile'}</p>
           </div>
           <label>
-            <span>Timezone</span>
+            <span><DashboardText>Timezone</DashboardText></span>
             <select name="timezone" defaultValue="Africa/Cairo">
-              <option value="Africa/Cairo">Africa/Cairo</option>
-              <option value="Asia/Riyadh">Asia/Riyadh</option>
-              <option value="Europe/London">Europe/London</option>
-              <option value="America/New_York">America/New_York</option>
+              <option value="Africa/Cairo"><DashboardText>Africa/Cairo</DashboardText></option>
+              <option value="Asia/Riyadh"><DashboardText>Asia/Riyadh</DashboardText></option>
+              <option value="Europe/London"><DashboardText>Europe/London</DashboardText></option>
+              <option value="America/New_York"><DashboardText>America/New_York</DashboardText></option>
             </select>
           </label>
         </section>
 
         <section className="availability-editor-section availability-editor-section--week">
           <div className="admin-availability-form__heading">
-            <h3>Weekly Availability</h3>
-            <p>Choose the days and times this teacher is available for classes.</p>
+            <h3><DashboardText>Weekly Availability</DashboardText></h3>
+            <p><DashboardText>Choose the days and times this teacher is available for classes.</DashboardText></p>
           </div>
 
           {availabilityDays.map((day, index) => (
@@ -1309,81 +1317,81 @@ function AdminOperationDrawer({
       footer={(
         <>
           <ActionButton type="submit" form={formId} variant={action === 'cancel' ? 'danger' : 'copper'} disabled={saving}>{saving ? 'Saving' : 'Save'}</ActionButton>
-          <ActionButton variant="secondary" onClick={onClose}>Cancel</ActionButton>
+          <ActionButton variant="secondary" onClick={onClose}><DashboardText>Cancel</DashboardText></ActionButton>
         </>
       )}
     >
       <form id={formId} className="dashboard-form" onSubmit={(event) => { event.preventDefault(); onSubmit(new FormData(event.currentTarget)); }}>
         {action === 'assign_teacher' && (
-          <label><span>Teacher</span><select name="teacherId" defaultValue={String(row.teacherId || '')} required><option value="">Select teacher</option>{teachers.map((teacher) => <option key={teacher.teacherId} value={teacher.teacherId}>{teacher.full_name}</option>)}</select></label>
+          <label><span><DashboardText>Teacher</DashboardText></span><select name="teacherId" defaultValue={String(row.teacherId || '')} required><option value=""><DashboardText>Select teacher</DashboardText></option>{teachers.map((teacher) => <option key={teacher.teacherId} value={teacher.teacherId}>{teacher.full_name}</option>)}</select></label>
         )}
         {action === 'reschedule' && section === 'free-trials' && (
           <>
-            <label><span>Trial date</span><input name="trialDate" type="date" defaultValue={String(row.trialDate || '')} required /></label>
-            <label><span>Trial time</span><input name="trialTime" type="time" defaultValue={String(row.trialTime || '')} required /></label>
-            <label><span>Meeting link</span><input name="meetingLink" type="url" defaultValue={String(row.meetingLink || '')} /></label>
+            <label><span><DashboardText>Trial date</DashboardText></span><input name="trialDate" type="date" defaultValue={String(row.trialDate || '')} required /></label>
+            <label><span><DashboardText>Trial time</DashboardText></span><input name="trialTime" type="time" defaultValue={String(row.trialTime || '')} required /></label>
+            <label><span><DashboardText>Meeting link</DashboardText></span><input name="meetingLink" type="url" defaultValue={String(row.meetingLink || '')} /></label>
           </>
         )}
         {action === 'reschedule' && section === 'classes' && (
           <>
-            <label><span>Class date</span><input name="classDate" type="date" defaultValue={String(row.classDate || '')} required /></label>
-            <label><span>Start time</span><input name="startTime" type="time" defaultValue={String(row.startTime || '')} required /></label>
-            <label><span>Duration</span><input name="durationMinutes" type="number" min="15" step="15" defaultValue={String(row.durationMinutes || 30)} required /></label>
-            <label><span>Meeting link</span><input name="meetingLink" type="url" defaultValue={String(row.meetingLink || '')} /></label>
-            <label><span>Reason</span><textarea name="reason" rows={3} /></label>
+            <label><span><DashboardText>Class date</DashboardText></span><input name="classDate" type="date" defaultValue={String(row.classDate || '')} required /></label>
+            <label><span><DashboardText>Start time</DashboardText></span><input name="startTime" type="time" defaultValue={String(row.startTime || '')} required /></label>
+            <label><span><DashboardText>Duration</DashboardText></span><input name="durationMinutes" type="number" min="15" step="15" defaultValue={String(row.durationMinutes || 30)} required /></label>
+            <label><span><DashboardText>Meeting link</DashboardText></span><input name="meetingLink" type="url" defaultValue={String(row.meetingLink || '')} /></label>
+            <label><span><DashboardText>Reason</DashboardText></span><textarea name="reason" rows={3} /></label>
           </>
         )}
         {action === 'set_homework' && (
           <>
-            <label><span>Title</span><input name="title" defaultValue={String(row.homeworkSet && row.homeworkSet !== 'Not set' ? row.homeworkSet : 'Homework assignment')} required /></label>
-            <label><span>Instructions</span><textarea name="instructions" rows={5} defaultValue={String(row.homeworkInstructions || row.homework || '')} required /></label>
-            <label><span>Due date</span><input name="dueAt" type="datetime-local" /></label>
+            <label><span><DashboardText>Title</DashboardText></span><input name="title" defaultValue={String(row.homeworkSet && row.homeworkSet !== 'Not set' ? row.homeworkSet : 'Homework assignment')} required /></label>
+            <label><span><DashboardText>Instructions</DashboardText></span><textarea name="instructions" rows={5} defaultValue={String(row.homeworkInstructions || row.homework || '')} required /></label>
+            <label><span><DashboardText>Due date</DashboardText></span><input name="dueAt" type="datetime-local" /></label>
           </>
         )}
         {action === 'cancel' && (
-          <label><span>Cancellation reason</span><textarea name="reason" rows={4} required defaultValue={String(row.cancellationReason || '')} /></label>
+          <label><span><DashboardText>Cancellation reason</DashboardText></span><textarea name="reason" rows={4} required defaultValue={String(row.cancellationReason || '')} /></label>
         )}
         {action === 'request_correction' && (
-          <label><span>Correction note</span><textarea name="note" rows={4} required /></label>
+          <label><span><DashboardText>Correction note</DashboardText></span><textarea name="note" rows={4} required /></label>
         )}
         {action === 'contact_parent' && (
           <>
-            <label><span>Subject</span><input name="subject" defaultValue={`Follow-up for ${String(row.student || row.name || 'academy record')}`} required /></label>
-            <label><span>Message</span><textarea name="body" rows={5} required /></label>
+            <label><span><DashboardText>Subject</DashboardText></span><input name="subject" defaultValue={`Follow-up for ${String(row.student || row.name || 'academy record')}`} required /></label>
+            <label><span><DashboardText>Message</DashboardText></span><textarea name="body" rows={5} required /></label>
           </>
         )}
         {action === 'record_payment' && (
           <>
-            <label><span>Student ID</span><input name="studentId" defaultValue={String(row.studentId || '')} required /></label>
-            <label><span>Program</span><select name="programId" defaultValue={String(row.programId || '')}><option value="">No program</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}</select></label>
-            <label><span>Package ID</span><input name="packageId" defaultValue={String(row.packageId || '')} /></label>
-            <label><span>Currency</span><input name="currency" defaultValue={String(row.currency || 'USD')} maxLength={3} required /></label>
-            <label><span>Amount</span><input name="amount" type="number" min="0" step="0.01" defaultValue={String(row.amount || '')} required /></label>
-            <label><span>Status</span><select name="status" defaultValue={String(row.status || 'pending')}><option value="paid">Paid</option><option value="pending">Pending</option><option value="overdue">Overdue</option><option value="refunded">Refunded</option><option value="cancelled">Cancelled</option></select></label>
-            <label><span>Payment method</span><input name="paymentMethod" defaultValue={String(row.paymentMethod || '')} /></label>
-            <label><span>Payment date</span><input name="paidDate" type="date" defaultValue={String(row.paidDate || '')} /></label>
-            <label><span>Next due date</span><input name="nextDue" type="date" defaultValue={String(row.nextDue || '')} /></label>
-            <label><span>Sessions included</span><input name="sessionsIncluded" type="number" min="0" defaultValue={String(row.sessionsIncluded || 0)} /></label>
-            <label><span>Sessions remaining</span><input name="remainingSessions" type="number" min="0" defaultValue={String(row.remainingSessions || row.sessionsIncluded || 0)} /></label>
-            <label><span>Teacher cost</span><input name="teacherCost" type="number" min="0" step="0.01" defaultValue={String(row.teacherCost || 0)} /></label>
-            <label><span>Net revenue</span><input name="netRevenue" type="number" min="0" step="0.01" defaultValue={String(row.netRevenue || 0)} /></label>
-            <label><span>Receipt file path</span><input name="receiptFilePath" defaultValue={String(row.receiptFilePath || '')} /></label>
-            <label><span>External receipt URL</span><input name="receiptUrl" type="url" defaultValue={String(row.receiptUrl || '')} /></label>
-            <label><span>Invoice URL</span><input name="invoiceUrl" type="url" defaultValue={String(row.invoiceUrl || '')} /></label>
-            <label><span>Notes</span><textarea name="notes" rows={3} defaultValue={String(row.notes || '')} /></label>
+            <label><span><DashboardText>Student ID</DashboardText></span><input name="studentId" defaultValue={String(row.studentId || '')} required /></label>
+            <label><span><DashboardText>Program</DashboardText></span><select name="programId" defaultValue={String(row.programId || '')}><option value=""><DashboardText>No program</DashboardText></option>{programs.map((program) => <option key={program.id} value={program.id}>{program.name}</option>)}</select></label>
+            <label><span><DashboardText>Package ID</DashboardText></span><input name="packageId" defaultValue={String(row.packageId || '')} /></label>
+            <label><span><DashboardText>Currency</DashboardText></span><input name="currency" defaultValue={String(row.currency || 'USD')} maxLength={3} required /></label>
+            <label><span><DashboardText>Amount</DashboardText></span><input name="amount" type="number" min="0" step="0.01" defaultValue={String(row.amount || '')} required /></label>
+            <label><span><DashboardText>Status</DashboardText></span><select name="status" defaultValue={String(row.status || 'pending')}><option value="paid"><DashboardText>Paid</DashboardText></option><option value="pending"><DashboardText>Pending</DashboardText></option><option value="overdue"><DashboardText>Overdue</DashboardText></option><option value="refunded"><DashboardText>Refunded</DashboardText></option><option value="cancelled"><DashboardText>Cancelled</DashboardText></option></select></label>
+            <label><span><DashboardText>Payment method</DashboardText></span><input name="paymentMethod" defaultValue={String(row.paymentMethod || '')} /></label>
+            <label><span><DashboardText>Payment date</DashboardText></span><input name="paidDate" type="date" defaultValue={String(row.paidDate || '')} /></label>
+            <label><span><DashboardText>Next due date</DashboardText></span><input name="nextDue" type="date" defaultValue={String(row.nextDue || '')} /></label>
+            <label><span><DashboardText>Sessions included</DashboardText></span><input name="sessionsIncluded" type="number" min="0" defaultValue={String(row.sessionsIncluded || 0)} /></label>
+            <label><span><DashboardText>Sessions remaining</DashboardText></span><input name="remainingSessions" type="number" min="0" defaultValue={String(row.remainingSessions || row.sessionsIncluded || 0)} /></label>
+            <label><span><DashboardText>Teacher cost</DashboardText></span><input name="teacherCost" type="number" min="0" step="0.01" defaultValue={String(row.teacherCost || 0)} /></label>
+            <label><span><DashboardText>Net revenue</DashboardText></span><input name="netRevenue" type="number" min="0" step="0.01" defaultValue={String(row.netRevenue || 0)} /></label>
+            <label><span><DashboardText>Receipt file path</DashboardText></span><input name="receiptFilePath" defaultValue={String(row.receiptFilePath || '')} /></label>
+            <label><span><DashboardText>External receipt URL</DashboardText></span><input name="receiptUrl" type="url" defaultValue={String(row.receiptUrl || '')} /></label>
+            <label><span><DashboardText>Invoice URL</DashboardText></span><input name="invoiceUrl" type="url" defaultValue={String(row.invoiceUrl || '')} /></label>
+            <label><span><DashboardText>Notes</DashboardText></span><textarea name="notes" rows={3} defaultValue={String(row.notes || '')} /></label>
           </>
         )}
         {action === 'save_setting' && (
           <>
-            <label><span>Setting key</span><input name="settingKey" defaultValue={activeSettingsTab.toLowerCase().replace(/[^a-z0-9]+/g, '_')} required /></label>
-            <label><span>Value JSON</span><textarea name="settingValue" rows={7} defaultValue={String(row.value || '{\n  "enabled": true\n}')} required /></label>
+            <label><span><DashboardText>Setting key</DashboardText></span><input name="settingKey" defaultValue={activeSettingsTab.toLowerCase().replace(/[^a-z0-9]+/g, '_')} required /></label>
+            <label><span><DashboardText>Value JSON</DashboardText></span><textarea name="settingValue" rows={7} defaultValue={String(row.value || '{\n  "enabled": true\n}')} required /></label>
           </>
         )}
         {action === 'edit_program' && (
           <>
-            <label><span>Program name</span><input name="programName" defaultValue={String(row.name || row.area || '')} required /></label>
-            <label><span>Description</span><textarea name="description" rows={3} defaultValue={String(row.description || '')} /></label>
-            <label><span>Status</span><select name="status" defaultValue={String(row.status || 'active')}><option value="active">Active</option><option value="inactive">Inactive</option></select></label>
+            <label><span><DashboardText>Program name</DashboardText></span><input name="programName" defaultValue={String(row.name || row.area || '')} required /></label>
+            <label><span><DashboardText>Description</DashboardText></span><textarea name="description" rows={3} defaultValue={String(row.description || '')} /></label>
+            <label><span><DashboardText>Status</DashboardText></span><select name="status" defaultValue={String(row.status || 'active')}><option value="active"><DashboardText>Active</DashboardText></option><option value="inactive"><DashboardText>Inactive</DashboardText></option></select></label>
           </>
         )}
       </form>
@@ -2208,7 +2216,7 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
         subtitle={page.subtitle}
         action={(
           <div className="dashboard-page-actions">
-            {section === 'payments' && <ActionButton variant="copper" onClick={() => { setSelectedRow({ id: '', status: 'pending', currency: 'USD' }); setActiveAction('record_payment'); }}>Record Payment</ActionButton>}
+            {section === 'payments' && <ActionButton variant="copper" onClick={() => { setSelectedRow({ id: '', status: 'pending', currency: 'USD' }); setActiveAction('record_payment'); }}><DashboardText>Record Payment</DashboardText></ActionButton>}
             {section === 'settings' && <ActionButton variant="copper" onClick={() => { setSelectedRow({ id: '', area: activeSettingsTab, value: '{\n  "enabled": true\n}' }); setActiveAction(activeSettingsTab === 'Programs' ? 'edit_program' : 'save_setting'); }}>{activeSettingsTab === 'Programs' ? 'Add Program' : 'Save Setting'}</ActionButton>}
             <ActionButton variant="secondary" onClick={() => exportRows(section, visibleRows)}>
               <Icon name="download" size={18} />
@@ -2247,8 +2255,8 @@ export default function AdminSectionPage({ section }: { section: AdminSection })
           action={<ActionButton variant="copper" onClick={() => { setSelectedRow({ id: '', area: activeSettingsTab, value: '{\n  "enabled": true\n}' }); setActiveAction(activeSettingsTab === 'Programs' ? 'edit_program' : 'save_setting'); }}>{activeSettingsTab === 'Programs' ? 'Add Program' : 'Save Setting'}</ActionButton>}
         >
           <div className="admin-settings-panel">
-            <p className="dashboard-empty-copy">Use the action button to save {activeSettingsTab === 'Programs' ? 'program records' : 'non-secret JSON configuration'} to Supabase.</p>
-            {activeSettingsTab === 'Integrations' && <p className="dashboard-inline-error">Email and WhatsApp secrets are intentionally not stored here. Configure them as Edge Function secrets.</p>}
+            <p className="dashboard-empty-copy"><DashboardText>Use the action button to save</DashboardText> {activeSettingsTab === 'Programs' ? 'program records' : 'non-secret JSON configuration'} <DashboardText>to Supabase.</DashboardText></p>
+            {activeSettingsTab === 'Integrations' && <p className="dashboard-inline-error"><DashboardText>Email and WhatsApp secrets are intentionally not stored here. Configure them as Edge Function secrets.</DashboardText></p>}
           </div>
         </SectionCard>
       ) : (

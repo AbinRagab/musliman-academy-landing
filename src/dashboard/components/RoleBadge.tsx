@@ -1,4 +1,5 @@
 import type { DashboardRole } from '../types';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 const roleLabels: Record<DashboardRole | string, string> = {
   admin: 'Admin',
@@ -16,7 +17,8 @@ const roleLabels: Record<DashboardRole | string, string> = {
 };
 
 export default function RoleBadge({ role }: { role: DashboardRole | string }) {
+  const { t } = useDashboardLanguage();
   const roleKey = String(role).toLowerCase().replace(/[\s_]+/g, '-');
 
-  return <span className={`dashboard-role dashboard-role--${roleKey}`}>{roleLabels[role] || role}</span>;
+  return <span className={`dashboard-role dashboard-role--${roleKey}`}>{t(roleLabels[role] || role)}</span>;
 }

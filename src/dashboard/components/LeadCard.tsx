@@ -2,6 +2,7 @@ import type { LeadRecord } from '../services/leadsService';
 import ActionButton from './ActionButton';
 import LeadStatusBadge from './LeadStatusBadge';
 import LeadTypeBadge from './LeadTypeBadge';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 function formatFollowUp(value: string | null) {
   if (!value) {
@@ -64,7 +65,7 @@ export default function LeadCard({
             onOpen(lead);
           }}
         >
-          Details
+          <DashboardText>Details</DashboardText>
         </ActionButton>
       </div>
     </article>

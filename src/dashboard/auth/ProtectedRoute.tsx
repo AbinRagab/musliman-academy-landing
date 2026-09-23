@@ -4,6 +4,7 @@ import ActionButton from '../components/ActionButton';
 import AccessDeniedPage from './pages/AccessDeniedPage';
 import SupabaseSetupPage from './pages/SupabaseSetupPage';
 import { useAuth, type AuthRole } from './AuthProvider';
+import { DashboardText } from '../i18n/DashboardLanguageProvider';
 
 export default function ProtectedRoute({
   allowedRoles,
@@ -24,9 +25,9 @@ export default function ProtectedRoute({
       <div className="dashboard-auth-screen">
         <div className="dashboard-auth-card dashboard-auth-card--compact">
           <img src="/assets/musliman-logo-light-bg-transparent.png" alt="Musliman Academy" />
-          <h1>Loading dashboard</h1>
-          <p>Checking your academy account and permissions.</p>
-          <ActionButton disabled>Loading</ActionButton>
+          <h1><DashboardText>Loading dashboard</DashboardText></h1>
+          <p><DashboardText>Checking your academy account and permissions.</DashboardText></p>
+          <ActionButton disabled><DashboardText>Loading</DashboardText></ActionButton>
         </div>
       </div>
     );

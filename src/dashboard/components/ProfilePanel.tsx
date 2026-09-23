@@ -1,5 +1,6 @@
 import RoleBadge from './RoleBadge';
 import StatusBadge from './StatusBadge';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export type ProfilePanelItem = {
   label: string;
@@ -19,6 +20,7 @@ export default function ProfilePanel({
   status?: string;
   items: ProfilePanelItem[];
 }) {
+  const { t } = useDashboardLanguage();
   const initials = name
     .split(' ')
     .map((part) => part[0])
@@ -32,7 +34,7 @@ export default function ProfilePanel({
         <div className="dashboard-avatar">{initials}</div>
         <div>
           <h3>{name}</h3>
-          <p>{subtitle}</p>
+          <p>{t(subtitle)}</p>
           <div className="dashboard-profile-panel__badges">
             {role && <RoleBadge role={role} />}
             {status && <StatusBadge label={status} />}
@@ -42,8 +44,8 @@ export default function ProfilePanel({
       <div className="dashboard-profile-panel__items">
         {items.map((item) => (
           <span key={item.label}>
-            {item.label}
-            <strong>{item.value}</strong>
+            {t(item.label)}
+            <strong>{t(item.value)}</strong>
           </span>
         ))}
       </div>

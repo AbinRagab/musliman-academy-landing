@@ -11,6 +11,7 @@ import {
 } from '../../services/studentService';
 import { uploadHomeworkSubmission } from '../../services/studentHomeworkService';
 import { EmptyState, StudentModal } from './StudentPortalComponents';
+import { DashboardText, useDashboardLanguage } from '../../i18n/DashboardLanguageProvider';
 
 export default function HomeworkDetailsModal({
   classSession,
@@ -21,6 +22,7 @@ export default function HomeworkDetailsModal({
   homework: StudentHomeworkItem | null;
   onClose: () => void;
 }) {
+  const { t } = useDashboardLanguage();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -28,17 +30,17 @@ export default function HomeworkDetailsModal({
 
   return (
     <>
-      <StudentModal title="Homework Details" onClose={onClose} footer={<ActionButton onClick={onClose}>Close</ActionButton>}>
+      <StudentModal title="Homework Details" onClose={onClose} footer={<ActionButton onClick={onClose}><DashboardText>Close</DashboardText></ActionButton>}>
         {homework ? (
           <>
             <div className="student-info-grid">
-              <span>Homework title <strong>{homework.title}</strong></span>
-              <span>Class name <strong>{homework.relatedClass}</strong></span>
-              <span>Teacher <strong>{homework.teacher}</strong></span>
-              <span>Due date <strong>{homework.dueDate}</strong></span>
-              <span>Attachment / material <strong>{homework.attachmentUrl || 'No attachment published'}</strong></span>
-              <span>Submission status <strong><StatusBadge label={homework.status} /></strong></span>
-              <span>Teacher feedback <strong>{homework.teacherFeedback || 'No feedback published yet'}</strong></span>
+              <span><DashboardText>Homework title</DashboardText> <strong>{homework.title}</strong></span>
+              <span><DashboardText>Class name</DashboardText> <strong>{homework.relatedClass}</strong></span>
+              <span><DashboardText>Teacher</DashboardText> <strong>{homework.teacher}</strong></span>
+              <span><DashboardText>Due date</DashboardText> <strong>{homework.dueDate}</strong></span>
+              <span><DashboardText>Attachment / material</DashboardText> <strong>{homework.attachmentUrl || t('No attachment published')}</strong></span>
+              <span><DashboardText>Submission status</DashboardText> <strong><StatusBadge label={homework.status} /></strong></span>
+              <span><DashboardText>Teacher feedback</DashboardText> <strong>{homework.teacherFeedback || t('No feedback published yet')}</strong></span>
             </div>
             <p className="student-modal-copy">{homework.instructions}</p>
             <div className="student-card-actions">
@@ -72,7 +74,7 @@ export default function HomeworkDetailsModal({
           footer={(
             <>
               <ActionButton type="submit" form="homework-details-upload-form" disabled={uploading}>{uploading ? 'Uploading' : 'Submit Homework'}</ActionButton>
-              <ActionButton variant="secondary" onClick={() => setIsUploadOpen(false)}>Close</ActionButton>
+              <ActionButton variant="secondary" onClick={() => setIsUploadOpen(false)}><DashboardText>Close</DashboardText></ActionButton>
             </>
           )}
         >
@@ -109,16 +111,16 @@ export default function HomeworkDetailsModal({
             }}
           >
             <div className="student-info-grid">
-              <span>Homework <strong>{homework.title}</strong></span>
-              <span>Related class <strong>{classSession.title}</strong></span>
+              <span><DashboardText>Homework</DashboardText> <strong>{homework.title}</strong></span>
+              <span><DashboardText>Related class</DashboardText> <strong>{classSession.title}</strong></span>
             </div>
             <label>
-              <span>Upload file</span>
+              <span><DashboardText>Upload file</DashboardText></span>
               <input name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.mp3,.mp4,.doc,.docx,application/pdf,image/jpeg,image/png,audio/mpeg,video/mp4,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
             </label>
-            <label><span>Note to teacher</span><textarea name="note" rows={4} /></label>
-            {uploadError && <p className="student-form-error">{uploadError}</p>}
-            {uploadSuccess && <p className="student-form-success">{uploadSuccess}</p>}
+            <label><span><DashboardText>Note to teacher</DashboardText></span><textarea name="note" rows={4} /></label>
+            {uploadError && <p className="student-form-error">{t(uploadError)}</p>}
+            {uploadSuccess && <p className="student-form-success">{t(uploadSuccess)}</p>}
           </form>
         </StudentModal>
       )}

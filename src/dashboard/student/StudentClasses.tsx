@@ -15,11 +15,13 @@ import {
 import { fetchStudentClassesData, reportClassIssue } from '../services/studentClassesService';
 import { sendStudentMessage } from '../services/studentMessagesService';
 import { getHomeworkForClass, type StudentClassSession } from '../services/studentService';
+import { DashboardText, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 const classTabs = ['Upcoming', 'Completed', 'Missed', 'Cancelled / Rescheduled'] as const;
 type ClassTab = (typeof classTabs)[number];
 
 export default function StudentClasses() {
+  const { t } = useDashboardLanguage();
   const [classes, setClasses] = useState<StudentClassSession[]>([]);
   const [activeTab, setActiveTab] = useState<ClassTab>('Upcoming');
   const [selectedClassForDetails, setSelectedClassForDetails] = useState<StudentClassSession | null>(null);
@@ -85,7 +87,7 @@ export default function StudentClasses() {
           onClose={() => setSelectedClassWithoutMeetingLink(null)}
           footer={(
             <div className="student-card-actions">
-              <ActionButton variant="secondary" onClick={() => setSelectedClassWithoutMeetingLink(null)}>Close</ActionButton>
+              <ActionButton variant="secondary" onClick={() => setSelectedClassWithoutMeetingLink(null)}><DashboardText>Close</DashboardText></ActionButton>
               <ActionButton
                 onClick={() => {
                   setCompose({ to: 'Academy Team', subject: `Meeting link request: ${selectedClassWithoutMeetingLink.title}` });
@@ -93,12 +95,12 @@ export default function StudentClasses() {
                 }}
               >
                 <Icon name="support" size={16} />
-                Contact Academy Team
+                <DashboardText>Contact Academy Team</DashboardText>
               </ActionButton>
             </div>
           )}
         >
-          <p className="student-modal-copy">Meeting link is not available. Please contact the academy team.</p>
+          <p className="student-modal-copy"><DashboardText>Meeting link is not available. Please contact the academy team.</DashboardText></p>
         </StudentModal>
       )}
       {issueClass && (
@@ -106,7 +108,7 @@ export default function StudentClasses() {
           title="Report Class Issue"
           description="Use this if attendance, status, or class details look incorrect."
           onClose={() => setIssueClass(null)}
-          footer={<ActionButton type="submit" form="student-class-issue-form">Submit Issue</ActionButton>}
+          footer={<ActionButton type="submit" form="student-class-issue-form"><DashboardText>Submit Issue</DashboardText></ActionButton>}
         >
           <form
             id="student-class-issue-form"
@@ -122,20 +124,20 @@ export default function StudentClasses() {
             }}
           >
             <label>
-              <span>Selected class</span>
+              <span><DashboardText>Selected class</DashboardText></span>
               <input readOnly value={`${issueClass.title} - ${issueClass.date}`} />
             </label>
             <label>
-              <span>Reason</span>
+              <span><DashboardText>Reason</DashboardText></span>
               <select name="reason">
-                <option>Attendance looks wrong</option>
-                <option>Class status looks wrong</option>
-                <option>Meeting link did not work</option>
-                <option>Other class issue</option>
+                <option><DashboardText>Attendance looks wrong</DashboardText></option>
+                <option><DashboardText>Class status looks wrong</DashboardText></option>
+                <option><DashboardText>Meeting link did not work</DashboardText></option>
+                <option><DashboardText>Other class issue</DashboardText></option>
               </select>
             </label>
             <label>
-              <span>Message</span>
+              <span><DashboardText>Message</DashboardText></span>
               <textarea name="message" rows={4} required />
             </label>
           </form>
@@ -148,14 +150,14 @@ export default function StudentClasses() {
         action={(
           <ActionButton variant="secondary" onClick={() => setCompose({ to: 'Academy Team', subject: 'Class records question' })}>
             <Icon name="message" size={17} />
-            Contact Academy
+            <DashboardText>Contact Academy</DashboardText>
           </ActionButton>
         )}
       />
 
       <StudentTabs tabs={classTabs} activeTab={activeTab} onChange={setActiveTab} />
 
-      <SectionCard title={`${activeTab} Classes`} subtitle="Session records are view-only for students and parents.">
+      <SectionCard title={t('{{tab}} Classes', { tab: t(activeTab) })} subtitle="Session records are view-only for students and parents.">
         <div className="student-card-list">
           {filteredClasses.length ? filteredClasses.map((session) => (
             <ClassListCard

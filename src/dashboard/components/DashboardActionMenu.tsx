@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode }
 import { createPortal } from 'react-dom';
 import Icon from '../../components/Icon';
 import ActionButton from './ActionButton';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 type PrimaryActionVariant = 'primary' | 'secondary' | 'outline' | 'danger';
 
@@ -46,6 +47,7 @@ export default function DashboardActionMenu({
   align = 'right',
   label = 'More actions',
 }: DashboardActionMenuProps) {
+  const { t } = useDashboardLanguage();
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(false);
@@ -157,7 +159,7 @@ export default function DashboardActionMenu({
             }}
           >
             {action.icon}
-            <span>{action.label}</span>
+            <span>{t(action.label)}</span>
           </button>
         ))}
       </div>,
@@ -175,7 +177,7 @@ export default function DashboardActionMenu({
           disabled={resolvedPrimary.disabled}
         >
           {resolvedPrimary.icon}
-          {resolvedPrimary.label}
+          {t(resolvedPrimary.label)}
         </ActionButton>
       )}
       {menuActions.length > 0 && (
@@ -183,7 +185,7 @@ export default function DashboardActionMenu({
           ref={buttonRef}
           className={`dashboard-action-menu__trigger ${open ? 'is-open' : ''}`.trim()}
           type="button"
-          aria-label={label}
+          aria-label={t(label)}
           aria-haspopup="menu"
           aria-expanded={open}
           onClick={() => setOpen((current) => !current)}
