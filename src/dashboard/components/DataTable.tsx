@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export type DataTableColumn<T> = {
   header: string;
@@ -36,6 +37,7 @@ function getColumnClassName(header: string) {
 }
 
 export default function DataTable<T>({ columns, rows, getRowKey, className = '', tableClassName = '' }: DataTableProps<T>) {
+  const { t } = useDashboardLanguage();
   const actionColumn = columns.find((column) => getColumnClassName(column.header) === 'actions-cell');
   const displayColumns = columns.filter((column) => getColumnClassName(column.header) !== 'actions-cell');
 
@@ -49,7 +51,7 @@ export default function DataTable<T>({ columns, rows, getRowKey, className = '',
         <thead>
           <tr>
             {columns.map((column) => (
-              <th key={column.header} className={getColumnClassName(column.header)}>{column.header}</th>
+              <th key={column.header} className={getColumnClassName(column.header)}>{t(column.header)}</th>
             ))}
           </tr>
         </thead>
@@ -70,7 +72,7 @@ export default function DataTable<T>({ columns, rows, getRowKey, className = '',
           ))}
         </tbody>
       </table>
-      <div className="dashboard-mobile-records" aria-label="Records">
+      <div className="dashboard-mobile-records" aria-label={t('Records')}>
         {rows.map((row, rowIndex) => {
           const rowKey = getRowKey(row, rowIndex);
           const titleColumn = displayColumns[0];
@@ -85,7 +87,7 @@ export default function DataTable<T>({ columns, rows, getRowKey, className = '',
               <div className="dashboard-mobile-record-card__header">
                 <div>
                   {titleColumn && <div className="dashboard-mobile-record-card__title">{renderCell(titleColumn, row)}</div>}
-                  {subtitleColumn && <div className="dashboard-mobile-record-card__subtitle"><span>{subtitleColumn.header}</span>{renderCell(subtitleColumn, row)}</div>}
+                  {subtitleColumn && <div className="dashboard-mobile-record-card__subtitle"><span>{t(subtitleColumn.header)}</span>{renderCell(subtitleColumn, row)}</div>}
                 </div>
                 {statusColumn && <div className="dashboard-mobile-record-card__status">{renderCell(statusColumn, row)}</div>}
               </div>
@@ -93,7 +95,7 @@ export default function DataTable<T>({ columns, rows, getRowKey, className = '',
                 <dl className="dashboard-mobile-record-card__fields">
                   {fieldColumns.map((column) => (
                     <div key={column.header}>
-                      <dt>{column.header}</dt>
+                      <dt>{t(column.header)}</dt>
                       <dd>{renderCell(column, row)}</dd>
                     </div>
                   ))}

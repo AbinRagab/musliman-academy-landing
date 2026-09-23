@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import Icon from '../../components/Icon';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function DashboardModal({
   title,
@@ -16,16 +17,18 @@ export default function DashboardModal({
   onClose: () => void;
   wide?: boolean;
 }) {
+  const { t } = useDashboardLanguage();
+
   return (
-    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={title}>
-      <button className="dashboard-modal__backdrop" type="button" aria-label="Close modal" onClick={onClose} />
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={t(title)}>
+      <button className="dashboard-modal__backdrop" type="button" aria-label={t('Close modal')} onClick={onClose} />
       <section className={`dashboard-modal__panel ${wide ? 'dashboard-modal__panel--wide' : ''}`}>
         <div className="dashboard-modal__header">
           <div>
-            <h2>{title}</h2>
-            {subtitle && <p>{subtitle}</p>}
+            <h2>{t(title)}</h2>
+            {subtitle && <p>{t(subtitle)}</p>}
           </div>
-          <button type="button" className="dashboard-icon-button" aria-label="Close modal" onClick={onClose}>
+          <button type="button" className="dashboard-icon-button" aria-label={t('Close modal')} onClick={onClose}>
             <Icon name="x" size={17} />
           </button>
         </div>

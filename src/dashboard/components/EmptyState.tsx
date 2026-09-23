@@ -1,5 +1,6 @@
 import Icon from '../../components/Icon';
 import type { ReactNode } from 'react';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function EmptyState({
   title,
@@ -10,13 +11,15 @@ export default function EmptyState({
   description: string;
   action?: ReactNode;
 }) {
+  const { t } = useDashboardLanguage();
+
   return (
     <div className="dashboard-empty">
       <div className="dashboard-empty__icon">
         <Icon name="sparkles" />
       </div>
-      <h2>{title}</h2>
-      <p>{description}</p>
+      <h2>{t(title)}</h2>
+      <p>{t(description)}</p>
       {action}
     </div>
   );

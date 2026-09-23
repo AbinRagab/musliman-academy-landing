@@ -10,6 +10,7 @@ import SectionCard from '../components/SectionCard';
 import StatCard from '../components/StatCard';
 import StatusBadge from '../components/StatusBadge';
 import Toast, { type ToastMessage } from '../components/Toast';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 import {
   fetchComplianceDashboardData,
   runTeacherComplianceCheck,
@@ -29,6 +30,7 @@ const tabs = ['Today Monitoring', 'Teacher Warnings', 'Compliance Rules', 'Notif
 type ComplianceTab = (typeof tabs)[number];
 
 export default function AdminCompliancePage() {
+  const { t } = useDashboardLanguage();
   const [data, setData] = useState<ComplianceDashboardData | null>(null);
   const [activeTab, setActiveTab] = useState<ComplianceTab>('Today Monitoring');
   const [toast, setToast] = useState<ToastMessage | null>(null);
@@ -48,7 +50,7 @@ export default function AdminCompliancePage() {
       setData(nextData);
       setLoadError(null);
     } catch (error) {
-      setLoadError(error instanceof Error ? error.message : 'Unable to load compliance data.');
+      setLoadError(error instanceof Error ? error.message : t('Unable to load compliance data.'));
       setData({
         checkins: [],
         warnings: [],
@@ -101,7 +103,7 @@ export default function AdminCompliancePage() {
         <DashboardActionMenu
           primaryAction={{ label: 'View Logs', onClick: () => setSelectedCheckin(row) }}
           actions={[
-            { label: 'Run Compliance Check', onClick: async () => { await runTeacherComplianceCheck(); notify('Compliance check completed.', 'success'); await loadData(); } },
+            { label: 'Run Compliance Check', onClick: async () => { await runTeacherComplianceCheck(); notify(t('Compliance check completed.'), 'success'); await loadData(); } },
             { label: 'Contact Teacher requires messaging recipient', onClick: () => null, disabled: true },
             { label: 'Create Warning requires warning form setup', onClick: () => null, disabled: true },
             { label: 'Mark Excused requires linked warning', onClick: () => null, disabled: true },
@@ -167,7 +169,7 @@ export default function AdminCompliancePage() {
 
   async function handleWarning(row: TeacherWarningRow, status: string) {
     await updateWarningStatus(row.id, status, `Admin marked warning ${status}.`);
-    notify(`Warning marked ${status}.`, 'success');
+    notify(t('Warning marked {{status}}.', { status: t(status) }), 'success');
     await loadData();
   }
 
@@ -180,11 +182,11 @@ export default function AdminCompliancePage() {
         subtitle="Class reminders, teacher check-ins, warnings, notification templates, and delivery logs."
         action={(
           <div className="dashboard-page-actions">
-            <ActionButton variant="secondary" onClick={async () => { await runTeacherComplianceCheck(); notify('Compliance check completed.', 'success'); await loadData(); }}>
+            <ActionButton variant="secondary" onClick={async () => { await runTeacherComplianceCheck(); notify(t('Compliance check completed.'), 'success'); await loadData(); }}>
               <Icon name="shieldCheck" size={17} />
               Run Compliance Check
             </ActionButton>
-            <ActionButton variant="copper" onClick={async () => { await sendTestNotification('in_app'); notify('Test in-app notification sent.', 'success'); await loadData(); }}>
+            <ActionButton variant="copper" onClick={async () => { await sendTestNotification('in_app'); notify(t('Test in-app notification sent.'), 'success'); await loadData(); }}>
               <Icon name="bell" size={17} />
               Send Test Notification
             </ActionButton>
@@ -199,21 +201,21 @@ export default function AdminCompliancePage() {
       <SectionCard title="Provider Status" subtitle="Secrets are checked server-side only; values are never exposed.">
         {loadError && <p className="dashboard-inline-error">{loadError}</p>}
         <div className="student-info-grid">
-          <span>In-app notifications <strong><StatusBadge label="configured" /></strong></span>
-          <span>Email provider <strong><StatusBadge label={data.providerStatus.emailConfigured ? 'configured' : 'missing secrets'} /></strong></span>
-          <span>WhatsApp provider <strong><StatusBadge label={data.providerStatus.whatsappConfigured ? 'configured' : 'missing secrets'} /></strong></span>
-          <span>Default cron cadence <strong>Every 5 minutes</strong></span>
+          <span>{t('In-app notifications')} <strong><StatusBadge label="configured" /></strong></span>
+          <span>{t('Email provider')} <strong><StatusBadge label={data.providerStatus.emailConfigured ? 'configured' : 'missing secrets'} /></strong></span>
+          <span>{t('WhatsApp provider')} <strong><StatusBadge label={data.providerStatus.whatsappConfigured ? 'configured' : 'missing secrets'} /></strong></span>
+          <span>{t('Default cron cadence')} <strong>{t('Every 5 minutes')}</strong></span>
         </div>
         <div className="dashboard-form-actions">
-          <ActionButton variant="secondary" onClick={async () => { await sendTestNotification('email'); notify('Email test queued. Check logs for provider result.', 'success'); await loadData(); }}>Test Email</ActionButton>
-          <ActionButton variant="secondary" onClick={async () => { await sendTestNotification('whatsapp'); notify('WhatsApp test queued. Check logs for provider result.', 'success'); await loadData(); }}>Test WhatsApp</ActionButton>
+          <ActionButton variant="secondary" onClick={async () => { await sendTestNotification('email'); notify(t('Email test queued. Check logs for provider result.'), 'success'); await loadData(); }}>Test Email</ActionButton>
+          <ActionButton variant="secondary" onClick={async () => { await sendTestNotification('whatsapp'); notify(t('WhatsApp test queued. Check logs for provider result.'), 'success'); await loadData(); }}>Test WhatsApp</ActionButton>
         </div>
       </SectionCard>
 
-      <div className="admin-tabs admin-tabs--settings" role="tablist" aria-label="Compliance sections">
+      <div className="admin-tabs admin-tabs--settings" role="tablist" aria-label={t('Compliance sections')}>
         {tabs.map((tab) => (
           <button key={tab} className={activeTab === tab ? 'is-active' : ''} type="button" onClick={() => setActiveTab(tab)}>
-            {tab}
+            {t(tab)}
           </button>
         ))}
       </div>
@@ -259,18 +261,18 @@ export default function AdminCompliancePage() {
               title: 'Session Status',
               children: (
                 <div className="lead-summary-grid">
-                  <span>Teacher<strong>{selectedCheckin.teacher}</strong></span>
-                  <span>Student<strong>{selectedCheckin.student}</strong></span>
-                  <span>Scheduled time<strong>{selectedCheckin.scheduledTime}</strong></span>
-                  <span>Ready<strong><StatusBadge label={selectedCheckin.teacherReady} /></strong></span>
-                  <span>Joined<strong><StatusBadge label={selectedCheckin.joined} /></strong></span>
-                  <span>Status<strong><StatusBadge label={selectedCheckin.status} /></strong></span>
+                  <span>{t('Teacher')}<strong>{selectedCheckin.teacher}</strong></span>
+                  <span>{t('Student')}<strong>{selectedCheckin.student}</strong></span>
+                  <span>{t('Scheduled time')}<strong>{selectedCheckin.scheduledTime}</strong></span>
+                  <span>{t('Ready')}<strong><StatusBadge label={selectedCheckin.teacherReady} /></strong></span>
+                  <span>{t('Joined')}<strong><StatusBadge label={selectedCheckin.joined} /></strong></span>
+                  <span>{t('Status')}<strong><StatusBadge label={selectedCheckin.status} /></strong></span>
                 </div>
               ),
             },
           ]}
           actions={[
-            { label: 'Run Compliance Check', icon: 'bell', variant: 'copper', onClick: async () => { await runTeacherComplianceCheck(); notify('Compliance check completed.', 'success'); await loadData(); } },
+            { label: 'Run Compliance Check', icon: 'bell', variant: 'copper', onClick: async () => { await runTeacherComplianceCheck(); notify(t('Compliance check completed.'), 'success'); await loadData(); } },
             { label: 'Open Class Details', icon: 'calendar', onClick: () => window.location.assign('/dashboard/admin/classes') },
           ]}
         />
@@ -287,11 +289,11 @@ export default function AdminCompliancePage() {
               title: 'Warning Details',
               children: (
                 <div className="lead-summary-grid">
-                  <span>Warning type<strong>{selectedWarning.warningType}</strong></span>
-                  <span>Class<strong>{selectedWarning.className}</strong></span>
-                  <span>Date<strong>{selectedWarning.date}</strong></span>
-                  <span>Severity<strong><StatusBadge label={selectedWarning.severity} /></strong></span>
-                  <span>Status<strong><StatusBadge label={selectedWarning.status} /></strong></span>
+                  <span>{t('Warning type')}<strong>{t(selectedWarning.warningType)}</strong></span>
+                  <span>{t('Class')}<strong>{selectedWarning.className}</strong></span>
+                  <span>{t('Date')}<strong>{selectedWarning.date}</strong></span>
+                  <span>{t('Severity')}<strong><StatusBadge label={selectedWarning.severity} /></strong></span>
+                  <span>{t('Status')}<strong><StatusBadge label={selectedWarning.status} /></strong></span>
                 </div>
               ),
             },
@@ -329,15 +331,15 @@ export default function AdminCompliancePage() {
                     actionAfterLimit: String(formData.get('actionAfterLimit') || editingRule.actionAfterLimit),
                   });
                   setEditingRule(null);
-                  notify('Compliance rule saved.', 'success');
+                  notify(t('Compliance rule saved.'), 'success');
                   await loadData();
                 }}>
-                  <label><span>Reminder before class minutes</span><input name="reminderBefore" type="number" defaultValue="10" /></label>
-                  <label><span>Late grace minutes</span><input name="lateGraceMinutes" type="number" defaultValue={editingRule.lateGraceMinutes} /></label>
-                  <label><span>No-show after minutes</span><input name="noShowAfterMinutes" type="number" defaultValue={editingRule.noShowAfterMinutes} /></label>
-                  <label><span>Max warnings</span><input name="maxWarnings" type="number" defaultValue={editingRule.maxWarnings} /></label>
-                  <label><span>Period days</span><input name="periodDays" type="number" defaultValue={editingRule.periodDays} /></label>
-                  <label><span>Action after limit</span><select name="actionAfterLimit" defaultValue={editingRule.actionAfterLimit}><option value="flag_for_review">Flag for review</option><option value="auto_suspend">Auto suspend</option><option value="admin_review_only">Admin review only</option></select></label>
+                  <label><span>{t('Reminder before class minutes')}</span><input name="reminderBefore" type="number" defaultValue="10" /></label>
+                  <label><span>{t('Late grace minutes')}</span><input name="lateGraceMinutes" type="number" defaultValue={editingRule.lateGraceMinutes} /></label>
+                  <label><span>{t('No-show after minutes')}</span><input name="noShowAfterMinutes" type="number" defaultValue={editingRule.noShowAfterMinutes} /></label>
+                  <label><span>{t('Max warnings')}</span><input name="maxWarnings" type="number" defaultValue={editingRule.maxWarnings} /></label>
+                  <label><span>{t('Period days')}</span><input name="periodDays" type="number" defaultValue={editingRule.periodDays} /></label>
+                  <label><span>{t('Action after limit')}</span><select name="actionAfterLimit" defaultValue={editingRule.actionAfterLimit}><option value="flag_for_review">{t('Flag for review')}</option><option value="auto_suspend">{t('Auto suspend')}</option><option value="admin_review_only">{t('Admin review only')}</option></select></label>
                 </form>
               ),
             },
@@ -369,12 +371,12 @@ export default function AdminCompliancePage() {
                     whatsappTemplateName: String(formData.get('whatsappTemplateName') || editingTemplate.whatsappTemplateName || ''),
                   });
                   setEditingTemplate(null);
-                  notify('Notification template saved.', 'success');
+                  notify(t('Notification template saved.'), 'success');
                   await loadData();
                 }}>
-                  <label><span>Title</span><input name="title" defaultValue={editingTemplate.title} /></label>
-                  <label><span>WhatsApp template name</span><input name="whatsappTemplateName" defaultValue={editingTemplate.whatsappTemplateName || ''} /></label>
-                  <label><span>Body</span><textarea name="body" rows={8} defaultValue={editingTemplate.body} /></label>
+                  <label><span>{t('Title')}</span><input name="title" defaultValue={editingTemplate.title} /></label>
+                  <label><span>{t('WhatsApp template name')}</span><input name="whatsappTemplateName" defaultValue={editingTemplate.whatsappTemplateName || ''} /></label>
+                  <label><span>{t('Body')}</span><textarea name="body" rows={8} defaultValue={editingTemplate.body} /></label>
                 </form>
               ),
             },

@@ -945,7 +945,7 @@ export default function LeadsCRMPage() {
           onSave={async () => {
             await assignLeadTeacher(teacherLead.id, selectedTeacherId);
             setTeacherLead(null);
-            setToast({ type: 'success', message: 'Teacher assigned.' });
+            setToast({ type: 'success', message: t('Teacher assigned.') });
             await loadLeads();
           }}
         />
@@ -961,7 +961,7 @@ export default function LeadsCRMPage() {
           onSave={async (payload) => {
             await scheduleFreeTrial({ leadId: trialLead.id, ...payload });
             setTrialLead(null);
-            setToast({ type: 'success', message: 'Free trial scheduled.' });
+            setToast({ type: 'success', message: t('Free trial scheduled.') });
             await loadLeads();
           }}
         />
@@ -974,7 +974,7 @@ export default function LeadsCRMPage() {
           onSave={async (payload) => {
             await convertLeadToStudent(convertLead.id, payload);
             setConvertLead(null);
-            setToast({ type: 'success', message: 'Lead converted to student.' });
+            setToast({ type: 'success', message: t('Lead converted to student.') });
             await loadLeads();
           }}
         />
@@ -985,18 +985,18 @@ export default function LeadsCRMPage() {
           className="dashboard-modal"
           role="dialog"
           aria-modal="true"
-          aria-label={`Assign owner to ${ownerLead.full_name}`}
+          aria-label={t('Assign owner to {{name}}', { name: ownerLead.full_name })}
         >
           <div className="dashboard-modal__panel dashboard-modal__panel--small">
             <div className="dashboard-card__header">
               <div>
-                <h2>Assign Owner</h2>
+                <h2>{t('Assign Owner')}</h2>
                 <p>{ownerLead.full_name}</p>
               </div>
             </div>
             <div className="dashboard-form">
               <label>
-                <span>Admissions owner</span>
+                <span>{t('Admissions owner')}</span>
                 <select value={selectedOwnerId} onChange={(event) => setSelectedOwnerId(event.target.value)}>
                   {owners.map((owner) => (
                     <option key={owner.id} value={owner.id}>
@@ -1011,11 +1011,11 @@ export default function LeadsCRMPage() {
                   onClick={async () => {
                     await assignLeadOwner(ownerLead.id, selectedOwnerId);
                     setOwnerLead(null);
-                    setToast({ type: 'success', message: 'Owner assigned.' });
+                    setToast({ type: 'success', message: t('Owner assigned.') });
                     await loadLeads();
                   }}
                 >
-                  Save Owner
+                  {t('Save Owner')}
                 </ActionButton>
                 <ActionButton variant="secondary" onClick={() => setOwnerLead(null)}>
                   Cancel
@@ -1027,27 +1027,27 @@ export default function LeadsCRMPage() {
       )}
 
       {lostLead && (
-        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Mark ${lostLead.full_name} lost`}>
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={t('Mark {{name}} lost', { name: lostLead.full_name })}>
           <div className="dashboard-modal__panel dashboard-modal__panel--small">
             <div className="dashboard-card__header">
               <div>
-                <h2>Mark Lost</h2>
-                <p>This closes the lead without enrollment.</p>
+                <h2>{t('Mark Lost')}</h2>
+                <p>{t('This closes the lead without enrollment.')}</p>
               </div>
             </div>
             <div className="dashboard-form">
               <label>
-                <span>Lost reason</span>
+                <span>{t('Lost reason')}</span>
                 <textarea
                   rows={3}
                   value={lostReason}
                   onChange={(event) => setLostReason(event.target.value)}
-                  placeholder="Budget, timing, no response, chose another academy..."
+                  placeholder={t('Budget, timing, no response, chose another academy...')}
                 />
               </label>
               <div className="dashboard-form-actions">
                 <ActionButton variant="danger" onClick={handleMarkLost}>
-                  Confirm Mark Lost
+                  {t('Confirm Mark Lost')}
                 </ActionButton>
                 <ActionButton
                   variant="secondary"
@@ -1065,12 +1065,12 @@ export default function LeadsCRMPage() {
       )}
 
       {addLeadOpen && (
-        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label="Add lead">
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={t('Add Lead')}>
           <div className="dashboard-modal__panel">
             <div className="dashboard-card__header">
               <div>
-                <h2>Add Lead</h2>
-                <p>Create a manual admissions lead.</p>
+                <h2>{t('Add Lead')}</h2>
+                <p>{t('Create a manual admissions lead.')}</p>
               </div>
               <ActionButton variant="ghost" onClick={() => setAddLeadOpen(false)}>
                 Close
@@ -1078,7 +1078,7 @@ export default function LeadsCRMPage() {
             </div>
             <form className="dashboard-form" onSubmit={handleAddLead}>
               <label>
-                <span>Full name</span>
+                <span>{t('Full name')}</span>
                 <input name="full_name" required />
               </label>
               <label>
@@ -1086,32 +1086,32 @@ export default function LeadsCRMPage() {
                 <input name="whatsapp" />
               </label>
               <label>
-                <span>Country</span>
+                <span>{t('Country')}</span>
                 <input name="country" />
               </label>
               <label>
-                <span>Lead type</span>
+                <span>{t('Lead type')}</span>
                 <select name="lead_type" defaultValue="student">
-                  <option value="student">Student free trial</option>
-                  <option value="teacher_training">Teacher training</option>
+                  <option value="student">{t('Student free trial')}</option>
+                  <option value="teacher_training">{t('Teacher training')}</option>
                 </select>
               </label>
-              <ProgramSelect label="Program" name="program_id" />
+              <ProgramSelect label={t('Program')} name="program_id" />
               <label>
-                <span>Program name fallback</span>
-                <input name="program_name" placeholder="Used if no program is selected" />
+                <span>{t('Program name fallback')}</span>
+                <input name="program_name" placeholder={t('Used if no program is selected')} />
               </label>
               <label>
-                <span>Preferred time</span>
+                <span>{t('Preferred time')}</span>
                 <input name="preferred_time" />
               </label>
               <label>
-                <span>Message</span>
+                <span>{t('Message')}</span>
                 <textarea name="message" rows={3} />
               </label>
               <div className="dashboard-form-actions">
                 <ActionButton variant="copper" type="submit">
-                  Create Lead
+                  {t('Create Lead')}
                 </ActionButton>
                 <ActionButton variant="secondary" type="button" onClick={() => setAddLeadOpen(false)}>
                   Cancel

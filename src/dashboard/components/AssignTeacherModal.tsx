@@ -1,5 +1,6 @@
 import ActionButton from './ActionButton';
 import type { LeadRecord, TeacherOption } from '../services/leadsService';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function AssignTeacherModal({
   lead,
@@ -16,15 +17,17 @@ export default function AssignTeacherModal({
   onClose: () => void;
   onSave: () => void;
 }) {
+  const { t } = useDashboardLanguage();
+
   return (
-    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Assign teacher to ${lead.full_name}`}>
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={t('Assign teacher to {{name}}', { name: lead.full_name })}>
       <div className="dashboard-modal__panel">
         <div className="dashboard-card__header">
           <div>
-            <h2>Assign Teacher</h2>
+            <h2>{t('Assign Teacher')}</h2>
             <p>{lead.full_name} - {lead.programName}</p>
           </div>
-          <ActionButton variant="ghost" onClick={onClose}>Close</ActionButton>
+          <ActionButton variant="ghost" onClick={onClose}>{t('Close')}</ActionButton>
         </div>
         <div className="teacher-picker-list">
           {teachers.map((teacher) => (
@@ -35,8 +38,8 @@ export default function AssignTeacherModal({
                 <small>{teacher.specialization}</small>
                 <small>{teacher.languages?.join(', ')} - {teacher.availability}</small>
               </span>
-              <em>{teacher.assignedStudents} students</em>
-              <em>{teacher.activeTrialLoad} trials</em>
+              <em>{t('{{count}} students', { count: teacher.assignedStudents })}</em>
+              <em>{t('{{count}} trials', { count: teacher.activeTrialLoad })}</em>
             </label>
           ))}
         </div>

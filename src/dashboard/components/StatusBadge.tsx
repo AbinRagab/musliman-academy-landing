@@ -1,4 +1,5 @@
 import type { StatusTone } from '../types';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 const toneByStatus: Record<string, StatusTone> = {
   active: 'success',
@@ -30,8 +31,9 @@ const toneByStatus: Record<string, StatusTone> = {
 };
 
 export default function StatusBadge({ label, tone }: { label: string; tone?: StatusTone }) {
+  const { t } = useDashboardLanguage();
   const normalizedLabel = label.toLowerCase().replace(/_/g, ' ');
   const resolvedTone = tone || toneByStatus[label.toLowerCase()] || toneByStatus[normalizedLabel] || 'neutral';
 
-  return <span className={`dashboard-status dashboard-status--${resolvedTone}`}>{normalizedLabel}</span>;
+  return <span className={`dashboard-status dashboard-status--${resolvedTone}`}>{t(normalizedLabel)}</span>;
 }

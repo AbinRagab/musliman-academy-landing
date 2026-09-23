@@ -4,6 +4,7 @@ import ProgramSelect from './ProgramSelect';
 import SectionCard from './SectionCard';
 import StatusBadge from './StatusBadge';
 import type { ConvertLeadPayload, LeadRecord, TeacherOption } from '../services/leadsService';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 export default function ConvertLeadModal({
   lead,
@@ -16,6 +17,7 @@ export default function ConvertLeadModal({
   onClose: () => void;
   onSave: (payload: ConvertLeadPayload) => Promise<void>;
 }) {
+  const { t } = useDashboardLanguage();
   const [form, setForm] = useState({
     student_name: lead.full_name,
     parent_name: '',
@@ -93,12 +95,12 @@ export default function ConvertLeadModal({
   }
 
   return (
-    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={`Convert ${lead.full_name} to student`}>
+    <div className="dashboard-modal" role="dialog" aria-modal="true" aria-label={t('Convert {{name}} to student', { name: lead.full_name })}>
       <div className="dashboard-modal__panel dashboard-modal__panel--wide">
         <div className="dashboard-card__header">
           <div>
-            <h2>Convert to Student</h2>
-            <p>Conversion creates the student record only. Student account creation remains a separate admin action.</p>
+            <h2>{t('Convert to Student')}</h2>
+            <p>{t('Conversion creates the student record only. Student account creation remains a separate admin action.')}</p>
           </div>
           <StatusBadge label={requiredComplete ? 'Ready' : 'Needs Setup'} tone={requiredComplete ? 'success' : 'warning'} />
         </div>
@@ -106,62 +108,62 @@ export default function ConvertLeadModal({
         <form className="dashboard-form convert-student-form" onSubmit={handleSubmit}>
           <SectionCard title="Data from Lead/Form" subtitle="Website submissions create leads only. Admin reviews this data before conversion.">
             <div className="convert-readonly-grid">
-              <span>Name <strong>{lead.full_name}</strong></span>
+              <span>{t('Name')} <strong>{lead.full_name}</strong></span>
               <span>WhatsApp <strong>{lead.whatsapp || '-'}</strong></span>
-              <span>Country <strong>{lead.country || '-'}</strong></span>
-              <span>Age <strong>{lead.student_age || '-'}</strong></span>
-              <span>Program interested <strong>{lead.programName || '-'}</strong></span>
-              <span>Preferred time <strong>{lead.preferred_time || '-'}</strong></span>
-              <span>Message <strong>{lead.message || '-'}</strong></span>
+              <span>{t('Country')} <strong>{lead.country || '-'}</strong></span>
+              <span>{t('Age')} <strong>{lead.student_age || '-'}</strong></span>
+              <span>{t('Program interested')} <strong>{lead.programName || '-'}</strong></span>
+              <span>{t('Preferred time')} <strong>{lead.preferred_time || '-'}</strong></span>
+              <span>{t('Message')} <strong>{lead.message || '-'}</strong></span>
             </div>
           </SectionCard>
 
           <SectionCard title="Admin Required Setup" subtitle="Admin approves the final academic setup, schedule, teacher assignment, and start details.">
             <div className="convert-form-grid">
-              <label><span>Student Name</span><input value={form.student_name} onChange={(event) => setForm((current) => ({ ...current, student_name: event.target.value }))} required /></label>
-              <label><span>Parent Name</span><input value={form.parent_name} onChange={(event) => setForm((current) => ({ ...current, parent_name: event.target.value }))} required /></label>
-              <label><span>Parent Email</span><input type="email" value={form.parent_email} onChange={(event) => setForm((current) => ({ ...current, parent_email: event.target.value }))} required /></label>
+              <label><span>{t('Student Name')}</span><input value={form.student_name} onChange={(event) => setForm((current) => ({ ...current, student_name: event.target.value }))} required /></label>
+              <label><span>{t('Parent Name')}</span><input value={form.parent_name} onChange={(event) => setForm((current) => ({ ...current, parent_name: event.target.value }))} required /></label>
+              <label><span>{t('Parent Email')}</span><input type="email" value={form.parent_email} onChange={(event) => setForm((current) => ({ ...current, parent_email: event.target.value }))} required /></label>
               <label><span>WhatsApp</span><input value={form.whatsapp} onChange={(event) => setForm((current) => ({ ...current, whatsapp: event.target.value }))} /></label>
-              <label><span>Country</span><input value={form.country} onChange={(event) => setForm((current) => ({ ...current, country: event.target.value }))} /></label>
-              <label><span>Age</span><input value={form.age} onChange={(event) => setForm((current) => ({ ...current, age: event.target.value }))} /></label>
-              <ProgramSelect label="Approved Program" value={form.approved_program_id} onChange={(value) => setForm((current) => ({ ...current, approved_program_id: value }))} required />
-              <label><span>Legacy program text</span><input value={form.approved_program} onChange={(event) => setForm((current) => ({ ...current, approved_program: event.target.value }))} /></label>
-              <label><span>Approved Level</span><input value={form.approved_level} onChange={(event) => setForm((current) => ({ ...current, approved_level: event.target.value }))} required /></label>
-              <label><span>Assigned Teacher</span><select value={form.assigned_teacher_id} onChange={(event) => setForm((current) => ({ ...current, assigned_teacher_id: event.target.value }))} required><option value="">Select teacher</option>{teachers.filter((teacher) => teacher.profileId).map((teacher) => <option key={teacher.id} value={teacher.profileId || ''}>{teacher.full_name}</option>)}</select></label>
-              <label><span>Class Days</span><input value={form.class_days} onChange={(event) => setForm((current) => ({ ...current, class_days: event.target.value }))} placeholder="Mon, Wed" required /></label>
-              <label><span>Class Time</span><input value={form.class_time} onChange={(event) => setForm((current) => ({ ...current, class_time: event.target.value }))} required /></label>
-              <label><span>Timezone</span><input value={form.timezone} onChange={(event) => setForm((current) => ({ ...current, timezone: event.target.value }))} required /></label>
-              <label><span>Start Date</span><input type="date" value={form.start_date} onChange={(event) => setForm((current) => ({ ...current, start_date: event.target.value }))} required /></label>
-              <label><span>Meeting Link</span><input value={form.meeting_link} onChange={(event) => setForm((current) => ({ ...current, meeting_link: event.target.value }))} required /></label>
-              <label className="convert-form-grid__wide"><span>Schedule Notes</span><textarea rows={3} value={form.schedule_notes} onChange={(event) => setForm((current) => ({ ...current, schedule_notes: event.target.value }))} /></label>
+              <label><span>{t('Country')}</span><input value={form.country} onChange={(event) => setForm((current) => ({ ...current, country: event.target.value }))} /></label>
+              <label><span>{t('Age')}</span><input value={form.age} onChange={(event) => setForm((current) => ({ ...current, age: event.target.value }))} /></label>
+              <ProgramSelect label={t('Approved Program')} value={form.approved_program_id} onChange={(value) => setForm((current) => ({ ...current, approved_program_id: value }))} required />
+              <label><span>{t('Legacy program text')}</span><input value={form.approved_program} onChange={(event) => setForm((current) => ({ ...current, approved_program: event.target.value }))} /></label>
+              <label><span>{t('Approved Level')}</span><input value={form.approved_level} onChange={(event) => setForm((current) => ({ ...current, approved_level: event.target.value }))} required /></label>
+              <label><span>{t('Assigned Teacher')}</span><select value={form.assigned_teacher_id} onChange={(event) => setForm((current) => ({ ...current, assigned_teacher_id: event.target.value }))} required><option value="">{t('Select teacher')}</option>{teachers.filter((teacher) => teacher.profileId).map((teacher) => <option key={teacher.id} value={teacher.profileId || ''}>{teacher.full_name}</option>)}</select></label>
+              <label><span>{t('Class Days')}</span><input value={form.class_days} onChange={(event) => setForm((current) => ({ ...current, class_days: event.target.value }))} placeholder={t('Mon, Wed')} required /></label>
+              <label><span>{t('Class Time')}</span><input value={form.class_time} onChange={(event) => setForm((current) => ({ ...current, class_time: event.target.value }))} required /></label>
+              <label><span>{t('Timezone')}</span><input value={form.timezone} onChange={(event) => setForm((current) => ({ ...current, timezone: event.target.value }))} required /></label>
+              <label><span>{t('Start Date')}</span><input type="date" value={form.start_date} onChange={(event) => setForm((current) => ({ ...current, start_date: event.target.value }))} required /></label>
+              <label><span>{t('Meeting Link')}</span><input value={form.meeting_link} onChange={(event) => setForm((current) => ({ ...current, meeting_link: event.target.value }))} required /></label>
+              <label className="convert-form-grid__wide"><span>{t('Schedule Notes')}</span><textarea rows={3} value={form.schedule_notes} onChange={(event) => setForm((current) => ({ ...current, schedule_notes: event.target.value }))} /></label>
             </div>
           </SectionCard>
 
           <SectionCard title="Teacher Trial Feedback" subtitle="Latest trial feedback is shown for admin review before final approval.">
             <div className="convert-readonly-grid">
-              <span>Teacher feedback <strong>Good reading confidence; needs steady Tajweed revision.</strong></span>
-              <span>Recommended level <strong>{form.approved_level || 'Pending approval'}</strong></span>
-              <span>Recommendation <strong>Recommended to enroll</strong></span>
+              <span>{t('Teacher feedback')} <strong>{t('Good reading confidence; needs steady Tajweed revision.')}</strong></span>
+              <span>{t('Recommended level')} <strong>{form.approved_level || t('Pending approval')}</strong></span>
+              <span>{t('Recommendation')} <strong>{t('Recommended to enroll')}</strong></span>
             </div>
           </SectionCard>
 
           <SectionCard title="Finance Setup Optional" subtitle="Finance can complete or adjust payment details later from Payments.">
             <div className="convert-form-grid">
-              <label><span>Package</span><input value={form.package_name} onChange={(event) => setForm((current) => ({ ...current, package_name: event.target.value }))} /></label>
-              <label><span>Payment Status</span><select value={form.payment_status} onChange={(event) => setForm((current) => ({ ...current, payment_status: event.target.value }))}><option value="pending">Pending</option><option value="paid">Paid</option><option value="overdue">Overdue</option></select></label>
-              <label><span>Next Due Date</span><input type="date" value={form.next_due_date} onChange={(event) => setForm((current) => ({ ...current, next_due_date: event.target.value }))} /></label>
+              <label><span>{t('Package')}</span><input value={form.package_name} onChange={(event) => setForm((current) => ({ ...current, package_name: event.target.value }))} /></label>
+              <label><span>{t('Payment Status')}</span><select value={form.payment_status} onChange={(event) => setForm((current) => ({ ...current, payment_status: event.target.value }))}><option value="pending">{t('Pending')}</option><option value="paid">{t('Paid')}</option><option value="overdue">{t('Overdue')}</option></select></label>
+              <label><span>{t('Next Due Date')}</span><input type="date" value={form.next_due_date} onChange={(event) => setForm((current) => ({ ...current, next_due_date: event.target.value }))} /></label>
             </div>
           </SectionCard>
 
           <label className="dashboard-check-filter">
             <input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} />
-            Confirm conversion into a student record. Do not create a student account automatically.
+            {t('Confirm conversion into a student record. Do not create a student account automatically.')}
           </label>
 
-          {!requiredComplete && <div className="dashboard-inline-error">Complete all required Admin Setup fields before converting this lead.</div>}
+          {!requiredComplete && <div className="dashboard-inline-error">{t('Complete all required Admin Setup fields before converting this lead.')}</div>}
 
           <div className="dashboard-form-actions">
-            <ActionButton type="submit" variant="copper" disabled={saving || !confirmed || !requiredComplete}>{saving ? 'Converting' : 'Convert to Student'}</ActionButton>
+            <ActionButton type="submit" variant="copper" disabled={saving || !confirmed || !requiredComplete}>{t(saving ? 'Converting' : 'Convert to Student')}</ActionButton>
             <ActionButton type="button" variant="secondary" onClick={onClose}>Cancel</ActionButton>
           </div>
         </form>

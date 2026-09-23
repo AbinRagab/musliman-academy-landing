@@ -1,7 +1,8 @@
 import type { LeadActivity } from '../services/leadsService';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('en', {
+function formatDate(value: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
@@ -10,19 +11,21 @@ function formatDate(value: string) {
 }
 
 export default function LeadTimeline({ activities }: { activities: LeadActivity[] }) {
+  const { language, t } = useDashboardLanguage();
+
   return (
     <div className="lead-timeline">
       {activities.length ? activities.map((activity) => (
         <article className="lead-timeline__item" key={activity.id}>
           <span />
           <div>
-            <strong>{activity.action_type.replace(/_/g, ' ')}</strong>
-            <p>{activity.description || 'Lead activity recorded.'}</p>
-            <small>{formatDate(activity.created_at)}</small>
+            <strong>{t(activity.action_type.replace(/_/g, ' '))}</strong>
+            <p>{activity.description || t('Lead activity recorded.')}</p>
+            <small>{formatDate(activity.created_at, language)}</small>
           </div>
         </article>
       )) : (
-        <div className="lead-kanban__empty">No activity recorded yet.</div>
+        <div className="lead-kanban__empty">{t('No activity recorded yet.')}</div>
       )}
     </div>
   );
