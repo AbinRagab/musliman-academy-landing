@@ -1,5 +1,6 @@
 import StatusBadge from './StatusBadge';
 import type { LeadStatus } from '../services/leadsService';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 const labelByStatus: Record<LeadStatus, string> = {
   new: 'New',
@@ -13,5 +14,6 @@ const labelByStatus: Record<LeadStatus, string> = {
 };
 
 export default function LeadStatusBadge({ status }: { status: LeadStatus }) {
-  return <StatusBadge label={labelByStatus[status] || status} />;
+  const { t } = useDashboardLanguage();
+  return <StatusBadge label={t(labelByStatus[status] || status)} />;
 }

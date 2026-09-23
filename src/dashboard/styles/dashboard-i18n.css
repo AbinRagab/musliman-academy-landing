@@ -1,0 +1,83 @@
+.dashboard-language-root {
+  min-height: 100vh;
+}
+
+.dashboard-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dashboard-language-select {
+  display: inline-flex;
+  align-items: center;
+}
+
+.dashboard-language-select select {
+  min-width: 92px;
+  height: 38px;
+  padding: 0 30px 0 12px;
+  color: #0b1f3a;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  background: #fff;
+  border: 1px solid rgba(11, 31, 58, 0.14);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.dashboard-login-language .dashboard-language-select select {
+  height: auto;
+  min-width: 90px;
+  padding-block: 4px;
+  background: transparent;
+  border: 0;
+}
+
+.dashboard-language-select--topbar select {
+  background-color: #f8fafc;
+}
+
+.dashboard-language-root[dir='rtl'] {
+  font-family: 'Tajawal', 'Noto Sans Arabic', Arial, sans-serif;
+}
+
+.dashboard-language-root[dir='rtl'] .dashboard-sidebar__link,
+.dashboard-language-root[dir='rtl'] .dashboard-page,
+.dashboard-language-root[dir='rtl'] .dashboard-login-screen,
+.dashboard-language-root[dir='rtl'] .dashboard-notification-dropdown,
+.dashboard-language-root[dir='rtl'] .topbar-account-dropdown {
+  text-align: right;
+}
+
+.dashboard-language-root[dir='rtl'] .dashboard-topbar__actions {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.dashboard-language-root[dir='rtl'] input,
+.dashboard-language-root[dir='rtl'] textarea,
+.dashboard-language-root[dir='rtl'] select {
+  text-align: right;
+}
+
+.dashboard-language-root[dir='rtl'] input[type='email'],
+.dashboard-language-root[dir='rtl'] input[type='tel'],
+.dashboard-language-root[dir='rtl'] input[name='whatsapp'] {
+  direction: ltr;
+  text-align: right;
+}
+
+@media (max-width: 760px) {
+  .dashboard-language-select--topbar select {
+    min-width: 76px;
+    max-width: 88px;
+  }
+}

@@ -4,9 +4,15 @@ import Icon from '../../components/Icon';
 import { useAuth } from '../auth/AuthProvider';
 import { supabase } from '../../lib/supabaseClient';
 import type { DashboardRole } from '../types';
-import { fetchMyNotifications, markAllNotificationsRead, markNotificationRead, type InAppNotification } from '../services/notificationsService';
+import {
+  fetchMyNotifications,
+  markAllNotificationsRead,
+  markNotificationRead,
+  type InAppNotification,
+} from '../services/notificationsService';
 import { searchDashboard, type GlobalSearchResult } from '../services/globalSearchService';
 import TopbarAccountMenu from './TopbarAccountMenu';
+import { DashboardLanguageSelect, useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 type TopbarProps = {
   role: DashboardRole;
@@ -14,6 +20,7 @@ type TopbarProps = {
 };
 
 export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
+  const { t } = useDashboardLanguage();
   const navigate = useNavigate();
   const { isConfigured, profile, role: authRole, signOut } = useAuth();
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
@@ -66,7 +73,10 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
     };
   }, [isConfigured, profile]);
 
-  const unreadCount = useMemo(() => notifications.filter((notification) => !notification.read_at).length, [notifications]);
+  const unreadCount = useMemo(
+    () => notifications.filter((notification) => !notification.read_at).length,
+    [notifications],
+  );
 
   useEffect(() => {
     const query = search.trim();
@@ -90,7 +100,7 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
         .catch((error) => {
           if (!cancelled) {
             setSearchResults([]);
-            setSearchError(error instanceof Error ? error.message : 'Search failed.');
+            setSearchError(error instanceof Error ? error.message : t('No matching records'));
           }
         })
         .finally(() => {
@@ -104,7 +114,7 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
       cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [isConfigured, role, search]);
+  }, [isConfigured, role, search, t]);
 
   async function handleSignOut() {
     await signOut();
@@ -114,9 +124,11 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
   async function handleMarkNotificationRead(notificationId: string) {
     try {
       await markNotificationRead(notificationId);
-      setNotifications((current) => current.map((item) => (
-        item.id === notificationId ? { ...item, read_at: item.read_at || new Date().toISOString() } : item
-      )));
+      setNotifications((current) =>
+        current.map((item) =>
+          item.id === notificationId ? { ...item, read_at: item.read_at || new Date().toISOString() } : item,
+        ),
+      );
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error('Notification read update failed:', error);
@@ -127,11 +139,13 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
   async function handleMarkAllNotificationsRead(notificationIds: string[]) {
     try {
       await markAllNotificationsRead(notificationIds);
-      setNotifications((current) => current.map((notification) => (
-        notificationIds.includes(notification.id)
-          ? { ...notification, read_at: notification.read_at || new Date().toISOString() }
-          : notification
-      )));
+      setNotifications((current) =>
+        current.map((notification) =>
+          notificationIds.includes(notification.id)
+            ? { ...notification, read_at: notification.read_at || new Date().toISOString() }
+            : notification,
+        ),
+      );
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error('Notifications bulk read update failed:', error);
@@ -141,41 +155,54 @@ export default function Topbar({ role, onOpenSidebar }: TopbarProps) {
 
   return (
     <header className="dashboard-topbar">
-      <button className="dashboard-menu-toggle" type="button" aria-label="Open dashboard menu" onClick={onOpenSidebar}>
+      <button
+        className="dashboard-menu-toggle"
+        type="button"
+        aria-label={t('Open dashboard menu')}
+        onClick={onOpenSidebar}
+      >
         <Icon name="menu" />
       </button>
       <div className="dashboard-topbar__title">
-        <span>Musliman Academy</span>
-        <strong>Role Based Dashboard</strong>
+        <span>{t('Musliman Academy')}</span>
+        <strong>{t('Role Based Dashboard')}</strong>
       </div>
       <div className="dashboard-topbar-search">
         <Icon name="search" size={17} />
-        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search dashboard" aria-label="Search dashboard" />
+        <input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder={t('Search dashboard')}
+          aria-label={t('Search dashboard')}
+        />
         {search.trim().length >= 2 && (
           <div className="dashboard-topbar-search__results">
-            {searchLoading && <span>Searching...</span>}
+            {searchLoading && <span>{t('Searching...')}</span>}
             {!searchLoading && searchError && <span>{searchError}</span>}
-            {!searchLoading && !searchError && searchResults.length === 0 && <span>No matching records</span>}
-            {!searchLoading && !searchError && searchResults.map((result) => (
-              <button
-                key={`${result.type}-${result.id}`}
-                type="button"
-                onClick={() => {
-                  navigate(result.path);
-                  setSearch('');
-                  setSearchResults([]);
-                }}
-              >
-                <strong>{result.label}</strong>
-                <small>{result.description}</small>
-              </button>
-            ))}
+            {!searchLoading && !searchError && searchResults.length === 0 && <span>{t('No matching records')}</span>}
+            {!searchLoading &&
+              !searchError &&
+              searchResults.map((result) => (
+                <button
+                  key={`${result.type}-${result.id}`}
+                  type="button"
+                  onClick={() => {
+                    navigate(result.path);
+                    setSearch('');
+                    setSearchResults([]);
+                  }}
+                >
+                  <strong>{result.label}</strong>
+                  <small>{result.description}</small>
+                </button>
+              ))}
           </div>
         )}
       </div>
       <div className="dashboard-topbar__actions">
+        <DashboardLanguageSelect className="dashboard-language-select--topbar" />
         <TopbarAccountMenu
-          userName={profile?.full_name || 'Academy User'}
+          userName={profile?.full_name || t('Academy User')}
           userRole={authRole || role}
           userAvatarUrl={profile?.avatar_url}
           unreadNotificationsCount={unreadCount}

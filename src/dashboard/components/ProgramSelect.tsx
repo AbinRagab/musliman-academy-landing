@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usePrograms } from '../../shared/services/programsService';
+import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
 
 type ProgramSelectProps = {
   value?: string | null;
@@ -26,16 +27,17 @@ export default function ProgramSelect({
   allLabel = 'All programs',
   className,
 }: ProgramSelectProps) {
+  const { t } = useDashboardLanguage();
   const { loading, error, programs } = usePrograms();
   const [internalValue, setInternalValue] = useState(value || (includeAllOption ? 'all' : ''));
   const selectedValue = onChange ? value || (includeAllOption ? 'all' : '') : internalValue;
   const selectedMissing = Boolean(
-    selectedValue
-    && selectedValue !== 'all'
-    && !loading
-    && !error
-    && programs.length
-    && !programs.some((program) => program.id === selectedValue),
+    selectedValue &&
+      selectedValue !== 'all' &&
+      !loading &&
+      !error &&
+      programs.length &&
+      !programs.some((program) => program.id === selectedValue),
   );
 
   useEffect(() => {
@@ -62,14 +64,38 @@ export default function ProgramSelect({
         onChange?.(event.target.value);
       }}
     >
-      {includeAllOption && <option value="all">{allLabel}</option>}
-      {!includeAllOption && <option value="">{loading ? 'Loading programs...' : error ? 'Unable to load programs' : programs.length ? placeholder : 'No programs found'}</option>}
-      {includeAllOption && loading && <option value="__loading" disabled>Loading programs...</option>}
-      {includeAllOption && error && <option value="__error" disabled>Unable to load programs</option>}
-      {includeAllOption && !loading && !error && programs.length === 0 && <option value="__empty" disabled>No programs found</option>}
-      {selectedMissing && <option value={selectedValue}>Previously selected program</option>}
+      {includeAllOption && <option value="all">{t(allLabel)}</option>}
+      {!includeAllOption && (
+        <option value="">
+          {loading
+            ? t('Loading programs...')
+            : error
+              ? t('Unable to load programs')
+              : programs.length
+                ? t(placeholder)
+                : t('No programs found')}
+        </option>
+      )}
+      {includeAllOption && loading && (
+        <option value="__loading" disabled>
+          {t('Loading programs...')}
+        </option>
+      )}
+      {includeAllOption && error && (
+        <option value="__error" disabled>
+          {t('Unable to load programs')}
+        </option>
+      )}
+      {includeAllOption && !loading && !error && programs.length === 0 && (
+        <option value="__empty" disabled>
+          {t('No programs found')}
+        </option>
+      )}
+      {selectedMissing && <option value={selectedValue}>{t('Previously selected program')}</option>}
       {programs.map((program) => (
-        <option key={program.id} value={program.id}>{program.name}</option>
+        <option key={program.id} value={program.id}>
+          {program.name}
+        </option>
       ))}
     </select>
   );

@@ -4,6 +4,7 @@ import Icon from '../../../components/Icon';
 import ActionButton from '../../components/ActionButton';
 import { getDashboardPath, useAuth } from '../AuthProvider';
 import SupabaseSetupPage from './SupabaseSetupPage';
+import { DashboardLanguageSelect, useDashboardLanguage } from '../../i18n/DashboardLanguageProvider';
 
 type LocationState = {
   from?: {
@@ -12,6 +13,7 @@ type LocationState = {
 };
 
 export default function LoginPage() {
+  const { t } = useDashboardLanguage();
   const { signIn, user, role, isReady, isConfigured } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,12 +41,14 @@ export default function LoginPage() {
     try {
       const result = await signIn(email, password);
       const requestedPath = state?.from?.pathname;
-      const redirectTo = requestedPath && requestedPath !== '/dashboard/login'
-        ? requestedPath
-        : result.redirectTo;
+      const redirectTo = requestedPath && requestedPath !== '/dashboard/login' ? requestedPath : result.redirectTo;
       navigate(redirectTo, { replace: true });
     } catch (signInError) {
-      setError(signInError instanceof Error ? signInError.message : 'Unable to sign in. Check your credentials and try again.');
+      setError(
+        signInError instanceof Error
+          ? signInError.message
+          : t('Unable to sign in. Check your credentials and try again.'),
+      );
     } finally {
       setSubmitting(false);
     }
@@ -52,24 +56,38 @@ export default function LoginPage() {
 
   return (
     <main className="dashboard-login-screen">
-      <section className="dashboard-login-brand-panel" aria-label="Musliman Academy dashboard access">
+      <section className="dashboard-login-brand-panel" aria-label={t('Musliman Academy dashboard access')}>
         <div className="dashboard-login-pattern" aria-hidden="true" />
         <div className="dashboard-login-brand-panel__content">
           <img src="/assets/musliman-logo-dark-bg-transparent.png" alt="Musliman Academy" />
           <div className="dashboard-login-welcome">
-            <span>Welcome to</span>
-            <h1>Musliman Academy Portal</h1>
-            <p>Sign in to access your personalized Musliman Academy portal whether you are a student, teacher, or academy team member.</p>
+            <span>{t('Welcome to')}</span>
+            <h1>{t('Musliman Academy Portal')}</h1>
+            <p>
+              {t(
+                'Sign in to access your personalized Musliman Academy portal whether you are a student, teacher, or academy team member.',
+              )}
+            </p>
           </div>
           <div className="dashboard-login-features">
             {[
-              ['student', 'Students', 'View your classes, progress, attendance, and learning journey.'],
-              ['graduationCap', 'Teachers', 'Manage assigned students, free trials, attendance, and evaluations.'],
-              ['chart', 'Academy Team', 'Track leads, trials, students, payments, and reports.'],
-              ['shieldCheck', 'Secure Access', 'Each user sees only the tools and information related to their role.'],
+              ['student', t('Students'), t('View your classes, progress, attendance, and learning journey.')],
+              [
+                'graduationCap',
+                t('Teachers'),
+                t('Manage assigned students, free trials, attendance, and evaluations.'),
+              ],
+              ['chart', t('Academy Team'), t('Track leads, trials, students, payments, and reports.')],
+              [
+                'shieldCheck',
+                t('Secure Access'),
+                t('Each user sees only the tools and information related to their role.'),
+              ],
             ].map(([icon, title, description]) => (
               <article key={title} className="dashboard-login-feature">
-                <span><Icon name={icon} size={20} /></span>
+                <span>
+                  <Icon name={icon} size={20} />
+                </span>
                 <div>
                   <strong>{title}</strong>
                   <small>{description}</small>
@@ -84,20 +102,22 @@ export default function LoginPage() {
         <div className="dashboard-login-form-panel__pattern" aria-hidden="true" />
         <div className="dashboard-login-language">
           <Icon name="globe" size={16} />
-          <select aria-label="Language" defaultValue="en">
-            <option value="en">English</option>
-          </select>
+          <DashboardLanguageSelect />
         </div>
 
         <section className="dashboard-login-card">
-          <img className="dashboard-login-card__mobile-logo" src="/assets/musliman-logo-light-bg-transparent.png" alt="Musliman Academy" />
-          <span className="dashboard-eyebrow">Secure Academy Access</span>
-          <h1 id="dashboard-login-title">Sign In</h1>
-          <p>Use your Musliman Academy account to access your role-based dashboard.</p>
+          <img
+            className="dashboard-login-card__mobile-logo"
+            src="/assets/musliman-logo-light-bg-transparent.png"
+            alt="Musliman Academy"
+          />
+          <span className="dashboard-eyebrow">{t('Secure Academy Access')}</span>
+          <h1 id="dashboard-login-title">{t('Sign In')}</h1>
+          <p>{t('Use your Musliman Academy account to access your role-based dashboard.')}</p>
 
           <form className="dashboard-form dashboard-login-form" onSubmit={handleSubmit}>
             <label className="dashboard-login-field">
-              <span>Email</span>
+              <span>{t('Email')}</span>
               <div className="dashboard-login-input">
                 <Icon name="mail" size={19} />
                 <input
@@ -111,18 +131,22 @@ export default function LoginPage() {
               </div>
             </label>
             <label className="dashboard-login-field">
-              <span>Password</span>
+              <span>{t('Password')}</span>
               <div className="dashboard-login-input">
                 <Icon name="lock" size={19} />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={t('Enter your password')}
                   autoComplete="current-password"
                   required
                 />
-                <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((current) => !current)}>
+                <button
+                  type="button"
+                  aria-label={showPassword ? t('Hide password') : t('Show password')}
+                  onClick={() => setShowPassword((current) => !current)}
+                >
                   <Icon name={showPassword ? 'eyeOff' : 'eye'} size={18} />
                 </button>
               </div>
@@ -131,10 +155,10 @@ export default function LoginPage() {
             <div className="dashboard-login-options">
               <label>
                 <input type="checkbox" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} />
-                <span>Remember me</span>
+                <span>{t('Remember me')}</span>
               </label>
               <button className="dashboard-forgot-link" type="button">
-                Forgot Password?
+                {t('Forgot Password?')}
               </button>
             </div>
 
@@ -147,15 +171,21 @@ export default function LoginPage() {
 
             <ActionButton className="dashboard-login-submit" type="submit" variant="copper" disabled={submitting}>
               <Icon name="shieldCheck" size={18} />
-              {submitting ? 'Signing in' : 'Sign In'}
+              {submitting ? t('Signing in') : t('Sign In')}
             </ActionButton>
           </form>
 
-          <div className="dashboard-login-divider"><span>or</span></div>
-          <p className="dashboard-login-admin-note">Need access? <button type="button">Contact the Academy Team</button></p>
+          <div className="dashboard-login-divider">
+            <span>{t('or')}</span>
+          </div>
+          <p className="dashboard-login-admin-note">
+            {t('Need access?')} <button type="button">{t('Contact the Academy Team')}</button>
+          </p>
         </section>
 
-        <p className="dashboard-login-security"><Icon name="shieldCheck" size={16} /> Secure login&nbsp; Your data is protected</p>
+        <p className="dashboard-login-security">
+          <Icon name="shieldCheck" size={16} /> {t('Secure login')}&nbsp; {t('Your data is protected')}
+        </p>
       </section>
     </main>
   );
