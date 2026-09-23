@@ -28,6 +28,7 @@ describe('ProtectedRoute', () => {
   it('shows setup guidance when Supabase is not configured', () => {
     mockedUseAuth.mockReturnValue({
       user: null,
+      profile: null,
       role: null,
       isReady: true,
       isConfigured: false,
@@ -41,6 +42,7 @@ describe('ProtectedRoute', () => {
   it('shows a loading state while auth is initializing', () => {
     mockedUseAuth.mockReturnValue({
       user: null,
+      profile: null,
       role: null,
       isReady: false,
       isConfigured: true,
@@ -54,6 +56,7 @@ describe('ProtectedRoute', () => {
   it('renders children for an allowed role', () => {
     mockedUseAuth.mockReturnValue({
       user: { id: 'user-1' },
+      profile: { id: 'user-1', role: 'admin', status: 'active' },
       role: 'admin',
       isReady: true,
       isConfigured: true,
@@ -67,7 +70,22 @@ describe('ProtectedRoute', () => {
   it('blocks a teacher from an admin-only route', () => {
     mockedUseAuth.mockReturnValue({
       user: { id: 'user-1' },
+      profile: { id: 'user-1', role: 'teacher', status: 'active' },
       role: 'teacher',
+      isReady: true,
+      isConfigured: true,
+    } as ReturnType<typeof useAuth>);
+
+    renderProtectedRoute();
+
+    expect(screen.getByRole('heading', { name: /Access Restricted/i })).toBeInTheDocument();
+  });
+
+  it('blocks an inactive account even when its role is allowed', () => {
+    mockedUseAuth.mockReturnValue({
+      user: { id: 'user-1' },
+      profile: { id: 'user-1', role: 'admin', status: 'inactive' },
+      role: 'admin',
       isReady: true,
       isConfigured: true,
     } as ReturnType<typeof useAuth>);

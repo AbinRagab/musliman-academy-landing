@@ -6,6 +6,8 @@ describe('dashboard role routing', () => {
     expect(getDashboardPath('teacher')).toBe('/dashboard/teacher');
     expect(getDashboardPath('student')).toBe('/dashboard/student');
     expect(getDashboardPath('finance')).toBe('/dashboard/admin/payments');
+    expect(getDashboardPath('admissions')).toBe('/dashboard/admin/leads');
+    expect(getDashboardPath('viewer')).toBe('/dashboard/admin/reports');
     expect(getDashboardPath('admin')).toBe('/dashboard/admin');
     expect(getDashboardPath(null)).toBe('/dashboard/login');
   });
