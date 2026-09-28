@@ -455,6 +455,8 @@
     "heading": "تعلم مع معلمين ذوي خبرة واهتمام",
     "description": "تعلم مع معلمين مؤهلين يجمعون بين العلم الشرعي والخبرة التعليمية والاهتمام الشخصي بكل طالب.",
     "languagesLabel": "اللغات",
+    "experienceLabel": "الخبرة",
+    "specializationLabel": "التخصص",
     "languages": {
       "Arabic": "العربية",
       "English": "الإنجليزية"
@@ -465,29 +467,15 @@
       "next": "المعلمون التاليون"
     },
     "items": {
-      "quranTajweed": {
-        "name": "اسم المعلم",
-        "specialization": "معلم قرآن وتجويد",
-        "experience": "خبرة أكثر من 5 سنوات",
-        "qualification": "خريج الأزهر"
+      "mazinYasser": {
+        "name": "مازن ياسر",
+        "specialization": "القرآن الكريم، التجويد، الدراسات الإسلامية",
+        "experience": "أكثر من 3 سنوات"
       },
-      "arabic": {
-        "name": "اسم المعلم",
-        "specialization": "معلم لغة عربية",
-        "experience": "خبرة أكثر من 4 سنوات",
-        "qualification": "معلم لغة عربية مؤهل"
-      },
-      "islamicStudies": {
-        "name": "اسم المعلم",
-        "specialization": "معلم دراسات إسلامية",
-        "experience": "خبرة أكثر من 6 سنوات",
-        "qualification": "متخصص في الدراسات الإسلامية"
-      },
-      "memorization": {
-        "name": "اسم المعلم",
-        "specialization": "معلم حفظ القرآن",
-        "experience": "خبرة أكثر من 5 سنوات",
-        "qualification": "معلم قرآن"
+      "fatimahAlShazly": {
+        "name": "فاطمة الشاذلي",
+        "specialization": "القرآن الكريم، التجويد، الدراسات الإسلامية",
+        "experience": "أكثر من 5 سنوات"
       }
     }
   },

@@ -500,6 +500,8 @@
     "heading": "Learn from Experienced & Caring Teachers",
     "description": "Learn with qualified teachers who combine strong Islamic knowledge, teaching experience, and a personal approach to every student.",
     "languagesLabel": "Languages",
+    "experienceLabel": "Experience",
+    "specializationLabel": "Specialization",
     "languages": {
       "Arabic": "Arabic",
       "English": "English"
@@ -510,29 +512,15 @@
       "next": "Next teachers"
     },
     "items": {
-      "quranTajweed": {
-        "name": "Teacher Name",
-        "specialization": "Quran & Tajweed Teacher",
-        "experience": "5+ Years Experience",
-        "qualification": "Al-Azhar Graduate"
+      "mazinYasser": {
+        "name": "Mazin Yasser",
+        "specialization": "Qur'an, Tajweed, Islamic Studies",
+        "experience": "3+ Years"
       },
-      "arabic": {
-        "name": "Teacher Name",
-        "specialization": "Arabic Language Teacher",
-        "experience": "4+ Years Experience",
-        "qualification": "Qualified Arabic Teacher"
-      },
-      "islamicStudies": {
-        "name": "Teacher Name",
-        "specialization": "Islamic Studies Teacher",
-        "experience": "6+ Years Experience",
-        "qualification": "Islamic Studies Teacher"
-      },
-      "memorization": {
-        "name": "Teacher Name",
-        "specialization": "Quran Memorization Teacher",
-        "experience": "5+ Years Experience",
-        "qualification": "Quran Teacher"
+      "fatimahAlShazly": {
+        "name": "Fatimah Al_Shazly",
+        "specialization": "Qur'an, Tajweed, Islamic Studies",
+        "experience": "5+ Years"
       }
     }
   },

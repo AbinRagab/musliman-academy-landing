@@ -1685,19 +1685,19 @@ function TeachersSection() {
                   </div>
                   <div className="teacher-card__content">
                     <h3>{fullName}</h3>
-                    <p className="teacher-card__specialization">{t(`${teacherKey}.specialization`, { defaultValue: teacher.specialization })}</p>
-                    {(teacher.experience || teacher.qualification) && (
-                      <div className="teacher-card__details">
-                        {teacher.experience && <span><Icon name="clock" />{t(`${teacherKey}.experience`, { defaultValue: teacher.experience })}</span>}
-                        {teacher.qualification && <span><Icon name="award" />{t(`${teacherKey}.qualification`, { defaultValue: teacher.qualification })}</span>}
-                      </div>
-                    )}
-                    {teacher.languages && teacher.languages.length > 0 && (
-                      <div className="teacher-card__languages">
-                        <strong>{t('teachers.languagesLabel')}</strong>
-                        {teacher.languages.map((language) => <span key={language}>{t(`teachers.languages.${language}`, { defaultValue: language })}</span>)}
-                      </div>
-                    )}
+                    <span className="teacher-card__divider" aria-hidden="true" />
+                    <div className="teacher-card__details">
+                      {teacher.languages && teacher.languages.length > 0 && (
+                        <p>
+                          <Icon name="globe" />
+                          <span><strong>{t('teachers.languagesLabel')}:</strong> {teacher.languages.map((language) => t(`teachers.languages.${language}`, { defaultValue: language })).join(', ')}</span>
+                        </p>
+                      )}
+                      {teacher.experience && (
+                        <p><Icon name="clock" /><span><strong>{t('teachers.experienceLabel')}:</strong> {t(`${teacherKey}.experience`, { defaultValue: teacher.experience })}</span></p>
+                      )}
+                      <p><Icon name="star" /><span><strong>{t('teachers.specializationLabel')}:</strong> {t(`${teacherKey}.specialization`, { defaultValue: teacher.specialization })}</span></p>
+                    </div>
                   </div>
                 </article>
                 );

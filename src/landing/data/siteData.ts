@@ -1,4 +1,5 @@
 import type { IconName } from '../../components/Icon';
+import { fatimahAlShazlyPhoto, mazinYasserPhoto } from './teacherImages';
 
 export const contact = {
   whatsappDisplay: '+201038331058',
@@ -392,49 +393,28 @@ export type LandingTeacher = {
   photo: string;
   photoPosition?: string;
   experience?: string;
-  qualification?: string;
   languages?: string[];
 };
 
 export const landingTeachers: LandingTeacher[] = [
   {
-    id: 'teacher-design-1',
-    key: 'quranTajweed',
-    fullName: 'Teacher Name',
-    specialization: 'Quran & Tajweed Teacher',
-    photo: '/assets/teacher-placeholder.svg',
-    experience: '5+ Years Experience',
-    qualification: 'Al-Azhar Graduate',
+    id: 'mazin-yasser',
+    key: 'mazinYasser',
+    fullName: 'Mazin Yasser',
+    specialization: "Qur'an, Tajweed, Islamic Studies",
+    photo: mazinYasserPhoto,
+    photoPosition: 'center 30%',
+    experience: '3+ Years',
     languages: ['Arabic', 'English'],
   },
   {
-    id: 'teacher-design-2',
-    key: 'arabic',
-    fullName: 'Teacher Name',
-    specialization: 'Arabic Language Teacher',
-    photo: '/assets/teacher-placeholder.svg',
-    experience: '4+ Years Experience',
-    qualification: 'Qualified Arabic Teacher',
-    languages: ['Arabic', 'English'],
-  },
-  {
-    id: 'teacher-design-3',
-    key: 'islamicStudies',
-    fullName: 'Teacher Name',
-    specialization: 'Islamic Studies Teacher',
-    photo: '/assets/teacher-placeholder.svg',
-    experience: '6+ Years Experience',
-    qualification: 'Islamic Studies Teacher',
-    languages: ['Arabic', 'English'],
-  },
-  {
-    id: 'teacher-design-4',
-    key: 'memorization',
-    fullName: 'Teacher Name',
-    specialization: 'Quran Memorization Teacher',
-    photo: '/assets/teacher-placeholder.svg',
-    experience: '5+ Years Experience',
-    qualification: 'Quran Teacher',
+    id: 'fatimah-al-shazly',
+    key: 'fatimahAlShazly',
+    fullName: 'Fatimah Al_Shazly',
+    specialization: "Qur'an, Tajweed, Islamic Studies",
+    photo: fatimahAlShazlyPhoto,
+    photoPosition: 'center 28%',
+    experience: '5+ Years',
     languages: ['Arabic', 'English'],
   },
 ];
