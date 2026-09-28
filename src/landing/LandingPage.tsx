@@ -107,7 +107,6 @@ const faqIcons: IconName[] = ['laptop', 'book', 'users', 'gift', 'clipboardCheck
 const experienceOptions = ['none', 'lessThanOne', 'oneToTwo', 'threePlus'];
 const qualificationOptions = ['quranTeacher', 'arabicTeacher', 'islamicStudiesTeacher', 'ijazahHolder', 'studentOfKnowledge', 'other'];
 const trainingGoalOptions = ['teachNonArabic', 'onlineTeaching', 'lessonPlanning', 'studentFollowUp', 'joinAcademy', 'other'];
-const studentAgeOptions = ['child', 'teenager', 'adult'];
 const preferredTimeOptions = ['morning', 'afternoon', 'evening', 'flexible'];
 const heroLanguageTranslationKeys: Record<SupportedLanguage, string> = {
   en: 'language.english',
@@ -686,6 +685,15 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
       }
     });
 
+    if (!isTraining) {
+      const age = getFormValue(formData, 'age');
+      const numericAge = Number(age);
+
+      if (age && (!Number.isInteger(numericAge) || numericAge < 3 || numericAge > 100)) {
+        nextErrors.age = t('booking.validation.ageRange');
+      }
+    }
+
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
       return;
@@ -713,7 +721,7 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
         name: getFormValue(formData, 'name'),
         whatsapp: getFormValue(formData, 'whatsapp'),
         country: getFormValue(formData, 'country'),
-        age: getOptionLabel('studentAge', getFormValue(formData, 'age')),
+        age: getFormValue(formData, 'age'),
         program: getSelectedProgram(getFormValue(formData, 'program'))?.name || '',
         programId: undefined,
         preferredTime: getOptionLabel('preferredTime', getFormValue(formData, 'preferredTime')),
@@ -877,10 +885,16 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
                   <>
                     <label>
                       <span>{t('booking.fields.studentAge')}</span>
-                      <select name="age" defaultValue="" aria-invalid={Boolean(errors.age)}>
-                        <option value="" disabled>{t('booking.placeholders.studentAge')}</option>
-                        {studentAgeOptions.map((option) => <option value={option} key={option}>{getOptionLabel('studentAge', option)}</option>)}
-                      </select>
+                      <input
+                        type="number"
+                        name="age"
+                        min="3"
+                        max="100"
+                        step="1"
+                        inputMode="numeric"
+                        placeholder={t('booking.placeholders.studentAge')}
+                        aria-invalid={Boolean(errors.age)}
+                      />
                       {getFieldError('age')}
                     </label>
                     <label>
