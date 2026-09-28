@@ -101,7 +101,7 @@
       "experience": "Select experience",
       "qualification": "Select qualification",
       "trainingGoal": "Select training goal",
-      "studentAge": "Select age",
+      "studentAge": "Enter age",
       "program": "Select a program",
       "preferredTime": "Select preferred time",
       "message": "Tell us anything else we should know...",
@@ -152,6 +152,7 @@
     },
     "validation": {
       "required": "This field is required.",
+      "ageRange": "Enter a valid age between 3 and 100.",
       "submitError": "Something went wrong. Please try again or contact us on WhatsApp."
     },
     "whatsapp": {
