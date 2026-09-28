@@ -57,6 +57,7 @@ type TestimonialItem = (typeof testimonials)[number] & {
   photo?: string;
   image?: string;
   context?: string;
+  rating?: number;
 };
 
 type DecorationItem =
@@ -1324,7 +1325,7 @@ function TestimonialsSection() {
               </div>
             )}
 
-            <div className="testimonials-grid" aria-live="polite">
+            <div className={`testimonials-grid ${visibleTestimonials.length === 1 ? 'testimonials-grid--single' : ''}`} aria-live="polite">
               {visibleTestimonials.map((item, index) => {
                 const photo = item.photo || item.image;
                 const itemKey = `testimonials.items.${item.key}`;

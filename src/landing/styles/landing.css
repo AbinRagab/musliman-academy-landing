@@ -2192,6 +2192,23 @@ p {
   gap: 20px;
 }
 
+.testimonials-grid--single {
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 920px);
+  margin-inline: auto;
+}
+
+.testimonials-grid--single .testimonial-card {
+  min-height: auto;
+  padding: clamp(26px, 4vw, 44px);
+}
+
+.testimonials-grid--single .testimonial-quote {
+  white-space: pre-line;
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.8;
+}
+
 .testimonial-card {
   position: relative;
   display: flex;

@@ -414,7 +414,7 @@
   "testimonials": {
     "badge": "STUDENT STORIES",
     "heading": "Loved by Learners Around the World",
-    "description": "See what students and parents say about their learning experience with Musliman Academy.",
+    "description": "Read a real student's experience learning to read the Qur'an with Musliman Academy.",
     "aria": {
       "region": "Student and parent testimonials",
       "previous": "Previous testimonial",
@@ -428,30 +428,10 @@
       "text": "Verified testimonials with names, countries, and photos will appear here once they are added to the site data."
     },
     "items": {
-      "parentReading": {
-        "name": "A Parent",
-        "context": "Parent of a Quran Reading student",
-        "quote": "The teacher was very patient and helped my son improve his Quran reading step by step."
-      },
-      "parentTajweed": {
-        "name": "A Parent",
-        "context": "Parent of a Tajweed student",
-        "quote": "My daughter feels more confident now and enjoys her online Quran lessons."
-      },
-      "adultArabic": {
-        "name": "Adult Learner",
-        "context": "Arabic beginner",
-        "quote": "The lessons are clear, organized, and suitable for beginners."
-      },
-      "parentFollowUp": {
-        "name": "A Parent",
-        "context": "Parent follow-up",
-        "quote": "I appreciate the regular follow-up and the simple way of explaining."
-      },
-      "parentTrial": {
-        "name": "A Parent",
-        "context": "Free trial experience",
-        "quote": "The trial class helped us understand the right learning plan for our child."
+      "mazinQuranStudent": {
+        "name": "A Qur'an Student",
+        "context": "Student of Brother Mazen",
+        "quote": "When I first started, I couldn't read the Qur'an at all. I didn't even know the Arabic alphabet that well, so I was starting from the very beginning. I wasn't sure how quickly I would learn, but Brother Mazen made the whole process easy to follow and never made me feel discouraged.\n\nAlhamdulillah, by the mercy of Allah and through Brother Mazen's guidance, I can now pick up the Qur'an and read it. I still have more to learn, but when I think about where I started, I'm amazed at how much progress I've made over the past year with him.\n\nHis teaching style is structured, encouraging, and easy to follow. Each lesson builds on the last, so you continue making steady progress without feeling overwhelmed. He also gives you the confidence to keep trying, even when you make mistakes, and that has made a huge difference in my learning.\n\nOne of his greatest strengths as a teacher is his patience. He takes the time to explain every lesson clearly, breaks things down into simple steps, and makes sure you understand before moving on. If you don't understand something the first time, he's always happy to explain it again in a different way until it finally clicks.\n\nMay Allah (SWT) bless him, reward him abundantly for his efforts, and put barakah in his teaching In-Shaa-Allah. Ameen."
       }
     }
   },
