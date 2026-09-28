@@ -98,7 +98,7 @@
       "experience": "Seleziona esperienza",
       "qualification": "Seleziona qualifica",
       "trainingGoal": "Seleziona obiettivo",
-      "studentAge": "Seleziona eta",
+      "studentAge": "Inserisci l'età",
       "program": "Seleziona un programma",
       "preferredTime": "Seleziona orario",
       "message": "Raccontaci altri dettagli...",
@@ -141,6 +141,7 @@
     },
     "validation": {
       "required": "Questo campo e obbligatorio.",
+      "ageRange": "Inserisci un'età valida tra 3 e 100 anni.",
       "submitError": "Qualcosa e andato storto. Riprova o contattaci su WhatsApp."
     },
     "whatsapp": {
