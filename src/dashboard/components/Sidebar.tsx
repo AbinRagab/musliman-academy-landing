@@ -2,6 +2,8 @@ import { NavLink } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import type { DashboardRole } from '../types';
 import { useDashboardLanguage } from '../i18n/DashboardLanguageProvider';
+import { useAuth } from '../auth/AuthProvider';
+import { canAccessAdminPath } from '../auth/accessControl';
 
 type SidebarLink = {
   label: string;
@@ -60,6 +62,9 @@ type SidebarProps = {
 
 export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
   const { t } = useDashboardLanguage();
+  const { role: authRole } = useAuth();
+  const visibleLinks =
+    role === 'admin' ? linksByRole.admin.filter((link) => canAccessAdminPath(authRole, link.path)) : linksByRole[role];
   return (
     <>
       <aside className={`dashboard-sidebar ${isOpen ? 'is-open' : ''}`}>
@@ -70,7 +75,7 @@ export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
           className="dashboard-sidebar__nav"
           aria-label={t('{{role}} dashboard navigation', { role: t(roleLabel(role)) })}
         >
-          {linksByRole[role].map((link) => (
+          {visibleLinks.map((link) => (
             <NavLink
               key={link.label}
               to={link.path}

@@ -1,13 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { isSupabaseConfigured, supabase } from '../../lib/supabaseClient';
 
@@ -86,7 +77,15 @@ export function getDashboardPath(role: AuthRole | null | undefined) {
     return '/dashboard/admin/payments';
   }
 
-  if (role === 'super_admin' || role === 'admin' || role === 'admissions' || role === 'academic_manager' || role === 'viewer') {
+  if (role === 'admissions') {
+    return '/dashboard/admin/leads';
+  }
+
+  if (role === 'viewer') {
+    return '/dashboard/admin/reports';
+  }
+
+  if (role === 'super_admin' || role === 'admin' || role === 'academic_manager') {
     return '/dashboard/admin';
   }
 
@@ -127,64 +126,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setRole(null);
   }, []);
 
-  const loadProfile = useCallback(async (activeUser: User | null, options?: { force?: boolean }) => {
-    if (!activeUser || !supabase) {
-      clearProfile();
-      return null;
-    }
-
-    const force = options?.force ?? false;
-
-    if (!force && profileRef.current && profileUserIdRef.current === activeUser.id) {
-      return profileRef.current;
-    }
-
-    if (!force && inFlightProfileRef.current?.userId === activeUser.id) {
-      return inFlightProfileRef.current.promise;
-    }
-
-    setIsProfileLoading(true);
-
-    const profilePromise = (async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', activeUser.id)
-        .maybeSingle<UserProfile>();
-
-      if (error) {
-        throw error;
+  const loadProfile = useCallback(
+    async (activeUser: User | null, options?: { force?: boolean }) => {
+      if (!activeUser || !supabase) {
+        clearProfile();
+        return null;
       }
 
-      if (currentUserIdRef.current === activeUser.id) {
-        profileRef.current = data;
-        profileUserIdRef.current = data ? activeUser.id : null;
-        setProfile(data);
-        setRole(data?.role || null);
+      const force = options?.force ?? false;
+
+      if (!force && profileRef.current && profileUserIdRef.current === activeUser.id) {
+        return profileRef.current;
       }
 
-      return data;
-    })()
-      .catch((error: unknown) => {
+      if (!force && inFlightProfileRef.current?.userId === activeUser.id) {
+        return inFlightProfileRef.current.promise;
+      }
+
+      setIsProfileLoading(true);
+
+      const profilePromise = (async () => {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', activeUser.id)
+          .maybeSingle<UserProfile>();
+
+        if (error) {
+          throw error;
+        }
+
         if (currentUserIdRef.current === activeUser.id) {
-          clearProfile();
-          setStatus('error');
+          profileRef.current = data;
+          profileUserIdRef.current = data ? activeUser.id : null;
+          setProfile(data);
+          setRole(data?.role || null);
         }
 
-        throw error;
-      })
-      .finally(() => {
-        if (inFlightProfileRef.current?.promise === profilePromise) {
-          inFlightProfileRef.current = null;
-        }
+        return data;
+      })()
+        .catch((error: unknown) => {
+          if (currentUserIdRef.current === activeUser.id) {
+            clearProfile();
+            setStatus('error');
+          }
 
-        setIsProfileLoading(false);
-      });
+          throw error;
+        })
+        .finally(() => {
+          if (inFlightProfileRef.current?.promise === profilePromise) {
+            inFlightProfileRef.current = null;
+          }
 
-    inFlightProfileRef.current = { userId: activeUser.id, promise: profilePromise };
+          setIsProfileLoading(false);
+        });
 
-    return profilePromise;
-  }, [clearProfile]);
+      inFlightProfileRef.current = { userId: activeUser.id, promise: profilePromise };
+
+      return profilePromise;
+    },
+    [clearProfile],
+  );
 
   const refreshProfile = useCallback(async () => loadProfile(user, { force: true }), [loadProfile, user]);
 
@@ -321,36 +323,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [clearProfile, loadProfile]);
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    if (!supabase) {
-      throw new Error('Supabase is not configured for this environment.');
-    }
+  const signIn = useCallback(
+    async (email: string, password: string) => {
+      if (!supabase) {
+        throw new Error('Supabase is not configured for this environment.');
+      }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      throw error;
-    }
+      if (error) {
+        throw error;
+      }
 
-    if (!data.user) {
-      throw new Error('Sign in succeeded but no user was returned.');
-    }
+      if (!data.user) {
+        throw new Error('Sign in succeeded but no user was returned.');
+      }
 
-    setSession(data.session);
-    setUser(data.user);
-    currentUserIdRef.current = data.user.id;
-    const nextProfile = await loadProfile(data.user, { force: profileUserIdRef.current !== data.user.id });
-    const nextRole = nextProfile?.role || null;
-    setStatus(nextProfile ? 'authenticated' : 'error');
-    setHasCompletedInitialCheck(true);
+      setSession(data.session);
+      setUser(data.user);
+      currentUserIdRef.current = data.user.id;
+      const nextProfile = await loadProfile(data.user, { force: profileUserIdRef.current !== data.user.id });
+      const nextRole = nextProfile?.role || null;
+      setStatus(nextProfile ? 'authenticated' : 'error');
+      setHasCompletedInitialCheck(true);
 
-    return {
-      user: data.user,
-      profile: nextProfile,
-      role: nextRole,
-      redirectTo: getDashboardPath(nextRole),
-    };
-  }, [loadProfile]);
+      return {
+        user: data.user,
+        profile: nextProfile,
+        role: nextRole,
+        redirectTo: getDashboardPath(nextRole),
+      };
+    },
+    [loadProfile],
+  );
 
   const signOut = useCallback(async () => {
     if (!supabase) {
@@ -374,21 +379,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isReady = hasCompletedInitialCheck;
   const loading = !isReady;
 
-  const value = useMemo<AuthContextValue>(() => ({
-    user,
-    session,
-    profile,
-    role,
-    loading,
-    isAuthLoading,
-    isProfileLoading,
-    isReady,
-    status,
-    isConfigured: isSupabaseConfigured,
-    signIn,
-    signOut,
-    refreshProfile,
-  }), [isAuthLoading, isProfileLoading, isReady, loading, profile, refreshProfile, role, session, signIn, signOut, status, user]);
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user,
+      session,
+      profile,
+      role,
+      loading,
+      isAuthLoading,
+      isProfileLoading,
+      isReady,
+      status,
+      isConfigured: isSupabaseConfigured,
+      signIn,
+      signOut,
+      refreshProfile,
+    }),
+    [
+      isAuthLoading,
+      isProfileLoading,
+      isReady,
+      loading,
+      profile,
+      refreshProfile,
+      role,
+      session,
+      signIn,
+      signOut,
+      status,
+      user,
+    ],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
