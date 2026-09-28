@@ -101,7 +101,7 @@
       "experience": "اختر الخبرة",
       "qualification": "اختر المؤهل",
       "trainingGoal": "اختر هدف التدريب",
-      "studentAge": "اختر العمر",
+      "studentAge": "أدخل العمر",
       "program": "اختر برنامجا",
       "preferredTime": "اختر الوقت المناسب",
       "message": "أخبرنا بأي تفاصيل إضافية...",
@@ -152,6 +152,7 @@
     },
     "validation": {
       "required": "هذا الحقل مطلوب.",
+      "ageRange": "أدخل عمرا صحيحا بين 3 و100 سنة.",
       "submitError": "حدث خطأ. حاول مرة أخرى أو تواصل معنا عبر واتساب."
     },
     "whatsapp": {
