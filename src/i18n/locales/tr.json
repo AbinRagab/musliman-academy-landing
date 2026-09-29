@@ -98,7 +98,7 @@
       "experience": "Deneyim secin",
       "qualification": "Yeterlilik secin",
       "trainingGoal": "Egitim hedefi secin",
-      "studentAge": "Yas secin",
+      "studentAge": "Yaşı girin",
       "program": "Program secin",
       "preferredTime": "Tercih edilen zamani secin",
       "message": "Eklemek istediginiz bilgiler...",
@@ -141,6 +141,7 @@
     },
     "validation": {
       "required": "Bu alan zorunludur.",
+      "ageRange": "3 ile 100 arasında geçerli bir yaş girin.",
       "submitError": "Bir seyler ters gitti. Lutfen tekrar deneyin veya WhatsApp'tan bize ulasin."
     },
     "whatsapp": {
