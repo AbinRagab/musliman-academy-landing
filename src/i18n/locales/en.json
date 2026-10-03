@@ -173,8 +173,8 @@
   },
   "about": {
     "badge": "About Musliman Academy",
-    "heading": "Every Learner Has a Way",
-    "lead": "At Musliman Academy, we make learning simple, clear, and achievable through the right method, patient guidance, and step-by-step support for every student who wants to learn Quran online.",
+    "heading": "Learn at Your Pace. Grow with Confidence.",
+    "lead": "Get personalized guidance, continuous teacher support, and a learning plan designed around your goals, level, and progress.",
     "paragraph1": "At Musliman Academy, we believe that every learner has a way. Every student learns differently, so we provide simple, patient, and step-by-step online Quran classes and Arabic classes for beginners designed around each learner's level and needs.",
     "paragraph2": "The Academy offers Quran reading for children, Online Tajweed classes, Arabic, Islamic Studies for children, Quran Memorization, Quran Tafseer, Tarteel Qaidah, and teacher training for Quran teachers through qualified Egyptian Quran teachers with Al-Azhar educational background.",
     "imageAlt": "Quran learning visual",
@@ -182,23 +182,23 @@
     "benefits": {
       "oneOnOne": {
         "title": "One-to-One Learning",
-        "text": "Focused lessons tailored to each learner's level and goals."
+        "text": "Enjoy private lessons where your teacher's full attention is focused on your learning and progress."
       },
       "personalizedPlan": {
         "title": "Personalized Learning Plan",
-        "text": "A clear path built around the learner's needs and pace."
+        "text": "Your lessons are tailored to your level and goals, whether you're learning the Qur'an, Tajweed, Arabic, or Islamic Studies."
       },
       "realTimeFeedback": {
         "title": "Real-Time Feedback",
-        "text": "Direct correction and guidance throughout every class."
+        "text": "Receive immediate corrections and guidance during every lesson to help you improve accurately and confidently."
       },
       "flexibleSchedule": {
-        "title": "Flexible Schedule",
-        "text": "Class times that work across different routines and time zones."
+        "title": "Flexible & Consistent Schedule",
+        "text": "Build a regular learning routine that keeps you motivated and moving forward, with flexible scheduling to fit your lifestyle."
       },
       "progressTracking": {
         "title": "Progress Tracking",
-        "text": "Regular follow-up to keep learning consistent and measurable."
+        "text": "Receive regular feedback and progress reports so you can clearly see your development and know what to focus on next."
       }
     }
   },
