@@ -4,7 +4,7 @@ import { fatimahAlShazlyPhoto, mazinYasserPhoto } from './teacherImages';
 export const contact = {
   whatsappDisplay: '+201038331058',
   whatsappNumber: '201038331058',
-  email: 'AbinRagab@gmail.com',
+  email: 'musliman.link@gmail.com',
   website: 'www.muslimanacademy.com',
 };
 
