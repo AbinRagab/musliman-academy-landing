@@ -207,6 +207,7 @@ const aboutBenefits: Array<{ key: string; icon: IconName }> = [
   { key: 'flexibleSchedule', icon: 'clock' },
   { key: 'progressTracking', icon: 'progress' },
 ];
+const aboutVideos = [{ id: 'hfY3wG7ddbQ', title: 'Musliman Academy introduction' }, { id: 'ICcrCVQXy8c', title: 'Musliman Academy video' }] as const;
 const imageAssets: Record<string, OptimizedImage> = {
   '/assets/hero-bg.png': { webp: '/assets/optimized/hero-bg.webp', width: 1672, height: 941 },
   '/assets/about-visual.png': { webp: '/assets/optimized/about-visual.webp', width: 1086, height: 1448 },
@@ -881,6 +882,17 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
 
 function AboutSection() {
   const { t } = useTranslation();
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveVideoIndex((current) => (current + 1) % aboutVideos.length);
+    }, 8000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const activeVideo = aboutVideos[activeVideoIndex];
 
   return (
     <section className="about-section section-light" id="about">
@@ -889,12 +901,41 @@ function AboutSection() {
         <div className="about-visual">
           <iframe
             className="about-video"
-            src="https://www.youtube-nocookie.com/embed/hfY3wG7ddbQ"
-            title={t('about.videoTitle')}
+            key={activeVideo.id}
+            src={`https://www.youtube-nocookie.com/embed/${activeVideo.id}?rel=0`}
+            title={activeVideo.title}
             loading="lazy"
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
           />
+          <div className="about-video__controls" aria-label="Video carousel controls">
+            <button
+              type="button"
+              onClick={() => setActiveVideoIndex((current) => (current + aboutVideos.length - 1) % aboutVideos.length)}
+              aria-label="Previous video"
+            >
+              <Icon name="chevronLeft" />
+            </button>
+            <div className="about-video__dots">
+              {aboutVideos.map((video, index) => (
+                <button
+                  type="button"
+                  key={video.id}
+                  className={index === activeVideoIndex ? 'is-active' : ''}
+                  onClick={() => setActiveVideoIndex(index)}
+                  aria-label={`Show video ${index + 1}`}
+                  aria-current={index === activeVideoIndex ? 'true' : undefined}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveVideoIndex((current) => (current + 1) % aboutVideos.length)}
+              aria-label="Next video"
+            >
+              <Icon name="chevronRight" />
+            </button>
+          </div>
         </div>
         <div className="about-content">
           <h2>{t('about.heading')}</h2>
@@ -917,6 +958,7 @@ function AboutSection() {
     </section>
   );
 }
+
 
 function ProgramsSection() {
   const { t } = useTranslation();
