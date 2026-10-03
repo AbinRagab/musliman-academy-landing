@@ -6701,3 +6701,8 @@ body.dark-mode .program-card p {
 @media (max-width: 680px) {
   .floating-whatsapp-message { right: 16px; bottom: 84px; width: min(250px, calc(100vw - 32px)); padding: 12px 14px; font-size: 13px; }
 }
+
+/* Booking follows About on the landing page without the hero overlap. */
+.about-section + .booking-section {
+  margin-top: 0;
+}
