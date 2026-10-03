@@ -34,17 +34,6 @@ type Theme = 'light' | 'dark';
 type BookingType = 'trial' | 'training';
 type DecorationVariant = 'light' | 'dark';
 type DecorationType = 'hero' | 'trial' | 'about' | 'programs' | 'pricing' | 'why' | 'testimonials' | 'steps' | 'training' | 'faq' | 'footer' | 'default';
-type VideoStory = {
-  id: number;
-  key: string;
-  videoUrl: string;
-  thumbnail: string;
-  title: string;
-  personName?: string;
-  country: string;
-  role: string;
-  duration?: string;
-};
 type OptimizedImage = {
   webp: string;
   width: number;
@@ -232,53 +221,6 @@ const imageAssets: Record<string, OptimizedImage> = {
   '/assets/programs/islamic-studies.png': { webp: '/assets/optimized/programs/islamic-studies.webp', width: 416, height: 520 },
   '/assets/programs/islamic-values-children.png': { webp: '/assets/optimized/programs/islamic-values-children.webp', width: 416, height: 520 },
 };
-const videoStories: VideoStory[] = [
-  {
-    id: 1,
-    key: 'quranJourney',
-    videoUrl: '/videos/student-story.mp4',
-    thumbnail: '/assets/hero-bg.png',
-    title: 'A Quran Learning Journey',
-    personName: 'Student Story',
-    country: 'Country not provided',
-    role: 'Quran Reading Student',
-    duration: '1:24',
-  },
-  {
-    id: 2,
-    key: 'parentExperience',
-    videoUrl: '/videos/parent-feedback.mp4',
-    thumbnail: '/assets/why-choose-visual.png',
-    title: 'A Parent Shares Their Experience',
-    personName: 'Parent Story',
-    country: 'Country not provided',
-    role: 'Parent of a Quran Student',
-    duration: '1:15',
-  },
-  {
-    id: 3,
-    key: 'arabicConfidence',
-    videoUrl: '/videos/arabic-beginner.mp4',
-    thumbnail: '/assets/about-visual.png',
-    title: 'Growing in Arabic with Confidence',
-    personName: 'Student Story',
-    country: 'Country not provided',
-    role: 'Arabic Language Student',
-    duration: '1:07',
-  },
-  {
-    id: 4,
-    key: 'careConsistency',
-    videoUrl: '/videos/parent-learning-story.mp4',
-    thumbnail: '/assets/teacher-training-visual.jpg',
-    title: 'Learning with Care and Consistency',
-    personName: 'Parent Story',
-    country: 'Country not provided',
-    role: 'Parent of an Online Learner',
-    duration: '1:42',
-  },
-];
-
 type OptimizedPictureProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'width' | 'height'> & {
   src: string;
   alt: string;
@@ -1408,141 +1350,6 @@ function TestimonialsSection() {
   );
 }
 
-function VideoStoriesSection() {
-  const { t } = useTranslation();
-  const [videoOrder, setVideoOrder] = useState(videoStories);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const activeVideo = videoOrder[0];
-  const sideVideos = videoOrder.slice(1, 3);
-
-  function getVideoText(video: VideoStory, field: 'title' | 'personName' | 'country' | 'role') {
-    return t(`videoTestimonials.items.${video.key}.${field}`, { defaultValue: video[field] || '' });
-  }
-
-  function getYouTubeEmbedUrl(url: string) {
-    const match = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|shorts\/))([^?&/]+)/);
-    return match?.[1] ? `https://www.youtube-nocookie.com/embed/${match[1]}?autoplay=1` : null;
-  }
-
-  function selectVideo(index: number) {
-    setVideoOrder((current) => {
-      const next = [...current];
-      [next[0], next[index]] = [next[index], next[0]];
-      return next;
-    });
-    setIsPlaying(false);
-  }
-
-  function rotatePlaylist(direction: 'next' | 'prev') {
-    setVideoOrder((current) => {
-      const [featured, ...playlist] = current;
-      if (playlist.length < 2) {
-        return current;
-      }
-
-      if (direction === 'next') {
-        playlist.push(playlist.shift() as VideoStory);
-      } else {
-        playlist.unshift(playlist.pop() as VideoStory);
-      }
-
-      return [featured, ...playlist];
-    });
-  }
-
-  const activeYouTubeUrl = getYouTubeEmbedUrl(activeVideo.videoUrl);
-
-  return (
-    <section className="video-stories-section section-dark" id="video-stories">
-      <div className="video-stories-bg-icon video-stories-bg-icon--one" aria-hidden="true" />
-      <div className="video-stories-bg-icon video-stories-bg-icon--two" aria-hidden="true" />
-
-      <div className="container video-stories-container">
-        <div className="video-stories-header">
-          <div className="section-badge section-badge--dark">
-            <Icon name="play" />
-            <span>{t('videoTestimonials.badge')}</span>
-          </div>
-
-          <h2>{t('videoTestimonials.heading')}</h2>
-
-          <div className="section-divider" aria-hidden="true" />
-
-          <p>{t('videoTestimonials.description')}</p>
-        </div>
-
-        <div className="video-featured-layout">
-          <article className="video-featured-card" aria-live="polite">
-            <div className="video-featured-card__media">
-              {isPlaying ? (
-                activeYouTubeUrl ? (
-                  <iframe
-                    src={activeYouTubeUrl}
-                    title={getVideoText(activeVideo, 'title')}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <video controls autoPlay playsInline poster={activeVideo.thumbnail}>
-                    <source src={activeVideo.videoUrl} type="video/mp4" />
-                    {t('videoTestimonials.videoUnsupported')}
-                  </video>
-                )
-              ) : (
-                <button type="button" className="video-featured-card__poster" onClick={() => setIsPlaying(true)} aria-label={t('videoTestimonials.play', { title: getVideoText(activeVideo, 'title') })}>
-                  <OptimizedPicture src={activeVideo.thumbnail} alt="" loading="lazy" decoding="async" />
-                  <span className="video-featured-card__overlay" aria-hidden="true" />
-                  <span className="video-featured-card__play" aria-hidden="true"><Icon name="play" /></span>
-                  <span className="video-featured-card__status">{t('videoTestimonials.nowPlaying')}</span>
-                  {activeVideo.duration && <span className="video-featured-card__duration">{activeVideo.duration}</span>}
-                </button>
-              )}
-            </div>
-            <div className="video-featured-card__body">
-              <h3>{getVideoText(activeVideo, 'title')}</h3>
-              <div className="video-featured-card__meta">
-                {activeVideo.personName && <strong>{getVideoText(activeVideo, 'personName')}</strong>}
-                <span>{getVideoText(activeVideo, 'country')}</span>
-                <span>{getVideoText(activeVideo, 'role')}</span>
-              </div>
-            </div>
-          </article>
-
-          <aside className="video-side-playlist" aria-label={t('videoTestimonials.aria.more')}>
-            <div className="video-side-playlist__heading">
-              <span>{t('videoTestimonials.moreStories')}</span>
-              {videoOrder.length > 3 && (
-                <div className="video-side-playlist__controls">
-                  <button type="button" onClick={() => rotatePlaylist('prev')} aria-label={t('videoTestimonials.aria.previous')}><Icon name="chevronLeft" /></button>
-                  <button type="button" onClick={() => rotatePlaylist('next')} aria-label={t('videoTestimonials.aria.next')}><Icon name="chevronRight" /></button>
-                </div>
-              )}
-            </div>
-
-            <div className="video-side-playlist__items">
-              {sideVideos.map((video, index) => (
-                <button type="button" className="video-side-item" key={video.id} onClick={() => selectVideo(index + 1)}>
-                  <span className="video-side-item__thumb">
-                    <OptimizedPicture src={video.thumbnail} alt="" loading="lazy" decoding="async" />
-                    <span className="video-side-item__overlay" aria-hidden="true" />
-                    <span className="video-side-item__play" aria-hidden="true"><Icon name="play" /></span>
-                    {video.duration && <span className="video-side-item__duration">{video.duration}</span>}
-                  </span>
-                  <span className="video-side-item__content">
-                    <strong>{getVideoText(video, 'title')}</strong>
-                    <small>{video.personName && `${getVideoText(video, 'personName')} · `}{getVideoText(video, 'country')}</small>
-                    <span>{getVideoText(video, 'role')}</span>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function HowItWorksSection() {
   const { t } = useTranslation();
 
@@ -1944,7 +1751,6 @@ export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean 
         <PricingSection />
         <WhyChooseSection />
         <TestimonialsSection />
-        <VideoStoriesSection />
         <HowItWorksSection />
         <TeachersSection />
         <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />
