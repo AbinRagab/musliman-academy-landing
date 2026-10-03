@@ -533,7 +533,6 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
           </div>
         </div>
       </div>
-      <div className="hero-curve" />
     </section>
   );
 }
@@ -1802,8 +1801,8 @@ export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean 
       <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} />
       <main>
         <HeroSection onSelectBookingType={setActiveBookingType} />
-        <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} />
         <AboutSection />
+        <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} />
         <ProgramsSection />
         <PricingSection />
         <WhyChooseSection />
