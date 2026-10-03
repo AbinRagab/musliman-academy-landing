@@ -40,11 +40,9 @@ type OptimizedImage = {
   height: number;
 };
 type TestimonialItem = (typeof testimonials)[number] & {
-  country?: string;
   flag?: string;
   photo?: string;
   image?: string;
-  context?: string;
   rating?: number;
 };
 
@@ -1265,7 +1263,9 @@ function TestimonialsSection() {
                 const photo = item.photo || item.image;
                 const itemKey = `testimonials.items.${item.key}`;
                 const name = t(`${itemKey}.name`, { defaultValue: item.name });
-                const context = t(`${itemKey}.context`, { defaultValue: item.context || item.role || item.program });
+                const country = t(`${itemKey}.country`, { defaultValue: item.country });
+                const program = t(`${itemKey}.program`, { defaultValue: item.program });
+                const description = t(`${itemKey}.description`, { defaultValue: item.description });
                 const quote = t(`${itemKey}.quote`, { defaultValue: item.quote });
                 const initials = name
                   .split(' ')
@@ -1291,16 +1291,19 @@ function TestimonialsSection() {
 
                       <div className="testimonial-profile">
                         <h3>{name}</h3>
-                        {(item.country || item.flag) && (
-                          <span className="testimonial-country">
-                            {item.flag && <span aria-hidden="true">{item.flag}</span>}
-                            {item.country}
-                          </span>
-                        )}
-                        {context && <span className="testimonial-context">{context}</span>}
+                        <span className="testimonial-country">
+                          {item.flag && <span aria-hidden="true">{item.flag}</span>}
+                          <strong>{t('testimonials.fields.country')}:</strong> {country}
+                        </span>
                       </div>
                     </div>
 
+                    <div className="testimonial-details">
+                      <span><strong>{t('testimonials.fields.program')}:</strong> {program}</span>
+                      <span><strong>{t('testimonials.fields.description')}:</strong> {description}</span>
+                    </div>
+
+                    <span className="testimonial-quote-label">{t('testimonials.fields.testimonial')}</span>
                     <p className="testimonial-quote">{quote}</p>
 
                     {typeof item.rating === 'number' && item.rating > 0 && (
