@@ -1732,6 +1732,16 @@ export function Footer({ anchorPrefix = '', logoHref = '#home' }: { anchorPrefix
   );
 }
 
+const whatsappCourseMessages: Record<SupportedLanguage, string> = {
+  "en": "Assalamu Alaikum! I'd like to know more about your courses, schedules, and fees.",
+  "ar": "السلام عليكم! أود الاستفسار عن الكورسات المتاحة ومواعيد الحصص والأسعار.",
+  "es": "¡Hola! Me gustaría saber más sobre sus cursos, horarios y precios.",
+  "de": "Hallo! Ich möchte mehr über Ihre Kurse, Unterrichtszeiten und Gebühren erfahren.",
+  "it": "Salve! Vorrei sapere di più sui vostri corsi, orari e prezzi.",
+  "ur": "السلام علیکم! میں آپ کے کورسز، کلاسوں کے اوقات اور فیس کے بارے میں جاننا چاہتا ہوں۔",
+  "tr": "Selamünaleyküm! Kurslarınız, ders saatleri ve ücretleriniz hakkında bilgi almak istiyorum."
+};
+
 export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean }) {
   const { i18n, t } = useTranslation();
   const [theme, setTheme] = useState<Theme>(() => {
@@ -1778,6 +1788,10 @@ export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean 
     });
   }, [i18n.resolvedLanguage, manageSeo, t]);
 
+  const whatsappLanguage = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0] as SupportedLanguage;
+  const whatsappCourseMessage = whatsappCourseMessages[whatsappLanguage] || whatsappCourseMessages.en;
+  const whatsappCourseHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(whatsappCourseMessage)}`;
+
   function toggleTheme() {
     setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
   }
@@ -1799,7 +1813,12 @@ export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean 
         <FAQSection />
       </main>
       <Footer />
-      <a className="floating-whatsapp" href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer" aria-label={t('aria.floatingWhatsapp')} onClick={trackWhatsAppContact}>
+      <a className="floating-whatsapp-message" href={whatsappCourseHref} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppContact}>
+        <span className="floating-whatsapp-message__brand">Musliman Academy</span>
+        <span>{whatsappCourseMessage}</span>
+        <Icon name="send" />
+      </a>
+      <a className="floating-whatsapp" href={whatsappCourseHref} target="_blank" rel="noreferrer" aria-label={t('aria.floatingWhatsapp')} onClick={trackWhatsAppContact}>
         <Icon name="whatsapp" />
       </a>
     </div>
