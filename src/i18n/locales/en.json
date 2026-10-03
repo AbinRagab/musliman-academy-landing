@@ -376,20 +376,24 @@
   },
   "how": {
     "eyebrow": "How It Works",
-    "heading": "Start Learning in 3 Simple Steps",
+    "heading": "Start Learning in 4 Simple Steps",
     "description": "Getting started at Musliman Academy is easy and hassle-free.",
     "steps": {
-      "bookTrial": {
-        "title": "Book a Free Trial",
-        "text": "Submit your details and choose the program that suits your goals."
+      "freeTrial": {
+        "title": "Free Trial",
+        "text": "Book your free trial class and experience our teaching approach with a qualified teacher."
       },
-      "meetTeacher": {
-        "title": "Meet Your Teacher",
-        "text": "We assess your level and schedule your first one-to-one online class."
+      "findPlan": {
+        "title": "Find Your Plan",
+        "text": "Choose the course and learning path that match your goals and level."
+      },
+      "setSchedule": {
+        "title": "Set Your Schedule",
+        "text": "Choose a convenient time that fits your schedule and book your regular classes."
       },
       "startLearning": {
         "title": "Start Learning",
-        "text": "Follow a personalized learning plan with regular guidance and support."
+        "text": "Complete your registration and begin your learning journey with confidence."
       }
     }
   },
