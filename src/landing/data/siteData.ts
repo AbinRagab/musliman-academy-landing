@@ -362,9 +362,10 @@ export const reasons: Array<{ key: string; icon: IconName }> = [
 ];
 
 export const howSteps: Array<{ step: string; key: string; icon: IconName }> = [
-  { step: '01', key: 'bookTrial', icon: 'gift' },
-  { step: '02', key: 'meetTeacher', icon: 'route' },
-  { step: '03', key: 'startLearning', icon: 'book' },
+  { step: '01', key: 'freeTrial', icon: 'gift' },
+  { step: '02', key: 'findPlan', icon: 'route' },
+  { step: '03', key: 'setSchedule', icon: 'clock' },
+  { step: '04', key: 'startLearning', icon: 'book' },
 ];
 
 export type LandingTeacher = {
