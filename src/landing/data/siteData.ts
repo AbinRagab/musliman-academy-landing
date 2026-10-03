@@ -312,18 +312,6 @@ export const pricingData: Record<PricingCurrency, {
   },
 };
 
-export const trustItems: Array<{ key: string; icon: IconName }> = [
-  { key: 'experiencedTeachers', icon: 'graduationCap' },
-  { key: 'ijazahCertified', icon: 'award' },
-  { key: 'azharBackground', icon: 'landmark' },
-  { key: 'personalizedPlans', icon: 'clipboardCheck' },
-  { key: 'liveOnline', icon: 'video' },
-  { key: 'smallGroups', icon: 'users' },
-  { key: 'parentFollowUp', icon: 'clipboardCheck' },
-  { key: 'freeTrial', icon: 'gift' },
-  { key: 'allLevels', icon: 'badgeCheck' },
-];
-
 export const testimonials = [
   {
     key: 'mazinStudentBeginning',
