@@ -27,7 +27,6 @@ import {
   testimonials,
   trainingBadges,
   trainingIncludes,
-  trustItems,
   type PricingCurrency,
 } from './data/siteData';
 
@@ -971,26 +970,6 @@ function AboutSection() {
               </div>
             ))}
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function TrustBarSection() {
-  const { t } = useTranslation();
-
-  return (
-    <section className="trust-section section-light" aria-label={t('aria.trustHighlights')}>
-      <SectionDecorations variant="light" type="default" />
-      <div className="container">
-        <div className="trust-bar">
-          {trustItems.map((item) => (
-            <div key={item.key} className="trust-bar__item">
-              <Icon name={item.icon} />
-              <span>{t(`trust.${item.key}`)}</span>
-            </div>
-          ))}
         </div>
       </div>
     </section>
@@ -1961,7 +1940,6 @@ export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean 
         <HeroSection onSelectBookingType={setActiveBookingType} />
         <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} />
         <AboutSection />
-        <TrustBarSection />
         <ProgramsSection />
         <PricingSection />
         <WhyChooseSection />
