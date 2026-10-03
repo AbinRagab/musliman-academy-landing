@@ -1345,6 +1345,64 @@ p {
   box-shadow: 0 22px 50px rgba(11, 31, 58, 0.14);
 }
 
+.about-video__controls {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.about-video__controls button {
+  pointer-events: auto;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 50%;
+  background: rgba(11, 31, 58, 0.78);
+  color: #fff;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.about-video__controls button:hover {
+  background: #bd762d;
+  transform: translateY(-1px);
+}
+
+.about-video__controls svg {
+  width: 17px;
+  height: 17px;
+}
+
+.about-video__dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.about-video__dots button {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.about-video__dots button.is-active {
+  width: 25px;
+  border-radius: 99px;
+  background: #d98a36;
+}
+
 .about-content h2 {
   max-width: 580px;
   margin: 0 0 10px;
@@ -6614,4 +6672,32 @@ body.dark-mode .program-card p {
   background: #0b1f3a;
   text-decoration: none;
   font-weight: 700;
+}
+
+/* Course enquiry bubble above the floating WhatsApp button. */
+.floating-whatsapp-message {
+  position: fixed;
+  z-index: 45;
+  right: 24px;
+  bottom: 100px;
+  width: min(280px, calc(100vw - 48px));
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1px solid #d9e8dc;
+  border-radius: 18px 18px 4px 18px;
+  background: #fff;
+  color: #0b1f3a;
+  box-shadow: 0 8px 30px rgba(11, 31, 58, 0.15);
+  font-size: 14px;
+  line-height: 1.6;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.floating-whatsapp-message:hover { transform: translateY(-3px); }
+.floating-whatsapp-message__brand { font-weight: 800; color: #128c48; }
+.floating-whatsapp-message > svg { width: 18px; height: 18px; justify-self: end; color: #128c48; }
+.floating-whatsapp-message:focus-visible { outline: 3px solid #128c48; outline-offset: 4px; }
+@media (max-width: 680px) {
+  .floating-whatsapp-message { right: 16px; bottom: 84px; width: min(250px, calc(100vw - 32px)); padding: 12px 14px; font-size: 13px; }
 }
