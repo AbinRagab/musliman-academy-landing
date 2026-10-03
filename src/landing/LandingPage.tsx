@@ -533,7 +533,6 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
           </div>
         </div>
       </div>
-      <div className="hero-curve" />
     </section>
   );
 }
