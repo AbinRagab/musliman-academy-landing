@@ -256,7 +256,7 @@
   "pricing": {
     "badge": "Pricing Plans",
     "heading": "Schedule & Fee",
-    "subtitle": "Each class is 30 minutes. Monthly plans are calculated based on 4 total learning hours per month.",
+    "subtitle": "Monthly plans include 8 sessions, each lasting 30 minutes — a total of 4 learning hours per month.",
     "currencyAria": "Select currency",
     "currencies": {
       "USD": "USA Dollars",
