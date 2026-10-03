@@ -6636,3 +6636,31 @@ body.dark-mode .program-card p {
   text-decoration: none;
   font-weight: 700;
 }
+
+/* Course enquiry bubble above the floating WhatsApp button. */
+.floating-whatsapp-message {
+  position: fixed;
+  z-index: 45;
+  right: 24px;
+  bottom: 100px;
+  width: min(280px, calc(100vw - 48px));
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1px solid #d9e8dc;
+  border-radius: 18px 18px 4px 18px;
+  background: #fff;
+  color: #0b1f3a;
+  box-shadow: 0 8px 30px rgba(11, 31, 58, 0.15);
+  font-size: 14px;
+  line-height: 1.6;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.floating-whatsapp-message:hover { transform: translateY(-3px); }
+.floating-whatsapp-message__brand { font-weight: 800; color: #128c48; }
+.floating-whatsapp-message > svg { width: 18px; height: 18px; justify-self: end; color: #128c48; }
+.floating-whatsapp-message:focus-visible { outline: 3px solid #128c48; outline-offset: 4px; }
+@media (max-width: 680px) {
+  .floating-whatsapp-message { right: 16px; bottom: 84px; width: min(250px, calc(100vw - 32px)); padding: 12px 14px; font-size: 13px; }
+}
