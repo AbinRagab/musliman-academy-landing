@@ -1804,8 +1804,8 @@ export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean 
         <AboutSection />
         <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} />
         <ProgramsSection />
-        <PricingSection />
         <WhyChooseSection />
+        <PricingSection />
         <TestimonialsSection />
         <HowItWorksSection />
         <TeachersSection />
