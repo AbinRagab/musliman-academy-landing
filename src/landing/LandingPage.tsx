@@ -1307,7 +1307,6 @@ function TestimonialsSection() {
                 const name = t(`${itemKey}.name`, { defaultValue: item.name });
                 const country = t(`${itemKey}.country`, { defaultValue: item.country });
                 const program = t(`${itemKey}.program`, { defaultValue: item.program });
-                const description = t(`${itemKey}.description`, { defaultValue: item.description });
                 const quote = t(`${itemKey}.quote`, { defaultValue: item.quote });
                 const initials = name
                   .split(' ')
@@ -1342,7 +1341,6 @@ function TestimonialsSection() {
 
                     <div className="testimonial-details">
                       <span><strong>{t('testimonials.fields.program')}:</strong> {program}</span>
-                      <span><strong>{t('testimonials.fields.description')}:</strong> {description}</span>
                     </div>
 
                     <span className="testimonial-quote-label">{t('testimonials.fields.testimonial')}</span>
