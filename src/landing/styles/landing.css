@@ -6706,3 +6706,11 @@ body.dark-mode .program-card p {
 .about-section + .booking-section {
   margin-top: 0;
 }
+
+/* Straight hero boundary, without the space reserved for the curved divider. */
+.hero {
+  padding-bottom: 80px;
+}
+@media (max-width: 768px) {
+  .hero { padding-bottom: 64px; }
+}
