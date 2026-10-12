@@ -473,8 +473,27 @@
         "program": "Quran Reading",
         "description": "Student of Brother Mazen",
         "quote": "May Allah (SWT) bless him, reward him abundantly for his efforts, and put barakah in his teaching In-Shaa-Allah. Ameen."
+      },
+      "demoReading": {
+        "name": "Demo Student 1",
+        "country": "France",
+        "program": "Quran Reading",
+        "quote": "The step-by-step lessons helped me practise reading with more confidence."
+      },
+      "demoTajweed": {
+        "name": "Demo Student 2",
+        "country": "Germany",
+        "program": "Tajweed",
+        "quote": "Clear explanations and guided practice made the Tajweed rules easier to understand."
+      },
+      "demoArabic": {
+        "name": "Demo Student 3",
+        "country": "Italy",
+        "program": "Arabic",
+        "quote": "A learning plan built around my level helped me develop a consistent study routine."
       }
-    }
+    },
+    "demoLabel": "Illustrative example — sample profile and country, not a real review"
   },
   "videoTestimonials": {
     "badge": "VIDEO TESTIMONIALS",
