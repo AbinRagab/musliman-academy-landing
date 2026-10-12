@@ -41,6 +41,8 @@ type OptimizedImage = {
 };
 type TestimonialItem = (typeof testimonials)[number] & {
   flag?: string;
+  flagImage?: string;
+  isDemo?: boolean;
   photo?: string;
   image?: string;
   rating?: number;
@@ -1199,7 +1201,7 @@ function TestimonialsSection() {
   const touchStartX = useRef<number | null>(null);
   const verifiedTestimonials = (testimonials as TestimonialItem[]).filter((item) => (
     Boolean(item.quote?.trim() && item.name?.trim())
-  ));
+  )).slice(0, 8);
   const hasCarousel = verifiedTestimonials.length > cardsPerView;
 
   function goNext() {
@@ -1307,34 +1309,34 @@ function TestimonialsSection() {
                 const country = t(`${itemKey}.country`, { defaultValue: item.country });
                 const program = t(`${itemKey}.program`, { defaultValue: item.program });
                 const quote = t(`${itemKey}.quote`, { defaultValue: item.quote });
-                const initials = name
-                  .split(' ')
-                  .filter(Boolean)
-                  .slice(0, 2)
-                  .map((part) => part[0])
-                  .join('')
-                  .toUpperCase();
+
 
                 return (
                   <article
                     className="testimonial-card"
                     key={`${item.key}-${item.country || item.program || index}`}
                   >
+                    {item.isDemo && (
+                      <p className="testimonial-demo-label" style={{ fontSize: 12, fontWeight: 700 }}>
+                        {t('testimonials.demoLabel', { defaultValue: 'Illustrative example — sample profile and country, not a real review' })}
+                      </p>
+                    )}
                     <div className="testimonial-card__top">
                       <div className="testimonial-avatar">
                         {photo ? (
                           <img src={photo} alt={name} loading="lazy" decoding="async" />
                         ) : (
-                          <span>{initials}</span>
+                          <Icon name="user" />
                         )}
                       </div>
 
                       <div className="testimonial-profile">
                         <h3>{name}</h3>
-                        <span className="testimonial-country">
-                          {item.flag && <span aria-hidden="true">{item.flag}</span>}
-                          <strong>{t('testimonials.fields.country')}:</strong> {country}
-                        </span>
+                        {item.flagImage && (
+                          <span className="testimonial-country">
+                            <img src={item.flagImage} alt={country} title={country} width={28} height={20} style={{ objectFit: 'contain' }} />
+                          </span>
+                        )}
                       </div>
                     </div>
 
