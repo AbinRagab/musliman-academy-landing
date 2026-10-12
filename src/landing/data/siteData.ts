@@ -352,7 +352,9 @@ export const testimonials = [
     country: 'Country not provided',
     program: 'Quran Reading',
     description: 'Student of Brother Mazen',
-  },
+  },  {"key":"demoReading","name":"Demo Student 1","country":"France","program":"Quran Reading","quote":"The step-by-step lessons helped me practise reading with more confidence.","flagImage":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2030%2020%22%3E%3Cpath%20fill%3D%22%23002395%22%20d%3D%22M0%200h10v20H0z%22%2F%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M10%200h10v20H10z%22%2F%3E%3Cpath%20fill%3D%22%23ed2939%22%20d%3D%22M20%200h10v20H20z%22%2F%3E%3C%2Fsvg%3E","isDemo":true,"description":""},
+  {"key":"demoTajweed","name":"Demo Student 2","country":"Germany","program":"Tajweed","quote":"Clear explanations and guided practice made the Tajweed rules easier to understand.","flagImage":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2030%2021%22%3E%3Cpath%20fill%3D%22%23000%22%20d%3D%22M0%200h30v7H0z%22%2F%3E%3Cpath%20fill%3D%22%23d00%22%20d%3D%22M0%207h30v7H0z%22%2F%3E%3Cpath%20fill%3D%22%23ffce00%22%20d%3D%22M0%2014h30v7H0z%22%2F%3E%3C%2Fsvg%3E","isDemo":true,"description":""},
+  {"key":"demoArabic","name":"Demo Student 3","country":"Italy","program":"Arabic","quote":"A learning plan built around my level helped me develop a consistent study routine.","flagImage":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2030%2020%22%3E%3Cpath%20fill%3D%22%23009246%22%20d%3D%22M0%200h10v20H0z%22%2F%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M10%200h10v20H10z%22%2F%3E%3Cpath%20fill%3D%22%23ce2b37%22%20d%3D%22M20%200h10v20H20z%22%2F%3E%3C%2Fsvg%3E","isDemo":true,"description":""},
 ];
 
 export const reasons: Array<{ key: string; icon: IconName }> = [
