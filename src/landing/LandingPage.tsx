@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent, MouseEventHandler, TouchEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, MouseEvent, MouseEventHandler, TouchEvent, useEffect, useId, useRef, useState } from 'react';
 import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
@@ -539,7 +539,25 @@ function HeroSection({ onSelectBookingType }: { onSelectBookingType: (type: Book
   );
 }
 
-export function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
+export function SearchableCountryInput({ invalid }: { invalid: boolean }) {
+  const { t, i18n } = useTranslation();
+  const listId = useId();
+  const [query, setQuery] = useState('');
+  const options = countryOptions.map((value) => ({
+    value,
+    label: getLocalizedCountryName(value, i18n.resolvedLanguage || i18n.language, t('booking.options.country.other')),
+  }));
+  const normalize = (value: string) => value.trim().normalize('NFKC').toLocaleLowerCase();
+  const selected = options.find((option) => normalize(option.label) === normalize(query) || normalize(option.value) === normalize(query));
+  return <>
+    <input type="text" list={listId} value={query} autoComplete="off" placeholder={t('booking.placeholders.country')}
+      aria-invalid={invalid} onChange={(event) => setQuery(event.target.value)} />
+    <datalist id={listId}>{options.map((option) => <option key={option.value} value={option.label} />)}</datalist>
+    <input type="hidden" name="country" value={selected?.value || ''} />
+  </>;
+}
+
+function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
   const { t, i18n } = useTranslation();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -784,14 +802,7 @@ export function BookingSection({ activeBookingType, onBookingTypeChange }: { act
                 </label>
                 <label>
                   <span>{t('booking.fields.country')}</span>
-                  <select name="country" defaultValue="" aria-invalid={Boolean(errors.country)}>
-                    <option value="" disabled>{t('booking.placeholders.country')}</option>
-                    {countryOptions.map((country) => (
-                      <option value={country} key={country}>
-                        {getLocalizedCountryName(country, i18n.resolvedLanguage || i18n.language, t('booking.options.country.other'))}
-                      </option>
-                    ))}
-                  </select>
+                  <SearchableCountryInput invalid={Boolean(errors.country)} />
                   {getFieldError('country')}
                 </label>
 
