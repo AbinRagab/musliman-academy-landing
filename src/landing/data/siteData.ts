@@ -1,3 +1,4 @@
+import { gehadPortrait, ahmedPortrait, yossefPortrait } from './suppliedTeacherImages';
 import type { IconName } from '../../components/Icon';
 import { fatimahAlShazlyPhoto, mazinYasserPhoto } from './teacherImages';
 
@@ -420,7 +421,7 @@ export const landingTeachers: LandingTeacher[] = [
       "Arabic",
       "English"
     ],
-    "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20480%22%3E%3Crect%20width%3D%22400%22%20height%3D%22480%22%20fill%3D%22%23ebe5d9%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22180%22%20r%3D%22126%22%20fill%3D%22%23fff%22%20opacity%3D%22.28%22%2F%3E%3Cpath%20d%3D%22M58%20480v-63c0-86%2062-124%20142-124s142%2038%20142%20124v63%22%20fill%3D%22%2317324f%22%2F%3E%3Cpath%20d%3D%22M165%20270h70v57c-18%2028-52%2028-70%200%22%20fill%3D%22%23c58d67%22%2F%3E%3Cellipse%20cx%3D%22200%22%20cy%3D%22193%22%20rx%3D%2278%22%20ry%3D%22105%22%20fill%3D%22%23ddb08b%22%2F%3E%3Cpath%20d%3D%22M122%20169c-4-62%2018-106%2078-106s87%2049%2078%20106l-16-37c-40%2011-86%206-110-10z%22%20fill%3D%22%2340352f%22%2F%3E%3Cpath%20d%3D%22M126%20219c13%2062%2038%2080%2074%2080s66-24%2074-80c-14%2012-19%2029-29%2039-26%2018-64%2019-91%200-10-10-17-26-28-39%22%20fill%3D%22%2340352f%22%20opacity%3D%22.6%22%2F%3E%3Cpath%20d%3D%22M157%20178h25m36%200h25%22%20stroke%3D%22%2340352f%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%22171%22%20cy%3D%22194%22%20r%3D%225%22%20fill%3D%22%23273344%22%2F%3E%3Ccircle%20cx%3D%22230%22%20cy%3D%22194%22%20r%3D%225%22%20fill%3D%22%23273344%22%2F%3E%3Cpath%20d%3D%22M201%20195l-7%2029h14%22%20fill%3D%22none%22%20stroke%3D%22%23b37f5d%22%20stroke-width%3D%224%22%2F%3E%3Cpath%20d%3D%22M180%20246q20%2010%2040%200%22%20fill%3D%22none%22%20stroke%3D%22%238e5b47%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M162%20337l38%2035%2038-35%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E",
+    "photo": ahmedPortrait,
     "photoPosition": "center"
   },
   {
@@ -433,7 +434,7 @@ export const landingTeachers: LandingTeacher[] = [
       "Arabic",
       "English"
     ],
-    "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20480%22%3E%3Crect%20width%3D%22400%22%20height%3D%22480%22%20fill%3D%22%23eee5d9%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22180%22%20r%3D%22126%22%20fill%3D%22%23fff%22%20opacity%3D%22.35%22%2F%3E%3Cpath%20d%3D%22M50%20480c6-96%2021-183%2057-240V160c0-72%2036-111%2093-111s93%2039%2093%20111v80c36%2057%2051%20144%2057%20240%22%20fill%3D%22%2317324a%22%2F%3E%3Cpath%20d%3D%22M128%20169c43-17%20101-17%20144%200v43H128z%22%20fill%3D%22%23d5a580%22%2F%3E%3Cpath%20d%3D%22M128%20171h144v17c-43-12-101-12-144%200z%22%20fill%3D%22%23132b40%22%2F%3E%3Cpath%20d%3D%22M139%20198q16-14%2033%200m56%200q16-14%2033%200%22%20fill%3D%22none%22%20stroke%3D%22%2345332b%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%22156%22%20cy%3D%22199%22%20r%3D%224%22%20fill%3D%22%2325313a%22%2F%3E%3Ccircle%20cx%3D%22245%22%20cy%3D%22199%22%20r%3D%224%22%20fill%3D%22%2325313a%22%2F%3E%3Cpath%20d%3D%22M127%20213h146l20%20138-93%2051-93-51z%22%20fill%3D%22%23102538%22%2F%3E%3Cpath%20d%3D%22M106%20251%2079%20440m215-189%2027%20189%22%20stroke%3D%22%232b4860%22%20stroke-width%3D%227%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M150%2075q-45%2048-41%20105m141-105q45%2048%2041%20105%22%20fill%3D%22none%22%20stroke%3D%22%23304c61%22%20stroke-width%3D%224%22%2F%3E%3C%2Fsvg%3E",
+    "photo": gehadPortrait,
     "photoPosition": "center"
   },
   {
@@ -446,7 +447,7 @@ export const landingTeachers: LandingTeacher[] = [
       "Arabic",
       "English"
     ],
-    "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20480%22%3E%3Crect%20width%3D%22400%22%20height%3D%22480%22%20fill%3D%22%23e1e8e5%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22180%22%20r%3D%22126%22%20fill%3D%22%23fff%22%20opacity%3D%22.28%22%2F%3E%3Cpath%20d%3D%22M58%20480v-63c0-86%2062-124%20142-124s142%2038%20142%20124v63%22%20fill%3D%22%2338584f%22%2F%3E%3Cpath%20d%3D%22M165%20270h70v57c-18%2028-52%2028-70%200%22%20fill%3D%22%23c58d67%22%2F%3E%3Cellipse%20cx%3D%22200%22%20cy%3D%22193%22%20rx%3D%2278%22%20ry%3D%22105%22%20fill%3D%22%23ddb08b%22%2F%3E%3Cpath%20d%3D%22M122%20169c-4-62%2018-106%2078-106s87%2049%2078%20106l-16-37c-40%2011-86%206-110-10z%22%20fill%3D%22%23292c2b%22%2F%3E%3Cpath%20d%3D%22M126%20219c13%2062%2038%2080%2074%2080s66-24%2074-80c-14%2012-19%2029-29%2039-26%2018-64%2019-91%200-10-10-17-26-28-39%22%20fill%3D%22%23292c2b%22%20opacity%3D%22.6%22%2F%3E%3Cpath%20d%3D%22M157%20178h25m36%200h25%22%20stroke%3D%22%23292c2b%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%22171%22%20cy%3D%22194%22%20r%3D%225%22%20fill%3D%22%23273344%22%2F%3E%3Ccircle%20cx%3D%22230%22%20cy%3D%22194%22%20r%3D%225%22%20fill%3D%22%23273344%22%2F%3E%3Cpath%20d%3D%22M201%20195l-7%2029h14%22%20fill%3D%22none%22%20stroke%3D%22%23b37f5d%22%20stroke-width%3D%224%22%2F%3E%3Cpath%20d%3D%22M180%20246q20%2010%2040%200%22%20fill%3D%22none%22%20stroke%3D%22%238e5b47%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M162%20337l38%2035%2038-35%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E",
+    "photo": yossefPortrait,
     "photoPosition": "center"
   },
 ];
