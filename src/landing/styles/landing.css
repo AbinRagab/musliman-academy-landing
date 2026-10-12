@@ -6744,3 +6744,9 @@ body.dark-mode .program-card p {
   .stories-copy blockquote { font-size: 17px; line-height: 1.8; }
 }
 @media (prefers-reduced-motion: reduce) { .stories-portrait { transition: none; } }
+
+/* One row of up to three teacher cards, matching carousel breakpoints. */
+.teachers-carousel .teachers-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.teachers-carousel .teacher-card { min-width: 0; }
+@media (max-width: 980px) { .teachers-carousel .teachers-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .teachers-carousel .teachers-grid { grid-template-columns: minmax(0, 1fr); } }

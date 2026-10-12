@@ -1,3 +1,4 @@
+import { gehadPortrait, ahmedPortrait, yossefPortrait } from './suppliedTeacherImages';
 import type { IconName } from '../../components/Icon';
 import { fatimahAlShazlyPhoto, mazinYasserPhoto } from './teacherImages';
 
@@ -409,6 +410,45 @@ export const landingTeachers: LandingTeacher[] = [
     photoPosition: 'center 28%',
     experience: '5+ Years',
     languages: ['Arabic', 'English'],
+  },
+  {
+    "id": "ahmed-yasser",
+    "key": "ahmedYasser",
+    "fullName": "Ahmed Yasser",
+    "specialization": "Qur'an, Tajweed, Islamic Studies",
+    "experience": "2+ Years",
+    "languages": [
+      "Arabic",
+      "English"
+    ],
+    "photo": ahmedPortrait,
+    "photoPosition": "center"
+  },
+  {
+    "id": "gehad-ragab",
+    "key": "gehadRagab",
+    "fullName": "Gehad Ragab",
+    "specialization": "Qur'an, Tajweed, Islamic Studies",
+    "experience": "4+ Years",
+    "languages": [
+      "Arabic",
+      "English"
+    ],
+    "photo": gehadPortrait,
+    "photoPosition": "center"
+  },
+  {
+    "id": "yossef-abd-eltwab",
+    "key": "yossefAbdEltwab",
+    "fullName": "Yossef Abd Eltwab",
+    "specialization": "Qur'an, Tajweed, Islamic Studies",
+    "experience": "3+ Years",
+    "languages": [
+      "Arabic",
+      "English"
+    ],
+    "photo": yossefPortrait,
+    "photoPosition": "center"
   },
 ];
 

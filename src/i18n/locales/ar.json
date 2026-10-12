@@ -561,6 +561,21 @@
         "name": "فاطمة الشاذلي",
         "specialization": "القرآن الكريم، التجويد، الدراسات الإسلامية",
         "experience": "أكثر من 5 سنوات"
+      },
+      "ahmedYasser": {
+        "name": "أحمد ياسر",
+        "specialization": "القرآن والتجويد والدراسات الإسلامية",
+        "experience": "أكثر من سنتين"
+      },
+      "gehadRagab": {
+        "name": "جهاد رجب",
+        "specialization": "القرآن والتجويد والدراسات الإسلامية",
+        "experience": "أكثر من 4 سنوات"
+      },
+      "yossefAbdEltwab": {
+        "name": "يوسف عبد التواب",
+        "specialization": "القرآن والتجويد والدراسات الإسلامية",
+        "experience": "أكثر من 3 سنوات"
       }
     }
   },

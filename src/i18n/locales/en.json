@@ -561,6 +561,21 @@
         "name": "Fatimah Al_Shazly",
         "specialization": "Qur'an, Tajweed, Islamic Studies",
         "experience": "5+ Years"
+      },
+      "ahmedYasser": {
+        "name": "Ahmed Yasser",
+        "specialization": "Qur'an, Tajweed, Islamic Studies",
+        "experience": "2+ Years"
+      },
+      "gehadRagab": {
+        "name": "Gehad Ragab",
+        "specialization": "Qur'an, Tajweed, Islamic Studies",
+        "experience": "4+ Years"
+      },
+      "yossefAbdEltwab": {
+        "name": "Yossef Abd Eltwab",
+        "specialization": "Qur'an, Tajweed, Islamic Studies",
+        "experience": "3+ Years"
       }
     }
   },
