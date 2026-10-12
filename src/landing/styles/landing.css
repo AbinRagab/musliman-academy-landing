@@ -6714,3 +6714,33 @@ body.dark-mode .program-card p {
 @media (max-width: 768px) {
   .hero { padding-bottom: 64px; }
 }
+
+/* Portrait selector testimonials */
+.stories-carousel { max-width: 1120px; margin: 0 auto; text-align: center; }
+.stories-quote-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; align-items: center; gap: 28px; }
+.stories-quote-row .testimonial-btn { position: static; }
+.stories-copy { min-width: 0; }
+.stories-quote-mark { display: block; color: var(--gold, #b87835); font-family: Georgia, serif; font-size: 100px; line-height: .9; }
+.stories-copy blockquote { margin: 12px auto 24px; max-width: 850px; font-size: clamp(18px, 2vw, 25px); line-height: 1.85; color: inherit; }
+.stories-program { display: inline-block; padding: 9px 24px; border-radius: 999px; background: rgba(184, 120, 53, .09); }
+.stories-portraits { display: flex; justify-content: center; align-items: center; gap: 24px; margin: 32px 0 18px; }
+.stories-portrait { width: 88px; height: 88px; flex: 0 0 auto; padding: 4px; border: 1px solid rgba(184,120,53,.25); border-radius: 50%; background: transparent; cursor: pointer; opacity: .7; transition: width .2s, height .2s, opacity .2s; }
+.stories-portrait.is-outer { width: 66px; height: 66px; opacity: .5; }
+.stories-portrait.is-active { width: 144px; height: 144px; border: 3px solid #b87835; opacity: 1; }
+.stories-portrait img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.stories-portrait:focus-visible, .stories-carousel button:focus-visible { outline: 3px solid #b87835; outline-offset: 4px; }
+.stories-profile h3 { margin: 0 0 6px; font-size: 21px; }
+.stories-country { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; color: var(--muted, #718096); }
+.stories-country img { object-fit: contain; }
+.stories-carousel .testimonial-dots { margin-top: 24px; }
+@media (max-width: 640px) {
+  .stories-quote-row { grid-template-columns: 32px minmax(0,1fr) 32px; gap: 8px; }
+  .stories-quote-row .testimonial-btn { width: 32px; height: 32px; padding: 5px; }
+  .stories-quote-mark { font-size: 74px; }
+  .stories-portraits { gap: 10px; }
+  .stories-portrait { width: 54px; height: 54px; }
+  .stories-portrait.is-outer { width: 34px; height: 34px; }
+  .stories-portrait.is-active { width: 90px; height: 90px; }
+  .stories-copy blockquote { font-size: 17px; line-height: 1.8; }
+}
+@media (prefers-reduced-motion: reduce) { .stories-portrait { transition: none; } }
