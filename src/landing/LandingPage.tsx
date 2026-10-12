@@ -1233,7 +1233,13 @@ function TestimonialsSection() {
             <button type="button" className="testimonial-btn" onClick={() => move(-1)} aria-label={t('testimonials.aria.previous')}><Icon name="chevronLeft" /></button>
             <div className="stories-copy" aria-live="polite" aria-atomic="true">
               <span className="stories-quote-mark" aria-hidden="true">“</span>
-              <blockquote>{t(`${key}.quote`, { defaultValue: active.quote })}</blockquote>
+              <div className="stories-quote-stack">
+                {reviews.map((review, index) => (
+                  <blockquote key={review.key} className={index === activeIndex ? 'is-active' : ''} aria-hidden={index !== activeIndex}>
+                    {t(`testimonials.items.${review.key}.quote`, { defaultValue: review.quote })}
+                  </blockquote>
+                ))}
+              </div>
               <span className="stories-program">{t(`${key}.program`, { defaultValue: active.program })}</span>
             </div>
             <button type="button" className="testimonial-btn" onClick={() => move(1)} aria-label={t('testimonials.aria.next')}><Icon name="chevronRight" /></button>
