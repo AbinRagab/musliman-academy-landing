@@ -1194,83 +1194,24 @@ function WhyChooseSection() {
   );
 }
 
+const testimonialAvatarFallback = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><rect width="160" height="160" fill="#f4ede3"/><circle cx="80" cy="59" r="27" fill="#17324f"/><path d="M30 144v-12a50 50 0 0 1 100 0v12" fill="#17324f"/></svg>');
+
 function TestimonialsSection() {
   const { t } = useTranslation();
+  const reviews = testimonials as TestimonialItem[];
   const [activeIndex, setActiveIndex] = useState(0);
-  const [cardsPerView, setCardsPerView] = useState(3);
   const touchStartX = useRef<number | null>(null);
-  const verifiedTestimonials = (testimonials as TestimonialItem[]).filter((item) => (
-    Boolean(item.quote?.trim() && item.name?.trim())
-  )).slice(0, 8);
-  const hasCarousel = verifiedTestimonials.length > cardsPerView;
-
-  function goNext() {
-    if (!verifiedTestimonials.length) {
-      return;
-    }
-
-    setActiveIndex((prev) => (prev + 1) % verifiedTestimonials.length);
-  }
-
-  function goPrev() {
-    if (!verifiedTestimonials.length) {
-      return;
-    }
-
-    setActiveIndex((prev) => (prev === 0 ? verifiedTestimonials.length - 1 : prev - 1));
-  }
-
-  useEffect(() => {
-    function updateCardsPerView() {
-      if (window.innerWidth <= 640) {
-        setCardsPerView(1);
-        return;
-      }
-
-      if (window.innerWidth <= 980) {
-        setCardsPerView(2);
-        return;
-      }
-
-      setCardsPerView(window.innerWidth >= 1280 ? 4 : 3);
-    }
-
-    updateCardsPerView();
-    window.addEventListener('resize', updateCardsPerView);
-    return () => window.removeEventListener('resize', updateCardsPerView);
-  }, []);
-
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [cardsPerView, verifiedTestimonials.length]);
-
-  function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
-    touchStartX.current = event.touches[0]?.clientX ?? null;
-  }
-
-  function handleTouchEnd(event: TouchEvent<HTMLDivElement>) {
-    if (touchStartX.current === null) {
-      return;
-    }
-
-    const distance = (event.changedTouches[0]?.clientX ?? touchStartX.current) - touchStartX.current;
-    touchStartX.current = null;
-
-    if (Math.abs(distance) < 45) {
-      return;
-    }
-
-    if (distance < 0) {
-      goNext();
-    } else {
-      goPrev();
-    }
-  }
-
-  const visibleTestimonials = hasCarousel
-    ? Array.from({ length: cardsPerView }, (_, offset) => verifiedTestimonials[(activeIndex + offset) % verifiedTestimonials.length])
-    : verifiedTestimonials;
-
+  const active = reviews[activeIndex];
+  if (!active) return null;
+  const key = `testimonials.items.${active.key}`;
+  const name = t(`${key}.name`, { defaultValue: active.name });
+  const country = t(`${key}.country`, { defaultValue: active.country });
+  const hasCountry = Boolean(active.country && active.country !== 'Country not provided');
+  const move = (step: number) => setActiveIndex((current) => (current + step + reviews.length) % reviews.length);
+  const selectors = [-2, -1, 0, 1, 2].map((offset) => ({
+    offset,
+    index: (activeIndex + offset + reviews.length) % reviews.length,
+  }));
   return (
     <section className="testimonials-section section-light" id="testimonials">
       <SectionDecorations variant="light" type="testimonials" />
@@ -1280,115 +1221,43 @@ function TestimonialsSection() {
           <h2>{t('testimonials.heading')}</h2>
           <p>{t('testimonials.description')}</p>
         </div>
-
-        {visibleTestimonials.length > 0 ? (
-          <div
-            className="testimonials-slider-area"
-            role="region"
-            aria-roledescription="carousel"
-            aria-label={t('testimonials.aria.region')}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            {hasCarousel && (
-              <div className="testimonials-controls">
-                <button type="button" className="testimonial-btn" onClick={goPrev} aria-label={t('testimonials.aria.previous')}>
-                  <Icon name="chevronLeft" />
-                </button>
-                <button type="button" className="testimonial-btn" onClick={goNext} aria-label={t('testimonials.aria.next')}>
-                  <Icon name="chevronRight" />
-                </button>
-              </div>
-            )}
-
-            <div className={`testimonials-grid ${visibleTestimonials.length === 1 ? 'testimonials-grid--single' : ''}`} aria-live="polite">
-              {visibleTestimonials.map((item, index) => {
-                const photo = item.photo || item.image;
-                const itemKey = `testimonials.items.${item.key}`;
-                const name = t(`${itemKey}.name`, { defaultValue: item.name });
-                const country = t(`${itemKey}.country`, { defaultValue: item.country });
-                const program = t(`${itemKey}.program`, { defaultValue: item.program });
-                const quote = t(`${itemKey}.quote`, { defaultValue: item.quote });
-
-
-                return (
-                  <article
-                    className="testimonial-card"
-                    key={`${item.key}-${item.country || item.program || index}`}
-                  >
-                    {item.isDemo && (
-                      <p className="testimonial-demo-label" style={{ fontSize: 12, fontWeight: 700 }}>
-                        {t('testimonials.demoLabel', { defaultValue: 'Illustrative example — sample profile and country, not a real review' })}
-                      </p>
-                    )}
-                    <div className="testimonial-card__top">
-                      <div className="testimonial-avatar">
-                        {photo ? (
-                          <img src={photo} alt={name} loading="lazy" decoding="async" />
-                        ) : (
-                          <Icon name="user" />
-                        )}
-                      </div>
-
-                      <div className="testimonial-profile">
-                        <h3>{name}</h3>
-                        {item.flagImage && (
-                          <span className="testimonial-country">
-                            <img src={item.flagImage} alt={country} title={country} width={28} height={20} style={{ objectFit: 'contain' }} />
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="testimonial-details">
-                      <span><strong>{t('testimonials.fields.program')}:</strong> {program}</span>
-                    </div>
-
-                    <span className="testimonial-quote-label">{t('testimonials.fields.testimonial')}</span>
-                    <p className="testimonial-quote">{quote}</p>
-
-                    {typeof item.rating === 'number' && item.rating > 0 && (
-                      <div className="testimonial-rating" role="img" aria-label={t('testimonials.aria.rating', { rating: item.rating })}>
-                        {Array.from({ length: item.rating }).map((_, starIndex) => (
-                          <Icon key={starIndex} name="star" />
-                        ))}
-                      </div>
-                    )}
-                  </article>
-                );
-              })}
+        <div className="stories-carousel" role="region" aria-roledescription="carousel" aria-label={t('testimonials.aria.region')}
+          onTouchStart={(event) => { touchStartX.current = event.touches[0]?.clientX ?? null; }}
+          onTouchEnd={(event) => {
+            if (touchStartX.current === null) return;
+            const distance = (event.changedTouches[0]?.clientX ?? touchStartX.current) - touchStartX.current;
+            touchStartX.current = null;
+            if (Math.abs(distance) >= 45) move(distance < 0 ? 1 : -1);
+          }}>
+          <div className="stories-quote-row">
+            <button type="button" className="testimonial-btn" onClick={() => move(-1)} aria-label={t('testimonials.aria.previous')}><Icon name="chevronLeft" /></button>
+            <div className="stories-copy" aria-live="polite" aria-atomic="true">
+              <span className="stories-quote-mark" aria-hidden="true">“</span>
+              <blockquote>{t(`${key}.quote`, { defaultValue: active.quote })}</blockquote>
+              <span className="stories-program">{t(`${key}.program`, { defaultValue: active.program })}</span>
             </div>
-
-            {hasCarousel && (
-              <div className="testimonial-dots">
-                {verifiedTestimonials.map((_, index) => (
-                  <button
-                    type="button"
-                    key={index}
-                    className={`testimonial-dot ${index === activeIndex ? 'is-active' : ''}`}
-                    onClick={() => setActiveIndex(index)}
-                    aria-label={t('testimonials.aria.show', { index: index + 1 })}
-                  />
-                ))}
-              </div>
-            )}
+            <button type="button" className="testimonial-btn" onClick={() => move(1)} aria-label={t('testimonials.aria.next')}><Icon name="chevronRight" /></button>
           </div>
-        ) : (
-          <div className="testimonials-grid">
-            <article className="testimonial-card testimonial-card--empty">
-              <div className="testimonial-card__top">
-                <div className="testimonial-avatar">
-                  <Icon name="user" />
-                </div>
-                <div className="testimonial-profile">
-                  <h3>{t('testimonials.empty.title')}</h3>
-                  <span className="testimonial-context">{t('testimonials.empty.context')}</span>
-                </div>
-              </div>
-              <p className="testimonial-quote">{t('testimonials.empty.text')}</p>
-            </article>
+          <div className="stories-portraits">
+            {selectors.map(({ offset, index }) => {
+              const item = reviews[index];
+              return <button type="button" key={item.key} className={`stories-portrait ${offset === 0 ? 'is-active' : ''} ${Math.abs(offset) === 2 ? 'is-outer' : ''}`}
+                onClick={() => setActiveIndex(index)} aria-pressed={offset === 0}
+                aria-label={t('testimonials.aria.show', { index: index + 1 })}>
+                <img src={item.photo || item.image || testimonialAvatarFallback} alt="" loading="lazy" decoding="async"
+                  onError={(event) => { if (event.currentTarget.src !== testimonialAvatarFallback) event.currentTarget.src = testimonialAvatarFallback; }} />
+              </button>;
+            })}
           </div>
-        )}
+          <div className="stories-profile" aria-live="polite">
+            <h3>{name}</h3>
+            {hasCountry && <span className="stories-country">{country}{active.flagImage ? <img src={active.flagImage} alt="" width={24} height={16} /> : active.flag ? <span aria-hidden="true">{active.flag}</span> : null}</span>}
+          </div>
+          <div className="testimonial-dots">
+            {reviews.map((item, index) => <button type="button" key={item.key} className={`testimonial-dot ${index === activeIndex ? 'is-active' : ''}`}
+              onClick={() => setActiveIndex(index)} aria-label={t('testimonials.aria.show', { index: index + 1 })} aria-pressed={index === activeIndex} />)}
+          </div>
+        </div>
       </div>
     </section>
   );
