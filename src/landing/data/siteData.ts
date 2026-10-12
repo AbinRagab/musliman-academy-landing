@@ -314,47 +314,45 @@ export const pricingData: Record<PricingCurrency, {
 
 export const testimonials = [
   {
-    key: 'mazinStudentBeginning',
-    quote: "When I first started, I couldn't read the Qur'an at all. I didn't even know the Arabic alphabet that well, so I was starting from the very beginning. I wasn't sure how quickly I would learn, but Brother Mazen made the whole process easy to follow and never made me feel discouraged.",
-    name: "A Qur'an Student",
-    country: 'Country not provided',
-    program: 'Quran Reading',
-    description: 'Student of Brother Mazen',
+    "key": "mazinStudentBeginning",
+    "quote": "When I first started, I couldn't read the Qur'an at all. I didn't even know the Arabic alphabet that well, so I was starting from the very beginning. I wasn't sure how quickly I would learn, but Brother Mazen made the whole process easy to follow and never made me feel discouraged.",
+    "name": "A Qur'an Student",
+    "country": "Country not provided",
+    "program": "Quran Reading",
+    "description": "Student of Brother Mazen"
   },
   {
-    key: 'mazinStudentProgress',
-    quote: "Alhamdulillah, by the mercy of Allah and through Brother Mazen's guidance, I can now pick up the Qur'an and read it. I still have more to learn, but when I think about where I started, I'm amazed at how much progress I've made over the past year with him.",
-    name: "A Qur'an Student",
-    country: 'Country not provided',
-    program: 'Quran Reading',
-    description: 'Student of Brother Mazen',
+    "key": "mazinStudentProgress",
+    "quote": "Alhamdulillah, by the mercy of Allah and through Brother Mazen's guidance, I can now pick up the Qur'an and read it. I still have more to learn, but when I think about where I started, I'm amazed at how much progress I've made over the past year with him.",
+    "name": "A Qur'an Student",
+    "country": "Country not provided",
+    "program": "Quran Reading",
+    "description": "Student of Brother Mazen"
   },
   {
-    key: 'mazinStudentStructure',
-    quote: 'His teaching style is structured, encouraging, and easy to follow. Each lesson builds on the last, so you continue making steady progress without feeling overwhelmed. He also gives you the confidence to keep trying, even when you make mistakes, and that has made a huge difference in my learning.',
-    name: "A Qur'an Student",
-    country: 'Country not provided',
-    program: 'Quran Reading',
-    description: 'Student of Brother Mazen',
+    "key": "mazinStudentStructure",
+    "quote": "His teaching style is structured, encouraging, and easy to follow. Each lesson builds on the last, so you continue making steady progress without feeling overwhelmed. He also gives you the confidence to keep trying, even when you make mistakes, and that has made a huge difference in my learning.",
+    "name": "A Qur'an Student",
+    "country": "Country not provided",
+    "program": "Quran Reading",
+    "description": "Student of Brother Mazen"
   },
   {
-    key: 'mazinStudentPatience',
-    quote: "One of his greatest strengths as a teacher is his patience. He takes the time to explain every lesson clearly, breaks things down into simple steps, and makes sure you understand before moving on. If you don't understand something the first time, he's always happy to explain it again in a different way until it finally clicks.",
-    name: "A Qur'an Student",
-    country: 'Country not provided',
-    program: 'Quran Reading',
-    description: 'Student of Brother Mazen',
+    "key": "mazinStudentPatience",
+    "quote": "One of his greatest strengths as a teacher is his patience. He takes the time to explain every lesson clearly, breaks things down into simple steps, and makes sure you understand before moving on. If you don't understand something the first time, he's always happy to explain it again in a different way until it finally clicks.",
+    "name": "A Qur'an Student",
+    "country": "Country not provided",
+    "program": "Quran Reading",
+    "description": "Student of Brother Mazen"
   },
   {
-    key: 'mazinStudentPrayer',
-    quote: 'May Allah (SWT) bless him, reward him abundantly for his efforts, and put barakah in his teaching In-Shaa-Allah. Ameen.',
-    name: "A Qur'an Student",
-    country: 'Country not provided',
-    program: 'Quran Reading',
-    description: 'Student of Brother Mazen',
-  },  {"key":"demoReading","name":"Demo Student 1","country":"France","program":"Quran Reading","quote":"The step-by-step lessons helped me practise reading with more confidence.","flagImage":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2030%2020%22%3E%3Cpath%20fill%3D%22%23002395%22%20d%3D%22M0%200h10v20H0z%22%2F%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M10%200h10v20H10z%22%2F%3E%3Cpath%20fill%3D%22%23ed2939%22%20d%3D%22M20%200h10v20H20z%22%2F%3E%3C%2Fsvg%3E","isDemo":true,"description":""},
-  {"key":"demoTajweed","name":"Demo Student 2","country":"Germany","program":"Tajweed","quote":"Clear explanations and guided practice made the Tajweed rules easier to understand.","flagImage":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2030%2021%22%3E%3Cpath%20fill%3D%22%23000%22%20d%3D%22M0%200h30v7H0z%22%2F%3E%3Cpath%20fill%3D%22%23d00%22%20d%3D%22M0%207h30v7H0z%22%2F%3E%3Cpath%20fill%3D%22%23ffce00%22%20d%3D%22M0%2014h30v7H0z%22%2F%3E%3C%2Fsvg%3E","isDemo":true,"description":""},
-  {"key":"demoArabic","name":"Demo Student 3","country":"Italy","program":"Arabic","quote":"A learning plan built around my level helped me develop a consistent study routine.","flagImage":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2030%2020%22%3E%3Cpath%20fill%3D%22%23009246%22%20d%3D%22M0%200h10v20H0z%22%2F%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M10%200h10v20H10z%22%2F%3E%3Cpath%20fill%3D%22%23ce2b37%22%20d%3D%22M20%200h10v20H20z%22%2F%3E%3C%2Fsvg%3E","isDemo":true,"description":""},
+    "key": "mazinStudentPrayer",
+    "quote": "May Allah (SWT) bless him, reward him abundantly for his efforts, and put barakah in his teaching In-Shaa-Allah. Ameen.",
+    "name": "A Qur'an Student",
+    "country": "Country not provided",
+    "program": "Quran Reading",
+    "description": "Student of Brother Mazen"
+  }
 ];
 
 export const reasons: Array<{ key: string; icon: IconName }> = [
