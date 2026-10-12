@@ -6750,3 +6750,8 @@ body.dark-mode .program-card p {
 .teachers-carousel .teacher-card { min-width: 0; }
 @media (max-width: 980px) { .teachers-carousel .teachers-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .teachers-carousel .teachers-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* All quotes share one grid cell so the longest translation reserves height. */
+.stories-quote-stack { display: grid; min-width: 0; }
+.stories-quote-stack blockquote { grid-area: 1 / 1; width: 100%; box-sizing: border-box; visibility: hidden; pointer-events: none; }
+.stories-quote-stack blockquote.is-active { visibility: visible; pointer-events: auto; }
