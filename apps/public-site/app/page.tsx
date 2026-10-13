@@ -1,5 +1,3 @@
 import LandingClient from './landing-client';
-
-export default function HomePage() {
-  return <LandingClient />;
-}
+import Link from 'next/link';
+export default function HomePage() { return <><LandingClient/><nav style={{padding:'24px',textAlign:'center'}} aria-label="Explore"><Link href="/en/programs">Explore all programs</Link> · <Link href="/en/teachers">Meet our teachers</Link></nav></>; }
