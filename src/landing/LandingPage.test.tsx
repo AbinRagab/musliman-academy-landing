@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import i18n, { initializeI18n, loadLanguageResource } from '../i18n';
 import LandingPage from './LandingPage';
@@ -44,9 +44,15 @@ describe('LandingPage', () => {
     expect(screen.getByText('قصص الطلاب')).toBeInTheDocument();
     expect(screen.getByText('معلمونا')).toBeInTheDocument();
     expect(screen.getByText('هل الحصص أونلاين؟')).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'أنتيغوا وباربودا' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'البوسنة والهرسك' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'ميانمار' })).toBeInTheDocument();
+    const countryInput = screen.getByRole('combobox', { name: 'الدولة' });
+    const suggestions = document.getElementById(countryInput.getAttribute('list')!);
+    for (const country of ['أنتيغوا وباربودا', 'البوسنة والهرسك', 'ميانمار']) {
+      expect(Array.from(suggestions!.querySelectorAll('option')).some(option => option.value === country)).toBe(true);
+    }
+    fireEvent.change(countryInput, { target: { value: 'البوسنة والهرسك' } });
+    expect(countryInput.closest('form')!.querySelector('input[name="country"]')).toHaveValue('Bosnia and Herzegovina');
+    fireEvent.change(countryInput, { target: { value: 'البوسنة' } });
+    expect(countryInput.closest('form')!.querySelector('input[name="country"]')).toHaveValue('');
     const programSelect = screen.getByRole('option', { name: 'اختر برنامجا' }).parentElement as HTMLSelectElement;
     expect(programSelect).toBeEnabled();
     expect(within(programSelect).getByRole('option', { name: 'قراءة القرآن' })).toBeInTheDocument();
