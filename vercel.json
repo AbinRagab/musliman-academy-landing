@@ -4,6 +4,58 @@
     {
       "source": "/dashboard/:path*",
       "destination": "/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "https://musliman-academy-public.vercel.app/"
+    },
+    {
+      "source": "/en/:path*",
+      "destination": "https://musliman-academy-public.vercel.app/en/:path*"
+    },
+    {
+      "source": "/ar/:path*",
+      "destination": "https://musliman-academy-public.vercel.app/ar/:path*"
+    },
+    {
+      "source": "/es/:path*",
+      "destination": "https://musliman-academy-public.vercel.app/es/:path*"
+    },
+    {
+      "source": "/de/:path*",
+      "destination": "https://musliman-academy-public.vercel.app/de/:path*"
+    },
+    {
+      "source": "/it/:path*",
+      "destination": "https://musliman-academy-public.vercel.app/it/:path*"
+    },
+    {
+      "source": "/ur/:path*",
+      "destination": "https://musliman-academy-public.vercel.app/ur/:path*"
+    },
+    {
+      "source": "/tr/:path*",
+      "destination": "https://musliman-academy-public.vercel.app/tr/:path*"
+    },
+    {
+      "source": "/_next/:path*",
+      "destination": "https://musliman-academy-public.vercel.app/_next/:path*"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://musliman-academy-public.vercel.app/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "https://musliman-academy-public.vercel.app/robots.txt"
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "destination": "https://musliman-academy-public.vercel.app/manifest.webmanifest"
+    },
+    {
+      "source": "/opengraph-image",
+      "destination": "https://musliman-academy-public.vercel.app/opengraph-image"
     }
   ],
   "headers": [

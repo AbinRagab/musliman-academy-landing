@@ -5,12 +5,23 @@ import { describe, expect, it } from 'vitest';
 const root = process.cwd();
 
 describe('SEO infrastructure', () => {
-  it('rewrites dashboard routes only and marks them noindex', () => {
+  it('keeps dashboard routes local and noindex while serving the public site', () => {
     const vercelConfig = JSON.parse(readFileSync(resolve(root, 'vercel.json'), 'utf8'));
 
-    expect(vercelConfig.rewrites).toEqual([
+    expect(vercelConfig.rewrites[0]).toEqual(
       { source: '/dashboard/:path*', destination: '/index.html' },
+    );
+    const publicRoutes = vercelConfig.rewrites.slice(1);
+    expect(publicRoutes.map((route: { source: string }) => route.source)).toEqual([
+      '/', '/en/:path*', '/ar/:path*', '/es/:path*', '/de/:path*',
+      '/it/:path*', '/ur/:path*', '/tr/:path*', '/_next/:path*',
+      '/sitemap.xml', '/robots.txt', '/manifest.webmanifest', '/opengraph-image',
     ]);
+    for (const route of publicRoutes) {
+      const destination = new URL(route.destination);
+      expect(destination.origin).toBe('https://musliman-academy-public.vercel.app');
+      expect(destination.pathname).toBe(route.source);
+    }
     expect(vercelConfig.headers).toContainEqual({
       source: '/dashboard/:path*',
       headers: [
