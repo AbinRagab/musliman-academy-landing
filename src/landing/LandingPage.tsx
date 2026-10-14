@@ -290,6 +290,7 @@ export function Navbar({
   bookingHref = '#book-trial',
   logoHref = '#home',
   scrollToBooking = true,
+  linkOverrides = {},
 }: {
   theme: Theme;
   onToggleTheme: () => void;
@@ -298,13 +299,14 @@ export function Navbar({
   bookingHref?: string;
   logoHref?: string;
   scrollToBooking?: boolean;
+  linkOverrides?: Record<string, string>;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const logoVariant = theme === 'dark' ? 'light' : 'dark';
 
   function getAnchorHref(href: string) {
-    return href.startsWith('#') ? `${anchorPrefix}${href}` : href;
+    return linkOverrides[href] || (href.startsWith('#') ? `${anchorPrefix}${href}` : href);
   }
 
   function handleBookTrialClick(closeMenu = false): MouseEventHandler<HTMLAnchorElement> {
@@ -1548,12 +1550,12 @@ function FAQSection() {
   );
 }
 
-export function Footer({ anchorPrefix = '', logoHref = '#home' }: { anchorPrefix?: string; logoHref?: string }) {
+export function Footer({ anchorPrefix = '', logoHref = '#home', linkOverrides = {}, programLinks = {} }: { anchorPrefix?: string; logoHref?: string; linkOverrides?: Record<string, string>; programLinks?: Record<string, string> }) {
   const { t } = useTranslation();
   const quickLinks = navLinks;
 
   function getAnchorHref(href: string) {
-    return href.startsWith('#') ? `${anchorPrefix}${href}` : href;
+    return linkOverrides[href] || (href.startsWith('#') ? `${anchorPrefix}${href}` : href);
   }
 
   return (
@@ -1576,7 +1578,7 @@ export function Footer({ anchorPrefix = '', logoHref = '#home' }: { anchorPrefix
         <div>
           <h3>{t('footer.programs')}</h3>
           <ul>
-            {sitePrograms.map((program) => <li key={program.key}><a href={getAnchorHref('#programs')}><Icon name={program.icon} />{t(`programs.items.${program.key}.title`)}</a></li>)}
+            {sitePrograms.map((program) => <li key={program.key}><a href={programLinks[program.key] || getAnchorHref('#programs')}><Icon name={program.icon} />{t(`programs.items.${program.key}.title`)}</a></li>)}
             <li><a href={getAnchorHref('#teacher-training')}><Icon name="award" />{t('footer.teacherTraining')}</a></li>
           </ul>
         </div>
