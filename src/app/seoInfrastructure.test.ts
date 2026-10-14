@@ -5,29 +5,30 @@ import { describe, expect, it } from 'vitest';
 const root = process.cwd();
 
 describe('SEO infrastructure', () => {
-  it('keeps dashboard routes local and noindex while serving the public site', () => {
-    const vercelConfig = JSON.parse(readFileSync(resolve(root, 'vercel.json'), 'utf8'));
-
-    expect(vercelConfig.rewrites[0]).toEqual(
-      { source: '/dashboard/:path*', destination: '/index.html' },
-    );
-    const publicRoutes = vercelConfig.rewrites.slice(1);
-    expect(publicRoutes.map((route: { source: string }) => route.source)).toEqual([
-      '/', '/en/:path*', '/ar/:path*', '/es/:path*', '/de/:path*',
-      '/it/:path*', '/ur/:path*', '/tr/:path*', '/_next/:path*',
-      '/sitemap.xml', '/robots.txt', '/manifest.webmanifest', '/opengraph-image',
-    ]);
-    for (const route of publicRoutes) {
-      const destination = new URL(route.destination);
-      expect(destination.origin).toBe('https://musliman-academy-public.vercel.app');
-      expect(destination.pathname).toBe(route.source);
+  it('routes public pages before static files and keeps the dashboard local', () => {
+    const config = JSON.parse(readFileSync(resolve(root, 'vercel.json'), 'utf8'));
+    expect(config.rewrites).toBeUndefined();
+    expect(config.headers).toBeUndefined();
+    const filesystemIndex = config.routes.findIndex((route: { handle?: string }) => route.handle === 'filesystem');
+    expect(filesystemIndex).toBeGreaterThan(0);
+    const rules = config.routes.slice(0, filesystemIndex) as Array<{ src: string; dest: string; headers?: Record<string, string> }>;
+    const resolveRoute = (path: string) => {
+      const rule = rules.find(route => new RegExp(route.src).test(path));
+      return rule ? { destination: path.replace(new RegExp(rule.src), rule.dest), headers: rule.headers } : undefined;
+    };
+    const origin = 'https://musliman-academy-public.vercel.app';
+    for (const path of ['/', '/en/programs', '/ar/programs/quran-tajweed', '/de/teachers/mazin-yasser', '/_next/static/app.js', '/sitemap.xml', '/robots.txt', '/manifest.webmanifest', '/opengraph-image']) {
+      expect(resolveRoute(path)?.destination).toBe(origin + path);
     }
-    expect(vercelConfig.headers).toContainEqual({
-      source: '/dashboard/:path*',
-      headers: [
-        { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
-      ],
-    });
+    for (const path of ['/dashboard', '/dashboard/login', '/dashboard/admin/leads']) {
+      expect(resolveRoute(path)).toEqual({
+        destination: '/index.html',
+        headers: { 'X-Robots-Tag': 'noindex, nofollow, noarchive' },
+      });
+    }
+    for (const path of ['/assets/index.js', '/index.html', '/dashboard-other', '/unknown']) {
+      expect(resolveRoute(path)).toBeUndefined();
+    }
   });
 
   it('publishes only canonical, indexable URLs in the sitemap', () => {
