@@ -1634,6 +1634,15 @@ const whatsappCourseMessages: Record<SupportedLanguage, string> = {
 
 export default function LandingPage({ manageSeo = true, programPages = false }: { manageSeo?: boolean; programPages?: boolean }) {
   const { i18n, t } = useTranslation();
+  const pageLanguage = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
+  const pageLinks: Record<string, string> = programPages ? {
+    '#programs': `/${pageLanguage}/programs`,
+    '#teacher-training': `/${pageLanguage}/programs/teacher-training`,
+  } : {};
+  const footerProgramLinks = programPages ? Object.fromEntries(sitePrograms.map(program => [
+    program.key,
+    `/${pageLanguage}/programs/${program.key === 'islamicValues' ? 'islamic-values-for-children' : program.image.split('/').pop()?.replace('.png', '')}`,
+  ])) : {};
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') {
       return 'light';
@@ -1688,7 +1697,7 @@ export default function LandingPage({ manageSeo = true, programPages = false }: 
 
   return (
     <div className="app-shell" data-theme={theme}>
-      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} />
+      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} linkOverrides={pageLinks} />
       <main>
         <HeroSection onSelectBookingType={setActiveBookingType} />
         <AboutSection />
@@ -1702,7 +1711,7 @@ export default function LandingPage({ manageSeo = true, programPages = false }: 
         <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />
         <FAQSection />
       </main>
-      <Footer />
+      <Footer linkOverrides={pageLinks} programLinks={footerProgramLinks} />
       <a className="floating-whatsapp-message" href={whatsappCourseHref} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppContact}>
         <span className="floating-whatsapp-message__brand">Musliman Academy</span>
         <span>{whatsappCourseMessage}</span>
