@@ -970,8 +970,8 @@ function AboutSection() {
 }
 
 
-function ProgramsSection() {
-  const { t } = useTranslation();
+function ProgramsSection({ programPages = false }: { programPages?: boolean }) {
+  const { t, i18n } = useTranslation();
 
   return (
     <section className="programs section-light" id="programs">
@@ -997,7 +997,7 @@ function ProgramsSection() {
               </div>
               <h3>{t(`programs.items.${program.key}.title`)}</h3>
               <p>{t(`programs.items.${program.key}.text`)}</p>
-              <a href="#book-trial">{t('programs.learnMore')} <span>-&gt;</span></a>
+              <a href={programPages ? `/${i18n.resolvedLanguage || 'en'}/programs/${program.image.split('/').pop()?.replace('.png', '') === 'islamic-values-children' ? 'islamic-values-for-children' : program.image.split('/').pop()?.replace('.png', '')}` : '#book-trial'}>{t('programs.learnMore')} <span>-&gt;</span></a>
             </article>
           ))}
         </div>
@@ -1630,7 +1630,7 @@ const whatsappCourseMessages: Record<SupportedLanguage, string> = {
   "tr": "Selamünaleyküm! Kurslarınız, ders saatleri ve ücretleriniz hakkında bilgi almak istiyorum."
 };
 
-export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean }) {
+export default function LandingPage({ manageSeo = true, programPages = false }: { manageSeo?: boolean; programPages?: boolean }) {
   const { i18n, t } = useTranslation();
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') {
@@ -1691,7 +1691,7 @@ export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean 
         <HeroSection onSelectBookingType={setActiveBookingType} />
         <AboutSection />
         <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} />
-        <ProgramsSection />
+        <ProgramsSection programPages={programPages} />
         <PricingSection />
         <WhyChooseSection />
         <TestimonialsSection />
