@@ -41,16 +41,7 @@ export default async function Page({params}:Props) {
  {!p.slug&&<div className="catalog-grid">{p.kind==='programs'?<>{courses.map(course=><article key={course.key}><img src={course.image} alt=""/><h2><Link href={`/${lang}/programs/${course.slug}`}>{text(lang,`programs.items.${course.key}.title`)}</Link></h2><p>{text(lang,`programs.items.${course.key}.text`)}</p></article>)}<article><h2><Link href={`/${lang}/programs/teacher-training`}>{text(lang,'training.heading')}</Link></h2><p>{text(lang,'training.description')}</p></article></>:teachers.map(teacher=><article key={teacher.id}><img src={teacher.photo} alt={teacher.fullName}/><h2><Link href={`/${lang}/teachers/${teacher.id}`}>{text(lang,`teachers.items.${teacher.key}.name`,teacher.fullName)}</Link></h2><p>{specializations}</p></article>)}</div>}
  {p.teacher&&<section className="catalog-profile"><img src={p.teacher.photo} alt={p.title}/><dl><dt>{l[4]}</dt><dd>{text(lang,'teachers.languages.Arabic')}, {text(lang,'teachers.languages.English')}</dd><dt>{l[5]}</dt><dd>{experience}</dd><dt>{l[6]}</dt><dd>{specializations}</dd></dl></section>}
 
- {p.reading && <article className="catalog-course-content">
-   <section><h2>{p.reading.audienceTitle}</h2><ul>{p.reading.audience.map(item=><li key={item}>{item}</li>)}</ul></section>
-   <section><h2>{p.reading.learnTitle}</h2><ul>{p.reading.learn.map(item=><li key={item}>{item}</li>)}</ul></section>
-   <section><h2>{p.reading.requirementsTitle}</h2><p>{p.reading.requirements}</p></section>
-   <section><h2>{p.reading.lessonsTitle}</h2><p>{p.reading.lessons}</p></section>
-   <section><h2>{l[2]}</h2><p><Link href={`/${lang}/teachers`}>{text(lang,'teachers.heading')}</Link></p></section>
-   <section><h2>{p.reading.faqTitle}</h2>{p.reading.faq.map(([question,answer])=><details key={question}><summary>{question}</summary><p>{answer}</p></details>)}
-   <p><Link href={`/${lang}/programs/arabic-language`}>{text(lang,'programs.items.arabicLanguage.title')}</Link></p></section>
- </article>}
- {p.slug&&<section>{!p.reading&&<><h2>{l[7]}</h2><p>{l[8]}</p></>}<Link className="btn btn-primary" href="/#book-trial">{l[3]}</Link><p><Link href={`/${lang}/programs`}>{l[9]}</Link></p></section>}
+ {p.slug&&<section><h2>{l[7]}</h2><p>{l[8]}</p><Link className="btn btn-primary" href="/#book-trial">{l[3]}</Link><p><Link href={`/${lang}/programs`}>{l[9]}</Link></p></section>}
  </main><footer className="catalog-footer">Musliman Academy · <a href="mailto:musliman.link@gmail.com">musliman.link@gmail.com</a></footer>
  <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(jsonLd).replace(/</g,'\u003c')}}/></div>;
 }
