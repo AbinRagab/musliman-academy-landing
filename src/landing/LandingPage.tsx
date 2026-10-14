@@ -290,6 +290,7 @@ export function Navbar({
   bookingHref = '#book-trial',
   logoHref = '#home',
   scrollToBooking = true,
+  linkOverrides = {},
 }: {
   theme: Theme;
   onToggleTheme: () => void;
@@ -298,13 +299,14 @@ export function Navbar({
   bookingHref?: string;
   logoHref?: string;
   scrollToBooking?: boolean;
+  linkOverrides?: Record<string, string>;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const logoVariant = theme === 'dark' ? 'light' : 'dark';
 
   function getAnchorHref(href: string) {
-    return href.startsWith('#') ? `${anchorPrefix}${href}` : href;
+    return linkOverrides[href] || (href.startsWith('#') ? `${anchorPrefix}${href}` : href);
   }
 
   function handleBookTrialClick(closeMenu = false): MouseEventHandler<HTMLAnchorElement> {
@@ -970,8 +972,8 @@ function AboutSection() {
 }
 
 
-function ProgramsSection() {
-  const { t } = useTranslation();
+function ProgramsSection({ programPages = false }: { programPages?: boolean }) {
+  const { t, i18n } = useTranslation();
 
   return (
     <section className="programs section-light" id="programs">
@@ -997,7 +999,7 @@ function ProgramsSection() {
               </div>
               <h3>{t(`programs.items.${program.key}.title`)}</h3>
               <p>{t(`programs.items.${program.key}.text`)}</p>
-              <a href="#book-trial">{t('programs.learnMore')} <span>-&gt;</span></a>
+              <a href={programPages ? `/${i18n.resolvedLanguage || 'en'}/programs/${program.image.split('/').pop()?.replace('.png', '') === 'islamic-values-children' ? 'islamic-values-for-children' : program.image.split('/').pop()?.replace('.png', '')}` : '#book-trial'}>{t('programs.learnMore')} <span>-&gt;</span></a>
             </article>
           ))}
         </div>
@@ -1548,12 +1550,12 @@ function FAQSection() {
   );
 }
 
-export function Footer({ anchorPrefix = '', logoHref = '#home' }: { anchorPrefix?: string; logoHref?: string }) {
+export function Footer({ anchorPrefix = '', logoHref = '#home', linkOverrides = {}, programLinks = {} }: { anchorPrefix?: string; logoHref?: string; linkOverrides?: Record<string, string>; programLinks?: Record<string, string> }) {
   const { t } = useTranslation();
   const quickLinks = navLinks;
 
   function getAnchorHref(href: string) {
-    return href.startsWith('#') ? `${anchorPrefix}${href}` : href;
+    return linkOverrides[href] || (href.startsWith('#') ? `${anchorPrefix}${href}` : href);
   }
 
   return (
@@ -1576,7 +1578,7 @@ export function Footer({ anchorPrefix = '', logoHref = '#home' }: { anchorPrefix
         <div>
           <h3>{t('footer.programs')}</h3>
           <ul>
-            {sitePrograms.map((program) => <li key={program.key}><a href={getAnchorHref('#programs')}><Icon name={program.icon} />{t(`programs.items.${program.key}.title`)}</a></li>)}
+            {sitePrograms.map((program) => <li key={program.key}><a href={programLinks[program.key] || getAnchorHref('#programs')}><Icon name={program.icon} />{t(`programs.items.${program.key}.title`)}</a></li>)}
             <li><a href={getAnchorHref('#teacher-training')}><Icon name="award" />{t('footer.teacherTraining')}</a></li>
           </ul>
         </div>
@@ -1630,8 +1632,17 @@ const whatsappCourseMessages: Record<SupportedLanguage, string> = {
   "tr": "Selamünaleyküm! Kurslarınız, ders saatleri ve ücretleriniz hakkında bilgi almak istiyorum."
 };
 
-export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean }) {
+export default function LandingPage({ manageSeo = true, programPages = false }: { manageSeo?: boolean; programPages?: boolean }) {
   const { i18n, t } = useTranslation();
+  const pageLanguage = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
+  const pageLinks: Record<string, string> = programPages ? {
+    '#programs': `/${pageLanguage}/programs`,
+    '#teacher-training': `/${pageLanguage}/programs/teacher-training`,
+  } : {};
+  const footerProgramLinks = programPages ? Object.fromEntries(sitePrograms.map(program => [
+    program.key,
+    `/${pageLanguage}/programs/${program.key === 'islamicValues' ? 'islamic-values-for-children' : program.image.split('/').pop()?.replace('.png', '')}`,
+  ])) : {};
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') {
       return 'light';
@@ -1686,12 +1697,12 @@ export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean 
 
   return (
     <div className="app-shell" data-theme={theme}>
-      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} />
+      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} linkOverrides={pageLinks} />
       <main>
         <HeroSection onSelectBookingType={setActiveBookingType} />
         <AboutSection />
         <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} />
-        <ProgramsSection />
+        <ProgramsSection programPages={programPages} />
         <PricingSection />
         <WhyChooseSection />
         <TestimonialsSection />
@@ -1700,7 +1711,7 @@ export default function LandingPage({ manageSeo = true }: { manageSeo?: boolean 
         <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />
         <FAQSection />
       </main>
-      <Footer />
+      <Footer linkOverrides={pageLinks} programLinks={footerProgramLinks} />
       <a className="floating-whatsapp-message" href={whatsappCourseHref} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppContact}>
         <span className="floating-whatsapp-message__brand">Musliman Academy</span>
         <span>{whatsappCourseMessage}</span>

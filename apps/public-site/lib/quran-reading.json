@@ -1,0 +1,254 @@
+{
+  "en": {
+    "title": "Learn to Read the Qur’an with Confidence",
+    "intro": "Build your Qur’an reading skills through personalized online lessons. Learn at your pace with clear explanations, guided practice, and corrections tailored to your level.",
+    "audienceTitle": "Who Is This Program For?",
+    "audience": [
+      "Beginners starting their Qur’an reading journey.",
+      "Learners who recognize Arabic letters but need help joining them into words.",
+      "Children and adults who want to improve their reading accuracy."
+    ],
+    "learnTitle": "What Will You Learn?",
+    "learn": [
+      "Recognizing Arabic letters and their different forms.",
+      "Reading vowel marks, Sukoon, Shaddah, and Tanween.",
+      "Connecting letters and reading words and verses.",
+      "Improving pronunciation through guided practice."
+    ],
+    "requirementsTitle": "Do You Need Previous Experience?",
+    "requirements": "You don’t need to read fluently before starting. During your free trial, your teacher will assess your level. If you need a foundation in Arabic letters and sounds, we’ll help you choose the appropriate starting program.",
+    "lessonsTitle": "How Do Lessons Work?",
+    "lessons": "Your teacher introduces a reading skill, demonstrates it, and guides you through practice. You receive corrections during the lesson and revisit areas that need more attention.",
+    "faqTitle": "Frequently Asked Questions",
+    "faq": [
+      [
+        "Is this an Arabic conversation course?",
+        "This program focuses on reading the Qur’an. For broader Arabic language skills, explore our Arabic Language program."
+      ],
+      [
+        "Can my child join?",
+        "Yes. Lessons are adapted to the learner’s age and current level."
+      ],
+      [
+        "How long does it take to improve?",
+        "Progress depends on your starting level, attendance, and practice. Your teacher will guide you at a suitable pace."
+      ]
+    ]
+  },
+  "ar": {
+    "title": "تعلّم قراءة القرآن بثقة",
+    "intro": "طوّر مهارات قراءة القرآن من خلال دروس أونلاين مخصصة لك. تعلّم بالوتيرة المناسبة مع شرح واضح وتدريب موجّه وتصحيح يناسب مستواك.",
+    "audienceTitle": "لمن يناسب هذا البرنامج؟",
+    "audience": [
+      "المبتدئون في رحلة قراءة القرآن.",
+      "من يعرفون الحروف العربية ويحتاجون للمساعدة في وصلها وقراءة الكلمات.",
+      "الأطفال والبالغون الذين يرغبون في تحسين دقة القراءة."
+    ],
+    "learnTitle": "ماذا ستتعلم؟",
+    "learn": [
+      "التعرف على الحروف العربية وأشكالها المختلفة.",
+      "قراءة الحركات والسكون والشدة والتنوين.",
+      "وصل الحروف وقراءة الكلمات والآيات.",
+      "تحسين النطق بالتدريب الموجّه."
+    ],
+    "requirementsTitle": "هل تحتاج إلى خبرة سابقة؟",
+    "requirements": "لا تحتاج إلى القراءة بطلاقة قبل البدء. يقيّم المعلم مستواك خلال الحصة التجريبية المجانية. وإذا احتجت إلى تأسيس في الحروف والأصوات العربية، نساعدك على اختيار البرنامج المناسب للبداية.",
+    "lessonsTitle": "كيف تسير الدروس؟",
+    "lessons": "يشرح المعلم مهارة القراءة ويعرض مثالًا عليها، ثم يرشدك أثناء التدريب. تتلقى التصحيح خلال الدرس وتراجع الجوانب التي تحتاج إلى اهتمام أكبر.",
+    "faqTitle": "الأسئلة الشائعة",
+    "faq": [
+      [
+        "هل هذا كورس محادثة باللغة العربية؟",
+        "يركز البرنامج على قراءة القرآن. ولتطوير مهارات اللغة العربية بشكل أوسع، استكشف برنامج اللغة العربية."
+      ],
+      [
+        "هل يمكن لطفلي الانضمام؟",
+        "نعم، تُكيّف الدروس وفق عمر المتعلم ومستواه الحالي."
+      ],
+      [
+        "كم يستغرق التحسن؟",
+        "يعتمد التقدم على مستواك عند البداية وانتظام الحضور والتدريب. يرشدك المعلم بالوتيرة المناسبة لك."
+      ]
+    ]
+  },
+  "es": {
+    "title": "Aprende a leer el Corán con confianza",
+    "intro": "Desarrolla tu lectura del Corán con clases online personalizadas. Aprende a tu ritmo con explicaciones claras, práctica guiada y correcciones adaptadas a tu nivel.",
+    "audienceTitle": "¿Para quién es este programa?",
+    "audience": [
+      "Principiantes que empiezan a leer el Corán.",
+      "Estudiantes que reconocen las letras árabes y necesitan ayuda para unirlas en palabras.",
+      "Niños y adultos que quieren leer con mayor precisión."
+    ],
+    "learnTitle": "¿Qué aprenderás?",
+    "learn": [
+      "Reconocer las letras árabes y sus distintas formas.",
+      "Leer las vocales, Sukoon, Shaddah y Tanween.",
+      "Unir letras y leer palabras y versículos.",
+      "Mejorar la pronunciación con práctica guiada."
+    ],
+    "requirementsTitle": "¿Necesitas experiencia previa?",
+    "requirements": "No necesitas leer con fluidez para empezar. Tu profesor evaluará tu nivel en la clase de prueba gratuita. Si necesitas una base en letras y sonidos árabes, te ayudaremos a elegir el programa inicial adecuado.",
+    "lessonsTitle": "¿Cómo son las clases?",
+    "lessons": "Tu profesor presenta una habilidad de lectura, la demuestra y te guía al practicar. Recibes correcciones durante la clase y repasas lo que necesita más atención.",
+    "faqTitle": "Preguntas frecuentes",
+    "faq": [
+      [
+        "¿Es un curso de conversación en árabe?",
+        "El programa se centra en leer el Corán. Para desarrollar otras habilidades, explora nuestro programa de lengua árabe."
+      ],
+      [
+        "¿Puede participar mi hijo?",
+        "Sí. Las clases se adaptan a la edad y al nivel actual del estudiante."
+      ],
+      [
+        "¿Cuánto se tarda en mejorar?",
+        "El progreso depende del nivel inicial, la asistencia y la práctica. Tu profesor te guiará a un ritmo adecuado."
+      ]
+    ]
+  },
+  "de": {
+    "title": "Den Koran mit Vertrauen lesen lernen",
+    "intro": "Verbessere deine Koranlesefähigkeiten in individuellen Online-Lektionen. Lerne in deinem Tempo mit klaren Erklärungen, angeleiteter Übung und Korrekturen passend zu deinem Niveau.",
+    "audienceTitle": "Für wen ist das Programm geeignet?",
+    "audience": [
+      "Anfänger, die mit dem Koranlesen beginnen.",
+      "Lernende, die arabische Buchstaben erkennen und Hilfe beim Verbinden zu Wörtern brauchen.",
+      "Kinder und Erwachsene, die genauer lesen möchten."
+    ],
+    "learnTitle": "Was wirst du lernen?",
+    "learn": [
+      "Arabische Buchstaben und ihre verschiedenen Formen erkennen.",
+      "Vokalzeichen, Sukoon, Shaddah und Tanween lesen.",
+      "Buchstaben verbinden sowie Wörter und Verse lesen.",
+      "Die Aussprache durch angeleitete Übung verbessern."
+    ],
+    "requirementsTitle": "Brauchst du Vorkenntnisse?",
+    "requirements": "Du musst vor dem Start nicht fließend lesen können. Deine Lehrkraft beurteilt dein Niveau in der kostenlosen Probestunde. Wenn du Grundlagen in arabischen Buchstaben und Lauten brauchst, helfen wir bei der Wahl des passenden Einstiegsprogramms.",
+    "lessonsTitle": "Wie laufen die Lektionen ab?",
+    "lessons": "Die Lehrkraft erklärt eine Lesefertigkeit, zeigt sie vor und begleitet deine Übung. Du erhältst Korrekturen im Unterricht und wiederholst Bereiche, die mehr Aufmerksamkeit brauchen.",
+    "faqTitle": "Häufige Fragen",
+    "faq": [
+      [
+        "Ist dies ein arabischer Konversationskurs?",
+        "Das Programm konzentriert sich auf das Koranlesen. Für weitere Sprachkenntnisse entdecke unser Arabischprogramm."
+      ],
+      [
+        "Kann mein Kind teilnehmen?",
+        "Ja. Die Lektionen werden dem Alter und aktuellen Niveau angepasst."
+      ],
+      [
+        "Wie lange dauert es, Fortschritte zu machen?",
+        "Der Fortschritt hängt vom Ausgangsniveau, der Teilnahme und der Übung ab. Deine Lehrkraft begleitet dich in einem passenden Tempo."
+      ]
+    ]
+  },
+  "it": {
+    "title": "Impara a leggere il Corano con fiducia",
+    "intro": "Sviluppa la lettura del Corano con lezioni online personalizzate. Impara al tuo ritmo con spiegazioni chiare, pratica guidata e correzioni adatte al tuo livello.",
+    "audienceTitle": "A chi è rivolto il programma?",
+    "audience": [
+      "Principianti che iniziano a leggere il Corano.",
+      "Studenti che riconoscono le lettere arabe e hanno bisogno di aiuto per unirle in parole.",
+      "Bambini e adulti che vogliono migliorare la precisione della lettura."
+    ],
+    "learnTitle": "Cosa imparerai?",
+    "learn": [
+      "Riconoscere le lettere arabe e le loro diverse forme.",
+      "Leggere vocali, Sukoon, Shaddah e Tanween.",
+      "Unire lettere e leggere parole e versetti.",
+      "Migliorare la pronuncia con la pratica guidata."
+    ],
+    "requirementsTitle": "Serve esperienza precedente?",
+    "requirements": "Non è necessario leggere fluentemente prima di iniziare. L’insegnante valuterà il tuo livello nella lezione di prova gratuita. Se ti servono basi nelle lettere e nei suoni arabi, ti aiuteremo a scegliere il programma iniziale adatto.",
+    "lessonsTitle": "Come si svolgono le lezioni?",
+    "lessons": "L’insegnante presenta una competenza di lettura, la dimostra e ti guida nella pratica. Ricevi correzioni durante la lezione e ripassi gli aspetti che richiedono maggiore attenzione.",
+    "faqTitle": "Domande frequenti",
+    "faq": [
+      [
+        "È un corso di conversazione araba?",
+        "Il programma si concentra sulla lettura del Corano. Per altre competenze linguistiche, esplora il programma di lingua araba."
+      ],
+      [
+        "Mio figlio può partecipare?",
+        "Sì. Le lezioni sono adattate all’età e al livello attuale."
+      ],
+      [
+        "Quanto tempo serve per migliorare?",
+        "I progressi dipendono dal livello iniziale, dalla frequenza e dalla pratica. L’insegnante ti guiderà a un ritmo adatto."
+      ]
+    ]
+  },
+  "ur": {
+    "title": "اعتماد کے ساتھ قرآن پڑھنا سیکھیں",
+    "intro": "اپنی سطح کے مطابق آن لائن اسباق کے ذریعے قرآن پڑھنے کی مہارت بہتر بنائیں۔ واضح وضاحت، رہنمائی کے ساتھ مشق اور مناسب اصلاح کے ذریعے اپنی رفتار سے سیکھیں۔",
+    "audienceTitle": "یہ پروگرام کس کے لیے ہے؟",
+    "audience": [
+      "قرآن پڑھنے کا سفر شروع کرنے والے مبتدیوں کے لیے۔",
+      "عربی حروف پہچاننے والے طلبہ کے لیے جنہیں حروف جوڑ کر الفاظ پڑھنے میں مدد چاہیے۔",
+      "پڑھنے کی درستگی بہتر بنانے والے بچوں اور بڑوں کے لیے۔"
+    ],
+    "learnTitle": "آپ کیا سیکھیں گے؟",
+    "learn": [
+      "عربی حروف اور ان کی مختلف شکلوں کی پہچان۔",
+      "حرکات، سکون، شدہ اور تنوین پڑھنا۔",
+      "حروف جوڑنا اور الفاظ اور آیات پڑھنا۔",
+      "رہنمائی کے ساتھ مشق سے تلفظ بہتر بنانا۔"
+    ],
+    "requirementsTitle": "کیا پہلے سے تجربہ ضروری ہے؟",
+    "requirements": "شروع کرنے سے پہلے روانی سے پڑھنا ضروری نہیں۔ مفت آزمائشی کلاس میں استاد آپ کی سطح کا جائزہ لے گا۔ اگر عربی حروف اور آوازوں کی بنیاد درکار ہو تو ہم مناسب ابتدائی پروگرام منتخب کرنے میں مدد کریں گے۔",
+    "lessonsTitle": "اسباق کیسے ہوتے ہیں؟",
+    "lessons": "استاد پڑھنے کی ایک مہارت سمجھاتا ہے، مثال پیش کرتا ہے اور مشق میں رہنمائی کرتا ہے۔ کلاس کے دوران اصلاح ہوتی ہے اور مزید توجہ والے حصوں کی دہرائی کی جاتی ہے۔",
+    "faqTitle": "عام سوالات",
+    "faq": [
+      [
+        "کیا یہ عربی گفتگو کا کورس ہے؟",
+        "یہ پروگرام قرآن پڑھنے پر مرکوز ہے۔ عربی زبان کی دیگر مہارتوں کے لیے ہمارا عربی زبان کا پروگرام دیکھیں۔"
+      ],
+      [
+        "کیا میرا بچہ شامل ہو سکتا ہے؟",
+        "جی ہاں۔ اسباق طالب علم کی عمر اور موجودہ سطح کے مطابق ہوتے ہیں۔"
+      ],
+      [
+        "بہتری میں کتنا وقت لگتا ہے؟",
+        "ترقی کا انحصار ابتدائی سطح، حاضری اور مشق پر ہے۔ استاد مناسب رفتار سے رہنمائی کرے گا۔"
+      ]
+    ]
+  },
+  "tr": {
+    "title": "Kur’an okumayı güvenle öğrenin",
+    "intro": "Kişiselleştirilmiş çevrim içi derslerle Kur’an okuma becerilerinizi geliştirin. Açık anlatım, rehberli uygulama ve seviyenize uygun düzeltmelerle kendi hızınızda öğrenin.",
+    "audienceTitle": "Bu program kimler için?",
+    "audience": [
+      "Kur’an okumaya yeni başlayanlar.",
+      "Arapça harfleri tanıyan ancak kelime oluşturmak için yardıma ihtiyaç duyanlar.",
+      "Okuma doğruluğunu geliştirmek isteyen çocuklar ve yetişkinler."
+    ],
+    "learnTitle": "Neler öğreneceksiniz?",
+    "learn": [
+      "Arapça harfleri ve farklı biçimlerini tanımak.",
+      "Harekeleri, sükûn, şedde ve tenvini okumak.",
+      "Harfleri birleştirmek, kelimeleri ve ayetleri okumak.",
+      "Rehberli uygulamayla telaffuzu geliştirmek."
+    ],
+    "requirementsTitle": "Önceden deneyim gerekli mi?",
+    "requirements": "Başlamadan önce akıcı okumanız gerekmez. Ücretsiz deneme dersinde öğretmen seviyenizi değerlendirir. Arapça harf ve ses temeline ihtiyacınız varsa uygun başlangıç programını seçmenize yardımcı oluruz.",
+    "lessonsTitle": "Dersler nasıl işlenir?",
+    "lessons": "Öğretmen bir okuma becerisini açıklar, örnek gösterir ve uygulamada rehberlik eder. Ders sırasında düzeltmeler alır ve daha fazla çalışma gereken konuları tekrar edersiniz.",
+    "faqTitle": "Sık sorulan sorular",
+    "faq": [
+      [
+        "Bu bir Arapça konuşma kursu mu?",
+        "Program Kur’an okumaya odaklanır. Diğer dil becerileri için Arapça programımızı inceleyin."
+      ],
+      [
+        "Çocuğum katılabilir mi?",
+        "Evet. Dersler öğrencinin yaşına ve mevcut seviyesine göre uyarlanır."
+      ],
+      [
+        "Gelişmek ne kadar sürer?",
+        "İlerleme başlangıç seviyesine, devamlılığa ve uygulamaya bağlıdır. Öğretmen uygun hızda rehberlik eder."
+      ]
+    ]
+  }
+}

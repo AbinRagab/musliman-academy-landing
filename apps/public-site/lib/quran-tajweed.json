@@ -1,0 +1,632 @@
+{
+  "en": {
+    "title": "Online Quran & Tajweed Classes",
+    "intro": "Build a strong foundation in Quran reading and improve your recitation with personalized guidance from qualified teachers. Lessons are tailored to your level, pace, and learning goals.",
+    "audienceTitle": "Who Is This Program For?",
+    "audience": [
+      "Beginners starting their Qur’an reading journey.",
+      "Learners who recognize Arabic letters but need help joining them into words.",
+      "Children and adults who want to improve their reading accuracy."
+    ],
+    "learnTitle": "What Will You Learn?",
+    "learn": [
+      "Recognizing Arabic letters and their different forms.",
+      "Reading vowel marks, Sukoon, Shaddah, and Tanween.",
+      "Connecting letters and reading words and verses.",
+      "Improving pronunciation through guided practice.",
+      "Understand and apply essential Tajweed rules.",
+      "Build a consistent Quran learning routine."
+    ],
+    "requirementsTitle": "Do You Need Previous Experience?",
+    "requirements": "You don’t need to read fluently before starting. During your free trial, your teacher will assess your level. If you need a foundation in Arabic letters and sounds, we’ll help you choose the appropriate starting program.",
+    "lessonsTitle": "A Clear Path to Better Quran Recitation",
+    "lessons": "Whether you are starting with the Arabic letters or working on more accurate recitation, your teacher assesses your level and guides you through reading practice and the application of Tajweed rules.",
+    "faqTitle": "Frequently Asked Questions",
+    "faq": [
+      [
+        "Can I join as a complete beginner?",
+        "You don’t need to read fluently before starting. During your free trial, your teacher will assess your level. If you need a foundation in Arabic letters and sounds, we’ll help you choose the appropriate starting program."
+      ],
+      [
+        "Can my child join?",
+        "Yes. Lessons are adapted to the learner’s age and current level."
+      ],
+      [
+        "How is my starting level assessed?",
+        "You don’t need to read fluently before starting. During your free trial, your teacher will assess your level. If you need a foundation in Arabic letters and sounds, we’ll help you choose the appropriate starting program."
+      ],
+      [
+        "Can I choose a suitable schedule?",
+        "Choose a convenient class time with our team."
+      ],
+      [
+        "What do I need for online lessons?",
+        "Use a device with a working camera, stable internet and a quiet learning space."
+      ],
+      [
+        "How can I book a free trial?",
+        "Click Book a Free Trial and complete the booking form."
+      ]
+    ],
+    "eyebrow": "Learn with Clarity. Connect with Faith.",
+    "curriculum": [
+      {
+        "title": "Reading Foundations",
+        "topics": [
+          "Arabic letters and pronunciation",
+          "Short vowels and Sukoon",
+          "Tanween and Shaddah",
+          "Connecting letters and reading practice"
+        ]
+      },
+      {
+        "title": "Essential Tajweed",
+        "topics": [
+          "Articulation points",
+          "Noon Sakinah and Tanween",
+          "Meem Sakinah",
+          "Ghunnah and Qalqalah",
+          "Introduction to Madd"
+        ]
+      },
+      {
+        "title": "Guided Quran Recitation",
+        "topics": [
+          "Applying rules during recitation",
+          "Correcting common mistakes",
+          "Fluency practice",
+          "Stopping and starting"
+        ]
+      },
+      {
+        "title": "Continued Development",
+        "topics": [
+          "Targeted practice based on assessment",
+          "Revision and teacher feedback",
+          "Progress review"
+        ]
+      }
+    ],
+    "planNote": "Your learning plan is adapted to your starting level and progress."
+  },
+  "ar": {
+    "title": "دروس القرآن والتجويد أونلاين",
+    "intro": "ابنِ أساسًا قويًا في قراءة القرآن وحسّن تلاوتك بتوجيه شخصي من معلمين مؤهلين. تُصمم الدروس وفق مستواك ووتيرتك وأهدافك.",
+    "audienceTitle": "لمن يناسب هذا البرنامج؟",
+    "audience": [
+      "المبتدئون في رحلة قراءة القرآن.",
+      "من يعرفون الحروف العربية ويحتاجون للمساعدة في وصلها وقراءة الكلمات.",
+      "الأطفال والبالغون الذين يرغبون في تحسين دقة القراءة."
+    ],
+    "learnTitle": "ماذا ستتعلم؟",
+    "learn": [
+      "التعرف على الحروف العربية وأشكالها المختلفة.",
+      "قراءة الحركات والسكون والشدة والتنوين.",
+      "وصل الحروف وقراءة الكلمات والآيات.",
+      "تحسين النطق بالتدريب الموجّه.",
+      "فهم أحكام التجويد الأساسية وتطبيقها.",
+      "بناء روتين منتظم لتعلم القرآن."
+    ],
+    "requirementsTitle": "هل تحتاج إلى خبرة سابقة؟",
+    "requirements": "لا تحتاج إلى القراءة بطلاقة قبل البدء. يقيّم المعلم مستواك خلال الحصة التجريبية المجانية. وإذا احتجت إلى تأسيس في الحروف والأصوات العربية، نساعدك على اختيار البرنامج المناسب للبداية.",
+    "lessonsTitle": "مسار واضح لتحسين تلاوة القرآن",
+    "lessons": "سواء بدأت بالحروف العربية أو أردت تلاوة أكثر دقة، يقيّم معلمك مستواك ويرشدك خلال التدريب على القراءة وتطبيق أحكام التجويد.",
+    "faqTitle": "الأسئلة الشائعة",
+    "faq": [
+      [
+        "هل يمكنني البدء كمبتدئ تمامًا؟",
+        "لا تحتاج إلى القراءة بطلاقة قبل البدء. يقيّم المعلم مستواك خلال الحصة التجريبية المجانية. وإذا احتجت إلى تأسيس في الحروف والأصوات العربية، نساعدك على اختيار البرنامج المناسب للبداية."
+      ],
+      [
+        "هل يمكن لطفلي الانضمام؟",
+        "نعم، تُكيّف الدروس وفق عمر المتعلم ومستواه الحالي."
+      ],
+      [
+        "كيف يتم تقييم مستواي؟",
+        "لا تحتاج إلى القراءة بطلاقة قبل البدء. يقيّم المعلم مستواك خلال الحصة التجريبية المجانية. وإذا احتجت إلى تأسيس في الحروف والأصوات العربية، نساعدك على اختيار البرنامج المناسب للبداية."
+      ],
+      [
+        "هل يمكنني اختيار موعد مناسب؟",
+        "اختر مع فريقنا موعدًا مناسبًا للحصص."
+      ],
+      [
+        "ما الذي أحتاجه للحصص أونلاين؟",
+        "استخدم جهازًا بكاميرا تعمل وإنترنت مستقر ومكانًا هادئًا للتعلم."
+      ],
+      [
+        "كيف أحجز الحصة التجريبية؟",
+        "اضغط احجز حصة تجريبية وأكمل نموذج الحجز."
+      ]
+    ],
+    "eyebrow": "تعلّم بوضوح وتواصل مع إيمانك.",
+    "curriculum": [
+      {
+        "title": "أساسيات القراءة",
+        "topics": [
+          "الحروف العربية والنطق",
+          "الحركات القصيرة والسكون",
+          "التنوين والشدة",
+          "وصل الحروف والتدريب على القراءة"
+        ]
+      },
+      {
+        "title": "أساسيات التجويد",
+        "topics": [
+          "مقدمة في مخارج الحروف",
+          "النون الساكنة والتنوين",
+          "الميم الساكنة",
+          "الغنة والقلقلة",
+          "مقدمة في المد"
+        ]
+      },
+      {
+        "title": "تلاوة القرآن الموجّهة",
+        "topics": [
+          "تطبيق الأحكام أثناء التلاوة",
+          "تصحيح الأخطاء الشائعة",
+          "التدريب على الطلاقة",
+          "الوقف والابتداء"
+        ]
+      },
+      {
+        "title": "التطوير المستمر",
+        "topics": [
+          "تدريب موجه بناءً على التقييم",
+          "المراجعة وتصحيح المعلم",
+          "متابعة التقدم"
+        ]
+      }
+    ],
+    "planNote": "تُكيّف خطتك التعليمية وفق مستواك عند البداية وتقدمك."
+  },
+  "es": {
+    "title": "Clases online de Corán y Tajweed",
+    "intro": "Construye una base sólida de lectura del Corán y mejora tu recitación con orientación personalizada de profesores cualificados. Las clases se adaptan a tu nivel, ritmo y objetivos.",
+    "audienceTitle": "¿Para quién es este programa?",
+    "audience": [
+      "Principiantes que empiezan a leer el Corán.",
+      "Estudiantes que reconocen las letras árabes y necesitan ayuda para unirlas en palabras.",
+      "Niños y adultos que quieren leer con mayor precisión."
+    ],
+    "learnTitle": "¿Qué aprenderás?",
+    "learn": [
+      "Reconocer las letras árabes y sus distintas formas.",
+      "Leer las vocales, Sukoon, Shaddah y Tanween.",
+      "Unir letras y leer palabras y versículos.",
+      "Mejorar la pronunciación con práctica guiada.",
+      "Comprender y aplicar reglas esenciales de Tajweed.",
+      "Crear una rutina constante de aprendizaje del Corán."
+    ],
+    "requirementsTitle": "¿Necesitas experiencia previa?",
+    "requirements": "No necesitas leer con fluidez para empezar. Tu profesor evaluará tu nivel en la clase de prueba gratuita. Si necesitas una base en letras y sonidos árabes, te ayudaremos a elegir el programa inicial adecuado.",
+    "lessonsTitle": "Un camino claro hacia una mejor recitación",
+    "lessons": "Tanto si empiezas con las letras árabes como si buscas mayor precisión, tu profesor evalúa tu nivel y te guía en la lectura y la aplicación de Tajweed.",
+    "faqTitle": "Preguntas frecuentes",
+    "faq": [
+      [
+        "¿Puedo empezar sin experiencia?",
+        "No necesitas leer con fluidez para empezar. Tu profesor evaluará tu nivel en la clase de prueba gratuita. Si necesitas una base en letras y sonidos árabes, te ayudaremos a elegir el programa inicial adecuado."
+      ],
+      [
+        "¿Puede participar mi hijo?",
+        "Sí. Las clases se adaptan a la edad y al nivel actual del estudiante."
+      ],
+      [
+        "¿Cómo se evalúa mi nivel?",
+        "No necesitas leer con fluidez para empezar. Tu profesor evaluará tu nivel en la clase de prueba gratuita. Si necesitas una base en letras y sonidos árabes, te ayudaremos a elegir el programa inicial adecuado."
+      ],
+      [
+        "¿Puedo elegir un horario adecuado?",
+        "Elige con nuestro equipo un horario conveniente."
+      ],
+      [
+        "¿Qué necesito para las clases online?",
+        "Usa un dispositivo con cámara, internet estable y un lugar tranquilo."
+      ],
+      [
+        "¿Cómo reservo una prueba gratuita?",
+        "Pulsa Reserva una clase de prueba y completa el formulario."
+      ]
+    ],
+    "eyebrow": "Aprende con claridad. Conecta con tu fe.",
+    "curriculum": [
+      {
+        "title": "Bases de lectura",
+        "topics": [
+          "Letras árabes y pronunciación",
+          "Vocales cortas y Sukoon",
+          "Tanween y Shaddah",
+          "Unión de letras y práctica"
+        ]
+      },
+      {
+        "title": "Tajweed esencial",
+        "topics": [
+          "Puntos de articulación",
+          "Noon Sakinah y Tanween",
+          "Meem Sakinah",
+          "Ghunnah y Qalqalah",
+          "Introducción al Madd"
+        ]
+      },
+      {
+        "title": "Recitación guiada",
+        "topics": [
+          "Aplicación de reglas al recitar",
+          "Corrección de errores comunes",
+          "Práctica de fluidez",
+          "Pausas e inicio"
+        ]
+      },
+      {
+        "title": "Desarrollo continuo",
+        "topics": [
+          "Práctica según la evaluación",
+          "Repaso y comentarios del profesor",
+          "Revisión del progreso"
+        ]
+      }
+    ],
+    "planNote": "Tu plan se adapta a tu nivel inicial y a tu progreso."
+  },
+  "de": {
+    "title": "Online-Koran- und Tajweed-Unterricht",
+    "intro": "Baue eine solide Grundlage im Koranlesen auf und verbessere deine Rezitation mit persönlicher Begleitung durch qualifizierte Lehrkräfte. Die Lektionen passen sich deinem Niveau, Tempo und deinen Zielen an.",
+    "audienceTitle": "Für wen ist das Programm geeignet?",
+    "audience": [
+      "Anfänger, die mit dem Koranlesen beginnen.",
+      "Lernende, die arabische Buchstaben erkennen und Hilfe beim Verbinden zu Wörtern brauchen.",
+      "Kinder und Erwachsene, die genauer lesen möchten."
+    ],
+    "learnTitle": "Was wirst du lernen?",
+    "learn": [
+      "Arabische Buchstaben und ihre verschiedenen Formen erkennen.",
+      "Vokalzeichen, Sukoon, Shaddah und Tanween lesen.",
+      "Buchstaben verbinden sowie Wörter und Verse lesen.",
+      "Die Aussprache durch angeleitete Übung verbessern.",
+      "Grundlegende Tajweed-Regeln verstehen und anwenden.",
+      "Eine regelmäßige Koran-Lernroutine aufbauen."
+    ],
+    "requirementsTitle": "Brauchst du Vorkenntnisse?",
+    "requirements": "Du musst vor dem Start nicht fließend lesen können. Deine Lehrkraft beurteilt dein Niveau in der kostenlosen Probestunde. Wenn du Grundlagen in arabischen Buchstaben und Lauten brauchst, helfen wir bei der Wahl des passenden Einstiegsprogramms.",
+    "lessonsTitle": "Ein klarer Weg zu besserer Koranrezitation",
+    "lessons": "Ob du mit arabischen Buchstaben beginnst oder genauer rezitieren möchtest: Deine Lehrkraft beurteilt dein Niveau und begleitet das Lesen und die Anwendung der Tajweed-Regeln.",
+    "faqTitle": "Häufige Fragen",
+    "faq": [
+      [
+        "Kann ich als Anfänger teilnehmen?",
+        "Du musst vor dem Start nicht fließend lesen können. Deine Lehrkraft beurteilt dein Niveau in der kostenlosen Probestunde. Wenn du Grundlagen in arabischen Buchstaben und Lauten brauchst, helfen wir bei der Wahl des passenden Einstiegsprogramms."
+      ],
+      [
+        "Kann mein Kind teilnehmen?",
+        "Ja. Die Lektionen werden dem Alter und aktuellen Niveau angepasst."
+      ],
+      [
+        "Wie wird mein Niveau beurteilt?",
+        "Du musst vor dem Start nicht fließend lesen können. Deine Lehrkraft beurteilt dein Niveau in der kostenlosen Probestunde. Wenn du Grundlagen in arabischen Buchstaben und Lauten brauchst, helfen wir bei der Wahl des passenden Einstiegsprogramms."
+      ],
+      [
+        "Kann ich eine passende Zeit wählen?",
+        "Wähle mit unserem Team eine passende Unterrichtszeit."
+      ],
+      [
+        "Was brauche ich für Online-Lektionen?",
+        "Nutze ein Gerät mit Kamera, stabiles Internet und einen ruhigen Lernplatz."
+      ],
+      [
+        "Wie buche ich eine kostenlose Probestunde?",
+        "Klicke auf Kostenlose Probestunde buchen und fülle das Formular aus."
+      ]
+    ],
+    "eyebrow": "Mit Klarheit lernen. Mit dem Glauben verbinden.",
+    "curriculum": [
+      {
+        "title": "Lesegrundlagen",
+        "topics": [
+          "Arabische Buchstaben und Aussprache",
+          "Kurze Vokale und Sukoon",
+          "Tanween und Shaddah",
+          "Buchstaben verbinden und lesen"
+        ]
+      },
+      {
+        "title": "Grundlegendes Tajweed",
+        "topics": [
+          "Artikulationsstellen",
+          "Noon Sakinah und Tanween",
+          "Meem Sakinah",
+          "Ghunnah und Qalqalah",
+          "Einführung in Madd"
+        ]
+      },
+      {
+        "title": "Angeleitete Koranrezitation",
+        "topics": [
+          "Regeln beim Rezitieren anwenden",
+          "Häufige Fehler korrigieren",
+          "Flüssiges Lesen üben",
+          "Anhalten und Beginnen"
+        ]
+      },
+      {
+        "title": "Weitere Entwicklung",
+        "topics": [
+          "Übungen nach der Einschätzung",
+          "Wiederholung und Rückmeldung",
+          "Fortschritt überprüfen"
+        ]
+      }
+    ],
+    "planNote": "Dein Lernplan richtet sich nach deinem Ausgangsniveau und Fortschritt."
+  },
+  "it": {
+    "title": "Lezioni online di Corano e Tajweed",
+    "intro": "Costruisci solide basi nella lettura del Corano e migliora la recitazione con la guida personalizzata di insegnanti qualificati. Le lezioni seguono il tuo livello, ritmo e obiettivi.",
+    "audienceTitle": "A chi è rivolto il programma?",
+    "audience": [
+      "Principianti che iniziano a leggere il Corano.",
+      "Studenti che riconoscono le lettere arabe e hanno bisogno di aiuto per unirle in parole.",
+      "Bambini e adulti che vogliono migliorare la precisione della lettura."
+    ],
+    "learnTitle": "Cosa imparerai?",
+    "learn": [
+      "Riconoscere le lettere arabe e le loro diverse forme.",
+      "Leggere vocali, Sukoon, Shaddah e Tanween.",
+      "Unire lettere e leggere parole e versetti.",
+      "Migliorare la pronuncia con la pratica guidata.",
+      "Comprendere e applicare le regole essenziali del Tajweed.",
+      "Costruire una routine costante di studio del Corano."
+    ],
+    "requirementsTitle": "Serve esperienza precedente?",
+    "requirements": "Non è necessario leggere fluentemente prima di iniziare. L’insegnante valuterà il tuo livello nella lezione di prova gratuita. Se ti servono basi nelle lettere e nei suoni arabi, ti aiuteremo a scegliere il programma iniziale adatto.",
+    "lessonsTitle": "Un percorso chiaro verso una recitazione migliore",
+    "lessons": "Che tu inizi con le lettere arabe o voglia maggiore precisione, l’insegnante valuta il tuo livello e ti guida nella lettura e nell’applicazione del Tajweed.",
+    "faqTitle": "Domande frequenti",
+    "faq": [
+      [
+        "Posso iniziare da principiante?",
+        "Non è necessario leggere fluentemente prima di iniziare. L’insegnante valuterà il tuo livello nella lezione di prova gratuita. Se ti servono basi nelle lettere e nei suoni arabi, ti aiuteremo a scegliere il programma iniziale adatto."
+      ],
+      [
+        "Mio figlio può partecipare?",
+        "Sì. Le lezioni sono adattate all’età e al livello attuale."
+      ],
+      [
+        "Come viene valutato il mio livello?",
+        "Non è necessario leggere fluentemente prima di iniziare. L’insegnante valuterà il tuo livello nella lezione di prova gratuita. Se ti servono basi nelle lettere e nei suoni arabi, ti aiuteremo a scegliere il programma iniziale adatto."
+      ],
+      [
+        "Posso scegliere un orario adatto?",
+        "Scegli con il nostro team un orario comodo."
+      ],
+      [
+        "Cosa serve per le lezioni online?",
+        "Usa un dispositivo con videocamera, internet stabile e un luogo tranquillo."
+      ],
+      [
+        "Come prenoto una prova gratuita?",
+        "Premi Prenota una lezione di prova e compila il modulo."
+      ]
+    ],
+    "eyebrow": "Impara con chiarezza. Coltiva la tua fede.",
+    "curriculum": [
+      {
+        "title": "Basi della lettura",
+        "topics": [
+          "Lettere arabe e pronuncia",
+          "Vocali brevi e Sukoon",
+          "Tanween e Shaddah",
+          "Unire lettere e leggere"
+        ]
+      },
+      {
+        "title": "Tajweed essenziale",
+        "topics": [
+          "Punti di articolazione",
+          "Noon Sakinah e Tanween",
+          "Meem Sakinah",
+          "Ghunnah e Qalqalah",
+          "Introduzione al Madd"
+        ]
+      },
+      {
+        "title": "Recitazione guidata",
+        "topics": [
+          "Applicare le regole nella recitazione",
+          "Correggere errori comuni",
+          "Praticare la fluidità",
+          "Fermarsi e riprendere"
+        ]
+      },
+      {
+        "title": "Sviluppo continuo",
+        "topics": [
+          "Pratica secondo la valutazione",
+          "Ripasso e feedback",
+          "Revisione dei progressi"
+        ]
+      }
+    ],
+    "planNote": "Il piano si adatta al livello iniziale e ai tuoi progressi."
+  },
+  "ur": {
+    "title": "آن لائن قرآن اور تجوید کی کلاسیں",
+    "intro": "ماہر اساتذہ کی ذاتی رہنمائی کے ساتھ قرآن پڑھنے کی مضبوط بنیاد بنائیں اور تلاوت بہتر کریں۔ اسباق آپ کی سطح، رفتار اور اہداف کے مطابق ہوتے ہیں۔",
+    "audienceTitle": "یہ پروگرام کس کے لیے ہے؟",
+    "audience": [
+      "قرآن پڑھنے کا سفر شروع کرنے والے مبتدیوں کے لیے۔",
+      "عربی حروف پہچاننے والے طلبہ کے لیے جنہیں حروف جوڑ کر الفاظ پڑھنے میں مدد چاہیے۔",
+      "پڑھنے کی درستگی بہتر بنانے والے بچوں اور بڑوں کے لیے۔"
+    ],
+    "learnTitle": "آپ کیا سیکھیں گے؟",
+    "learn": [
+      "عربی حروف اور ان کی مختلف شکلوں کی پہچان۔",
+      "حرکات، سکون، شدہ اور تنوین پڑھنا۔",
+      "حروف جوڑنا اور الفاظ اور آیات پڑھنا۔",
+      "رہنمائی کے ساتھ مشق سے تلفظ بہتر بنانا۔",
+      "تجوید کے بنیادی قواعد سمجھنا اور لاگو کرنا۔",
+      "قرآن سیکھنے کا مستقل معمول بنانا۔"
+    ],
+    "requirementsTitle": "کیا پہلے سے تجربہ ضروری ہے؟",
+    "requirements": "شروع کرنے سے پہلے روانی سے پڑھنا ضروری نہیں۔ مفت آزمائشی کلاس میں استاد آپ کی سطح کا جائزہ لے گا۔ اگر عربی حروف اور آوازوں کی بنیاد درکار ہو تو ہم مناسب ابتدائی پروگرام منتخب کرنے میں مدد کریں گے۔",
+    "lessonsTitle": "بہتر تلاوت کی طرف واضح راستہ",
+    "lessons": "چاہے آپ عربی حروف سے آغاز کر رہے ہوں یا زیادہ درست تلاوت چاہتے ہوں، استاد آپ کی سطح جانچتا ہے اور پڑھنے اور تجوید کے اطلاق میں رہنمائی کرتا ہے۔",
+    "faqTitle": "عام سوالات",
+    "faq": [
+      [
+        "کیا بالکل مبتدی شامل ہو سکتے ہیں؟",
+        "شروع کرنے سے پہلے روانی سے پڑھنا ضروری نہیں۔ مفت آزمائشی کلاس میں استاد آپ کی سطح کا جائزہ لے گا۔ اگر عربی حروف اور آوازوں کی بنیاد درکار ہو تو ہم مناسب ابتدائی پروگرام منتخب کرنے میں مدد کریں گے۔"
+      ],
+      [
+        "کیا میرا بچہ شامل ہو سکتا ہے؟",
+        "جی ہاں۔ اسباق طالب علم کی عمر اور موجودہ سطح کے مطابق ہوتے ہیں۔"
+      ],
+      [
+        "میری ابتدائی سطح کیسے جانچی جاتی ہے؟",
+        "شروع کرنے سے پہلے روانی سے پڑھنا ضروری نہیں۔ مفت آزمائشی کلاس میں استاد آپ کی سطح کا جائزہ لے گا۔ اگر عربی حروف اور آوازوں کی بنیاد درکار ہو تو ہم مناسب ابتدائی پروگرام منتخب کرنے میں مدد کریں گے۔"
+      ],
+      [
+        "کیا مناسب وقت منتخب کر سکتا ہوں؟",
+        "ہماری ٹیم کے ساتھ مناسب وقت منتخب کریں۔"
+      ],
+      [
+        "آن لائن اسباق کے لیے کیا چاہیے؟",
+        "کیمرے والا آلہ، مستحکم انٹرنیٹ اور پرسکون جگہ استعمال کریں۔"
+      ],
+      [
+        "مفت آزمائشی کلاس کیسے بک کروں؟",
+        "مفت آزمائشی کلاس کے بٹن پر کلک کر کے فارم مکمل کریں۔"
+      ]
+    ],
+    "eyebrow": "وضاحت کے ساتھ سیکھیں۔ ایمان سے جڑیں۔",
+    "curriculum": [
+      {
+        "title": "پڑھنے کی بنیاد",
+        "topics": [
+          "عربی حروف اور تلفظ",
+          "مختصر حرکات اور سکون",
+          "تنوین اور شدہ",
+          "حروف جوڑنا اور پڑھنے کی مشق"
+        ]
+      },
+      {
+        "title": "بنیادی تجوید",
+        "topics": [
+          "مخارج حروف کا تعارف",
+          "نون ساکنہ اور تنوین",
+          "میم ساکنہ",
+          "غنہ اور قلقلہ",
+          "مد کا تعارف"
+        ]
+      },
+      {
+        "title": "رہنمائی کے ساتھ تلاوت",
+        "topics": [
+          "تلاوت میں قواعد کا اطلاق",
+          "عام غلطیوں کی اصلاح",
+          "روانی کی مشق",
+          "وقف اور ابتدا"
+        ]
+      },
+      {
+        "title": "مسلسل ترقی",
+        "topics": [
+          "جائزے کے مطابق مشق",
+          "دہرائی اور استاد کی اصلاح",
+          "ترقی کا جائزہ"
+        ]
+      }
+    ],
+    "planNote": "تعلیمی منصوبہ آپ کی ابتدائی سطح اور ترقی کے مطابق ہوتا ہے۔"
+  },
+  "tr": {
+    "title": "Online Kur’an ve Tecvid Dersleri",
+    "intro": "Nitelikli öğretmenlerin kişisel rehberliğiyle Kur’an okumada sağlam bir temel oluşturun ve tilavetinizi geliştirin. Dersler seviyenize, hızınıza ve hedeflerinize göre düzenlenir.",
+    "audienceTitle": "Bu program kimler için?",
+    "audience": [
+      "Kur’an okumaya yeni başlayanlar.",
+      "Arapça harfleri tanıyan ancak kelime oluşturmak için yardıma ihtiyaç duyanlar.",
+      "Okuma doğruluğunu geliştirmek isteyen çocuklar ve yetişkinler."
+    ],
+    "learnTitle": "Neler öğreneceksiniz?",
+    "learn": [
+      "Arapça harfleri ve farklı biçimlerini tanımak.",
+      "Harekeleri, sükûn, şedde ve tenvini okumak.",
+      "Harfleri birleştirmek, kelimeleri ve ayetleri okumak.",
+      "Rehberli uygulamayla telaffuzu geliştirmek.",
+      "Temel tecvid kurallarını anlamak ve uygulamak.",
+      "Düzenli Kur’an öğrenme rutini oluşturmak."
+    ],
+    "requirementsTitle": "Önceden deneyim gerekli mi?",
+    "requirements": "Başlamadan önce akıcı okumanız gerekmez. Ücretsiz deneme dersinde öğretmen seviyenizi değerlendirir. Arapça harf ve ses temeline ihtiyacınız varsa uygun başlangıç programını seçmenize yardımcı oluruz.",
+    "lessonsTitle": "Daha iyi tilavete açık bir yol",
+    "lessons": "Arapça harflerle başlasanız da daha doğru okumak isteseniz de öğretmen seviyenizi değerlendirir ve okuma ile tecvid uygulamalarında size rehberlik eder.",
+    "faqTitle": "Sık sorulan sorular",
+    "faq": [
+      [
+        "Tamamen yeni başlayan biri katılabilir mi?",
+        "Başlamadan önce akıcı okumanız gerekmez. Ücretsiz deneme dersinde öğretmen seviyenizi değerlendirir. Arapça harf ve ses temeline ihtiyacınız varsa uygun başlangıç programını seçmenize yardımcı oluruz."
+      ],
+      [
+        "Çocuğum katılabilir mi?",
+        "Evet. Dersler öğrencinin yaşına ve mevcut seviyesine göre uyarlanır."
+      ],
+      [
+        "Başlangıç seviyem nasıl değerlendirilir?",
+        "Başlamadan önce akıcı okumanız gerekmez. Ücretsiz deneme dersinde öğretmen seviyenizi değerlendirir. Arapça harf ve ses temeline ihtiyacınız varsa uygun başlangıç programını seçmenize yardımcı oluruz."
+      ],
+      [
+        "Uygun bir saat seçebilir miyim?",
+        "Ekibimizle uygun bir ders saati seçin."
+      ],
+      [
+        "Online dersler için ne gerekir?",
+        "Kameralı cihaz, kararlı internet ve sessiz bir alan kullanın."
+      ],
+      [
+        "Ücretsiz deneme nasıl ayırtılır?",
+        "Ücretsiz deneme düğmesine tıklayıp rezervasyon formunu doldurun."
+      ]
+    ],
+    "eyebrow": "Açıklıkla öğrenin. İnancınızla bağ kurun.",
+    "curriculum": [
+      {
+        "title": "Okuma temelleri",
+        "topics": [
+          "Arapça harfler ve telaffuz",
+          "Kısa harekeler ve sükûn",
+          "Tenvin ve şedde",
+          "Harf birleştirme ve okuma"
+        ]
+      },
+      {
+        "title": "Temel tecvid",
+        "topics": [
+          "Mahreçlere giriş",
+          "Sakin nun ve tenvin",
+          "Sakin mim",
+          "Gunne ve kalkale",
+          "Medde giriş"
+        ]
+      },
+      {
+        "title": "Rehberli Kur’an tilaveti",
+        "topics": [
+          "Tilavette kuralları uygulama",
+          "Yaygın hataları düzeltme",
+          "Akıcılık çalışması",
+          "Durma ve başlama"
+        ]
+      },
+      {
+        "title": "Sürekli gelişim",
+        "topics": [
+          "Değerlendirmeye göre çalışma",
+          "Tekrar ve öğretmen geri bildirimi",
+          "İlerleme değerlendirmesi"
+        ]
+      }
+    ],
+    "planNote": "Öğrenme planınız başlangıç seviyenize ve ilerlemenize göre uyarlanır."
+  }
+}
