@@ -40,3 +40,9 @@
 :is(.course-page,.catalog-shell) .navbar__actions>.btn{white-space:nowrap;flex-shrink:0}
 :is(.course-page,.catalog-shell) .navbar__inner{max-width:1440px}
 @media(min-width:1101px){:is(.course-page,.catalog-shell) .navbar__links{gap:10px}:is(.course-page,.catalog-shell) .navbar__actions{gap:10px}}
+
+/* Extend the program's native link across its entire card. */
+.catalog-program-card{position:relative}
+.catalog-program-link::after{content:"";position:absolute;inset:0;border-radius:16px}
+.catalog-program-card:focus-within{outline:3px solid #b57834;outline-offset:4px}
+.catalog-program-link:focus-visible{outline:none}
