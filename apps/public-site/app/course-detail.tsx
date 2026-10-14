@@ -5,7 +5,7 @@ import { contact } from '../../../src/landing/data/siteData';
 import Link from 'next/link';
 import { ArrowRight, BookOpen, CalendarDays, Check, ChevronRight, GraduationCap, Laptop, MessageCircle, UserRound, UsersRound, Video, Wifi } from 'lucide-react';
 import readingContent from '../lib/quran-reading.json';
-import { courses, labels, languages, text, siteUrl } from '../lib/catalog';
+import { courses, labels, text, siteUrl } from '../lib/catalog';
 import DocumentLanguage from './document-language';
 import './course-detail.css';
 const ui: Record<string,string[]> = {
@@ -30,7 +30,6 @@ export default function CourseDetail({lang, combined=false}:{lang:string; combin
  const booking=<Link className="course-button" href={bookHref}>{l[3]}<ArrowRight size={18}/></Link>;
  return <div className="course-page" lang={lang} dir={lang==='ar'||lang==='ur'?'rtl':'ltr'}><DocumentLanguage language={lang}/>
  <CourseChrome lang={lang} path={path}/>
- <nav className="course-language" aria-label="Languages">{languages.map(code=><Link key={code} href={`/${code}/${path}`} hrefLang={code} aria-current={code===lang?'page':undefined}>{code.toUpperCase()}</Link>)}</nav>
  <nav className="course-wrap course-breadcrumb"><Link href="/">{l[0]}</Link> / <Link href={`/${lang}/programs`}>{l[1]}</Link> / {copy.title}</nav>
  <section className="course-hero"><div className="course-wrap course-hero-grid"><div><span className="course-live"><Video size={16}/>{u[0]}</span><p className="course-eyebrow">{extended?.eyebrow || text(lang,'programs.items.quranReading.title')}</p><h1>{copy.title}</h1><p className="course-lead">{copy.intro}</p><div className="course-hero-actions">{booking}<a className="course-button course-button-outline" href="#course-curriculum">{u[2]}<BookOpen size={18}/></a></div></div><div className="course-hero-image"><div className="course-arch"/><img src="/assets/programs/quran-reading.png" alt={text(lang,'programs.items.quranReading.title')}/><span className="course-motto">Musliman<br/>Academy</span></div></div></section>
  <div className="course-wrap"><div className="course-features">{icons.map((Icon,i)=><div key={u[i+5]}><span className="course-icon"><Icon size={25}/></span><div><strong>{u[i+5]}</strong><p>{featureDescriptions[i]}</p></div></div>)}</div>
