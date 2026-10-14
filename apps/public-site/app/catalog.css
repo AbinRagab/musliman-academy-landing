@@ -35,3 +35,8 @@
 .catalog-footer{max-width:none;background:#0b1f3a;color:#f6eee2;text-align:center;padding:36px 24px}
 @media(max-width:800px){.catalog-hero--course{gap:30px}.catalog-hero h1{font-size:38px}.catalog-course-content{gap:18px}.catalog-course-content section{padding:24px}}
 @media(max-width:640px){.catalog-hero--course,.catalog-course-content{grid-template-columns:1fr}.catalog-hero{padding-top:24px}.catalog-hero-visual{max-width:420px}.catalog-course-content section:last-child{padding:24px}.catalog-header{padding:14px 20px}.catalog-brand img{width:150px;height:52px}.catalog-main{padding-inline:20px}.catalog-hero h1{font-size:38px}.catalog-languages{justify-content:flex-start;gap:14px}}
+
+:is(.course-page,.catalog-shell) .navbar{position:relative}
+:is(.course-page,.catalog-shell) .navbar__actions>.btn{white-space:nowrap;flex-shrink:0}
+:is(.course-page,.catalog-shell) .navbar__inner{max-width:1440px}
+@media(min-width:1101px){:is(.course-page,.catalog-shell) .navbar__links{gap:10px}:is(.course-page,.catalog-shell) .navbar__actions{gap:10px}}
