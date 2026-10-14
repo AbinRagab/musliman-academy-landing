@@ -1,72 +1,31 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
+  "routes": [
     {
-      "source": "/dashboard/:path*",
-      "destination": "/index.html"
+      "src": "^/dashboard(?:/.*)?$",
+      "dest": "/index.html",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow, noarchive"
+      }
     },
     {
-      "source": "/",
-      "destination": "https://musliman-academy-public.vercel.app/"
+      "src": "^/$",
+      "dest": "https://musliman-academy-public.vercel.app/"
     },
     {
-      "source": "/en/:path*",
-      "destination": "https://musliman-academy-public.vercel.app/en/:path*"
+      "src": "^/(en|ar|es|de|it|ur|tr)/(.*)$",
+      "dest": "https://musliman-academy-public.vercel.app/$1/$2"
     },
     {
-      "source": "/ar/:path*",
-      "destination": "https://musliman-academy-public.vercel.app/ar/:path*"
+      "src": "^/_next/(.*)$",
+      "dest": "https://musliman-academy-public.vercel.app/_next/$1"
     },
     {
-      "source": "/es/:path*",
-      "destination": "https://musliman-academy-public.vercel.app/es/:path*"
+      "src": "^/(sitemap\\.xml|robots\\.txt|manifest\\.webmanifest|opengraph-image)$",
+      "dest": "https://musliman-academy-public.vercel.app/$1"
     },
     {
-      "source": "/de/:path*",
-      "destination": "https://musliman-academy-public.vercel.app/de/:path*"
-    },
-    {
-      "source": "/it/:path*",
-      "destination": "https://musliman-academy-public.vercel.app/it/:path*"
-    },
-    {
-      "source": "/ur/:path*",
-      "destination": "https://musliman-academy-public.vercel.app/ur/:path*"
-    },
-    {
-      "source": "/tr/:path*",
-      "destination": "https://musliman-academy-public.vercel.app/tr/:path*"
-    },
-    {
-      "source": "/_next/:path*",
-      "destination": "https://musliman-academy-public.vercel.app/_next/:path*"
-    },
-    {
-      "source": "/sitemap.xml",
-      "destination": "https://musliman-academy-public.vercel.app/sitemap.xml"
-    },
-    {
-      "source": "/robots.txt",
-      "destination": "https://musliman-academy-public.vercel.app/robots.txt"
-    },
-    {
-      "source": "/manifest.webmanifest",
-      "destination": "https://musliman-academy-public.vercel.app/manifest.webmanifest"
-    },
-    {
-      "source": "/opengraph-image",
-      "destination": "https://musliman-academy-public.vercel.app/opengraph-image"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/dashboard/:path*",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
-        }
-      ]
+      "handle": "filesystem"
     }
   ]
 }
