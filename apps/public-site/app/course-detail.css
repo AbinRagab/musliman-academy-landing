@@ -3,3 +3,5 @@
 .course-breadcrumb{font-size:12px;color:#758097;padding-block:10px}.course-teachers{padding-block:30px}.course-teachers>div{display:grid;grid-template-columns:1fr 1fr;gap:20px}.course-teachers a{display:flex;gap:20px;border:1px solid #e6e7eb;border-radius:12px;padding:20px;align-items:center}.course-teachers img{object-fit:cover;border-radius:12px;max-width:40%}.course-teachers p,.course-teachers small{font-size:13px;color:#727e8e}.course-accordion ul{padding:0 24px 20px 60px;color:#748095;font-size:14px}.course-sidebar{position:sticky;top:24px}.course-page{scroll-behavior:smooth}.course-page [id]{scroll-margin-top:24px}@media(max-width:760px){.course-sidebar{position:static}.course-teachers>div{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 .course-page>.navbar{position:relative}.course-page .footer{margin-top:0}html{scroll-behavior:smooth}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.course-page .course-trial h2,.course-page .course-bottom-cta h2{color:#fff}
