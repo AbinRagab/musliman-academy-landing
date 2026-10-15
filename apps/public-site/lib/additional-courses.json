@@ -1,0 +1,2241 @@
+{
+  "quranMemorization": {
+    "en": {
+      "title": "Memorize the Qur’an, One Steady Step at a Time",
+      "intro": "Build a lasting memorization routine with live, one-to-one guidance. Learn manageable portions, improve recitation and revisit earlier passages with a plan suited to your ability and goals.",
+      "eyebrow": "Memorize the Qur’an, One Steady Step at a Time",
+      "audienceTitle": "Who is this program for?",
+      "audience": [
+        "Beginners ready to start Hifz after a reading assessment.",
+        "Children and teenagers who benefit from small, achievable goals.",
+        "Adults and returning learners strengthening or continuing their memorization."
+      ],
+      "learnTitle": "What you will learn",
+      "learn": [
+        "Memorize manageable portions with realistic targets.",
+        "Use repetition and listening to support recall.",
+        "Balance new memorization with regular revision.",
+        "Improve pronunciation and Tajweed during recitation.",
+        "Review retention with teacher feedback.",
+        "Build a consistent practice routine at home."
+      ],
+      "requirementsTitle": "Before you begin",
+      "requirements": "Use a device with a camera, stable internet and a quiet space. A notebook is helpful. Attend regularly and practise between lessons.",
+      "lessonsTitle": "How lessons work",
+      "lessons": "Your teacher listens to new memorization and earlier passages, corrects mistakes and adjusts the next assignment. Move from short surahs towards larger goals while giving revision and retention the attention they need.",
+      "planNote": "Your teacher assesses your level during the free trial and adapts the content and pace. Progress depends on attendance and practice, with no guaranteed completion date.",
+      "curriculum": [
+        {
+          "title": "Foundations of Hifz",
+          "topics": [
+            "Assess reading, choose suitable short surahs and set realistic goals.",
+            "Select short surahs, Juz Amma or Juz Tabarak according to your reading and memorization assessment."
+          ]
+        },
+        {
+          "title": "Memorization methods",
+          "topics": [
+            "Use listening, repetition and connected passages to learn new portions."
+          ]
+        },
+        {
+          "title": "Revision and retention",
+          "topics": [
+            "Revisit recent and older passages alongside new memorization."
+          ]
+        },
+        {
+          "title": "Recitation and Tajweed",
+          "topics": [
+            "Correct pronunciation and apply relevant Tajweed rules."
+          ]
+        },
+        {
+          "title": "Assessment and progress",
+          "topics": [
+            "Review recall and accuracy and adjust your assignments."
+          ]
+        },
+        {
+          "title": "Consolidation and continued Hifz",
+          "topics": [
+            "Strengthen completed portions before progressing towards your next target."
+          ]
+        }
+      ],
+      "faqTitle": "Frequently asked questions",
+      "faq": [
+        [
+          "Can I start without fluent Quran reading?",
+          "Your teacher first checks reading and pronunciation. If you need a foundation, we may recommend Quran Reading or Tarteel Qaidah before a wider Hifz plan."
+        ],
+        [
+          "Which portions can I work on?",
+          "Depending on your assessment, you may start with short surahs, Juz Amma or work towards larger memorization goals."
+        ],
+        [
+          "Does Hifz include Tajweed?",
+          "Relevant Tajweed and pronunciation corrections are practised during recitation; revision remains part of the plan."
+        ],
+        [
+          "Are lessons live or recorded?",
+          "Lessons are live and one-to-one, so you can practise, ask questions and receive feedback."
+        ],
+        [
+          "Can children join?",
+          "Yes. Activities and expectations are adapted to the learner’s age and ability."
+        ],
+        [
+          "How is progress reviewed?",
+          "Your teacher reviews understanding or recall, gives corrections and adjusts the next learning steps."
+        ],
+        [
+          "How long does the course take?",
+          "The learning plan depends on your starting point, goals, attendance and practice. Discuss a suitable pace during your trial."
+        ],
+        [
+          "How do I start?",
+          "Book a free trial, select this program and discuss your goals and schedule with our team."
+        ]
+      ]
+    },
+    "ar": {
+      "title": "احفظ القرآن خطوة بخطوة بثبات",
+      "intro": "ابنِ عادة مستمرة للحفظ مع إرشاد فردي مباشر. احفظ مقاطع مناسبة، وحسّن تلاوتك، وراجع ما سبق وفق خطة تناسب قدرتك وأهدافك.",
+      "eyebrow": "احفظ القرآن خطوة بخطوة بثبات",
+      "audienceTitle": "لمن يناسب البرنامج؟",
+      "audience": [
+        "المبتدئون المستعدون للحفظ بعد تقييم القراءة.",
+        "الأطفال والمراهقون الذين تناسبهم الأهداف الصغيرة القابلة للتحقيق.",
+        "البالغون والعائدون للتعلّم لتثبيت الحفظ أو استكماله."
+      ],
+      "learnTitle": "ماذا ستتعلم؟",
+      "learn": [
+        "حفظ مقاطع مناسبة بأهداف واقعية.",
+        "استخدام التكرار والاستماع لدعم الاسترجاع.",
+        "الموازنة بين الحفظ الجديد والمراجعة المنتظمة.",
+        "تحسين النطق والتجويد أثناء التلاوة.",
+        "مراجعة ثبات الحفظ بملاحظات المعلم.",
+        "بناء روتين مستمر للتدريب في المنزل."
+      ],
+      "requirementsTitle": "قبل أن تبدأ",
+      "requirements": "تحتاج إلى جهاز بكاميرا وإنترنت مستقر ومكان هادئ. يفيدك دفتر للملاحظات، مع الانتظام والممارسة بين الحصص.",
+      "lessonsTitle": "كيف تسير الحصص؟",
+      "lessons": "يستمع المعلم للحفظ الجديد والمقاطع السابقة، ويصحح الأخطاء ويضبط التكليف التالي. انتقل من السور القصيرة إلى أهداف أكبر مع إعطاء المراجعة وتثبيت الحفظ حقهما.",
+      "planNote": "يقيّم المعلم مستواك خلال التجربة المجانية ويكيّف المحتوى والسرعة. يعتمد التقدم على الانتظام والتدريب، دون ضمان موعد ثابت للإتمام.",
+      "curriculum": [
+        {
+          "title": "أساسيات الحفظ",
+          "topics": [
+            "تقييم القراءة واختيار سور قصيرة مناسبة ووضع أهداف واقعية.",
+            "اختيار السور القصيرة أو جزء عم أو جزء تبارك وفق تقييم القراءة والحفظ."
+          ]
+        },
+        {
+          "title": "أساليب الحفظ",
+          "topics": [
+            "استخدام الاستماع والتكرار وربط المقاطع لحفظ أجزاء جديدة."
+          ]
+        },
+        {
+          "title": "المراجعة والتثبيت",
+          "topics": [
+            "مراجعة المحفوظ القريب والقديم إلى جانب الحفظ الجديد."
+          ]
+        },
+        {
+          "title": "التلاوة والتجويد",
+          "topics": [
+            "تصحيح النطق وتطبيق أحكام التجويد المرتبطة بالمقاطع."
+          ]
+        },
+        {
+          "title": "التقييم ومتابعة التقدم",
+          "topics": [
+            "مراجعة الاسترجاع والدقة وتعديل التكليفات."
+          ]
+        },
+        {
+          "title": "التثبيت ومواصلة الحفظ",
+          "topics": [
+            "تقوية الأجزاء المحفوظة قبل الانتقال إلى الهدف التالي."
+          ]
+        }
+      ],
+      "faqTitle": "الأسئلة الشائعة",
+      "faq": [
+        [
+          "هل أبدأ دون إتقان قراءة القرآن؟",
+          "يقيّم المعلم القراءة والنطق أولًا. قد نوصي ببرنامج القراءة أو ترتيل القاعدة قبل خطة حفظ أوسع إذا احتجت إلى تأسيس."
+        ],
+        [
+          "ما الأجزاء التي يمكنني حفظها؟",
+          "قد تبدأ بالسور القصيرة أو جزء عم أو تتدرج إلى أهداف أكبر حسب التقييم."
+        ],
+        [
+          "هل يشمل الحفظ التجويد؟",
+          "تُمارس أحكام التجويد وتصحيحات النطق أثناء التلاوة مع استمرار المراجعة ضمن الخطة."
+        ],
+        [
+          "هل الحصص مباشرة أم مسجلة؟",
+          "الحصص مباشرة وفردية لتتمكن من التدريب وطرح الأسئلة والحصول على الملاحظات."
+        ],
+        [
+          "هل يمكن للأطفال الاشتراك؟",
+          "نعم، تتكيف الأنشطة والتوقعات مع عمر الطالب وقدرته."
+        ],
+        [
+          "كيف تتم متابعة التقدم؟",
+          "يراجع المعلم الفهم أو الحفظ، ويقدم التصحيح ويضبط الخطوات التالية."
+        ],
+        [
+          "كم تستغرق الدراسة؟",
+          "تعتمد الخطة على مستواك وأهدافك وانتظامك وممارستك. ناقش السرعة المناسبة خلال التجربة."
+        ],
+        [
+          "كيف أبدأ؟",
+          "احجز تجربة مجانية واختر البرنامج وناقش أهدافك ومواعيدك مع فريقنا."
+        ]
+      ]
+    },
+    "es": {
+      "title": "Memoriza el Corán paso a paso",
+      "intro": "Crea una rutina duradera de memorización con orientación individual en directo. Aprende porciones manejables, mejora la recitación y repasa según tu capacidad y tus objetivos.",
+      "eyebrow": "Memoriza el Corán paso a paso",
+      "audienceTitle": "¿Para quién es el programa?",
+      "audience": [
+        "Principiantes preparados para Hifz tras evaluar su lectura.",
+        "Niños y adolescentes que necesitan metas pequeñas y alcanzables.",
+        "Adultos que continúan o refuerzan su memorización."
+      ],
+      "learnTitle": "Qué aprenderás",
+      "learn": [
+        "Memorizar porciones con metas realistas.",
+        "Usar repetición y escucha para recordar.",
+        "Equilibrar material nuevo y repaso.",
+        "Mejorar pronunciación y Tajweed.",
+        "Revisar la retención con el profesor.",
+        "Crear una rutina de práctica en casa."
+      ],
+      "requirementsTitle": "Antes de empezar",
+      "requirements": "Necesitas un dispositivo con cámara, internet estable y un lugar tranquilo. Un cuaderno es útil. Asiste regularmente y practica entre clases.",
+      "lessonsTitle": "Cómo funcionan las clases",
+      "lessons": "El profesor escucha lo nuevo y lo anterior, corrige errores y adapta la siguiente tarea. Avanza desde suras cortas hacia metas mayores, dedicando tiempo al repaso y la retención.",
+      "planNote": "En la prueba se evalúa tu nivel y se adaptan contenidos y ritmo. El progreso depende de asistencia y práctica, sin fecha de finalización garantizada.",
+      "curriculum": [
+        {
+          "title": "Fundamentos del Hifz",
+          "topics": [
+            "Evaluar la lectura, elegir suras cortas y fijar metas.",
+            "Elegir suras cortas, Juz Amma o Juz Tabarak según la evaluación de lectura y memorización."
+          ]
+        },
+        {
+          "title": "Métodos de memorización",
+          "topics": [
+            "Escuchar, repetir y conectar pasajes nuevos."
+          ]
+        },
+        {
+          "title": "Repaso y retención",
+          "topics": [
+            "Repasar pasajes recientes y antiguos junto al material nuevo."
+          ]
+        },
+        {
+          "title": "Recitación y Tajweed",
+          "topics": [
+            "Corregir la pronunciación y aplicar reglas pertinentes."
+          ]
+        },
+        {
+          "title": "Evaluación del progreso",
+          "topics": [
+            "Revisar recuerdo y precisión y adaptar las tareas."
+          ]
+        },
+        {
+          "title": "Consolidación y continuidad",
+          "topics": [
+            "Afianzar las porciones completadas antes de avanzar."
+          ]
+        }
+      ],
+      "faqTitle": "Preguntas frecuentes",
+      "faq": [
+        [
+          "¿Necesito leer con fluidez?",
+          "El profesor evalúa lectura y pronunciación. Puede recomendar Lectura del Corán o Tarteel Qaidah antes de un plan amplio de Hifz."
+        ],
+        [
+          "¿Qué partes puedo memorizar?",
+          "Según la evaluación, suras cortas, Juz Amma o metas más amplias."
+        ],
+        [
+          "¿Incluye Tajweed?",
+          "Se practican reglas pertinentes y correcciones de pronunciación durante la recitación, junto al repaso."
+        ],
+        [
+          "¿Las clases son en directo?",
+          "Sí, son individuales en directo para practicar, preguntar y recibir comentarios."
+        ],
+        [
+          "¿Pueden participar niños?",
+          "Sí. Adaptamos actividades y expectativas a su edad y capacidad."
+        ],
+        [
+          "¿Cómo se revisa el progreso?",
+          "El profesor revisa comprensión o recuerdo, corrige y adapta los siguientes pasos."
+        ],
+        [
+          "¿Cuánto dura el curso?",
+          "Depende del punto de partida, objetivos, asistencia y práctica. Habla del ritmo en la prueba."
+        ],
+        [
+          "¿Cómo empiezo?",
+          "Reserva una prueba, elige el programa y habla con el equipo de objetivos y horarios."
+        ]
+      ]
+    },
+    "de": {
+      "title": "Den Koran Schritt für Schritt auswendig lernen",
+      "intro": "Entwickle eine beständige Lernroutine im Live-Einzelunterricht. Lerne überschaubare Abschnitte, verbessere die Rezitation und wiederhole passend zu deinen Fähigkeiten und Zielen.",
+      "eyebrow": "Den Koran Schritt für Schritt auswendig lernen",
+      "audienceTitle": "Für wen ist das Programm?",
+      "audience": [
+        "Anfänger nach einer Einschätzung ihrer Lesefähigkeit.",
+        "Kinder und Jugendliche mit kleinen, erreichbaren Zielen.",
+        "Erwachsene, die ihre Memorierung fortsetzen oder festigen."
+      ],
+      "learnTitle": "Das lernst du",
+      "learn": [
+        "Abschnitte mit realistischen Zielen lernen.",
+        "Wiederholung und Zuhören zum Erinnern nutzen.",
+        "Neues Lernen und Wiederholen verbinden.",
+        "Aussprache und Tadschwid verbessern.",
+        "Behalten mit Feedback überprüfen.",
+        "Eine regelmäßige Übungsroutine entwickeln."
+      ],
+      "requirementsTitle": "Vor dem Start",
+      "requirements": "Du brauchst ein Gerät mit Kamera, stabiles Internet und einen ruhigen Platz. Ein Heft ist hilfreich. Nimm regelmäßig teil und übe zwischen den Stunden.",
+      "lessonsTitle": "So läuft der Unterricht",
+      "lessons": "Deine Lehrkraft hört neue und frühere Abschnitte, korrigiert Fehler und passt die nächste Aufgabe an. Beginne mit kurzen Suren und arbeite an größeren Zielen, ohne Wiederholung zu vernachlässigen.",
+      "planNote": "In der Probestunde werden Niveau, Inhalte und Tempo abgestimmt. Fortschritt hängt von Teilnahme und Übung ab; ein Abschlussdatum wird nicht garantiert.",
+      "curriculum": [
+        {
+          "title": "Grundlagen des Hifz",
+          "topics": [
+            "Lesen einschätzen, kurze Suren wählen und Ziele setzen.",
+            "Kurze Suren, Dschuz Amma oder Dschuz Tabarak passend zur Einschätzung auswählen."
+          ]
+        },
+        {
+          "title": "Lernmethoden",
+          "topics": [
+            "Neue Abschnitte durch Zuhören, Wiederholen und Verknüpfen lernen."
+          ]
+        },
+        {
+          "title": "Wiederholung und Behalten",
+          "topics": [
+            "Neue und ältere Passagen regelmäßig wiederholen."
+          ]
+        },
+        {
+          "title": "Rezitation und Tadschwid",
+          "topics": [
+            "Aussprache korrigieren und passende Regeln anwenden."
+          ]
+        },
+        {
+          "title": "Fortschrittskontrolle",
+          "topics": [
+            "Abruf und Genauigkeit prüfen und Aufgaben anpassen."
+          ]
+        },
+        {
+          "title": "Festigung und Fortsetzung",
+          "topics": [
+            "Gelerntes sichern, bevor das nächste Ziel folgt."
+          ]
+        }
+      ],
+      "faqTitle": "Häufige Fragen",
+      "faq": [
+        [
+          "Muss ich flüssig lesen können?",
+          "Zuerst werden Lesen und Aussprache geprüft. Bei Bedarf empfehlen wir Koranlesen oder Tarteel Qaidah vor einem umfangreicheren Hifz-Plan."
+        ],
+        [
+          "Welche Abschnitte kann ich lernen?",
+          "Je nach Einschätzung kurze Suren, Dschuz Amma oder größere Ziele."
+        ],
+        [
+          "Gehört Tadschwid dazu?",
+          "Passende Regeln und Aussprache werden während der Rezitation korrigiert; Wiederholung bleibt Teil des Plans."
+        ],
+        [
+          "Ist der Unterricht live?",
+          "Ja, im Live-Einzelunterricht kannst du üben, fragen und Feedback erhalten."
+        ],
+        [
+          "Können Kinder teilnehmen?",
+          "Ja. Übungen und Erwartungen werden an Alter und Fähigkeiten angepasst."
+        ],
+        [
+          "Wie wird Fortschritt geprüft?",
+          "Die Lehrkraft prüft Verständnis oder Abruf, korrigiert und passt die nächsten Schritte an."
+        ],
+        [
+          "Wie lange dauert der Kurs?",
+          "Das hängt von Ausgangsniveau, Zielen, Teilnahme und Übung ab. Besprich das Tempo in der Probestunde."
+        ],
+        [
+          "Wie beginne ich?",
+          "Buche eine kostenlose Probestunde, wähle das Programm und besprich Ziele und Termine mit dem Team."
+        ]
+      ]
+    },
+    "it": {
+      "title": "Memorizza il Corano, un passo alla volta",
+      "intro": "Costruisci una routine duratura con lezioni individuali dal vivo. Impara porzioni gestibili, migliora la recitazione e ripassa secondo le tue capacità e i tuoi obiettivi.",
+      "eyebrow": "Memorizza il Corano, un passo alla volta",
+      "audienceTitle": "A chi è rivolto il programma?",
+      "audience": [
+        "Principianti pronti per Hifz dopo una valutazione della lettura.",
+        "Bambini e ragazzi con piccoli obiettivi raggiungibili.",
+        "Adulti che continuano o rafforzano la memorizzazione."
+      ],
+      "learnTitle": "Cosa imparerai",
+      "learn": [
+        "Memorizzare porzioni con obiettivi realistici.",
+        "Usare ripetizione e ascolto per ricordare.",
+        "Bilanciare nuovi brani e ripasso.",
+        "Migliorare pronuncia e Tajweed.",
+        "Verificare la memoria con il feedback.",
+        "Creare una routine di pratica a casa."
+      ],
+      "requirementsTitle": "Prima di iniziare",
+      "requirements": "Servono dispositivo con videocamera, internet stabile e un luogo tranquillo. Un quaderno è utile. Partecipa regolarmente ed esercitati tra le lezioni.",
+      "lessonsTitle": "Come funzionano le lezioni",
+      "lessons": "L’insegnante ascolta i brani nuovi e precedenti, corregge gli errori e adatta il compito successivo. Parti da sure brevi e avanza senza trascurare ripasso e consolidamento.",
+      "planNote": "La prova serve a valutare il livello e adattare contenuti e ritmo. I progressi dipendono da presenza e pratica, senza una data di completamento garantita.",
+      "curriculum": [
+        {
+          "title": "Fondamenti dell’Hifz",
+          "topics": [
+            "Valutare la lettura, scegliere sure brevi e fissare obiettivi.",
+            "Scegliere sure brevi, Juz Amma o Juz Tabarak secondo la valutazione di lettura e memoria."
+          ]
+        },
+        {
+          "title": "Metodi di memorizzazione",
+          "topics": [
+            "Ascoltare, ripetere e collegare i nuovi passaggi."
+          ]
+        },
+        {
+          "title": "Ripasso e consolidamento",
+          "topics": [
+            "Rivedere brani recenti e precedenti insieme ai nuovi."
+          ]
+        },
+        {
+          "title": "Recitazione e Tajweed",
+          "topics": [
+            "Correggere la pronuncia e applicare le regole pertinenti."
+          ]
+        },
+        {
+          "title": "Valutazione dei progressi",
+          "topics": [
+            "Verificare ricordo e precisione e adattare i compiti."
+          ]
+        },
+        {
+          "title": "Consolidamento e continuità",
+          "topics": [
+            "Rafforzare le porzioni completate prima di avanzare."
+          ]
+        }
+      ],
+      "faqTitle": "Domande frequenti",
+      "faq": [
+        [
+          "Devo leggere fluentemente?",
+          "L’insegnante valuta lettura e pronuncia. Se serve, consigliamo Lettura del Corano o Tarteel Qaidah prima di un piano ampio di Hifz."
+        ],
+        [
+          "Quali parti posso memorizzare?",
+          "Secondo la valutazione, sure brevi, Juz Amma o obiettivi più ampi."
+        ],
+        [
+          "È incluso il Tajweed?",
+          "Si praticano regole pertinenti e correzioni di pronuncia durante la recitazione, insieme al ripasso."
+        ],
+        [
+          "Le lezioni sono dal vivo?",
+          "Sì, sono individuali dal vivo per esercitarsi, fare domande e ricevere feedback."
+        ],
+        [
+          "Possono partecipare bambini?",
+          "Sì. Attività e aspettative sono adattate all’età e alle capacità."
+        ],
+        [
+          "Come si valutano i progressi?",
+          "L’insegnante verifica comprensione o memoria, corregge e adatta i passi successivi."
+        ],
+        [
+          "Quanto dura il corso?",
+          "Dipende da livello iniziale, obiettivi, presenza e pratica. Parla del ritmo durante la prova."
+        ],
+        [
+          "Come inizio?",
+          "Prenota una prova gratuita, scegli il programma e parla con il team di obiettivi e orari."
+        ]
+      ]
+    },
+    "ur": {
+      "title": "قرآن کو مستقل قدموں سے حفظ کریں",
+      "intro": "براہ راست انفرادی رہنمائی سے حفظ کا مستقل معمول بنائیں۔ مناسب حصے یاد کریں، تلاوت بہتر بنائیں اور اپنی صلاحیت اور اہداف کے مطابق سابقہ اسباق دہرائیں۔",
+      "eyebrow": "قرآن کو مستقل قدموں سے حفظ کریں",
+      "audienceTitle": "یہ پروگرام کس کے لیے ہے؟",
+      "audience": [
+        "پڑھنے کی جانچ کے بعد حفظ شروع کرنے والے مبتدی طلبہ۔",
+        "چھوٹے قابل حصول اہداف سے سیکھنے والے بچے اور نوجوان۔",
+        "حفظ جاری رکھنے یا مضبوط کرنے والے بالغ طلبہ۔"
+      ],
+      "learnTitle": "آپ کیا سیکھیں گے؟",
+      "learn": [
+        "حقیقت پسندانہ اہداف کے ساتھ مناسب حصے یاد کرنا۔",
+        "تکرار اور سماعت سے یادداشت بہتر بنانا۔",
+        "نئے حفظ اور دہرائی میں توازن رکھنا۔",
+        "تلفظ اور تجوید بہتر کرنا۔",
+        "استاد کی رائے سے پختگی جانچنا۔",
+        "گھر میں باقاعدہ مشق کا معمول بنانا۔"
+      ],
+      "requirementsTitle": "شروع کرنے سے پہلے",
+      "requirements": "کیمرے والا آلہ، مستحکم انٹرنیٹ اور پرسکون جگہ درکار ہے۔ کاپی مفید ہے۔ باقاعدہ حاضر ہوں اور اسباق کے درمیان مشق کریں۔",
+      "lessonsTitle": "اسباق کا طریقہ",
+      "lessons": "استاد نیا اور پچھلا سبق سنتا، غلطیاں درست کرتا اور اگلا کام طے کرتا ہے۔ چھوٹی سورتوں سے بڑے اہداف کی طرف بڑھیں اور دہرائی و پختگی کو پورا وقت دیں۔",
+      "planNote": "آزمائشی کلاس میں سطح جانچ کر مواد اور رفتار طے کی جاتی ہے۔ ترقی حاضری اور مشق پر منحصر ہے؛ تکمیل کی تاریخ کی ضمانت نہیں۔",
+      "curriculum": [
+        {
+          "title": "حفظ کی بنیادیں",
+          "topics": [
+            "قراءت جانچنا، چھوٹی سورتیں اور مناسب اہداف منتخب کرنا۔",
+            "قراءت اور حفظ کی جانچ کے مطابق چھوٹی سورتیں، جزء عم یا جزء تبارک منتخب کرنا۔"
+          ]
+        },
+        {
+          "title": "حفظ کے طریقے",
+          "topics": [
+            "سننے، دہرانے اور حصوں کو ملانے سے نیا سبق یاد کرنا۔"
+          ]
+        },
+        {
+          "title": "دہرائی اور پختگی",
+          "topics": [
+            "نئے سبق کے ساتھ حالیہ اور پرانے حصے دہرانا۔"
+          ]
+        },
+        {
+          "title": "تلاوت اور تجوید",
+          "topics": [
+            "تلفظ درست کرنا اور متعلقہ قواعد نافذ کرنا۔"
+          ]
+        },
+        {
+          "title": "جانچ اور پیش رفت",
+          "topics": [
+            "یادداشت اور درستگی دیکھ کر کام تبدیل کرنا۔"
+          ]
+        },
+        {
+          "title": "مضبوطی اور مزید حفظ",
+          "topics": [
+            "اگلے ہدف سے پہلے مکمل حصے مضبوط کرنا۔"
+          ]
+        }
+      ],
+      "faqTitle": "عام سوالات",
+      "faq": [
+        [
+          "کیا روانی سے پڑھنا ضروری ہے؟",
+          "استاد پہلے قراءت اور تلفظ جانچتا ہے۔ ضرورت ہو تو وسیع حفظ سے پہلے قرآن ریڈنگ یا ترتیل قاعدہ تجویز کیا جا سکتا ہے۔"
+        ],
+        [
+          "کون سے حصے یاد کر سکتا ہوں؟",
+          "جانچ کے مطابق چھوٹی سورتیں، جزء عم یا زیادہ بڑے اہداف منتخب ہوں گے۔"
+        ],
+        [
+          "کیا تجوید بھی شامل ہے؟",
+          "تلاوت کے دوران متعلقہ قواعد اور تلفظ کی اصلاح ہوگی اور دہرائی بھی جاری رہے گی۔"
+        ],
+        [
+          "کیا اسباق براہ راست ہیں؟",
+          "جی ہاں، انفرادی براہ راست اسباق میں مشق، سوال اور رائے کا موقع ملتا ہے۔"
+        ],
+        [
+          "کیا بچے شامل ہو سکتے ہیں؟",
+          "جی ہاں، سرگرمیاں اور توقعات عمر اور صلاحیت کے مطابق ہوتی ہیں۔"
+        ],
+        [
+          "پیش رفت کیسے جانچی جاتی ہے؟",
+          "استاد فہم یا یادداشت دیکھتا، اصلاح کرتا اور اگلے مراحل طے کرتا ہے۔"
+        ],
+        [
+          "کورس کی مدت کیا ہے؟",
+          "مدت ابتدائی سطح، اہداف، حاضری اور مشق پر منحصر ہے۔ آزمائش میں مناسب رفتار پر بات کریں۔"
+        ],
+        [
+          "آغاز کیسے کروں؟",
+          "مفت آزمائش بک کریں، پروگرام منتخب کریں اور ٹیم سے اہداف اور اوقات پر بات کریں۔"
+        ]
+      ]
+    },
+    "tr": {
+      "title": "Kur’an’ı adım adım ezberleyin",
+      "intro": "Canlı bire bir rehberlikle kalıcı bir ezber rutini kurun. Uygun bölümler öğrenin, tilaveti geliştirin ve seviyenize ve hedeflerinize göre önceki bölümleri tekrar edin.",
+      "eyebrow": "Kur’an’ı adım adım ezberleyin",
+      "audienceTitle": "Program kimler için?",
+      "audience": [
+        "Okuma değerlendirmesinden sonra hıfza hazır yeni başlayanlar.",
+        "Küçük ve ulaşılabilir hedeflerle öğrenen çocuklar ve gençler.",
+        "Ezberini sürdüren veya güçlendiren yetişkinler."
+      ],
+      "learnTitle": "Neler öğreneceksiniz?",
+      "learn": [
+        "Gerçekçi hedeflerle uygun bölümler ezberlemek.",
+        "Tekrar ve dinlemeyle hatırlamayı desteklemek.",
+        "Yeni ezberle tekrarı dengelemek.",
+        "Telaffuz ve tecvidi geliştirmek.",
+        "Öğretmenle kalıcılığı değerlendirmek.",
+        "Evde düzenli çalışma rutini oluşturmak."
+      ],
+      "requirementsTitle": "Başlamadan önce",
+      "requirements": "Kameralı cihaz, kararlı internet ve sessiz alan gerekir. Defter yararlıdır. Düzenli katılın ve dersler arasında çalışın.",
+      "lessonsTitle": "Dersler nasıl işler?",
+      "lessons": "Öğretmeniniz yeni ve önceki ezberi dinler, hataları düzeltir ve sonraki ödevi ayarlar. Tekrarı ve kalıcılığı ihmal etmeden kısa surelerden daha büyük hedeflere ilerleyin.",
+      "planNote": "Denemede seviyeniz değerlendirilip içerik ve hız uyarlanır. İlerleme katılıma ve çalışmaya bağlıdır; bitirme tarihi garanti edilmez.",
+      "curriculum": [
+        {
+          "title": "Hıfzın temelleri",
+          "topics": [
+            "Okumayı değerlendirmek, kısa sureler ve uygun hedefler seçmek.",
+            "Okuma ve ezber değerlendirmesine göre kısa sureler, Amme veya Tebareke cüzünü seçmek."
+          ]
+        },
+        {
+          "title": "Ezber yöntemleri",
+          "topics": [
+            "Dinleme, tekrar ve bölümleri birleştirmeyle öğrenmek."
+          ]
+        },
+        {
+          "title": "Tekrar ve kalıcılık",
+          "topics": [
+            "Yeni ezberin yanında yakın ve eski bölümleri tekrarlamak."
+          ]
+        },
+        {
+          "title": "Tilavet ve tecvid",
+          "topics": [
+            "Telaffuzu düzeltmek ve ilgili kuralları uygulamak."
+          ]
+        },
+        {
+          "title": "İlerleme değerlendirmesi",
+          "topics": [
+            "Hatırlama ve doğruluğu inceleyip ödevleri ayarlamak."
+          ]
+        },
+        {
+          "title": "Pekiştirme ve devam",
+          "topics": [
+            "Sonraki hedefe geçmeden tamamlanan bölümleri güçlendirmek."
+          ]
+        }
+      ],
+      "faqTitle": "Sık sorulan sorular",
+      "faq": [
+        [
+          "Akıcı okumam gerekir mi?",
+          "Öğretmen önce okuma ve telaffuzu değerlendirir. Gerekirse geniş hıfz planından önce Kur’an Okuma veya Tarteel Qaidah önerilir."
+        ],
+        [
+          "Hangi bölümleri ezberleyebilirim?",
+          "Değerlendirmeye göre kısa sureler, Amme cüzü veya daha büyük hedefler seçilebilir."
+        ],
+        [
+          "Tecvid dahil mi?",
+          "Tilavette ilgili kurallar ve telaffuz düzeltilir; tekrar planın bir parçasıdır."
+        ],
+        [
+          "Dersler canlı mı?",
+          "Evet, canlı bire bir derslerde çalışabilir, soru sorabilir ve geri bildirim alabilirsiniz."
+        ],
+        [
+          "Çocuklar katılabilir mi?",
+          "Evet. Etkinlikler ve beklentiler yaşa ve yeteneğe uyarlanır."
+        ],
+        [
+          "İlerleme nasıl değerlendirilir?",
+          "Öğretmen anlayışı veya hatırlamayı inceler, düzeltir ve sonraki adımları ayarlar."
+        ],
+        [
+          "Kurs ne kadar sürer?",
+          "Başlangıç seviyesi, hedefler, katılım ve çalışmaya bağlıdır. Denemede uygun hızı konuşun."
+        ],
+        [
+          "Nasıl başlarım?",
+          "Ücretsiz deneme ayırtın, programı seçin ve ekiple hedefleri ve saatleri görüşün."
+        ]
+      ]
+    }
+  },
+  "islamicStudies": {
+    "en": {
+      "title": "Islamic Studies for Knowledge and Character",
+      "intro": "Explore essential beliefs, worship, Islamic history and good manners through live, individual lessons. Connect what you learn with everyday choices through explanations and activities suited to your age.",
+      "eyebrow": "Islamic Studies for Knowledge and Character",
+      "audienceTitle": "Who is this program for?",
+      "audience": [
+        "Beginners building a foundation in Islamic beliefs and worship.",
+        "Children and teenagers developing knowledge and good manners.",
+        "Adults who want to revisit essential teachings and everyday practice."
+      ],
+      "learnTitle": "What you will learn",
+      "learn": [
+        "Understand foundational Islamic beliefs.",
+        "Learn essential worship and everyday supplications.",
+        "Explore lessons from Islamic history.",
+        "Connect Quranic teachings with daily choices.",
+        "Practise kindness, honesty and responsibility.",
+        "Review understanding through questions and reflection."
+      ],
+      "requirementsTitle": "Before you begin",
+      "requirements": "Use a device with a camera, stable internet and a quiet space. A notebook is helpful. Attend regularly and practise between lessons.",
+      "lessonsTitle": "How lessons work",
+      "lessons": "Your teacher combines stories, questions, practical examples and revision. Discuss honesty, kindness, patience and responsibility, and connect foundational Islamic knowledge with life at home, school and in the community.",
+      "planNote": "Your teacher assesses your level during the free trial and adapts the content and pace. Progress depends on attendance and practice, with no guaranteed completion date.",
+      "curriculum": [
+        {
+          "title": "Foundations of Islam",
+          "topics": [
+            "Explore the pillars of Islam and the purpose of everyday worship."
+          ]
+        },
+        {
+          "title": "Beliefs and values",
+          "topics": [
+            "Learn foundational beliefs and values through clear examples."
+          ]
+        },
+        {
+          "title": "Islamic history",
+          "topics": [
+            "Discover age-appropriate stories and lessons from Islamic history."
+          ]
+        },
+        {
+          "title": "Essential practices",
+          "topics": [
+            "Study Salah, greetings, the six Kalimas, remembrance and respect for the mosque."
+          ]
+        },
+        {
+          "title": "Qur’an and Islamic teachings",
+          "topics": [
+            "Explore selected teachings and their meaning for daily life."
+          ]
+        },
+        {
+          "title": "Akhlaq and character",
+          "topics": [
+            "Discuss honesty, patience, kindness and responsibility."
+          ]
+        },
+        {
+          "title": "Practical learning",
+          "topics": [
+            "Apply lessons to familiar situations at home and school."
+          ]
+        },
+        {
+          "title": "Review and progress",
+          "topics": [
+            "Revise key ideas and discuss your next learning steps."
+          ]
+        }
+      ],
+      "faqTitle": "Frequently asked questions",
+      "faq": [
+        [
+          "What topics are covered?",
+          "Foundational beliefs, worship, history, selected Quranic teachings, manners and character."
+        ],
+        [
+          "Is previous knowledge needed?",
+          "No. Explanations start from your current understanding and are adapted to your age."
+        ],
+        [
+          "How do lessons build character?",
+          "Students discuss familiar situations and practise applying values such as honesty, kindness and responsibility."
+        ],
+        [
+          "Are lessons live or recorded?",
+          "Lessons are live and one-to-one, so you can practise, ask questions and receive feedback."
+        ],
+        [
+          "Can children join?",
+          "Yes. Activities and expectations are adapted to the learner’s age and ability."
+        ],
+        [
+          "How is progress reviewed?",
+          "Your teacher reviews understanding or recall, gives corrections and adjusts the next learning steps."
+        ],
+        [
+          "How long does the course take?",
+          "The learning plan depends on your starting point, goals, attendance and practice. Discuss a suitable pace during your trial."
+        ],
+        [
+          "How do I start?",
+          "Book a free trial, select this program and discuss your goals and schedule with our team."
+        ]
+      ]
+    },
+    "ar": {
+      "title": "دراسات إسلامية تبني المعرفة والأخلاق",
+      "intro": "تعرّف إلى أصول العقيدة والعبادات والتاريخ الإسلامي والآداب في حصص مباشرة وفردية. اربط المعرفة بخياراتك اليومية عبر شرح وأنشطة تناسب عمرك.",
+      "eyebrow": "دراسات إسلامية تبني المعرفة والأخلاق",
+      "audienceTitle": "لمن يناسب البرنامج؟",
+      "audience": [
+        "المبتدئون الذين يبنون أساسًا في العقيدة والعبادة.",
+        "الأطفال والمراهقون الذين ينمّون المعرفة وحسن الخلق.",
+        "البالغون الراغبون في مراجعة التعاليم الأساسية والممارسة اليومية."
+      ],
+      "learnTitle": "ماذا ستتعلم؟",
+      "learn": [
+        "فهم أصول العقيدة الإسلامية.",
+        "تعلّم العبادات الأساسية والأدعية اليومية.",
+        "اكتشاف دروس من التاريخ الإسلامي.",
+        "ربط تعاليم القرآن بالاختيارات اليومية.",
+        "ممارسة الرحمة والصدق والمسؤولية.",
+        "مراجعة الفهم بالأسئلة والتأمل."
+      ],
+      "requirementsTitle": "قبل أن تبدأ",
+      "requirements": "تحتاج إلى جهاز بكاميرا وإنترنت مستقر ومكان هادئ. يفيدك دفتر للملاحظات، مع الانتظام والممارسة بين الحصص.",
+      "lessonsTitle": "كيف تسير الحصص؟",
+      "lessons": "يجمع المعلم بين القصص والأسئلة والأمثلة العملية والمراجعة. ناقش الصدق والرحمة والصبر والمسؤولية، واربط المعرفة الإسلامية الأساسية بالحياة في البيت والمدرسة والمجتمع.",
+      "planNote": "يقيّم المعلم مستواك خلال التجربة المجانية ويكيّف المحتوى والسرعة. يعتمد التقدم على الانتظام والتدريب، دون ضمان موعد ثابت للإتمام.",
+      "curriculum": [
+        {
+          "title": "أسس الإسلام",
+          "topics": [
+            "التعرّف إلى أركان الإسلام ومقاصد العبادات اليومية."
+          ]
+        },
+        {
+          "title": "العقيدة والقيم",
+          "topics": [
+            "تعلّم أصول الإيمان والقيم بأمثلة واضحة."
+          ]
+        },
+        {
+          "title": "التاريخ الإسلامي",
+          "topics": [
+            "اكتشاف قصص ودروس تاريخية مناسبة للعمر."
+          ]
+        },
+        {
+          "title": "الممارسات الأساسية",
+          "topics": [
+            "دراسة الصلاة والتحية والكلمات الست والأذكار وآداب المسجد."
+          ]
+        },
+        {
+          "title": "القرآن والتعاليم الإسلامية",
+          "topics": [
+            "استكشاف تعاليم مختارة وصلتها بالحياة اليومية."
+          ]
+        },
+        {
+          "title": "الأخلاق وبناء الشخصية",
+          "topics": [
+            "مناقشة الصدق والصبر والرحمة والمسؤولية."
+          ]
+        },
+        {
+          "title": "التعلّم العملي",
+          "topics": [
+            "تطبيق الدروس على مواقف مألوفة في البيت والمدرسة."
+          ]
+        },
+        {
+          "title": "المراجعة والتقدم",
+          "topics": [
+            "مراجعة الأفكار الأساسية ومناقشة الخطوات التالية."
+          ]
+        }
+      ],
+      "faqTitle": "الأسئلة الشائعة",
+      "faq": [
+        [
+          "ما الموضوعات التي يدرسها الطالب؟",
+          "أصول العقيدة والعبادة والتاريخ وتعاليم قرآنية مختارة والآداب والأخلاق."
+        ],
+        [
+          "هل تحتاج الدراسة إلى معرفة سابقة؟",
+          "لا، يبدأ الشرح من فهمك الحالي ويتكيف مع عمرك."
+        ],
+        [
+          "كيف تساعد الدروس على بناء الأخلاق؟",
+          "يناقش الطالب مواقف مألوفة ويتدرّب على تطبيق الصدق والرحمة والمسؤولية."
+        ],
+        [
+          "هل الحصص مباشرة أم مسجلة؟",
+          "الحصص مباشرة وفردية لتتمكن من التدريب وطرح الأسئلة والحصول على الملاحظات."
+        ],
+        [
+          "هل يمكن للأطفال الاشتراك؟",
+          "نعم، تتكيف الأنشطة والتوقعات مع عمر الطالب وقدرته."
+        ],
+        [
+          "كيف تتم متابعة التقدم؟",
+          "يراجع المعلم الفهم أو الحفظ، ويقدم التصحيح ويضبط الخطوات التالية."
+        ],
+        [
+          "كم تستغرق الدراسة؟",
+          "تعتمد الخطة على مستواك وأهدافك وانتظامك وممارستك. ناقش السرعة المناسبة خلال التجربة."
+        ],
+        [
+          "كيف أبدأ؟",
+          "احجز تجربة مجانية واختر البرنامج وناقش أهدافك ومواعيدك مع فريقنا."
+        ]
+      ]
+    },
+    "es": {
+      "title": "Estudios islámicos y buen carácter",
+      "intro": "Explora creencias esenciales, adoración, historia islámica y buenos modales en clases individuales en directo. Conecta lo aprendido con decisiones diarias mediante actividades adecuadas a tu edad.",
+      "eyebrow": "Estudios islámicos y buen carácter",
+      "audienceTitle": "¿Para quién es el programa?",
+      "audience": [
+        "Principiantes que aprenden creencias y adoración básicas.",
+        "Niños y adolescentes que desarrollan conocimientos y buenos modales.",
+        "Adultos que repasan enseñanzas y prácticas esenciales."
+      ],
+      "learnTitle": "Qué aprenderás",
+      "learn": [
+        "Comprender creencias islámicas fundamentales.",
+        "Aprender adoración y súplicas cotidianas.",
+        "Explorar lecciones de historia islámica.",
+        "Relacionar el Corán con decisiones diarias.",
+        "Practicar amabilidad y responsabilidad.",
+        "Revisar la comprensión con preguntas."
+      ],
+      "requirementsTitle": "Antes de empezar",
+      "requirements": "Necesitas un dispositivo con cámara, internet estable y un lugar tranquilo. Un cuaderno es útil. Asiste regularmente y practica entre clases.",
+      "lessonsTitle": "Cómo funcionan las clases",
+      "lessons": "El profesor combina historias, preguntas, ejemplos y repaso. Habla de honestidad, amabilidad, paciencia y responsabilidad y relaciona la fe con la vida familiar, escolar y comunitaria.",
+      "planNote": "En la prueba se evalúa tu nivel y se adaptan contenidos y ritmo. El progreso depende de asistencia y práctica, sin fecha de finalización garantizada.",
+      "curriculum": [
+        {
+          "title": "Fundamentos del Islam",
+          "topics": [
+            "Explorar sus pilares y la finalidad de la adoración."
+          ]
+        },
+        {
+          "title": "Creencias y valores",
+          "topics": [
+            "Aprender principios con ejemplos claros."
+          ]
+        },
+        {
+          "title": "Historia islámica",
+          "topics": [
+            "Descubrir historias y lecciones adecuadas a la edad."
+          ]
+        },
+        {
+          "title": "Prácticas esenciales",
+          "topics": [
+            "Estudiar Salah, saludos, las seis Kalimas, recuerdo y respeto a la mezquita."
+          ]
+        },
+        {
+          "title": "Corán y enseñanzas islámicas",
+          "topics": [
+            "Explorar enseñanzas elegidas y su aplicación diaria."
+          ]
+        },
+        {
+          "title": "Akhlaq y carácter",
+          "topics": [
+            "Hablar de honestidad, paciencia y responsabilidad."
+          ]
+        },
+        {
+          "title": "Aprendizaje práctico",
+          "topics": [
+            "Aplicar lecciones a situaciones familiares y escolares."
+          ]
+        },
+        {
+          "title": "Revisión del progreso",
+          "topics": [
+            "Repasar ideas y planificar los siguientes pasos."
+          ]
+        }
+      ],
+      "faqTitle": "Preguntas frecuentes",
+      "faq": [
+        [
+          "¿Qué temas se estudian?",
+          "Creencias, adoración, historia, enseñanzas coránicas seleccionadas, modales y carácter."
+        ],
+        [
+          "¿Necesito conocimientos previos?",
+          "No. Se parte de tu comprensión actual y se adapta a tu edad."
+        ],
+        [
+          "¿Cómo se trabaja el carácter?",
+          "Se comentan situaciones familiares y se aplican honestidad, amabilidad y responsabilidad."
+        ],
+        [
+          "¿Las clases son en directo?",
+          "Sí, son individuales en directo para practicar, preguntar y recibir comentarios."
+        ],
+        [
+          "¿Pueden participar niños?",
+          "Sí. Adaptamos actividades y expectativas a su edad y capacidad."
+        ],
+        [
+          "¿Cómo se revisa el progreso?",
+          "El profesor revisa comprensión o recuerdo, corrige y adapta los siguientes pasos."
+        ],
+        [
+          "¿Cuánto dura el curso?",
+          "Depende del punto de partida, objetivos, asistencia y práctica. Habla del ritmo en la prueba."
+        ],
+        [
+          "¿Cómo empiezo?",
+          "Reserva una prueba, elige el programa y habla con el equipo de objetivos y horarios."
+        ]
+      ]
+    },
+    "de": {
+      "title": "Islamisches Wissen und Charakterbildung",
+      "intro": "Lerne grundlegende Glaubensinhalte, Gottesdienst, islamische Geschichte und gutes Verhalten im Live-Einzelunterricht. Altersgerechte Übungen verbinden Wissen mit Entscheidungen im Alltag.",
+      "eyebrow": "Islamisches Wissen und Charakterbildung",
+      "audienceTitle": "Für wen ist das Programm?",
+      "audience": [
+        "Anfänger, die Glauben und Gottesdienst kennenlernen.",
+        "Kinder und Jugendliche, die Wissen und gutes Verhalten entwickeln.",
+        "Erwachsene, die grundlegende Lehren und Praxis wiederholen."
+      ],
+      "learnTitle": "Das lernst du",
+      "learn": [
+        "Grundlegende Glaubensinhalte verstehen.",
+        "Gottesdienst und alltägliche Bittgebete lernen.",
+        "Lehren aus islamischer Geschichte entdecken.",
+        "Koranische Lehren mit dem Alltag verbinden.",
+        "Freundlichkeit und Verantwortung üben.",
+        "Verständnis durch Fragen überprüfen."
+      ],
+      "requirementsTitle": "Vor dem Start",
+      "requirements": "Du brauchst ein Gerät mit Kamera, stabiles Internet und einen ruhigen Platz. Ein Heft ist hilfreich. Nimm regelmäßig teil und übe zwischen den Stunden.",
+      "lessonsTitle": "So läuft der Unterricht",
+      "lessons": "Die Lehrkraft verbindet Geschichten, Fragen, Beispiele und Wiederholung. Besprecht Ehrlichkeit, Freundlichkeit, Geduld und Verantwortung in Familie, Schule und Gemeinschaft.",
+      "planNote": "In der Probestunde werden Niveau, Inhalte und Tempo abgestimmt. Fortschritt hängt von Teilnahme und Übung ab; ein Abschlussdatum wird nicht garantiert.",
+      "curriculum": [
+        {
+          "title": "Grundlagen des Islam",
+          "topics": [
+            "Säulen und Sinn des Gottesdienstes kennenlernen."
+          ]
+        },
+        {
+          "title": "Glauben und Werte",
+          "topics": [
+            "Grundlagen anhand klarer Beispiele lernen."
+          ]
+        },
+        {
+          "title": "Islamische Geschichte",
+          "topics": [
+            "Altersgerechte Geschichten und Lehren entdecken."
+          ]
+        },
+        {
+          "title": "Wichtige Praktiken",
+          "topics": [
+            "Gebet, Begrüßung, die sechs Kalimas, Gedenken und Moschee-Verhalten behandeln."
+          ]
+        },
+        {
+          "title": "Koran und islamische Lehren",
+          "topics": [
+            "Ausgewählte Lehren mit dem Alltag verbinden."
+          ]
+        },
+        {
+          "title": "Akhlaq und Charakter",
+          "topics": [
+            "Ehrlichkeit, Geduld und Verantwortung besprechen."
+          ]
+        },
+        {
+          "title": "Praktisches Lernen",
+          "topics": [
+            "Wissen auf Situationen zu Hause und in der Schule anwenden."
+          ]
+        },
+        {
+          "title": "Rückblick und Fortschritt",
+          "topics": [
+            "Wichtige Inhalte wiederholen und weitere Schritte planen."
+          ]
+        }
+      ],
+      "faqTitle": "Häufige Fragen",
+      "faq": [
+        [
+          "Welche Themen werden behandelt?",
+          "Glauben, Gottesdienst, Geschichte, ausgewählte Koranlehren, Umgangsformen und Charakter."
+        ],
+        [
+          "Brauche ich Vorwissen?",
+          "Nein. Der Unterricht beginnt bei deinem Verständnis und wird altersgerecht angepasst."
+        ],
+        [
+          "Wie wird Charakterbildung unterstützt?",
+          "Vertraute Situationen helfen, Ehrlichkeit, Freundlichkeit und Verantwortung anzuwenden."
+        ],
+        [
+          "Ist der Unterricht live?",
+          "Ja, im Live-Einzelunterricht kannst du üben, fragen und Feedback erhalten."
+        ],
+        [
+          "Können Kinder teilnehmen?",
+          "Ja. Übungen und Erwartungen werden an Alter und Fähigkeiten angepasst."
+        ],
+        [
+          "Wie wird Fortschritt geprüft?",
+          "Die Lehrkraft prüft Verständnis oder Abruf, korrigiert und passt die nächsten Schritte an."
+        ],
+        [
+          "Wie lange dauert der Kurs?",
+          "Das hängt von Ausgangsniveau, Zielen, Teilnahme und Übung ab. Besprich das Tempo in der Probestunde."
+        ],
+        [
+          "Wie beginne ich?",
+          "Buche eine kostenlose Probestunde, wähle das Programm und besprich Ziele und Termine mit dem Team."
+        ]
+      ]
+    },
+    "it": {
+      "title": "Studi islamici e formazione del carattere",
+      "intro": "Esplora credenze, adorazione, storia islamica e buone maniere con lezioni individuali dal vivo. Collega la conoscenza alle scelte quotidiane con attività adatte alla tua età.",
+      "eyebrow": "Studi islamici e formazione del carattere",
+      "audienceTitle": "A chi è rivolto il programma?",
+      "audience": [
+        "Principianti che studiano fede e adorazione di base.",
+        "Bambini e ragazzi che sviluppano conoscenza e buone maniere.",
+        "Adulti che ripassano insegnamenti e pratiche fondamentali."
+      ],
+      "learnTitle": "Cosa imparerai",
+      "learn": [
+        "Comprendere le credenze fondamentali.",
+        "Imparare adorazione e suppliche quotidiane.",
+        "Scoprire lezioni dalla storia islamica.",
+        "Collegare il Corano alle scelte quotidiane.",
+        "Praticare gentilezza e responsabilità.",
+        "Verificare la comprensione con domande."
+      ],
+      "requirementsTitle": "Prima di iniziare",
+      "requirements": "Servono dispositivo con videocamera, internet stabile e un luogo tranquillo. Un quaderno è utile. Partecipa regolarmente ed esercitati tra le lezioni.",
+      "lessonsTitle": "Come funzionano le lezioni",
+      "lessons": "L’insegnante unisce storie, domande, esempi e ripasso. Discuti onestà, gentilezza, pazienza e responsabilità nella famiglia, a scuola e nella comunità.",
+      "planNote": "La prova serve a valutare il livello e adattare contenuti e ritmo. I progressi dipendono da presenza e pratica, senza una data di completamento garantita.",
+      "curriculum": [
+        {
+          "title": "Fondamenti dell’Islam",
+          "topics": [
+            "Esplorare pilastri e significato dell’adorazione."
+          ]
+        },
+        {
+          "title": "Credenze e valori",
+          "topics": [
+            "Studiare principi con esempi chiari."
+          ]
+        },
+        {
+          "title": "Storia islamica",
+          "topics": [
+            "Scoprire storie e lezioni adatte all’età."
+          ]
+        },
+        {
+          "title": "Pratiche essenziali",
+          "topics": [
+            "Studiare Salah, saluti, le sei Kalimas, ricordo e rispetto della moschea."
+          ]
+        },
+        {
+          "title": "Corano e insegnamenti islamici",
+          "topics": [
+            "Collegare insegnamenti scelti alla vita quotidiana."
+          ]
+        },
+        {
+          "title": "Akhlaq e carattere",
+          "topics": [
+            "Discutere onestà, pazienza e responsabilità."
+          ]
+        },
+        {
+          "title": "Apprendimento pratico",
+          "topics": [
+            "Applicare le lezioni a situazioni familiari e scolastiche."
+          ]
+        },
+        {
+          "title": "Ripasso e progressi",
+          "topics": [
+            "Rivedere le idee e pianificare i passi successivi."
+          ]
+        }
+      ],
+      "faqTitle": "Domande frequenti",
+      "faq": [
+        [
+          "Quali argomenti si studiano?",
+          "Credenze, adorazione, storia, insegnamenti coranici scelti, buone maniere e carattere."
+        ],
+        [
+          "Servono conoscenze precedenti?",
+          "No. Si parte dalla tua comprensione attuale con spiegazioni adatte all’età."
+        ],
+        [
+          "Come si sviluppa il carattere?",
+          "Si discutono situazioni familiari applicando onestà, gentilezza e responsabilità."
+        ],
+        [
+          "Le lezioni sono dal vivo?",
+          "Sì, sono individuali dal vivo per esercitarsi, fare domande e ricevere feedback."
+        ],
+        [
+          "Possono partecipare bambini?",
+          "Sì. Attività e aspettative sono adattate all’età e alle capacità."
+        ],
+        [
+          "Come si valutano i progressi?",
+          "L’insegnante verifica comprensione o memoria, corregge e adatta i passi successivi."
+        ],
+        [
+          "Quanto dura il corso?",
+          "Dipende da livello iniziale, obiettivi, presenza e pratica. Parla del ritmo durante la prova."
+        ],
+        [
+          "Come inizio?",
+          "Prenota una prova gratuita, scegli il programma e parla con il team di obiettivi e orari."
+        ]
+      ]
+    },
+    "ur": {
+      "title": "اسلامی علوم اور کردار سازی",
+      "intro": "براہ راست انفرادی اسباق میں بنیادی عقائد، عبادت، اسلامی تاریخ اور آداب سیکھیں۔ عمر کے مطابق سرگرمیوں سے علم کو روزمرہ فیصلوں سے جوڑیں۔",
+      "eyebrow": "اسلامی علوم اور کردار سازی",
+      "audienceTitle": "یہ پروگرام کس کے لیے ہے؟",
+      "audience": [
+        "عقائد اور عبادت کی بنیاد سیکھنے والے مبتدی طلبہ۔",
+        "علم اور اچھے اخلاق سیکھنے والے بچے اور نوجوان۔",
+        "بنیادی تعلیمات اور عمل دہرانے والے بالغ طلبہ۔"
+      ],
+      "learnTitle": "آپ کیا سیکھیں گے؟",
+      "learn": [
+        "بنیادی اسلامی عقائد سمجھنا۔",
+        "ضروری عبادات اور روزمرہ دعائیں سیکھنا۔",
+        "اسلامی تاریخ سے سبق لینا۔",
+        "قرآنی تعلیمات کو روزمرہ فیصلوں سے جوڑنا۔",
+        "مہربانی اور ذمہ داری کی مشق کرنا۔",
+        "سوالات سے فہم کا جائزہ لینا۔"
+      ],
+      "requirementsTitle": "شروع کرنے سے پہلے",
+      "requirements": "کیمرے والا آلہ، مستحکم انٹرنیٹ اور پرسکون جگہ درکار ہے۔ کاپی مفید ہے۔ باقاعدہ حاضر ہوں اور اسباق کے درمیان مشق کریں۔",
+      "lessonsTitle": "اسباق کا طریقہ",
+      "lessons": "استاد کہانیوں، سوالات، مثالوں اور دہرائی کو یکجا کرتا ہے۔ گھر، اسکول اور معاشرے میں سچائی، مہربانی، صبر اور ذمہ داری پر بات کریں۔",
+      "planNote": "آزمائشی کلاس میں سطح جانچ کر مواد اور رفتار طے کی جاتی ہے۔ ترقی حاضری اور مشق پر منحصر ہے؛ تکمیل کی تاریخ کی ضمانت نہیں۔",
+      "curriculum": [
+        {
+          "title": "اسلام کی بنیادیں",
+          "topics": [
+            "ارکان اسلام اور عبادت کا مقصد سمجھنا۔"
+          ]
+        },
+        {
+          "title": "عقائد اور اقدار",
+          "topics": [
+            "واضح مثالوں سے بنیادی تعلیمات سیکھنا۔"
+          ]
+        },
+        {
+          "title": "اسلامی تاریخ",
+          "topics": [
+            "عمر کے مطابق کہانیاں اور اسباق جاننا۔"
+          ]
+        },
+        {
+          "title": "ضروری اعمال",
+          "topics": [
+            "نماز، سلام، چھ کلمے، ذکر اور مسجد کے آداب سیکھنا۔"
+          ]
+        },
+        {
+          "title": "قرآن اور اسلامی تعلیمات",
+          "topics": [
+            "منتخب تعلیمات کو روزمرہ زندگی سے جوڑنا۔"
+          ]
+        },
+        {
+          "title": "اخلاق اور کردار",
+          "topics": [
+            "سچائی، صبر، مہربانی اور ذمہ داری پر گفتگو۔"
+          ]
+        },
+        {
+          "title": "عملی تعلیم",
+          "topics": [
+            "گھر اور اسکول کے حالات میں اسباق نافذ کرنا۔"
+          ]
+        },
+        {
+          "title": "جائزہ اور پیش رفت",
+          "topics": [
+            "اہم نکات دہرانا اور اگلے مراحل طے کرنا۔"
+          ]
+        }
+      ],
+      "faqTitle": "عام سوالات",
+      "faq": [
+        [
+          "کون سے موضوعات شامل ہیں؟",
+          "عقائد، عبادات، تاریخ، منتخب قرآنی تعلیمات، آداب اور اخلاق۔"
+        ],
+        [
+          "کیا پہلے سے علم ضروری ہے؟",
+          "نہیں، وضاحت آپ کے موجودہ فہم اور عمر کے مطابق ہوگی۔"
+        ],
+        [
+          "کردار کیسے بہتر ہوتا ہے؟",
+          "مانوس حالات پر گفتگو کرکے سچائی، مہربانی اور ذمہ داری نافذ کرنے کی مشق ہوتی ہے۔"
+        ],
+        [
+          "کیا اسباق براہ راست ہیں؟",
+          "جی ہاں، انفرادی براہ راست اسباق میں مشق، سوال اور رائے کا موقع ملتا ہے۔"
+        ],
+        [
+          "کیا بچے شامل ہو سکتے ہیں؟",
+          "جی ہاں، سرگرمیاں اور توقعات عمر اور صلاحیت کے مطابق ہوتی ہیں۔"
+        ],
+        [
+          "پیش رفت کیسے جانچی جاتی ہے؟",
+          "استاد فہم یا یادداشت دیکھتا، اصلاح کرتا اور اگلے مراحل طے کرتا ہے۔"
+        ],
+        [
+          "کورس کی مدت کیا ہے؟",
+          "مدت ابتدائی سطح، اہداف، حاضری اور مشق پر منحصر ہے۔ آزمائش میں مناسب رفتار پر بات کریں۔"
+        ],
+        [
+          "آغاز کیسے کروں؟",
+          "مفت آزمائش بک کریں، پروگرام منتخب کریں اور ٹیم سے اہداف اور اوقات پر بات کریں۔"
+        ]
+      ]
+    },
+    "tr": {
+      "title": "İslami bilgiler ve karakter gelişimi",
+      "intro": "Canlı bire bir derslerle temel inançları, ibadetleri, İslam tarihini ve güzel davranışları keşfedin. Yaşa uygun etkinliklerle öğrendiklerinizi günlük seçimlere bağlayın.",
+      "eyebrow": "İslami bilgiler ve karakter gelişimi",
+      "audienceTitle": "Program kimler için?",
+      "audience": [
+        "İnanç ve ibadet temellerini öğrenen yeni başlayanlar.",
+        "Bilgi ve güzel ahlak geliştiren çocuklar ve gençler.",
+        "Temel öğretileri ve günlük uygulamaları tekrarlayan yetişkinler."
+      ],
+      "learnTitle": "Neler öğreneceksiniz?",
+      "learn": [
+        "Temel İslami inançları anlamak.",
+        "Temel ibadetleri ve günlük duaları öğrenmek.",
+        "İslam tarihinden dersler çıkarmak.",
+        "Kur’an öğretilerini günlük seçimlere bağlamak.",
+        "Nezaket ve sorumluluk çalışmak.",
+        "Sorularla anlayışı değerlendirmek."
+      ],
+      "requirementsTitle": "Başlamadan önce",
+      "requirements": "Kameralı cihaz, kararlı internet ve sessiz alan gerekir. Defter yararlıdır. Düzenli katılın ve dersler arasında çalışın.",
+      "lessonsTitle": "Dersler nasıl işler?",
+      "lessons": "Öğretmeniniz hikâyeleri, soruları, örnekleri ve tekrarı birleştirir. Evde, okulda ve toplumda dürüstlük, nezaket, sabır ve sorumluluk üzerine konuşun.",
+      "planNote": "Denemede seviyeniz değerlendirilip içerik ve hız uyarlanır. İlerleme katılıma ve çalışmaya bağlıdır; bitirme tarihi garanti edilmez.",
+      "curriculum": [
+        {
+          "title": "İslam’ın temelleri",
+          "topics": [
+            "İslam’ın şartlarını ve ibadetin amacını öğrenmek."
+          ]
+        },
+        {
+          "title": "İnanç ve değerler",
+          "topics": [
+            "Açık örneklerle temel ilkeleri çalışmak."
+          ]
+        },
+        {
+          "title": "İslam tarihi",
+          "topics": [
+            "Yaşa uygun hikâyeler ve dersler keşfetmek."
+          ]
+        },
+        {
+          "title": "Temel uygulamalar",
+          "topics": [
+            "Namaz, selam, altı kelime-i şerife, zikir ve cami adabını çalışmak."
+          ]
+        },
+        {
+          "title": "Kur’an ve İslami öğretiler",
+          "topics": [
+            "Seçilmiş öğretileri günlük yaşamla ilişkilendirmek."
+          ]
+        },
+        {
+          "title": "Ahlak ve karakter",
+          "topics": [
+            "Dürüstlük, sabır, nezaket ve sorumluluğu konuşmak."
+          ]
+        },
+        {
+          "title": "Pratik öğrenme",
+          "topics": [
+            "Dersleri ev ve okul durumlarında uygulamak."
+          ]
+        },
+        {
+          "title": "Tekrar ve ilerleme",
+          "topics": [
+            "Önemli fikirleri tekrarlamak ve sonraki adımları planlamak."
+          ]
+        }
+      ],
+      "faqTitle": "Sık sorulan sorular",
+      "faq": [
+        [
+          "Hangi konular işlenir?",
+          "İnanç, ibadet, tarih, seçilmiş Kur’an öğretileri, davranışlar ve ahlak."
+        ],
+        [
+          "Ön bilgi gerekli mi?",
+          "Hayır. Anlatım mevcut anlayışınıza ve yaşınıza göre başlar."
+        ],
+        [
+          "Karakter nasıl gelişir?",
+          "Tanıdık durumlarda dürüstlük, nezaket ve sorumluluğun uygulanması konuşulur."
+        ],
+        [
+          "Dersler canlı mı?",
+          "Evet, canlı bire bir derslerde çalışabilir, soru sorabilir ve geri bildirim alabilirsiniz."
+        ],
+        [
+          "Çocuklar katılabilir mi?",
+          "Evet. Etkinlikler ve beklentiler yaşa ve yeteneğe uyarlanır."
+        ],
+        [
+          "İlerleme nasıl değerlendirilir?",
+          "Öğretmen anlayışı veya hatırlamayı inceler, düzeltir ve sonraki adımları ayarlar."
+        ],
+        [
+          "Kurs ne kadar sürer?",
+          "Başlangıç seviyesi, hedefler, katılım ve çalışmaya bağlıdır. Denemede uygun hızı konuşun."
+        ],
+        [
+          "Nasıl başlarım?",
+          "Ücretsiz deneme ayırtın, programı seçin ve ekiple hedefleri ve saatleri görüşün."
+        ]
+      ]
+    }
+  },
+  "quranTafseer": {
+    "en": {
+      "title": "Understand the Qur’an with Guided Tafseer",
+      "intro": "Explore the meanings, context and messages of Quranic verses in live, one-to-one lessons. Develop understanding through teacher-guided study, discussion and practical examples suited to your level.",
+      "eyebrow": "Understand the Qur’an with Guided Tafseer",
+      "audienceTitle": "Who is this program for?",
+      "audience": [
+        "Beginners seeking a supported introduction to Quranic meanings.",
+        "Children and teenagers learning through age-appropriate explanations.",
+        "Adults deepening their understanding and reflection on the Qur’an."
+      ],
+      "learnTitle": "What you will learn",
+      "learn": [
+        "Understand selected verses and their context.",
+        "Recognize important Quranic themes.",
+        "Learn how recognized Tafseer sources guide explanation.",
+        "Discuss guidance and values with your teacher.",
+        "Relate lessons to everyday situations.",
+        "Build a regular habit of thoughtful Quran study."
+      ],
+      "requirementsTitle": "Before you begin",
+      "requirements": "Use a device with a camera, stable internet and a quiet space. A notebook is helpful. Attend regularly and practise between lessons.",
+      "lessonsTitle": "How lessons work",
+      "lessons": "Study selected passages with explanations grounded in recognized Tafseer sources. Your teacher distinguishes the meaning of a passage from personal reflection, invites questions and helps you connect lessons with daily life.",
+      "planNote": "Your teacher assesses your level during the free trial and adapts the content and pace. Progress depends on attendance and practice, with no guaranteed completion date.",
+      "curriculum": [
+        {
+          "title": "Introduction to Tafseer",
+          "topics": [
+            "Discuss learning goals and how teachers use recognized sources."
+          ]
+        },
+        {
+          "title": "Meanings and context",
+          "topics": [
+            "Explore selected verses and the context that helps explain them."
+          ]
+        },
+        {
+          "title": "Quranic themes",
+          "topics": [
+            "Study guidance about faith, worship, character and responsibility."
+          ]
+        },
+        {
+          "title": "Tafseer sources",
+          "topics": [
+            "Learn why explanations are grounded in established scholarship."
+          ]
+        },
+        {
+          "title": "Practical guidance",
+          "topics": [
+            "Connect the studied passages with everyday choices."
+          ]
+        },
+        {
+          "title": "Reflection and discussion",
+          "topics": [
+            "Ask questions and reflect with guidance rather than unsupported interpretation."
+          ]
+        },
+        {
+          "title": "Assessment and progress",
+          "topics": [
+            "Review understanding through discussion and questions."
+          ]
+        },
+        {
+          "title": "Review and continued study",
+          "topics": [
+            "Revisit key lessons and plan the next passages to study."
+          ]
+        }
+      ],
+      "faqTitle": "Frequently asked questions",
+      "faq": [
+        [
+          "What does Tafseer cover?",
+          "The meaning, context and guidance of selected verses, with discussion suited to your level."
+        ],
+        [
+          "Which sources guide the explanations?",
+          "Teachers use recognized Tafseer scholarship and distinguish explanation from personal reflection."
+        ],
+        [
+          "Do I need advanced Arabic?",
+          "Not necessarily. Discuss your background and preferred teaching language during the free trial."
+        ],
+        [
+          "Are lessons live or recorded?",
+          "Lessons are live and one-to-one, so you can practise, ask questions and receive feedback."
+        ],
+        [
+          "Can children join?",
+          "Yes. Activities and expectations are adapted to the learner’s age and ability."
+        ],
+        [
+          "How is progress reviewed?",
+          "Your teacher reviews understanding or recall, gives corrections and adjusts the next learning steps."
+        ],
+        [
+          "How long does the course take?",
+          "The learning plan depends on your starting point, goals, attendance and practice. Discuss a suitable pace during your trial."
+        ],
+        [
+          "How do I start?",
+          "Book a free trial, select this program and discuss your goals and schedule with our team."
+        ]
+      ]
+    },
+    "ar": {
+      "title": "افهم القرآن من خلال تفسير موجّه",
+      "intro": "استكشف معاني الآيات وسياقها ورسائلها في حصص مباشرة وفردية. طوّر فهمك من خلال الدراسة بإرشاد المعلم والنقاش والأمثلة المناسبة لمستواك.",
+      "eyebrow": "افهم القرآن من خلال تفسير موجّه",
+      "audienceTitle": "لمن يناسب البرنامج؟",
+      "audience": [
+        "المبتدئون الباحثون عن مدخل واضح لمعاني القرآن.",
+        "الأطفال والمراهقون الذين يتعلّمون بشرح مناسب للعمر.",
+        "البالغون الراغبون في تعميق الفهم والتدبر."
+      ],
+      "learnTitle": "ماذا ستتعلم؟",
+      "learn": [
+        "فهم آيات مختارة وسياقها.",
+        "التعرّف إلى موضوعات قرآنية مهمة.",
+        "معرفة دور مصادر التفسير المعتمدة في الشرح.",
+        "مناقشة الهداية والقيم مع المعلم.",
+        "ربط الدروس بالمواقف اليومية.",
+        "بناء عادة منتظمة للدراسة المتأملة للقرآن."
+      ],
+      "requirementsTitle": "قبل أن تبدأ",
+      "requirements": "تحتاج إلى جهاز بكاميرا وإنترنت مستقر ومكان هادئ. يفيدك دفتر للملاحظات، مع الانتظام والممارسة بين الحصص.",
+      "lessonsTitle": "كيف تسير الحصص؟",
+      "lessons": "ادرس مقاطع مختارة بشرح يستند إلى مصادر تفسير معروفة. يوضح المعلم الفرق بين معنى الآيات والتأمل الشخصي، ويتيح الأسئلة ويساعدك على ربط الدروس بحياتك.",
+      "planNote": "يقيّم المعلم مستواك خلال التجربة المجانية ويكيّف المحتوى والسرعة. يعتمد التقدم على الانتظام والتدريب، دون ضمان موعد ثابت للإتمام.",
+      "curriculum": [
+        {
+          "title": "مدخل إلى التفسير",
+          "topics": [
+            "مناقشة أهداف التعلّم وطريقة استخدام المصادر المعروفة."
+          ]
+        },
+        {
+          "title": "المعاني والسياق",
+          "topics": [
+            "دراسة آيات مختارة والسياق الذي يساعد على فهمها."
+          ]
+        },
+        {
+          "title": "الموضوعات القرآنية",
+          "topics": [
+            "دراسة الهداية في الإيمان والعبادة والأخلاق والمسؤولية."
+          ]
+        },
+        {
+          "title": "مصادر التفسير",
+          "topics": [
+            "معرفة أهمية استناد الشرح إلى العلم والتفسير المعتبر."
+          ]
+        },
+        {
+          "title": "الهداية العملية",
+          "topics": [
+            "ربط المقاطع المدروسة بالاختيارات اليومية."
+          ]
+        },
+        {
+          "title": "التأمل والنقاش",
+          "topics": [
+            "طرح الأسئلة والتأمل بإرشاد بعيدًا عن التفسير دون علم."
+          ]
+        },
+        {
+          "title": "التقييم ومتابعة التقدم",
+          "topics": [
+            "مراجعة الفهم من خلال النقاش والأسئلة."
+          ]
+        },
+        {
+          "title": "المراجعة ومواصلة الدراسة",
+          "topics": [
+            "تثبيت الدروس والتخطيط للمقاطع التالية."
+          ]
+        }
+      ],
+      "faqTitle": "الأسئلة الشائعة",
+      "faq": [
+        [
+          "ماذا يشمل التفسير؟",
+          "معاني آيات مختارة وسياقها وهدايتها مع نقاش مناسب لمستواك."
+        ],
+        [
+          "ما مصادر الشرح؟",
+          "يستند المعلم إلى مصادر تفسير معروفة ويميّز الشرح العلمي عن التأمل الشخصي."
+        ],
+        [
+          "هل أحتاج إلى عربية متقدمة؟",
+          "ليس بالضرورة. ناقش خلفيتك ولغة الشرح المناسبة في التجربة المجانية."
+        ],
+        [
+          "هل الحصص مباشرة أم مسجلة؟",
+          "الحصص مباشرة وفردية لتتمكن من التدريب وطرح الأسئلة والحصول على الملاحظات."
+        ],
+        [
+          "هل يمكن للأطفال الاشتراك؟",
+          "نعم، تتكيف الأنشطة والتوقعات مع عمر الطالب وقدرته."
+        ],
+        [
+          "كيف تتم متابعة التقدم؟",
+          "يراجع المعلم الفهم أو الحفظ، ويقدم التصحيح ويضبط الخطوات التالية."
+        ],
+        [
+          "كم تستغرق الدراسة؟",
+          "تعتمد الخطة على مستواك وأهدافك وانتظامك وممارستك. ناقش السرعة المناسبة خلال التجربة."
+        ],
+        [
+          "كيف أبدأ؟",
+          "احجز تجربة مجانية واختر البرنامج وناقش أهدافك ومواعيدك مع فريقنا."
+        ]
+      ]
+    },
+    "es": {
+      "title": "Comprende el Corán con Tafseer guiado",
+      "intro": "Explora significado, contexto y mensajes de los versículos en clases individuales en directo. Aprende mediante estudio guiado, conversación y ejemplos adecuados a tu nivel.",
+      "eyebrow": "Comprende el Corán con Tafseer guiado",
+      "audienceTitle": "¿Para quién es el programa?",
+      "audience": [
+        "Principiantes que buscan una introducción acompañada.",
+        "Niños y adolescentes con explicaciones apropiadas para su edad.",
+        "Adultos que profundizan en la comprensión y reflexión."
+      ],
+      "learnTitle": "Qué aprenderás",
+      "learn": [
+        "Comprender versículos y contexto.",
+        "Reconocer temas importantes del Corán.",
+        "Conocer el papel de fuentes reconocidas.",
+        "Debatir orientación y valores con el profesor.",
+        "Relacionar lecciones con la vida diaria.",
+        "Crear un hábito de estudio reflexivo."
+      ],
+      "requirementsTitle": "Antes de empezar",
+      "requirements": "Necesitas un dispositivo con cámara, internet estable y un lugar tranquilo. Un cuaderno es útil. Asiste regularmente y practica entre clases.",
+      "lessonsTitle": "Cómo funcionan las clases",
+      "lessons": "Estudia pasajes seleccionados con explicaciones basadas en fuentes reconocidas de Tafseer. El profesor distingue el significado de la reflexión personal y ayuda a relacionar las lecciones con la vida.",
+      "planNote": "En la prueba se evalúa tu nivel y se adaptan contenidos y ritmo. El progreso depende de asistencia y práctica, sin fecha de finalización garantizada.",
+      "curriculum": [
+        {
+          "title": "Introducción al Tafseer",
+          "topics": [
+            "Definir objetivos y conocer el uso de fuentes reconocidas."
+          ]
+        },
+        {
+          "title": "Significados y contexto",
+          "topics": [
+            "Explorar versículos y el contexto que los explica."
+          ]
+        },
+        {
+          "title": "Temas del Corán",
+          "topics": [
+            "Estudiar fe, adoración, carácter y responsabilidad."
+          ]
+        },
+        {
+          "title": "Fuentes del Tafseer",
+          "topics": [
+            "Comprender la importancia del conocimiento establecido."
+          ]
+        },
+        {
+          "title": "Orientación práctica",
+          "topics": [
+            "Relacionar los pasajes con decisiones cotidianas."
+          ]
+        },
+        {
+          "title": "Reflexión y diálogo",
+          "topics": [
+            "Preguntar y reflexionar con guía, evitando interpretaciones sin fundamento."
+          ]
+        },
+        {
+          "title": "Evaluación del progreso",
+          "topics": [
+            "Revisar la comprensión con preguntas y diálogo."
+          ]
+        },
+        {
+          "title": "Repaso y continuidad",
+          "topics": [
+            "Revisar lecciones y elegir los siguientes pasajes."
+          ]
+        }
+      ],
+      "faqTitle": "Preguntas frecuentes",
+      "faq": [
+        [
+          "¿Qué incluye Tafseer?",
+          "Significado, contexto y orientación de versículos seleccionados, con diálogo adaptado a tu nivel."
+        ],
+        [
+          "¿Qué fuentes se usan?",
+          "Fuentes reconocidas de Tafseer, distinguiendo explicación de reflexión personal."
+        ],
+        [
+          "¿Necesito árabe avanzado?",
+          "No necesariamente. Comenta tu formación y el idioma de enseñanza en la prueba gratuita."
+        ],
+        [
+          "¿Las clases son en directo?",
+          "Sí, son individuales en directo para practicar, preguntar y recibir comentarios."
+        ],
+        [
+          "¿Pueden participar niños?",
+          "Sí. Adaptamos actividades y expectativas a su edad y capacidad."
+        ],
+        [
+          "¿Cómo se revisa el progreso?",
+          "El profesor revisa comprensión o recuerdo, corrige y adapta los siguientes pasos."
+        ],
+        [
+          "¿Cuánto dura el curso?",
+          "Depende del punto de partida, objetivos, asistencia y práctica. Habla del ritmo en la prueba."
+        ],
+        [
+          "¿Cómo empiezo?",
+          "Reserva una prueba, elige el programa y habla con el equipo de objetivos y horarios."
+        ]
+      ]
+    },
+    "de": {
+      "title": "Den Koran mit angeleitetem Tafsir verstehen",
+      "intro": "Erkunde Bedeutung, Zusammenhang und Botschaften der Verse im Live-Einzelunterricht. Entwickle Verständnis durch begleitete Lektüre, Gespräche und passende Beispiele.",
+      "eyebrow": "Den Koran mit angeleitetem Tafsir verstehen",
+      "audienceTitle": "Für wen ist das Programm?",
+      "audience": [
+        "Anfänger mit Interesse an einem begleiteten Einstieg.",
+        "Kinder und Jugendliche mit altersgerechten Erklärungen.",
+        "Erwachsene, die Verständnis und Reflexion vertiefen."
+      ],
+      "learnTitle": "Das lernst du",
+      "learn": [
+        "Verse und ihren Zusammenhang verstehen.",
+        "Wichtige koranische Themen erkennen.",
+        "Die Rolle anerkannter Quellen kennenlernen.",
+        "Orientierung und Werte besprechen.",
+        "Lehren auf Alltagssituationen beziehen.",
+        "Eine reflektierte Lernroutine entwickeln."
+      ],
+      "requirementsTitle": "Vor dem Start",
+      "requirements": "Du brauchst ein Gerät mit Kamera, stabiles Internet und einen ruhigen Platz. Ein Heft ist hilfreich. Nimm regelmäßig teil und übe zwischen den Stunden.",
+      "lessonsTitle": "So läuft der Unterricht",
+      "lessons": "Lerne ausgewählte Passagen mit Erklärungen aus anerkannten Tafsir-Quellen. Deine Lehrkraft unterscheidet die Versbedeutung von persönlicher Reflexion und verbindet Lehren mit dem Alltag.",
+      "planNote": "In der Probestunde werden Niveau, Inhalte und Tempo abgestimmt. Fortschritt hängt von Teilnahme und Übung ab; ein Abschlussdatum wird nicht garantiert.",
+      "curriculum": [
+        {
+          "title": "Einführung in den Tafsir",
+          "topics": [
+            "Ziele und die Verwendung anerkannter Quellen besprechen."
+          ]
+        },
+        {
+          "title": "Bedeutung und Zusammenhang",
+          "topics": [
+            "Ausgewählte Verse im erklärenden Kontext studieren."
+          ]
+        },
+        {
+          "title": "Koranische Themen",
+          "topics": [
+            "Glauben, Gottesdienst, Charakter und Verantwortung behandeln."
+          ]
+        },
+        {
+          "title": "Tafsir-Quellen",
+          "topics": [
+            "Die Bedeutung fundierter wissenschaftlicher Erklärung verstehen."
+          ]
+        },
+        {
+          "title": "Praktische Orientierung",
+          "topics": [
+            "Passagen mit alltäglichen Entscheidungen verbinden."
+          ]
+        },
+        {
+          "title": "Reflexion und Gespräch",
+          "topics": [
+            "Unter Anleitung fragen und reflektieren statt unbegründet auslegen."
+          ]
+        },
+        {
+          "title": "Fortschrittskontrolle",
+          "topics": [
+            "Verständnis durch Fragen und Gespräche überprüfen."
+          ]
+        },
+        {
+          "title": "Wiederholung und Weiterlernen",
+          "topics": [
+            "Lehren festigen und nächste Passagen planen."
+          ]
+        }
+      ],
+      "faqTitle": "Häufige Fragen",
+      "faq": [
+        [
+          "Was umfasst Tafsir?",
+          "Bedeutung, Zusammenhang und Orientierung ausgewählter Verse mit passenden Gesprächen."
+        ],
+        [
+          "Welche Quellen werden verwendet?",
+          "Anerkannte Tafsir-Werke; Erklärung und persönliche Reflexion werden unterschieden."
+        ],
+        [
+          "Brauche ich fortgeschrittenes Arabisch?",
+          "Nicht unbedingt. Besprich Vorwissen und Unterrichtssprache in der Probestunde."
+        ],
+        [
+          "Ist der Unterricht live?",
+          "Ja, im Live-Einzelunterricht kannst du üben, fragen und Feedback erhalten."
+        ],
+        [
+          "Können Kinder teilnehmen?",
+          "Ja. Übungen und Erwartungen werden an Alter und Fähigkeiten angepasst."
+        ],
+        [
+          "Wie wird Fortschritt geprüft?",
+          "Die Lehrkraft prüft Verständnis oder Abruf, korrigiert und passt die nächsten Schritte an."
+        ],
+        [
+          "Wie lange dauert der Kurs?",
+          "Das hängt von Ausgangsniveau, Zielen, Teilnahme und Übung ab. Besprich das Tempo in der Probestunde."
+        ],
+        [
+          "Wie beginne ich?",
+          "Buche eine kostenlose Probestunde, wähle das Programm und besprich Ziele und Termine mit dem Team."
+        ]
+      ]
+    },
+    "it": {
+      "title": "Comprendi il Corano con Tafseer guidato",
+      "intro": "Esplora significati, contesto e messaggi dei versetti con lezioni individuali dal vivo. Sviluppa la comprensione attraverso studio guidato, dialogo ed esempi adatti al tuo livello.",
+      "eyebrow": "Comprendi il Corano con Tafseer guidato",
+      "audienceTitle": "A chi è rivolto il programma?",
+      "audience": [
+        "Principianti che cercano un’introduzione guidata.",
+        "Bambini e ragazzi con spiegazioni adatte all’età.",
+        "Adulti che approfondiscono comprensione e riflessione."
+      ],
+      "learnTitle": "Cosa imparerai",
+      "learn": [
+        "Comprendere versetti e contesto.",
+        "Riconoscere temi importanti del Corano.",
+        "Conoscere il ruolo delle fonti riconosciute.",
+        "Discutere orientamento e valori.",
+        "Collegare lezioni alla vita quotidiana.",
+        "Creare un’abitudine di studio riflessivo."
+      ],
+      "requirementsTitle": "Prima di iniziare",
+      "requirements": "Servono dispositivo con videocamera, internet stabile e un luogo tranquillo. Un quaderno è utile. Partecipa regolarmente ed esercitati tra le lezioni.",
+      "lessonsTitle": "Come funzionano le lezioni",
+      "lessons": "Studia brani scelti con spiegazioni basate su fonti riconosciute di Tafseer. L’insegnante distingue il significato dalla riflessione personale e collega le lezioni alla vita quotidiana.",
+      "planNote": "La prova serve a valutare il livello e adattare contenuti e ritmo. I progressi dipendono da presenza e pratica, senza una data di completamento garantita.",
+      "curriculum": [
+        {
+          "title": "Introduzione al Tafseer",
+          "topics": [
+            "Discutere obiettivi e uso delle fonti riconosciute."
+          ]
+        },
+        {
+          "title": "Significati e contesto",
+          "topics": [
+            "Studiare versetti scelti nel loro contesto."
+          ]
+        },
+        {
+          "title": "Temi coranici",
+          "topics": [
+            "Esplorare fede, adorazione, carattere e responsabilità."
+          ]
+        },
+        {
+          "title": "Fonti del Tafseer",
+          "topics": [
+            "Comprendere il valore di spiegazioni fondate sul sapere."
+          ]
+        },
+        {
+          "title": "Guida pratica",
+          "topics": [
+            "Collegare i brani alle scelte quotidiane."
+          ]
+        },
+        {
+          "title": "Riflessione e dialogo",
+          "topics": [
+            "Fare domande con guida, evitando interpretazioni prive di fondamento."
+          ]
+        },
+        {
+          "title": "Valutazione dei progressi",
+          "topics": [
+            "Verificare la comprensione con domande e dialogo."
+          ]
+        },
+        {
+          "title": "Ripasso e continuità",
+          "topics": [
+            "Rivedere le lezioni e pianificare i prossimi brani."
+          ]
+        }
+      ],
+      "faqTitle": "Domande frequenti",
+      "faq": [
+        [
+          "Cosa comprende il Tafseer?",
+          "Significato, contesto e guida di versetti scelti, con dialogo adatto al livello."
+        ],
+        [
+          "Quali fonti vengono usate?",
+          "Fonti riconosciute di Tafseer, distinguendo spiegazione e riflessione personale."
+        ],
+        [
+          "Serve arabo avanzato?",
+          "Non necessariamente. Parla di preparazione e lingua d’insegnamento durante la prova."
+        ],
+        [
+          "Le lezioni sono dal vivo?",
+          "Sì, sono individuali dal vivo per esercitarsi, fare domande e ricevere feedback."
+        ],
+        [
+          "Possono partecipare bambini?",
+          "Sì. Attività e aspettative sono adattate all’età e alle capacità."
+        ],
+        [
+          "Come si valutano i progressi?",
+          "L’insegnante verifica comprensione o memoria, corregge e adatta i passi successivi."
+        ],
+        [
+          "Quanto dura il corso?",
+          "Dipende da livello iniziale, obiettivi, presenza e pratica. Parla del ritmo durante la prova."
+        ],
+        [
+          "Come inizio?",
+          "Prenota una prova gratuita, scegli il programma e parla con il team di obiettivi e orari."
+        ]
+      ]
+    },
+    "ur": {
+      "title": "رہنمائی والی تفسیر سے قرآن سمجھیں",
+      "intro": "براہ راست انفرادی اسباق میں آیات کے معانی، سیاق اور پیغام سمجھیں۔ اپنی سطح کے مطابق استاد کی رہنمائی، گفتگو اور عملی مثالوں سے علم بڑھائیں۔",
+      "eyebrow": "رہنمائی والی تفسیر سے قرآن سمجھیں",
+      "audienceTitle": "یہ پروگرام کس کے لیے ہے؟",
+      "audience": [
+        "قرآنی معانی کا ابتدائی تعارف چاہنے والے طلبہ۔",
+        "عمر کے مطابق وضاحت سے سیکھنے والے بچے اور نوجوان۔",
+        "فہم اور غور و فکر بڑھانے والے بالغ طلبہ۔"
+      ],
+      "learnTitle": "آپ کیا سیکھیں گے؟",
+      "learn": [
+        "منتخب آیات اور ان کا سیاق سمجھنا۔",
+        "اہم قرآنی موضوعات پہچاننا۔",
+        "معتبر مصادر کا کردار جاننا۔",
+        "استاد کے ساتھ ہدایت اور اقدار پر بات کرنا۔",
+        "اسباق کو روزمرہ حالات سے جوڑنا۔",
+        "غور و فکر کے ساتھ مطالعے کا معمول بنانا۔"
+      ],
+      "requirementsTitle": "شروع کرنے سے پہلے",
+      "requirements": "کیمرے والا آلہ، مستحکم انٹرنیٹ اور پرسکون جگہ درکار ہے۔ کاپی مفید ہے۔ باقاعدہ حاضر ہوں اور اسباق کے درمیان مشق کریں۔",
+      "lessonsTitle": "اسباق کا طریقہ",
+      "lessons": "معتبر تفسیری مصادر کی وضاحت سے منتخب آیات پڑھیں۔ استاد آیت کے معنی اور ذاتی غور و فکر کا فرق واضح کرتا اور اسباق کو روزمرہ زندگی سے جوڑتا ہے۔",
+      "planNote": "آزمائشی کلاس میں سطح جانچ کر مواد اور رفتار طے کی جاتی ہے۔ ترقی حاضری اور مشق پر منحصر ہے؛ تکمیل کی تاریخ کی ضمانت نہیں۔",
+      "curriculum": [
+        {
+          "title": "تفسیر کا تعارف",
+          "topics": [
+            "اہداف اور معتبر مصادر کے استعمال پر بات کرنا۔"
+          ]
+        },
+        {
+          "title": "معانی اور سیاق",
+          "topics": [
+            "منتخب آیات کو وضاحتی سیاق کے ساتھ پڑھنا۔"
+          ]
+        },
+        {
+          "title": "قرآنی موضوعات",
+          "topics": [
+            "ایمان، عبادت، اخلاق اور ذمہ داری کا مطالعہ۔"
+          ]
+        },
+        {
+          "title": "تفسیری مصادر",
+          "topics": [
+            "علم پر مبنی وضاحت کی اہمیت سمجھنا۔"
+          ]
+        },
+        {
+          "title": "عملی ہدایت",
+          "topics": [
+            "آیات کو روزمرہ فیصلوں سے جوڑنا۔"
+          ]
+        },
+        {
+          "title": "غور و فکر اور گفتگو",
+          "topics": [
+            "بے بنیاد تشریح کے بجائے رہنمائی میں سوال کرنا۔"
+          ]
+        },
+        {
+          "title": "جانچ اور پیش رفت",
+          "topics": [
+            "سوالات اور گفتگو سے فہم کا جائزہ لینا۔"
+          ]
+        },
+        {
+          "title": "دہرائی اور مزید مطالعہ",
+          "topics": [
+            "اسباق دہرانا اور اگلی آیات کی منصوبہ بندی۔"
+          ]
+        }
+      ],
+      "faqTitle": "عام سوالات",
+      "faq": [
+        [
+          "تفسیر میں کیا شامل ہے؟",
+          "منتخب آیات کے معنی، سیاق اور ہدایت، آپ کی سطح کے مطابق گفتگو کے ساتھ۔"
+        ],
+        [
+          "کون سے مصادر استعمال ہوتے ہیں؟",
+          "معتبر تفسیری مصادر؛ علمی وضاحت اور ذاتی غور و فکر میں فرق رکھا جاتا ہے۔"
+        ],
+        [
+          "کیا اعلیٰ عربی ضروری ہے؟",
+          "ضروری نہیں۔ آزمائشی کلاس میں اپنی معلومات اور تدریسی زبان پر بات کریں۔"
+        ],
+        [
+          "کیا اسباق براہ راست ہیں؟",
+          "جی ہاں، انفرادی براہ راست اسباق میں مشق، سوال اور رائے کا موقع ملتا ہے۔"
+        ],
+        [
+          "کیا بچے شامل ہو سکتے ہیں؟",
+          "جی ہاں، سرگرمیاں اور توقعات عمر اور صلاحیت کے مطابق ہوتی ہیں۔"
+        ],
+        [
+          "پیش رفت کیسے جانچی جاتی ہے؟",
+          "استاد فہم یا یادداشت دیکھتا، اصلاح کرتا اور اگلے مراحل طے کرتا ہے۔"
+        ],
+        [
+          "کورس کی مدت کیا ہے؟",
+          "مدت ابتدائی سطح، اہداف، حاضری اور مشق پر منحصر ہے۔ آزمائش میں مناسب رفتار پر بات کریں۔"
+        ],
+        [
+          "آغاز کیسے کروں؟",
+          "مفت آزمائش بک کریں، پروگرام منتخب کریں اور ٹیم سے اہداف اور اوقات پر بات کریں۔"
+        ]
+      ]
+    },
+    "tr": {
+      "title": "Rehberli tefsirle Kur’an’ı anlayın",
+      "intro": "Canlı bire bir derslerle ayetlerin anlamını, bağlamını ve mesajlarını keşfedin. Öğretmen rehberliği, konuşma ve seviyenize uygun örneklerle anlayış geliştirin.",
+      "eyebrow": "Rehberli tefsirle Kur’an’ı anlayın",
+      "audienceTitle": "Program kimler için?",
+      "audience": [
+        "Kur’an anlamlarına destekli bir giriş isteyenler.",
+        "Yaşa uygun açıklamalarla öğrenen çocuklar ve gençler.",
+        "Anlayışını ve tefekkürünü derinleştiren yetişkinler."
+      ],
+      "learnTitle": "Neler öğreneceksiniz?",
+      "learn": [
+        "Seçilmiş ayetleri ve bağlamı anlamak.",
+        "Önemli Kur’an temalarını tanımak.",
+        "Tanınmış kaynakların rolünü öğrenmek.",
+        "Öğretmenle rehberlik ve değerleri konuşmak.",
+        "Dersleri günlük durumlarla ilişkilendirmek.",
+        "Düşünerek çalışma alışkanlığı oluşturmak."
+      ],
+      "requirementsTitle": "Başlamadan önce",
+      "requirements": "Kameralı cihaz, kararlı internet ve sessiz alan gerekir. Defter yararlıdır. Düzenli katılın ve dersler arasında çalışın.",
+      "lessonsTitle": "Dersler nasıl işler?",
+      "lessons": "Seçilmiş ayetleri tanınmış tefsir kaynaklarına dayalı açıklamalarla çalışın. Öğretmeniniz ayetin anlamıyla kişisel düşünceyi ayırır ve dersleri günlük hayatla ilişkilendirir.",
+      "planNote": "Denemede seviyeniz değerlendirilip içerik ve hız uyarlanır. İlerleme katılıma ve çalışmaya bağlıdır; bitirme tarihi garanti edilmez.",
+      "curriculum": [
+        {
+          "title": "Tefsire giriş",
+          "topics": [
+            "Hedefleri ve tanınmış kaynakların kullanımını konuşmak."
+          ]
+        },
+        {
+          "title": "Anlamlar ve bağlam",
+          "topics": [
+            "Seçilmiş ayetleri açıklayıcı bağlamıyla incelemek."
+          ]
+        },
+        {
+          "title": "Kur’an temaları",
+          "topics": [
+            "İnanç, ibadet, ahlak ve sorumluluğu çalışmak."
+          ]
+        },
+        {
+          "title": "Tefsir kaynakları",
+          "topics": [
+            "İlme dayalı açıklamanın önemini anlamak."
+          ]
+        },
+        {
+          "title": "Pratik rehberlik",
+          "topics": [
+            "Ayetleri günlük seçimlerle ilişkilendirmek."
+          ]
+        },
+        {
+          "title": "Tefekkür ve konuşma",
+          "topics": [
+            "Dayanaksız yorum yerine rehberlikle soru sormak."
+          ]
+        },
+        {
+          "title": "İlerleme değerlendirmesi",
+          "topics": [
+            "Sorular ve konuşmayla anlayışı incelemek."
+          ]
+        },
+        {
+          "title": "Tekrar ve devam",
+          "topics": [
+            "Dersleri tekrarlamak ve sonraki ayetleri planlamak."
+          ]
+        }
+      ],
+      "faqTitle": "Sık sorulan sorular",
+      "faq": [
+        [
+          "Tefsir neleri kapsar?",
+          "Seçilmiş ayetlerin anlamı, bağlamı ve rehberliği, seviyeye uygun konuşmayla ele alınır."
+        ],
+        [
+          "Hangi kaynaklar kullanılır?",
+          "Tanınmış tefsir kaynakları kullanılır; açıklama kişisel düşünceden ayrılır."
+        ],
+        [
+          "İleri Arapça gerekli mi?",
+          "Her zaman değil. Denemede bilginizi ve öğretim dilini görüşün."
+        ],
+        [
+          "Dersler canlı mı?",
+          "Evet, canlı bire bir derslerde çalışabilir, soru sorabilir ve geri bildirim alabilirsiniz."
+        ],
+        [
+          "Çocuklar katılabilir mi?",
+          "Evet. Etkinlikler ve beklentiler yaşa ve yeteneğe uyarlanır."
+        ],
+        [
+          "İlerleme nasıl değerlendirilir?",
+          "Öğretmen anlayışı veya hatırlamayı inceler, düzeltir ve sonraki adımları ayarlar."
+        ],
+        [
+          "Kurs ne kadar sürer?",
+          "Başlangıç seviyesi, hedefler, katılım ve çalışmaya bağlıdır. Denemede uygun hızı konuşun."
+        ],
+        [
+          "Nasıl başlarım?",
+          "Ücretsiz deneme ayırtın, programı seçin ve ekiple hedefleri ve saatleri görüşün."
+        ]
+      ]
+    }
+  }
+}
