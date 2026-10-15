@@ -1,0 +1,35 @@
+.program-learning{margin-top:80px;color:#0b2448}
+.program-learning__section{padding-block:50px;scroll-margin-top:32px}
+.program-learning__heading{max-width:820px;margin:0 auto 36px;text-align:center}
+.program-learning .program-learning__eyebrow{display:flex;align-items:center;justify-content:center;gap:16px;color:#b57834;font-size:13px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase}
+.program-learning__eyebrow::before,.program-learning__eyebrow::after{content:"";height:1px;width:54px;background:#d7b382;flex-shrink:0}
+.program-learning h2{color:#0b2448;font-size:clamp(28px,3.3vw,44px);line-height:1.2;margin:14px 0 22px}
+.program-learning h2 span{color:#b57834;display:block}
+.program-learning__heading>p:last-child{color:#60738b;font-size:17px;line-height:1.8}
+.program-learning__skills{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}
+.program-learning__outcomes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.program-learning__card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:30px 18px;background:#fffaf3;border:1px solid #ead9c2;border-bottom:4px solid #0b2448;border-radius:20px;box-shadow:0 12px 28px #0b244805}
+.program-learning__card:nth-child(even){border-bottom-color:#b57834}
+.program-learning__icon{display:inline-flex;align-items:center;justify-content:center;width:66px;height:66px;flex-shrink:0;border-radius:50%;background:#0b2448;color:white;margin-bottom:24px;box-shadow:0 6px 16px #0b244815}
+.program-learning__card:nth-child(even) .program-learning__icon{background:#b57834}
+.program-learning__card h3{font-family:inherit;font-size:19px;line-height:1.4;margin:0 0 14px;color:#0b2448;overflow-wrap:anywhere}
+.program-learning__card p{font-size:14px;line-height:1.8;color:#60738b;margin:0}
+.program-learning__section--outcomes{border-top:1px solid #eadfce;border-bottom:1px solid #eadfce}
+.program-learning__questions{max-width:900px;margin:auto;display:grid;gap:12px}
+.program-learning__questions details{border:1px solid #ead9c2;background:#fffaf3;border-radius:16px;overflow:hidden}
+.program-learning__questions summary{display:flex;align-items:center;gap:20px;cursor:pointer;padding:18px 22px;list-style:none}
+.program-learning__questions summary::-webkit-details-marker{display:none}
+.program-learning__questions summary:focus-visible{outline:3px solid #b57834;outline-offset:-4px;border-radius:16px}
+.program-learning__questions strong{font-size:16px;line-height:1.5;flex:1}
+.program-learning__question-icon{width:46px;height:46px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f3e7d6;color:#b57834}
+.program-learning__chevron{flex-shrink:0;transition:transform .2s}
+.program-learning__questions details[open]{border-color:#b57834;background:white}
+.program-learning__questions details[open] .program-learning__chevron{transform:rotate(180deg)}
+.program-learning__questions details>p{margin:0;padding:0 24px 24px;padding-inline-start:88px;color:#60738b;font-size:15px}
+.program-learning__cta{text-align:center;margin-top:34px}
+.program-learning__cta .btn{white-space:normal}
+@media(min-width:1300px){.program-learning__outcomes{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:1000px){.program-learning__skills{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.program-learning{margin-top:45px}.program-learning__section{padding-block:34px}.program-learning__skills,.program-learning__outcomes{grid-template-columns:repeat(2,minmax(0,1fr))}.program-learning__card{padding:24px 14px}.program-learning__questions summary{padding:16px;gap:12px}.program-learning__questions details>p{padding:0 18px 20px}.program-learning__eyebrow::before,.program-learning__eyebrow::after{width:24px}}
+@media(max-width:420px){.program-learning__skills,.program-learning__outcomes{grid-template-columns:1fr}.program-learning__card{padding:26px}.program-learning__icon{margin-bottom:16px}}
+@media(prefers-reduced-motion:reduce){.program-learning__chevron{transition:none}}
