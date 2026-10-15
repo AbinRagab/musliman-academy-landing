@@ -1,3 +1,4 @@
+import arabicContent from '../../../lib/arabic-language.json';
 import CourseChrome from '../../course-chrome';
 import combinedContent from '../../../lib/quran-tajweed.json';
 import CourseDetail from '../../course-detail';
@@ -19,7 +20,7 @@ function resolve(lang:string, path:string) {
   const training = slug === 'teacher-training';
   const title = teacher ? text(lang, `teachers.items.${teacher.key}.name`, teacher.fullName) : course ? text(lang, `programs.items.${course.key}.title`) : training ? text(lang,'training.heading') : labels[lang][kind === 'programs' ? 1 : 2];
   const description = teacher ? [title, labels[lang][4], text(lang,'teachers.languages.Arabic'), text(lang,'teachers.languages.English')].join(' · ') : course ? text(lang,`programs.items.${course.key}.text`) : text(lang,training ? 'training.description' : kind === 'programs' ? 'programs.description' : 'teachers.description');
-  const reading = course?.key === 'quranTajweed' ? combinedContent[lang as keyof typeof combinedContent] : course?.key === 'quranReading' ? readingContent[lang as keyof typeof readingContent] : undefined;
+  const reading = course?.key === 'arabicLanguage' ? arabicContent[lang as keyof typeof arabicContent] : course?.key === 'quranTajweed' ? combinedContent[lang as keyof typeof combinedContent] : course?.key === 'quranReading' ? readingContent[lang as keyof typeof readingContent] : undefined;
   return {kind,slug,teacher,course,training,title:reading?.title || title,description:reading?.intro || description,reading};
 }
 export async function generateMetadata({params}:Props):Promise<Metadata> {
@@ -28,7 +29,7 @@ export async function generateMetadata({params}:Props):Promise<Metadata> {
 }
 export default async function Page({params}:Props) {
  const {lang,segments}=await params;const path=segments.join('/');const p=resolve(lang,path);const l=labels[lang];
- if (p.reading) return <CourseDetail lang={lang} combined={p.course?.key === 'quranTajweed'}/>;
+ if (p.reading) return <CourseDetail lang={lang} combined={p.course?.key === 'quranTajweed'} arabic={p.course?.key === 'arabicLanguage'}/>;
  const specializations=['quranReading','tajweed','islamicStudies'].map(k=>text(lang,`programs.items.${k}.title`)).join(', ');
  const experience = p.teacher ? text(lang,`teachers.items.${p.teacher.key}.experience`,new Intl.NumberFormat(lang).format(parseInt(p.teacher.experience || '0'))+'+ '+yearLabels[lang]) : '';
  const jsonLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:l[0],item:siteUrl},{'@type':'ListItem',position:2,name:l[p.kind==='programs'?1:2],item:`${siteUrl}/${lang}/${p.kind}`},...(p.slug?[{'@type':'ListItem',position:3,name:p.title,item:`${siteUrl}/${lang}/${path}`}]:[])]};

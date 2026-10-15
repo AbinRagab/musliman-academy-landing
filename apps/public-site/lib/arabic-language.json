@@ -1,0 +1,828 @@
+{
+  "en": {
+    "title": "Learn Arabic with Confidence",
+    "intro": "Build reading, writing, listening and speaking skills with live, one-to-one Arabic lessons. Start with letters and sounds, then develop vocabulary, sentences and everyday conversation at your pace.",
+    "eyebrow": "ARABIC LANGUAGE COURSE",
+    "audienceTitle": "Who is this course for?",
+    "audience": [
+      "Beginners starting with Arabic letters and pronunciation.",
+      "Children and teenagers who learn through clear explanations and guided activities.",
+      "Adults and returning learners improving communication, reading and writing."
+    ],
+    "learnTitle": "What you will learn",
+    "learn": [
+      "Read Arabic letters and recognize their different forms.",
+      "Write letters, words and short sentences.",
+      "Understand useful vocabulary and basic grammar.",
+      "Practise speaking through everyday conversations.",
+      "Develop listening and reading comprehension.",
+      "Use Arabic for study and daily communication."
+    ],
+    "requirementsTitle": "Before you begin",
+    "requirements": "No previous Arabic knowledge is required. Bring a device with a camera, a stable internet connection and a quiet space. A notebook and pen are recommended. Regular attendance, participation and practice between lessons help you progress.",
+    "lessonsTitle": "A practical learning path, built around you",
+    "lessons": "Learn Arabic step by step with Musliman Academy. Your teacher explains a skill, models it and guides you through reading, writing, listening and speaking activities. Personal feedback helps you revisit difficult sounds, build sentences and use new words confidently.",
+    "planNote": "Your teacher assesses your starting level during the free trial and adapts the content and pace to your goals. Progress depends on attendance and regular practice; there is no fixed completion deadline.",
+    "curriculum": [
+      {
+        "title": "Arabic language foundations",
+        "topics": [
+          "Recognize Arabic letters and their connected forms.",
+          "Practise letter sounds, pronunciation and simple words."
+        ]
+      },
+      {
+        "title": "Reading and Arabic writing",
+        "topics": [
+          "Form letters and join them into words.",
+          "Read and write short phrases and sentences."
+        ]
+      },
+      {
+        "title": "Grammar and sentence structure",
+        "topics": [
+          "Explore basic sentence patterns and word order.",
+          "Build simple statements and questions through guided exercises."
+        ]
+      },
+      {
+        "title": "Vocabulary and everyday words",
+        "topics": [
+          "Learn useful words through familiar topics.",
+          "Use new vocabulary in meaningful sentences."
+        ]
+      },
+      {
+        "title": "Spoken Arabic and conversation",
+        "topics": [
+          "Practise greetings, introductions and everyday exchanges.",
+          "Build confidence through live conversations and corrections."
+        ]
+      },
+      {
+        "title": "Reading, listening and comprehension",
+        "topics": [
+          "Listen to short examples and read suitable passages.",
+          "Discuss meaning and answer comprehension questions."
+        ]
+      },
+      {
+        "title": "Practical Arabic applications",
+        "topics": [
+          "Use Arabic in everyday situations, study and personal communication.",
+          "Combine reading, writing, listening and speaking in activities."
+        ]
+      },
+      {
+        "title": "Assessment and progress review",
+        "topics": [
+          "Review what you have learned with your teacher.",
+          "Identify areas to practise and plan your next learning steps."
+        ]
+      }
+    ],
+    "faqTitle": "Your Arabic course questions, answered",
+    "faq": [
+      [
+        "What does this course cover?",
+        "Arabic letters, reading, writing, vocabulary, basic grammar, listening and conversation, adapted to your level."
+      ],
+      [
+        "Can I join as a complete beginner?",
+        "Yes. You can start with the alphabet and sounds. Your teacher helps you find a suitable starting point."
+      ],
+      [
+        "Are the classes live or recorded?",
+        "Lessons are live and one-to-one, with opportunities to ask questions, practise and receive feedback."
+      ],
+      [
+        "Can children join?",
+        "Yes. Lessons are adapted for children, teenagers and adults, with activities suited to age and ability."
+      ],
+      [
+        "Will I learn Arabic writing and the alphabet?",
+        "Yes. You practise letter shapes, connected forms, words and short sentences."
+      ],
+      [
+        "Will I practise spoken Arabic?",
+        "Yes. Guided conversations help you use vocabulary and sentence patterns in everyday situations."
+      ],
+      [
+        "Will I receive a certificate?",
+        "Please ask our team about certificate availability and requirements before enrolling."
+      ],
+      [
+        "How do I get started?",
+        "Book a free trial, choose Arabic Language in the form and discuss your goals and schedule with our team."
+      ]
+    ]
+  },
+  "ar": {
+    "title": "تعلّم العربية بثقة",
+    "intro": "طوّر مهارات القراءة والكتابة والاستماع والمحادثة في حصص عربية مباشرة وفردية. ابدأ بالحروف والأصوات، ثم تعلّم المفردات والجمل والمحادثات اليومية بالسرعة المناسبة لك.",
+    "eyebrow": "برنامج اللغة العربية",
+    "audienceTitle": "لمن يناسب هذا البرنامج؟",
+    "audience": [
+      "المبتدئون الذين يبدأون بتعلّم الحروف العربية ونطقها.",
+      "الأطفال والمراهقون الذين يستفيدون من الشرح المبسط والأنشطة الموجّهة.",
+      "البالغون ومن يعودون للتعلّم لتحسين التواصل والقراءة والكتابة."
+    ],
+    "learnTitle": "ماذا ستتعلّم؟",
+    "learn": [
+      "قراءة الحروف العربية والتعرّف إلى أشكالها المختلفة.",
+      "كتابة الحروف والكلمات والجمل القصيرة.",
+      "فهم المفردات المفيدة والقواعد الأساسية.",
+      "ممارسة التحدّث من خلال المحادثات اليومية.",
+      "تطوير فهم المقروء والمسموع.",
+      "استخدام العربية في الدراسة والتواصل اليومي."
+    ],
+    "requirementsTitle": "قبل أن تبدأ",
+    "requirements": "لا تحتاج إلى معرفة سابقة بالعربية. تحتاج إلى جهاز بكاميرا واتصال إنترنت مستقر ومكان هادئ. نوصي بدفتر وقلم للتدريب. يساعدك الانتظام والمشاركة والممارسة بين الحصص على التقدّم.",
+    "lessonsTitle": "مسار عملي يناسب مستواك وأهدافك",
+    "lessons": "تعلّم العربية خطوة بخطوة مع أكاديمية مسلمان. يشرح المعلم المهارة ويقدّم نموذجًا لها، ثم يرشدك خلال تدريبات القراءة والكتابة والاستماع والتحدّث. تساعدك الملاحظات الفردية على مراجعة الأصوات الصعبة وبناء الجمل واستخدام الكلمات الجديدة بثقة.",
+    "planNote": "يقيّم المعلم مستواك في الحصة التجريبية المجانية، ويكيّف المحتوى والسرعة حسب أهدافك. يعتمد التقدّم على الانتظام والممارسة، ولا توجد مدة ثابتة لإتمام البرنامج.",
+    "curriculum": [
+      {
+        "title": "أساسيات اللغة العربية",
+        "topics": [
+          "التعرّف إلى الحروف وأشكالها المتصلة.",
+          "التدرّب على الأصوات والنطق والكلمات البسيطة."
+        ]
+      },
+      {
+        "title": "القراءة والكتابة العربية",
+        "topics": [
+          "تشكيل الحروف وربطها لتكوين الكلمات.",
+          "قراءة وكتابة عبارات وجمل قصيرة."
+        ]
+      },
+      {
+        "title": "القواعد وبناء الجمل",
+        "topics": [
+          "التعرّف إلى أنماط الجمل الأساسية وترتيب الكلمات.",
+          "بناء جمل وأسئلة بسيطة في تدريبات موجّهة."
+        ]
+      },
+      {
+        "title": "المفردات والكلمات اليومية",
+        "topics": [
+          "تعلّم كلمات مفيدة من موضوعات مألوفة.",
+          "استخدام المفردات الجديدة في جمل ذات معنى."
+        ]
+      },
+      {
+        "title": "التحدّث والمحادثة بالعربية",
+        "topics": [
+          "ممارسة التحية والتعريف بالنفس والمواقف اليومية.",
+          "بناء الثقة من خلال المحادثات المباشرة والتصحيح."
+        ]
+      },
+      {
+        "title": "القراءة والاستماع والفهم",
+        "topics": [
+          "الاستماع إلى أمثلة قصيرة وقراءة نصوص مناسبة.",
+          "مناقشة المعنى والإجابة عن أسئلة الفهم."
+        ]
+      },
+      {
+        "title": "تطبيقات عملية للعربية",
+        "topics": [
+          "استخدام العربية في الحياة اليومية والدراسة والتواصل.",
+          "دمج القراءة والكتابة والاستماع والتحدّث في الأنشطة."
+        ]
+      },
+      {
+        "title": "التقييم ومراجعة التقدّم",
+        "topics": [
+          "مراجعة ما تعلّمته مع المعلم.",
+          "تحديد نقاط التدريب والتخطيط للخطوات التالية."
+        ]
+      }
+    ],
+    "faqTitle": "أسئلة شائعة عن برنامج العربية",
+    "faq": [
+      [
+        "ماذا يشمل البرنامج؟",
+        "الحروف والقراءة والكتابة والمفردات والقواعد الأساسية والاستماع والمحادثة، وفقًا لمستواك."
+      ],
+      [
+        "هل يناسب المبتدئين تمامًا؟",
+        "نعم، يمكنك البدء بالحروف والأصوات، ويساعدك المعلم على اختيار نقطة البداية المناسبة."
+      ],
+      [
+        "هل الحصص مباشرة أم مسجلة؟",
+        "الحصص مباشرة وفردية، ويمكنك السؤال والتدرّب والحصول على الملاحظات خلالها."
+      ],
+      [
+        "هل يمكن للأطفال الاشتراك؟",
+        "نعم، تُكيّف الدروس للأطفال والمراهقين والبالغين بأنشطة تناسب العمر والقدرة."
+      ],
+      [
+        "هل سأتعلّم الكتابة والحروف العربية؟",
+        "نعم، تتدرّب على أشكال الحروف واتصالها والكلمات والجمل القصيرة."
+      ],
+      [
+        "هل سأمارس المحادثة؟",
+        "نعم، تساعدك المحادثات الموجّهة على استخدام المفردات وأنماط الجمل في المواقف اليومية."
+      ],
+      [
+        "هل سأحصل على شهادة؟",
+        "يرجى سؤال فريقنا عن إتاحة الشهادات وشروطها قبل التسجيل."
+      ],
+      [
+        "كيف أبدأ؟",
+        "احجز حصة تجريبية مجانية واختر اللغة العربية في النموذج، ثم ناقش أهدافك ومواعيدك مع فريقنا."
+      ]
+    ]
+  },
+  "es": {
+    "title": "Aprende árabe con confianza",
+    "intro": "Desarrolla lectura, escritura, comprensión auditiva y conversación con clases de árabe en directo e individuales. Empieza por letras y sonidos y avanza hacia vocabulario, frases y conversaciones cotidianas a tu ritmo.",
+    "eyebrow": "CURSO DE LENGUA ÁRABE",
+    "audienceTitle": "¿Para quién es este curso?",
+    "audience": [
+      "Principiantes que empiezan con las letras y la pronunciación.",
+      "Niños y adolescentes que aprenden con explicaciones claras y actividades guiadas.",
+      "Adultos y estudiantes que retoman el árabe para mejorar su comunicación, lectura y escritura."
+    ],
+    "learnTitle": "Qué aprenderás",
+    "learn": [
+      "Leer las letras árabes y reconocer sus formas.",
+      "Escribir letras, palabras y frases cortas.",
+      "Comprender vocabulario útil y gramática básica.",
+      "Practicar conversaciones cotidianas.",
+      "Desarrollar la comprensión lectora y auditiva.",
+      "Usar el árabe para estudiar y comunicarse a diario."
+    ],
+    "requirementsTitle": "Antes de empezar",
+    "requirements": "No necesitas conocimientos previos de árabe. Necesitas un dispositivo con cámara, conexión estable y un lugar tranquilo. Recomendamos un cuaderno y un bolígrafo. La asistencia, participación y práctica entre clases favorecen tu progreso.",
+    "lessonsTitle": "Un camino práctico adaptado a ti",
+    "lessons": "Aprende árabe paso a paso con Musliman Academy. Tu profesor explica y demuestra cada habilidad y te guía en actividades de lectura, escritura, escucha y conversación. Sus comentarios te ayudan a repasar sonidos difíciles, construir frases y usar palabras nuevas con confianza.",
+    "planNote": "En la prueba gratuita, el profesor evalúa tu nivel y adapta los contenidos y el ritmo a tus objetivos. El progreso depende de la asistencia y la práctica; no hay un plazo fijo para terminar.",
+    "curriculum": [
+      {
+        "title": "Fundamentos del árabe",
+        "topics": [
+          "Reconocer las letras y sus formas unidas.",
+          "Practicar sonidos, pronunciación y palabras sencillas."
+        ]
+      },
+      {
+        "title": "Lectura y escritura árabe",
+        "topics": [
+          "Trazar letras y unirlas en palabras.",
+          "Leer y escribir expresiones y frases cortas."
+        ]
+      },
+      {
+        "title": "Gramática y estructura de las frases",
+        "topics": [
+          "Explorar estructuras básicas y el orden de las palabras.",
+          "Construir afirmaciones y preguntas con ejercicios guiados."
+        ]
+      },
+      {
+        "title": "Vocabulario cotidiano",
+        "topics": [
+          "Aprender palabras útiles sobre temas familiares.",
+          "Usar vocabulario nuevo en frases con sentido."
+        ]
+      },
+      {
+        "title": "Árabe hablado y conversación",
+        "topics": [
+          "Practicar saludos, presentaciones e intercambios cotidianos.",
+          "Ganar confianza con conversaciones y correcciones en directo."
+        ]
+      },
+      {
+        "title": "Lectura, escucha y comprensión",
+        "topics": [
+          "Escuchar ejemplos cortos y leer textos adecuados.",
+          "Comentar el significado y responder preguntas de comprensión."
+        ]
+      },
+      {
+        "title": "Aplicaciones prácticas del árabe",
+        "topics": [
+          "Usar el árabe en la vida diaria, el estudio y la comunicación.",
+          "Combinar lectura, escritura, escucha y conversación."
+        ]
+      },
+      {
+        "title": "Evaluación y revisión del progreso",
+        "topics": [
+          "Repasar lo aprendido con tu profesor.",
+          "Identificar qué practicar y planificar los siguientes pasos."
+        ]
+      }
+    ],
+    "faqTitle": "Preguntas sobre el curso de árabe",
+    "faq": [
+      [
+        "¿Qué incluye el curso?",
+        "Letras, lectura, escritura, vocabulario, gramática básica, escucha y conversación, según tu nivel."
+      ],
+      [
+        "¿Puedo empezar desde cero?",
+        "Sí. Puedes empezar por el alfabeto y los sonidos con la orientación del profesor."
+      ],
+      [
+        "¿Son clases en directo o grabadas?",
+        "Son clases individuales en directo para preguntar, practicar y recibir comentarios."
+      ],
+      [
+        "¿Pueden participar niños?",
+        "Sí. Adaptamos las actividades a niños, adolescentes y adultos según su edad y capacidad."
+      ],
+      [
+        "¿Aprenderé el alfabeto y a escribir?",
+        "Sí. Practicarás las formas de las letras, sus uniones, palabras y frases cortas."
+      ],
+      [
+        "¿Practicaré árabe hablado?",
+        "Sí. Las conversaciones guiadas te ayudan a usar palabras y estructuras en situaciones cotidianas."
+      ],
+      [
+        "¿Recibiré un certificado?",
+        "Consulta con nuestro equipo la disponibilidad y los requisitos antes de inscribirte."
+      ],
+      [
+        "¿Cómo empiezo?",
+        "Reserva una prueba gratuita, elige Lengua Árabe en el formulario y habla con nuestro equipo sobre tus objetivos y horarios."
+      ]
+    ]
+  },
+  "de": {
+    "title": "Arabisch mit Selbstvertrauen lernen",
+    "intro": "Entwickle Lesen, Schreiben, Hörverstehen und Sprechen im persönlichen Online-Live-Unterricht. Beginne mit Buchstaben und Lauten und übe danach Wortschatz, Sätze und Alltagsgespräche in deinem Tempo.",
+    "eyebrow": "ARABISCHSPRACHKURS",
+    "audienceTitle": "Für wen ist dieser Kurs?",
+    "audience": [
+      "Anfänger, die mit arabischen Buchstaben und Aussprache beginnen.",
+      "Kinder und Jugendliche, die durch klare Erklärungen und angeleitete Übungen lernen.",
+      "Erwachsene und Wiedereinsteiger, die Kommunikation, Lesen und Schreiben verbessern möchten."
+    ],
+    "learnTitle": "Das lernst du",
+    "learn": [
+      "Arabische Buchstaben und ihre Formen lesen.",
+      "Buchstaben, Wörter und kurze Sätze schreiben.",
+      "Nützlichen Wortschatz und grundlegende Grammatik verstehen.",
+      "Alltagsgespräche üben.",
+      "Lese- und Hörverstehen entwickeln.",
+      "Arabisch beim Lernen und im Alltag nutzen."
+    ],
+    "requirementsTitle": "Bevor du beginnst",
+    "requirements": "Arabischkenntnisse sind nicht erforderlich. Du brauchst ein Gerät mit Kamera, stabiles Internet und einen ruhigen Platz. Ein Heft und ein Stift sind empfehlenswert. Regelmäßige Teilnahme und Übung zwischen den Stunden fördern den Fortschritt.",
+    "lessonsTitle": "Ein praktischer Lernweg, der zu dir passt",
+    "lessons": "Lerne Schritt für Schritt mit Musliman Academy. Deine Lehrkraft erklärt eine Fertigkeit, zeigt Beispiele und begleitet dich beim Lesen, Schreiben, Hören und Sprechen. Persönliches Feedback hilft dir, schwierige Laute zu wiederholen, Sätze zu bilden und neue Wörter sicher zu verwenden.",
+    "planNote": "In der kostenlosen Probestunde beurteilt deine Lehrkraft dein Ausgangsniveau und passt Inhalte und Tempo an deine Ziele an. Fortschritt hängt von Teilnahme und Übung ab; es gibt keine feste Abschlussfrist.",
+    "curriculum": [
+      {
+        "title": "Grundlagen der arabischen Sprache",
+        "topics": [
+          "Buchstaben und verbundene Formen erkennen.",
+          "Laute, Aussprache und einfache Wörter üben."
+        ]
+      },
+      {
+        "title": "Arabisch lesen und schreiben",
+        "topics": [
+          "Buchstaben formen und zu Wörtern verbinden.",
+          "Kurze Ausdrücke und Sätze lesen und schreiben."
+        ]
+      },
+      {
+        "title": "Grammatik und Satzbau",
+        "topics": [
+          "Grundlegende Satzmuster und Wortstellung kennenlernen.",
+          "Einfache Aussagen und Fragen mit Anleitung bilden."
+        ]
+      },
+      {
+        "title": "Wortschatz für den Alltag",
+        "topics": [
+          "Nützliche Wörter zu vertrauten Themen lernen.",
+          "Neue Wörter in sinnvollen Sätzen anwenden."
+        ]
+      },
+      {
+        "title": "Gesprochenes Arabisch und Konversation",
+        "topics": [
+          "Begrüßungen, Vorstellungen und Alltagssituationen üben.",
+          "Durch Live-Gespräche und Korrekturen sicherer werden."
+        ]
+      },
+      {
+        "title": "Lesen, Hören und Verstehen",
+        "topics": [
+          "Kurze Beispiele hören und passende Texte lesen.",
+          "Bedeutungen besprechen und Verständnisfragen beantworten."
+        ]
+      },
+      {
+        "title": "Arabisch praktisch anwenden",
+        "topics": [
+          "Arabisch im Alltag, beim Lernen und in Gesprächen nutzen.",
+          "Lesen, Schreiben, Hören und Sprechen verbinden."
+        ]
+      },
+      {
+        "title": "Bewertung und Fortschrittsrückblick",
+        "topics": [
+          "Gelerntes mit deiner Lehrkraft wiederholen.",
+          "Übungsbedarf erkennen und nächste Schritte planen."
+        ]
+      }
+    ],
+    "faqTitle": "Fragen zum Arabischkurs",
+    "faq": [
+      [
+        "Was umfasst der Kurs?",
+        "Buchstaben, Lesen, Schreiben, Wortschatz, Grundgrammatik, Hörverstehen und Gespräche passend zu deinem Niveau."
+      ],
+      [
+        "Kann ich ohne Vorkenntnisse beginnen?",
+        "Ja. Du kannst mit Alphabet und Lauten anfangen; deine Lehrkraft begleitet dich."
+      ],
+      [
+        "Ist der Unterricht live oder aufgezeichnet?",
+        "Der Einzelunterricht ist live, damit du Fragen stellen, üben und Feedback erhalten kannst."
+      ],
+      [
+        "Können Kinder teilnehmen?",
+        "Ja. Die Übungen werden für Kinder, Jugendliche und Erwachsene an Alter und Fähigkeiten angepasst."
+      ],
+      [
+        "Lerne ich das Alphabet und Schreiben?",
+        "Ja. Du übst Buchstabenformen, Verbindungen, Wörter und kurze Sätze."
+      ],
+      [
+        "Übe ich gesprochenes Arabisch?",
+        "Ja. Angeleitete Gespräche helfen dir, Wortschatz und Satzmuster im Alltag anzuwenden."
+      ],
+      [
+        "Bekomme ich ein Zertifikat?",
+        "Bitte frage unser Team vor der Anmeldung nach Verfügbarkeit und Voraussetzungen."
+      ],
+      [
+        "Wie fange ich an?",
+        "Buche eine kostenlose Probestunde, wähle Arabisch im Formular und besprich Ziele und Termine mit unserem Team."
+      ]
+    ]
+  },
+  "it": {
+    "title": "Impara l’arabo con fiducia",
+    "intro": "Sviluppa lettura, scrittura, ascolto e conversazione con lezioni di arabo individuali dal vivo. Parti da lettere e suoni, poi passa a vocaboli, frasi e conversazioni quotidiane al tuo ritmo.",
+    "eyebrow": "CORSO DI LINGUA ARABA",
+    "audienceTitle": "A chi è rivolto il corso?",
+    "audience": [
+      "Principianti che iniziano dalle lettere e dalla pronuncia.",
+      "Bambini e ragazzi che imparano con spiegazioni chiare e attività guidate.",
+      "Adulti e studenti che riprendono l’arabo per migliorare comunicazione, lettura e scrittura."
+    ],
+    "learnTitle": "Cosa imparerai",
+    "learn": [
+      "Leggere le lettere arabe e riconoscerne le forme.",
+      "Scrivere lettere, parole e frasi brevi.",
+      "Comprendere vocaboli utili e grammatica di base.",
+      "Praticare conversazioni quotidiane.",
+      "Sviluppare la comprensione scritta e orale.",
+      "Usare l’arabo nello studio e nella comunicazione quotidiana."
+    ],
+    "requirementsTitle": "Prima di iniziare",
+    "requirements": "Non serve conoscere già l’arabo. Occorrono un dispositivo con videocamera, internet stabile e un luogo tranquillo. Consigliamo un quaderno e una penna. Presenza regolare, partecipazione e pratica tra le lezioni favoriscono i progressi.",
+    "lessonsTitle": "Un percorso pratico costruito intorno a te",
+    "lessons": "Impara passo dopo passo con Musliman Academy. L’insegnante spiega ogni abilità, mostra esempi e ti guida nella lettura, scrittura, ascolto e conversazione. Il feedback personale ti aiuta a ripassare suoni difficili, costruire frasi e usare parole nuove con fiducia.",
+    "planNote": "Durante la prova gratuita l’insegnante valuta il tuo livello e adatta contenuti e ritmo ai tuoi obiettivi. I progressi dipendono dalla presenza e dalla pratica; non c’è una scadenza fissa per completare il corso.",
+    "curriculum": [
+      {
+        "title": "Fondamenti della lingua araba",
+        "topics": [
+          "Riconoscere lettere e forme collegate.",
+          "Praticare suoni, pronuncia e parole semplici."
+        ]
+      },
+      {
+        "title": "Lettura e scrittura araba",
+        "topics": [
+          "Formare le lettere e unirle in parole.",
+          "Leggere e scrivere espressioni e frasi brevi."
+        ]
+      },
+      {
+        "title": "Grammatica e struttura delle frasi",
+        "topics": [
+          "Esplorare schemi di base e ordine delle parole.",
+          "Costruire affermazioni e domande con esercizi guidati."
+        ]
+      },
+      {
+        "title": "Vocabolario quotidiano",
+        "topics": [
+          "Imparare parole utili su argomenti familiari.",
+          "Usare vocaboli nuovi in frasi significative."
+        ]
+      },
+      {
+        "title": "Arabo parlato e conversazione",
+        "topics": [
+          "Praticare saluti, presentazioni e scambi quotidiani.",
+          "Acquisire sicurezza con conversazioni dal vivo e correzioni."
+        ]
+      },
+      {
+        "title": "Lettura, ascolto e comprensione",
+        "topics": [
+          "Ascoltare brevi esempi e leggere testi adatti.",
+          "Discutere il significato e rispondere a domande."
+        ]
+      },
+      {
+        "title": "Applicazioni pratiche dell’arabo",
+        "topics": [
+          "Usare l’arabo nella vita quotidiana, nello studio e nella comunicazione.",
+          "Combinare lettura, scrittura, ascolto e conversazione."
+        ]
+      },
+      {
+        "title": "Valutazione e revisione dei progressi",
+        "topics": [
+          "Ripassare quanto imparato con l’insegnante.",
+          "Individuare cosa esercitare e pianificare i prossimi passi."
+        ]
+      }
+    ],
+    "faqTitle": "Domande sul corso di arabo",
+    "faq": [
+      [
+        "Cosa comprende il corso?",
+        "Lettere, lettura, scrittura, vocabolario, grammatica di base, ascolto e conversazione, secondo il tuo livello."
+      ],
+      [
+        "Posso iniziare da zero?",
+        "Sì. Puoi partire dall’alfabeto e dai suoni con la guida dell’insegnante."
+      ],
+      [
+        "Le lezioni sono dal vivo o registrate?",
+        "Le lezioni sono individuali dal vivo, per fare domande, esercitarsi e ricevere feedback."
+      ],
+      [
+        "Possono partecipare i bambini?",
+        "Sì. Le attività sono adattate a bambini, ragazzi e adulti in base all’età e alle capacità."
+      ],
+      [
+        "Imparerò l’alfabeto e a scrivere?",
+        "Sì. Eserciterai le forme delle lettere, i collegamenti, le parole e le frasi brevi."
+      ],
+      [
+        "Praticherò l’arabo parlato?",
+        "Sì. Le conversazioni guidate aiutano a usare vocaboli e strutture nelle situazioni quotidiane."
+      ],
+      [
+        "Riceverò un certificato?",
+        "Chiedi al nostro team disponibilità e requisiti prima di iscriverti."
+      ],
+      [
+        "Come inizio?",
+        "Prenota una prova gratuita, scegli Lingua Araba nel modulo e parla con il team di obiettivi e orari."
+      ]
+    ]
+  },
+  "ur": {
+    "title": "اعتماد کے ساتھ عربی سیکھیں",
+    "intro": "براہ راست انفرادی عربی اسباق کے ذریعے پڑھنے، لکھنے، سننے اور بولنے کی مہارتیں بڑھائیں۔ حروف اور آوازوں سے شروع کریں، پھر اپنی رفتار سے الفاظ، جملے اور روزمرہ گفتگو سیکھیں۔",
+    "eyebrow": "عربی زبان کا کورس",
+    "audienceTitle": "یہ کورس کس کے لیے ہے؟",
+    "audience": [
+      "عربی حروف اور تلفظ سے آغاز کرنے والے مبتدی طلبہ۔",
+      "واضح وضاحت اور رہنمائی والی سرگرمیوں سے سیکھنے والے بچے اور نوجوان۔",
+      "گفتگو، پڑھنے اور لکھنے میں بہتری چاہنے والے بالغ اور دوبارہ سیکھنے والے طلبہ۔"
+    ],
+    "learnTitle": "آپ کیا سیکھیں گے؟",
+    "learn": [
+      "عربی حروف اور ان کی مختلف شکلیں پڑھنا۔",
+      "حروف، الفاظ اور مختصر جملے لکھنا۔",
+      "مفید الفاظ اور بنیادی قواعد سمجھنا۔",
+      "روزمرہ گفتگو کی مشق کرنا۔",
+      "سننے اور پڑھنے کی سمجھ بہتر بنانا۔",
+      "تعلیم اور روزمرہ رابطے میں عربی استعمال کرنا۔"
+    ],
+    "requirementsTitle": "شروع کرنے سے پہلے",
+    "requirements": "عربی کا سابقہ علم ضروری نہیں۔ کیمرے والا آلہ، مستحکم انٹرنیٹ اور پرسکون جگہ درکار ہے۔ کاپی اور قلم رکھنا بہتر ہے۔ باقاعدہ حاضری، شرکت اور اسباق کے درمیان مشق ترقی میں مدد دیتی ہے۔",
+    "lessonsTitle": "آپ کے لیے موزوں عملی تعلیمی سفر",
+    "lessons": "مسلمان اکیڈمی کے ساتھ قدم بہ قدم عربی سیکھیں۔ استاد مہارت کی وضاحت اور مثال پیش کرتا ہے، پھر پڑھنے، لکھنے، سننے اور بولنے کی سرگرمیوں میں رہنمائی کرتا ہے۔ انفرادی رائے مشکل آوازوں کی تکرار، جملے بنانے اور نئے الفاظ اعتماد سے استعمال کرنے میں مدد دیتی ہے۔",
+    "planNote": "مفت آزمائشی کلاس میں استاد آپ کی ابتدائی سطح جانچ کر مواد اور رفتار کو آپ کے اہداف کے مطابق بناتا ہے۔ ترقی حاضری اور مشق پر منحصر ہے؛ تکمیل کی مقررہ مدت نہیں۔",
+    "curriculum": [
+      {
+        "title": "عربی زبان کی بنیادیں",
+        "topics": [
+          "حروف اور ان کی جڑی ہوئی شکلیں پہچاننا۔",
+          "آوازوں، تلفظ اور آسان الفاظ کی مشق۔"
+        ]
+      },
+      {
+        "title": "عربی پڑھنا اور لکھنا",
+        "topics": [
+          "حروف لکھنا اور ملا کر الفاظ بنانا۔",
+          "مختصر عبارتیں اور جملے پڑھنا اور لکھنا۔"
+        ]
+      },
+      {
+        "title": "قواعد اور جملوں کی ساخت",
+        "topics": [
+          "بنیادی جملے اور الفاظ کی ترتیب سمجھنا۔",
+          "رہنمائی میں آسان جملے اور سوالات بنانا۔"
+        ]
+      },
+      {
+        "title": "روزمرہ الفاظ",
+        "topics": [
+          "مانوس موضوعات سے مفید الفاظ سیکھنا۔",
+          "نئے الفاظ بامعنی جملوں میں استعمال کرنا۔"
+        ]
+      },
+      {
+        "title": "عربی بولنا اور گفتگو",
+        "topics": [
+          "سلام، تعارف اور روزمرہ بات چیت کی مشق۔",
+          "براہ راست گفتگو اور اصلاح سے اعتماد بڑھانا۔"
+        ]
+      },
+      {
+        "title": "پڑھنا، سننا اور سمجھنا",
+        "topics": [
+          "مختصر مثالیں سننا اور مناسب عبارتیں پڑھنا۔",
+          "مطلب پر گفتگو اور فہم کے سوالات کے جواب۔"
+        ]
+      },
+      {
+        "title": "عربی کا عملی استعمال",
+        "topics": [
+          "روزمرہ زندگی، تعلیم اور رابطے میں عربی استعمال کرنا۔",
+          "پڑھنے، لکھنے، سننے اور بولنے کو سرگرمیوں میں ملانا۔"
+        ]
+      },
+      {
+        "title": "جانچ اور پیش رفت کا جائزہ",
+        "topics": [
+          "استاد کے ساتھ سیکھے ہوئے مواد کی تکرار۔",
+          "مشق کے نکات اور اگلے مراحل طے کرنا۔"
+        ]
+      }
+    ],
+    "faqTitle": "عربی کورس کے بارے میں سوالات",
+    "faq": [
+      [
+        "کورس میں کیا شامل ہے؟",
+        "آپ کی سطح کے مطابق حروف، پڑھنا، لکھنا، الفاظ، بنیادی قواعد، سننا اور گفتگو۔"
+      ],
+      [
+        "کیا بالکل ابتدا سے شروع کر سکتا ہوں؟",
+        "جی ہاں، حروف اور آوازوں سے شروع کریں؛ استاد مناسب آغاز میں مدد کرے گا۔"
+      ],
+      [
+        "کلاسیں براہ راست ہیں یا ریکارڈ شدہ؟",
+        "کلاسیں براہ راست اور انفرادی ہیں، جہاں سوال، مشق اور رائے کا موقع ملتا ہے۔"
+      ],
+      [
+        "کیا بچے شامل ہو سکتے ہیں؟",
+        "جی ہاں، سرگرمیاں بچوں، نوجوانوں اور بالغوں کی عمر اور صلاحیت کے مطابق ہوتی ہیں۔"
+      ],
+      [
+        "کیا عربی حروف اور لکھنا سیکھوں گا؟",
+        "جی ہاں، حروف کی شکلوں، اتصال، الفاظ اور مختصر جملوں کی مشق ہوگی۔"
+      ],
+      [
+        "کیا عربی بولنے کی مشق ہوگی؟",
+        "جی ہاں، رہنمائی والی گفتگو روزمرہ حالات میں الفاظ اور جملے استعمال کرنا سکھاتی ہے۔"
+      ],
+      [
+        "کیا سند ملے گی؟",
+        "داخلے سے پہلے ہماری ٹیم سے سند کی دستیابی اور شرائط معلوم کریں۔"
+      ],
+      [
+        "آغاز کیسے کروں؟",
+        "مفت آزمائشی کلاس بک کریں، فارم میں عربی زبان منتخب کریں اور ٹیم سے اہداف اور اوقات پر بات کریں۔"
+      ]
+    ]
+  },
+  "tr": {
+    "title": "Güvenle Arapça öğrenin",
+    "intro": "Canlı, bire bir Arapça dersleriyle okuma, yazma, dinleme ve konuşma becerilerinizi geliştirin. Harfler ve seslerle başlayın; ardından kendi hızınızda kelimelere, cümlelere ve günlük konuşmalara geçin.",
+    "eyebrow": "ARAPÇA DİL KURSU",
+    "audienceTitle": "Bu kurs kimler için?",
+    "audience": [
+      "Arapça harfler ve telaffuzla başlayanlar.",
+      "Açık anlatım ve rehberli etkinliklerle öğrenen çocuklar ve gençler.",
+      "İletişim, okuma ve yazmayı geliştirmek isteyen yetişkinler ve yeniden başlayanlar."
+    ],
+    "learnTitle": "Neler öğreneceksiniz?",
+    "learn": [
+      "Arapça harfleri ve farklı biçimlerini okumak.",
+      "Harfler, kelimeler ve kısa cümleler yazmak.",
+      "Yararlı kelimeleri ve temel dil bilgisini anlamak.",
+      "Günlük konuşmalarla konuşma alıştırması yapmak.",
+      "Dinleme ve okuduğunu anlamayı geliştirmek.",
+      "Arapçayı eğitimde ve günlük iletişimde kullanmak."
+    ],
+    "requirementsTitle": "Başlamadan önce",
+    "requirements": "Önceden Arapça bilmeniz gerekmez. Kameralı cihaz, kararlı internet ve sessiz bir alan gerekir. Defter ve kalem önerilir. Düzenli katılım ve dersler arasında alıştırma ilerlemenizi destekler.",
+    "lessonsTitle": "Size göre şekillenen pratik bir öğrenme yolu",
+    "lessons": "Musliman Academy ile adım adım Arapça öğrenin. Öğretmeniniz beceriyi açıklar, örnek gösterir ve okuma, yazma, dinleme ve konuşma etkinliklerinde size rehberlik eder. Kişisel geri bildirim, zor sesleri tekrarlamanıza, cümle kurmanıza ve yeni kelimeleri güvenle kullanmanıza yardımcı olur.",
+    "planNote": "Öğretmeniniz ücretsiz denemede seviyenizi değerlendirir, içeriği ve hızı hedeflerinize göre ayarlar. İlerleme katılıma ve alıştırmaya bağlıdır; sabit bir bitirme süresi yoktur.",
+    "curriculum": [
+      {
+        "title": "Arapça dilinin temelleri",
+        "topics": [
+          "Harfleri ve birleşik biçimlerini tanımak.",
+          "Sesleri, telaffuzu ve basit kelimeleri çalışmak."
+        ]
+      },
+      {
+        "title": "Arapça okuma ve yazma",
+        "topics": [
+          "Harfleri yazmak ve kelimelerde birleştirmek.",
+          "Kısa ifadeler ve cümleler okumak ve yazmak."
+        ]
+      },
+      {
+        "title": "Dil bilgisi ve cümle yapısı",
+        "topics": [
+          "Temel cümle kalıplarını ve kelime sırasını öğrenmek.",
+          "Rehberli alıştırmalarla basit cümleler ve sorular kurmak."
+        ]
+      },
+      {
+        "title": "Günlük kelime bilgisi",
+        "topics": [
+          "Tanıdık konularda yararlı kelimeler öğrenmek.",
+          "Yeni kelimeleri anlamlı cümlelerde kullanmak."
+        ]
+      },
+      {
+        "title": "Konuşulan Arapça ve diyalog",
+        "topics": [
+          "Selamlaşma, tanışma ve günlük iletişimi çalışmak.",
+          "Canlı konuşmalar ve düzeltmelerle güven kazanmak."
+        ]
+      },
+      {
+        "title": "Okuma, dinleme ve anlama",
+        "topics": [
+          "Kısa örnekleri dinlemek ve uygun metinleri okumak.",
+          "Anlamı tartışmak ve anlama sorularını yanıtlamak."
+        ]
+      },
+      {
+        "title": "Arapçanın pratik kullanımı",
+        "topics": [
+          "Arapçayı günlük yaşamda, eğitimde ve iletişimde kullanmak.",
+          "Okuma, yazma, dinleme ve konuşmayı birleştirmek."
+        ]
+      },
+      {
+        "title": "Değerlendirme ve ilerleme incelemesi",
+        "topics": [
+          "Öğrendiklerinizi öğretmeninizle tekrar etmek.",
+          "Çalışılacak alanları belirlemek ve sonraki adımları planlamak."
+        ]
+      }
+    ],
+    "faqTitle": "Arapça kursu hakkında sorular",
+    "faq": [
+      [
+        "Kurs neleri kapsar?",
+        "Seviyenize göre harfler, okuma, yazma, kelimeler, temel dil bilgisi, dinleme ve konuşma."
+      ],
+      [
+        "Tamamen başlangıç seviyesinde katılabilir miyim?",
+        "Evet. Alfabe ve seslerle başlayabilirsiniz; öğretmeniniz uygun başlangıç noktasını belirler."
+      ],
+      [
+        "Dersler canlı mı, kayıtlı mı?",
+        "Dersler canlı ve bire birdir; soru sorabilir, alıştırma yapabilir ve geri bildirim alabilirsiniz."
+      ],
+      [
+        "Çocuklar katılabilir mi?",
+        "Evet. Etkinlikler çocukların, gençlerin ve yetişkinlerin yaş ve yeteneklerine göre uyarlanır."
+      ],
+      [
+        "Alfabeyi ve yazmayı öğrenecek miyim?",
+        "Evet. Harf biçimleri, birleşimler, kelimeler ve kısa cümleler çalışılır."
+      ],
+      [
+        "Arapça konuşma çalışacak mıyım?",
+        "Evet. Rehberli konuşmalar kelimeleri ve cümle kalıplarını günlük durumlarda kullanmanıza yardımcı olur."
+      ],
+      [
+        "Sertifika alacak mıyım?",
+        "Kayıttan önce sertifika imkânı ve şartları hakkında ekibimize danışın."
+      ],
+      [
+        "Nasıl başlayabilirim?",
+        "Ücretsiz deneme ayırtın, formda Arapça Dilini seçin ve hedeflerinizi ve saatlerinizi ekibimizle görüşün."
+      ]
+    ]
+  }
+}
