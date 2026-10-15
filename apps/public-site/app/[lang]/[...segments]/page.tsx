@@ -1,3 +1,5 @@
+import additionalContent from '../../../lib/additional-courses.json';
+import ProgramLearningSections from '../../program-learning-sections';
 import arabicContent from '../../../lib/arabic-language.json';
 import CourseChrome from '../../course-chrome';
 import combinedContent from '../../../lib/quran-tajweed.json';
@@ -20,8 +22,9 @@ function resolve(lang:string, path:string) {
   const training = slug === 'teacher-training';
   const title = teacher ? text(lang, `teachers.items.${teacher.key}.name`, teacher.fullName) : course ? text(lang, `programs.items.${course.key}.title`) : training ? text(lang,'training.heading') : labels[lang][kind === 'programs' ? 1 : 2];
   const description = teacher ? [title, labels[lang][4], text(lang,'teachers.languages.Arabic'), text(lang,'teachers.languages.English')].join(' · ') : course ? text(lang,`programs.items.${course.key}.text`) : text(lang,training ? 'training.description' : kind === 'programs' ? 'programs.description' : 'teachers.description');
-  const reading = course?.key === 'arabicLanguage' ? arabicContent[lang as keyof typeof arabicContent] : course?.key === 'quranTajweed' ? combinedContent[lang as keyof typeof combinedContent] : course?.key === 'quranReading' ? readingContent[lang as keyof typeof readingContent] : undefined;
-  return {kind,slug,teacher,course,training,title:reading?.title || title,description:reading?.intro || description,reading};
+  const detailedProgram = course && course.key in additionalContent ? course.key as keyof typeof additionalContent : undefined;
+  const reading = detailedProgram ? additionalContent[detailedProgram][lang as keyof typeof additionalContent[typeof detailedProgram]] : course?.key === 'arabicLanguage' ? arabicContent[lang as keyof typeof arabicContent] : course?.key === 'quranTajweed' ? combinedContent[lang as keyof typeof combinedContent] : course?.key === 'quranReading' ? readingContent[lang as keyof typeof readingContent] : undefined;
+  return {kind,slug,teacher,course,training,title:reading?.title || title,description:reading?.intro || description,reading,detailedProgram};
 }
 export async function generateMetadata({params}:Props):Promise<Metadata> {
  const {lang,segments}=await params; const path=segments.join('/'); const page=resolve(lang,path); const url=`${siteUrl}/${lang}/${path}`;
@@ -29,7 +32,7 @@ export async function generateMetadata({params}:Props):Promise<Metadata> {
 }
 export default async function Page({params}:Props) {
  const {lang,segments}=await params;const path=segments.join('/');const p=resolve(lang,path);const l=labels[lang];
- if (p.reading) return <CourseDetail lang={lang} combined={p.course?.key === 'quranTajweed'} arabic={p.course?.key === 'arabicLanguage'}/>;
+ if (p.reading) return <CourseDetail lang={lang} combined={p.course?.key === 'quranTajweed'} arabic={p.course?.key === 'arabicLanguage'} program={p.detailedProgram}/>;
  const specializations=['quranReading','tajweed','islamicStudies'].map(k=>text(lang,`programs.items.${k}.title`)).join(', ');
  const experience = p.teacher ? text(lang,`teachers.items.${p.teacher.key}.experience`,new Intl.NumberFormat(lang).format(parseInt(p.teacher.experience || '0'))+'+ '+yearLabels[lang]) : '';
  const jsonLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:l[0],item:siteUrl},{'@type':'ListItem',position:2,name:l[p.kind==='programs'?1:2],item:`${siteUrl}/${lang}/${p.kind}`},...(p.slug?[{'@type':'ListItem',position:3,name:p.title,item:`${siteUrl}/${lang}/${path}`}]:[])]};
@@ -41,6 +44,7 @@ export default async function Page({params}:Props) {
  {p.course&&<div className="catalog-hero-visual"><img src={p.course.image} alt={p.title}/></div>}
  </div>
  {!p.slug&&<div className="catalog-grid">{p.kind==='programs'?<>{courses.map(course=><article className="catalog-program-card" key={course.key}><img src={course.image} alt=""/><h2><Link className="catalog-program-link" href={`/${lang}/programs/${course.slug}`}>{text(lang,`programs.items.${course.key}.title`)}</Link></h2><p>{text(lang,`programs.items.${course.key}.text`)}</p></article>)}<article className="catalog-program-card"><h2><Link className="catalog-program-link" href={`/${lang}/programs/teacher-training`}>{text(lang,'training.heading')}</Link></h2><p>{text(lang,'training.description')}</p></article></>:teachers.map(teacher=><article key={teacher.id}><img src={teacher.photo} alt={teacher.fullName}/><h2><Link href={`/${lang}/teachers/${teacher.id}`}>{text(lang,`teachers.items.${teacher.key}.name`,teacher.fullName)}</Link></h2><p>{specializations}</p></article>)}</div>}
+ {!p.slug && p.kind==='programs' && <ProgramLearningSections lang={lang}/>}
  {p.teacher&&<section className="catalog-profile"><img src={p.teacher.photo} alt={p.title}/><dl><dt>{l[4]}</dt><dd>{text(lang,'teachers.languages.Arabic')}, {text(lang,'teachers.languages.English')}</dd><dt>{l[5]}</dt><dd>{experience}</dd><dt>{l[6]}</dt><dd>{specializations}</dd></dl></section>}
 
  {p.slug&&<section><h2>{l[7]}</h2><p>{l[8]}</p><Link className="btn btn-primary" href={`/?lang=${lang}${p.course && p.course.key !== 'quranTajweed' ? `&program=${p.course.key}` : ''}#book-trial`}>{l[3]}</Link><p><Link href={`/${lang}/programs`}>{l[9]}</Link></p></section>}
