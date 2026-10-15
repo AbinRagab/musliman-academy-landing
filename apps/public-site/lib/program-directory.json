@@ -1,0 +1,464 @@
+{
+  "en": {
+    "learnLabel": "WHAT YOU WILL LEARN",
+    "learnTitle": "Build your Quran skills.",
+    "learnAccent": "Deepen your understanding.",
+    "learnText": "Explore reading, recitation, memorization, Arabic and Islamic knowledge through clear explanations and guided practice.",
+    "outcomesLabel": "LEARNING OUTCOMES",
+    "outcomesTitle": "Knowledge you can use.",
+    "outcomesAccent": "Habits you can build.",
+    "outcomesText": "Work towards meaningful goals at your own pace, with regular practice and personal guidance.",
+    "outcomes": [
+      {
+        "title": "Connected learning",
+        "text": "See how language, recitation and understanding support each other."
+      },
+      {
+        "title": "Values and character",
+        "text": "Reflect on kindness, honesty and responsibility in daily choices."
+      },
+      {
+        "title": "Practical skills",
+        "text": "Use what you learn during lessons and everyday practice."
+      },
+      {
+        "title": "Personal progress",
+        "text": "Build confidence through achievable goals and feedback."
+      },
+      {
+        "title": "Consistent practice",
+        "text": "Develop a routine that makes room for learning and revision."
+      },
+      {
+        "title": "Continued learning",
+        "text": "Identify your next steps and keep building on your foundation."
+      }
+    ],
+    "faqTitle": "Many People",
+    "faqAccent": "Ask About This",
+    "faqText": "Answers to common questions before you start learning.",
+    "faq": [
+      [
+        "What will I learn in these programs?",
+        "Choose from Quran reading, Tajweed, memorization, Arabic, Tafseer and Islamic Studies. Each program has its own curriculum and learning goals."
+      ],
+      [
+        "Who can join?",
+        "Children, teenagers and adults can discuss a suitable program and starting level during a free trial."
+      ],
+      [
+        "How are classes conducted?",
+        "Lessons are live and one-to-one online, with teacher guidance, practice and feedback."
+      ],
+      [
+        "How long do the programs take?",
+        "Duration depends on your starting level, goals and practice. Your teacher helps you plan a suitable pace; completion dates are not guaranteed."
+      ],
+      [
+        "What do I need to get started?",
+        "A device with a camera, a stable internet connection, a quiet place and time for practice. A notebook is helpful."
+      ],
+      [
+        "How will I know I am progressing?",
+        "Your teacher reviews your work, gives feedback and helps you understand what to practise next."
+      ]
+    ],
+    "cta": "Book your free trial"
+  },
+  "ar": {
+    "learnLabel": "ماذا ستتعلم؟",
+    "learnTitle": "طوّر مهاراتك القرآنية.",
+    "learnAccent": "وعمّق فهمك.",
+    "learnText": "استكشف القراءة والتلاوة والحفظ والعربية والمعرفة الإسلامية من خلال الشرح الواضح والممارسة الموجّهة.",
+    "outcomesLabel": "نتائج التعلّم",
+    "outcomesTitle": "معرفة تستخدمها.",
+    "outcomesAccent": "وعادات تبنيها.",
+    "outcomesText": "اعمل نحو أهداف ذات معنى بالسرعة المناسبة لك، مع التدريب المنتظم والإرشاد الفردي.",
+    "outcomes": [
+      {
+        "title": "تعلّم مترابط",
+        "text": "اكتشف كيف تتكامل اللغة والتلاوة والفهم."
+      },
+      {
+        "title": "قيم وأخلاق",
+        "text": "تأمل الرحمة والصدق والمسؤولية في اختياراتك اليومية."
+      },
+      {
+        "title": "مهارات عملية",
+        "text": "استخدم ما تتعلمه في الحصص والممارسة اليومية."
+      },
+      {
+        "title": "تقدّم شخصي",
+        "text": "ابنِ الثقة عبر أهداف قابلة للتحقيق وملاحظات مفيدة."
+      },
+      {
+        "title": "ممارسة مستمرة",
+        "text": "كوّن روتينًا يتيح وقتًا للتعلّم والمراجعة."
+      },
+      {
+        "title": "تعلّم متواصل",
+        "text": "حدّد خطواتك التالية وابنِ على الأساس الذي تعلمته."
+      }
+    ],
+    "faqTitle": "أسئلة يطرحها",
+    "faqAccent": "كثير من المتعلّمين",
+    "faqText": "إجابات عن أسئلة شائعة قبل بدء التعلّم.",
+    "faq": [
+      [
+        "ماذا سأتعلم في هذه البرامج؟",
+        "اختر القراءة والتجويد والحفظ والعربية والتفسير والدراسات الإسلامية. لكل برنامج منهجه وأهدافه."
+      ],
+      [
+        "من يمكنه الاشتراك؟",
+        "يمكن للأطفال والمراهقين والبالغين مناقشة البرنامج والمستوى المناسبين خلال تجربة مجانية."
+      ],
+      [
+        "كيف تُعقد الحصص؟",
+        "حصص مباشرة وفردية عبر الإنترنت، بإرشاد المعلم والتدريب والملاحظات."
+      ],
+      [
+        "كم تستغرق البرامج؟",
+        "تعتمد المدة على مستواك وأهدافك وممارستك. يساعدك المعلم على اختيار سرعة مناسبة دون ضمان موعد إتمام ثابت."
+      ],
+      [
+        "ما الذي أحتاج إليه للبدء؟",
+        "جهاز بكاميرا وإنترنت مستقر ومكان هادئ ووقت للتدريب. يفيدك دفتر للملاحظات."
+      ],
+      [
+        "كيف أعرف أنني أتقدم؟",
+        "يراجع المعلم عملك ويقدم الملاحظات ويساعدك على معرفة ما تحتاج إلى التدرب عليه لاحقًا."
+      ]
+    ],
+    "cta": "احجز حصتك التجريبية المجانية"
+  },
+  "es": {
+    "learnLabel": "QUÉ APRENDERÁS",
+    "learnTitle": "Desarrolla tus habilidades coránicas.",
+    "learnAccent": "Profundiza en tu comprensión.",
+    "learnText": "Explora lectura, recitación, memorización, árabe y conocimientos islámicos con explicaciones claras y práctica guiada.",
+    "outcomesLabel": "RESULTADOS DEL APRENDIZAJE",
+    "outcomesTitle": "Conocimientos que puedes usar.",
+    "outcomesAccent": "Hábitos que puedes crear.",
+    "outcomesText": "Avanza hacia metas significativas a tu ritmo con práctica regular y orientación personal.",
+    "outcomes": [
+      {
+        "title": "Aprendizaje conectado",
+        "text": "Relaciona lengua, recitación y comprensión."
+      },
+      {
+        "title": "Valores y carácter",
+        "text": "Reflexiona sobre amabilidad, honestidad y responsabilidad."
+      },
+      {
+        "title": "Habilidades prácticas",
+        "text": "Aplica lo aprendido en clase y en la práctica diaria."
+      },
+      {
+        "title": "Progreso personal",
+        "text": "Gana confianza con metas alcanzables y comentarios."
+      },
+      {
+        "title": "Práctica constante",
+        "text": "Crea una rutina con espacio para aprender y repasar."
+      },
+      {
+        "title": "Aprendizaje continuo",
+        "text": "Identifica los siguientes pasos y amplía tu base."
+      }
+    ],
+    "faqTitle": "Muchas personas",
+    "faqAccent": "preguntan esto",
+    "faqText": "Respuestas a preguntas habituales antes de empezar.",
+    "faq": [
+      [
+        "¿Qué aprenderé en estos programas?",
+        "Puedes elegir lectura del Corán, Tajweed, memorización, árabe, Tafseer y estudios islámicos. Cada programa tiene contenidos y objetivos propios."
+      ],
+      [
+        "¿Quién puede participar?",
+        "Niños, adolescentes y adultos pueden hablar del programa y nivel adecuados en una prueba gratuita."
+      ],
+      [
+        "¿Cómo se imparten las clases?",
+        "Son individuales en directo y online, con orientación, práctica y comentarios del profesor."
+      ],
+      [
+        "¿Cuánto duran los programas?",
+        "Depende de nivel inicial, objetivos y práctica. El profesor ayuda a elegir un ritmo; no se garantiza una fecha de finalización."
+      ],
+      [
+        "¿Qué necesito para empezar?",
+        "Un dispositivo con cámara, internet estable, un lugar tranquilo y tiempo para practicar. Un cuaderno es útil."
+      ],
+      [
+        "¿Cómo conoceré mi progreso?",
+        "El profesor revisa tu trabajo, te da comentarios y señala qué practicar después."
+      ]
+    ],
+    "cta": "Reserva tu prueba gratuita"
+  },
+  "de": {
+    "learnLabel": "DAS LERNST DU",
+    "learnTitle": "Entwickle deine Koranfertigkeiten.",
+    "learnAccent": "Vertiefe dein Verständnis.",
+    "learnText": "Entdecke Lesen, Rezitation, Memorierung, Arabisch und islamisches Wissen mit klaren Erklärungen und angeleiteter Übung.",
+    "outcomesLabel": "LERNZIELE",
+    "outcomesTitle": "Wissen, das du anwenden kannst.",
+    "outcomesAccent": "Gewohnheiten, die du entwickelst.",
+    "outcomesText": "Arbeite in deinem Tempo an sinnvollen Zielen, mit regelmäßiger Übung und persönlicher Begleitung.",
+    "outcomes": [
+      {
+        "title": "Vernetztes Lernen",
+        "text": "Erkenne, wie Sprache, Rezitation und Verständnis zusammenwirken."
+      },
+      {
+        "title": "Werte und Charakter",
+        "text": "Denke über Freundlichkeit, Ehrlichkeit und Verantwortung nach."
+      },
+      {
+        "title": "Praktische Fähigkeiten",
+        "text": "Wende Gelerntes im Unterricht und Alltag an."
+      },
+      {
+        "title": "Persönlicher Fortschritt",
+        "text": "Werde durch erreichbare Ziele und Feedback sicherer."
+      },
+      {
+        "title": "Regelmäßige Übung",
+        "text": "Schaffe eine Routine für Lernen und Wiederholen."
+      },
+      {
+        "title": "Weiterlernen",
+        "text": "Erkenne nächste Schritte und baue auf deinen Grundlagen auf."
+      }
+    ],
+    "faqTitle": "Viele Menschen",
+    "faqAccent": "fragen danach",
+    "faqText": "Antworten auf häufige Fragen vor dem Lernbeginn.",
+    "faq": [
+      [
+        "Was lerne ich in den Programmen?",
+        "Wähle Koranlesen, Tadschwid, Memorierung, Arabisch, Tafsir oder islamische Studien. Jedes Programm hat eigene Inhalte und Ziele."
+      ],
+      [
+        "Wer kann teilnehmen?",
+        "Kinder, Jugendliche und Erwachsene können Programm und Einstiegsniveau in einer kostenlosen Probestunde besprechen."
+      ],
+      [
+        "Wie findet der Unterricht statt?",
+        "Live und online im Einzelunterricht mit Anleitung, Übung und Feedback."
+      ],
+      [
+        "Wie lange dauern die Programme?",
+        "Das hängt von Niveau, Zielen und Übung ab. Die Lehrkraft hilft beim Tempo; ein Abschlussdatum wird nicht garantiert."
+      ],
+      [
+        "Was brauche ich zum Start?",
+        "Ein Gerät mit Kamera, stabiles Internet, einen ruhigen Platz und Übungszeit. Ein Heft ist hilfreich."
+      ],
+      [
+        "Wie erkenne ich meinen Fortschritt?",
+        "Die Lehrkraft prüft deine Arbeit, gibt Feedback und zeigt, was du als Nächstes üben solltest."
+      ]
+    ],
+    "cta": "Kostenlose Probestunde buchen"
+  },
+  "it": {
+    "learnLabel": "COSA IMPARERAI",
+    "learnTitle": "Sviluppa le tue competenze coraniche.",
+    "learnAccent": "Approfondisci la comprensione.",
+    "learnText": "Esplora lettura, recitazione, memorizzazione, arabo e conoscenze islamiche con spiegazioni chiare e pratica guidata.",
+    "outcomesLabel": "RISULTATI DI APPRENDIMENTO",
+    "outcomesTitle": "Conoscenze da usare.",
+    "outcomesAccent": "Abitudini da costruire.",
+    "outcomesText": "Lavora verso obiettivi significativi al tuo ritmo con pratica regolare e guida personale.",
+    "outcomes": [
+      {
+        "title": "Apprendimento collegato",
+        "text": "Scopri come lingua, recitazione e comprensione si sostengono."
+      },
+      {
+        "title": "Valori e carattere",
+        "text": "Rifletti su gentilezza, onestà e responsabilità."
+      },
+      {
+        "title": "Abilità pratiche",
+        "text": "Applica ciò che impari in classe e nella pratica quotidiana."
+      },
+      {
+        "title": "Progresso personale",
+        "text": "Acquista fiducia con obiettivi raggiungibili e feedback."
+      },
+      {
+        "title": "Pratica costante",
+        "text": "Crea una routine per imparare e ripassare."
+      },
+      {
+        "title": "Apprendimento continuo",
+        "text": "Individua i prossimi passi e amplia le tue basi."
+      }
+    ],
+    "faqTitle": "Molte persone",
+    "faqAccent": "chiedono questo",
+    "faqText": "Risposte alle domande comuni prima di iniziare.",
+    "faq": [
+      [
+        "Cosa imparerò nei programmi?",
+        "Scegli lettura del Corano, Tajweed, memorizzazione, arabo, Tafseer e studi islamici. Ogni programma ha contenuti e obiettivi propri."
+      ],
+      [
+        "Chi può partecipare?",
+        "Bambini, ragazzi e adulti possono discutere programma e livello iniziale durante una prova gratuita."
+      ],
+      [
+        "Come si svolgono le lezioni?",
+        "Sono individuali online dal vivo, con guida, esercizi e feedback dell’insegnante."
+      ],
+      [
+        "Quanto durano i programmi?",
+        "Dipende da livello, obiettivi e pratica. L’insegnante aiuta a scegliere il ritmo; non si garantisce una data finale."
+      ],
+      [
+        "Cosa serve per iniziare?",
+        "Dispositivo con videocamera, internet stabile, luogo tranquillo e tempo per esercitarsi. Un quaderno è utile."
+      ],
+      [
+        "Come conosco i miei progressi?",
+        "L’insegnante controlla il lavoro, dà feedback e indica cosa esercitare dopo."
+      ]
+    ],
+    "cta": "Prenota la prova gratuita"
+  },
+  "ur": {
+    "learnLabel": "آپ کیا سیکھیں گے؟",
+    "learnTitle": "اپنی قرآنی مہارتیں بڑھائیں۔",
+    "learnAccent": "اپنا فہم گہرا کریں۔",
+    "learnText": "واضح وضاحت اور رہنمائی والی مشق سے قراءت، تلاوت، حفظ، عربی اور اسلامی علم سیکھیں۔",
+    "outcomesLabel": "سیکھنے کے نتائج",
+    "outcomesTitle": "قابل استعمال علم۔",
+    "outcomesAccent": "مضبوط تعلیمی عادتیں۔",
+    "outcomesText": "باقاعدہ مشق اور انفرادی رہنمائی سے اپنی رفتار پر بامعنی اہداف کی طرف بڑھیں۔",
+    "outcomes": [
+      {
+        "title": "مربوط تعلیم",
+        "text": "زبان، تلاوت اور فہم کا باہمی تعلق جانیں۔"
+      },
+      {
+        "title": "اقدار اور کردار",
+        "text": "مہربانی، سچائی اور ذمہ داری پر غور کریں۔"
+      },
+      {
+        "title": "عملی مہارتیں",
+        "text": "سیکھے ہوئے علم کو کلاس اور روزمرہ مشق میں استعمال کریں۔"
+      },
+      {
+        "title": "ذاتی پیش رفت",
+        "text": "قابل حصول اہداف اور رائے سے اعتماد بڑھائیں۔"
+      },
+      {
+        "title": "مستقل مشق",
+        "text": "تعلیم اور دہرائی کے لیے معمول بنائیں۔"
+      },
+      {
+        "title": "مسلسل تعلیم",
+        "text": "اگلے مراحل طے کرکے اپنی بنیاد مضبوط کریں۔"
+      }
+    ],
+    "faqTitle": "بہت سے لوگ",
+    "faqAccent": "یہ سوال پوچھتے ہیں",
+    "faqText": "سیکھنے سے پہلے عام سوالات کے جواب۔",
+    "faq": [
+      [
+        "ان پروگراموں میں کیا سیکھوں گا؟",
+        "قرآن ریڈنگ، تجوید، حفظ، عربی، تفسیر اور اسلامی علوم میں سے منتخب کریں۔ ہر پروگرام کا نصاب اور اہداف الگ ہیں۔"
+      ],
+      [
+        "کون شامل ہو سکتا ہے؟",
+        "بچے، نوجوان اور بالغ مفت آزمائش میں مناسب پروگرام اور سطح پر بات کر سکتے ہیں۔"
+      ],
+      [
+        "کلاسیں کیسے ہوتی ہیں؟",
+        "براہ راست انفرادی آن لائن اسباق، استاد کی رہنمائی، مشق اور رائے کے ساتھ۔"
+      ],
+      [
+        "پروگرام کتنی مدت کے ہیں؟",
+        "مدت سطح، اہداف اور مشق پر منحصر ہے۔ استاد مناسب رفتار طے کرتا ہے؛ تکمیل کی تاریخ کی ضمانت نہیں۔"
+      ],
+      [
+        "شروع کرنے کے لیے کیا چاہیے؟",
+        "کیمرے والا آلہ، مستحکم انٹرنیٹ، پرسکون جگہ اور مشق کا وقت۔ کاپی مفید ہے۔"
+      ],
+      [
+        "پیش رفت کیسے معلوم ہوگی؟",
+        "استاد کام دیکھتا، رائے دیتا اور اگلی مشق کے نکات بتاتا ہے۔"
+      ]
+    ],
+    "cta": "مفت آزمائشی کلاس بک کریں"
+  },
+  "tr": {
+    "learnLabel": "NELER ÖĞRENECEKSİNİZ?",
+    "learnTitle": "Kur’an becerilerinizi geliştirin.",
+    "learnAccent": "Anlayışınızı derinleştirin.",
+    "learnText": "Açık anlatım ve rehberli çalışmayla okuma, tilavet, ezber, Arapça ve İslami bilgileri keşfedin.",
+    "outcomesLabel": "ÖĞRENME KAZANIMLARI",
+    "outcomesTitle": "Kullanabileceğiniz bilgi.",
+    "outcomesAccent": "Kurabileceğiniz alışkanlıklar.",
+    "outcomesText": "Düzenli çalışma ve kişisel rehberlikle kendi hızınızda anlamlı hedeflere ilerleyin.",
+    "outcomes": [
+      {
+        "title": "Bağlantılı öğrenme",
+        "text": "Dil, tilavet ve anlayışın birbirini nasıl desteklediğini görün."
+      },
+      {
+        "title": "Değerler ve karakter",
+        "text": "Nezaket, dürüstlük ve sorumluluk üzerine düşünün."
+      },
+      {
+        "title": "Pratik beceriler",
+        "text": "Öğrendiklerinizi derste ve günlük çalışmada uygulayın."
+      },
+      {
+        "title": "Kişisel ilerleme",
+        "text": "Ulaşılabilir hedefler ve geri bildirimle güven kazanın."
+      },
+      {
+        "title": "Düzenli çalışma",
+        "text": "Öğrenme ve tekrar için rutin oluşturun."
+      },
+      {
+        "title": "Sürekli öğrenme",
+        "text": "Sonraki adımları belirleyip temelinizi geliştirin."
+      }
+    ],
+    "faqTitle": "Birçok kişi",
+    "faqAccent": "bunları soruyor",
+    "faqText": "Öğrenmeye başlamadan önce sık sorulan soruların yanıtları.",
+    "faq": [
+      [
+        "Bu programlarda ne öğrenirim?",
+        "Kur’an okuma, tecvid, ezber, Arapça, tefsir ve İslami bilgileri seçebilirsiniz. Her programın kendi içeriği ve hedefleri vardır."
+      ],
+      [
+        "Kimler katılabilir?",
+        "Çocuklar, gençler ve yetişkinler ücretsiz denemede uygun programı ve seviyeyi görüşebilir."
+      ],
+      [
+        "Dersler nasıl yapılır?",
+        "Öğretmen rehberliği, çalışma ve geri bildirimle canlı bire bir online derslerdir."
+      ],
+      [
+        "Programlar ne kadar sürer?",
+        "Seviye, hedef ve çalışmaya bağlıdır. Öğretmen uygun hızı belirler; bitiş tarihi garanti edilmez."
+      ],
+      [
+        "Başlamak için ne gerekir?",
+        "Kameralı cihaz, kararlı internet, sessiz alan ve çalışma zamanı. Defter yararlıdır."
+      ],
+      [
+        "İlerlememi nasıl görürüm?",
+        "Öğretmen çalışmayı inceler, geri bildirim verir ve sonraki çalışma noktalarını gösterir."
+      ]
+    ],
+    "cta": "Ücretsiz denemenizi ayırtın"
+  }
+}
