@@ -7,9 +7,16 @@ until the public site reaches visual and functional parity.
 ## Local development
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
+
+The `predev`, `prebuild`, and `prestart` scripts prepare this app's ignored
+`public/` directory from the repository root `public/` tree. The root directory
+is the only tracked source for static assets. Next.js generates `robots.txt` and
+`sitemap.xml` from its metadata routes, so those files are not copied into this
+app. The preparation script also replaces a regular text file if Git checked
+out the former `public` symlink that way on Windows.
 
 ## Environment variables
 

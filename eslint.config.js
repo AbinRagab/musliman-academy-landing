@@ -5,7 +5,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'supabase/functions/**'],
+    ignores: ['dist/**', 'apps/public-site/.next/**', 'node_modules/**', 'coverage/**', 'supabase/functions/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
