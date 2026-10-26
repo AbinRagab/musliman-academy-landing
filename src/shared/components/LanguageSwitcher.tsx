@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, MouseEvent as ReactMouseEvent, useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, Globe2 } from 'lucide-react';
 import { loadLanguageResource, supportedLanguages, type SupportedLanguage, updateDocumentLanguage } from '../../i18n';
@@ -20,12 +20,26 @@ const languageLabels = languages.reduce(
 
 type LanguageSwitcherProps = {
   className?: string;
+  // When provided, languages are rendered as links to the equivalent
+  // localized page instead of switching the language in place.
+  getLanguageHref?: (language: SupportedLanguage) => string;
 };
 
-export default function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
+// Carries booking context (query) and the current section (hash) across.
+function navigateWithContext(event: ReactMouseEvent<HTMLAnchorElement>) {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+    return;
+  }
+
+  event.preventDefault();
+  window.location.assign(`${event.currentTarget.getAttribute('href')}${window.location.search}${window.location.hash}`);
+}
+
+export default function LanguageSwitcher({ className = '', getLanguageHref }: LanguageSwitcherProps) {
   const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const switcherRef = useRef<HTMLDivElement>(null);
+  const menuId = useId();
   const resolvedLanguage = i18n.resolvedLanguage?.split('-')[0] || i18n.language.split('-')[0] || 'en';
   const currentLanguage = supportedLanguages.includes(resolvedLanguage as SupportedLanguage)
     ? resolvedLanguage as SupportedLanguage
@@ -66,8 +80,9 @@ export default function LanguageSwitcher({ className = '' }: LanguageSwitcherPro
         type="button"
         className="language-switcher__trigger"
         onClick={() => setIsOpen((prev) => !prev)}
-        aria-haspopup="listbox"
+        aria-haspopup={getLanguageHref ? undefined : 'listbox'}
         aria-expanded={isOpen}
+        aria-controls={getLanguageHref ? menuId : undefined}
         aria-label={t('language.label')}
       >
         <span className="language-switcher__icon" aria-hidden="true">
@@ -79,7 +94,25 @@ export default function LanguageSwitcher({ className = '' }: LanguageSwitcherPro
         </span>
       </button>
 
-      {isOpen && (
+      {getLanguageHref ? (
+        // Kept in the document while closed so the language links stay crawlable.
+        <div className="language-switcher__menu" id={menuId} hidden={!isOpen}>
+          {languages.map((language) => (
+            <a
+              key={language.code}
+              className={`language-switcher__option ${currentLanguage === language.code ? 'is-active' : ''}`}
+              href={getLanguageHref(language.code)}
+              hrefLang={language.code}
+              lang={language.code}
+              aria-current={currentLanguage === language.code ? 'page' : undefined}
+              title={language.label}
+              onClick={navigateWithContext}
+            >
+              {language.shortCode}
+            </a>
+          ))}
+        </div>
+      ) : isOpen && (
         <div className="language-switcher__menu" role="listbox" aria-label={t('language.label')}>
           {languages.map((language) => (
             <button

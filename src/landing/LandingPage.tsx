@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent, MouseEventHandler, TouchEvent, useEffect, useId, useRef, useState } from 'react';
+import { FormEvent, MouseEvent, MouseEventHandler, TouchEvent, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
@@ -291,6 +291,7 @@ export function Navbar({
   logoHref = '#home',
   scrollToBooking = true,
   linkOverrides = {},
+  languageHref,
 }: {
   theme: Theme;
   onToggleTheme: () => void;
@@ -300,6 +301,7 @@ export function Navbar({
   logoHref?: string;
   scrollToBooking?: boolean;
   linkOverrides?: Record<string, string>;
+  languageHref?: (language: SupportedLanguage) => string;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -340,7 +342,7 @@ export function Navbar({
             <Icon name="whatsapp" />
           </a>
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-          <LanguageSwitcher />
+          <LanguageSwitcher getLanguageHref={languageHref} />
           <Button href={bookingHref} onClick={handleBookTrialClick()}>{t('nav.bookFreeTrial')}</Button>
           <button className="menu-button" type="button" aria-label={t('aria.openMenu')} onClick={() => setOpen(true)}>
             <Icon name="menu" />
@@ -357,7 +359,7 @@ export function Navbar({
         {navLinks.map((link) => (
           <a key={link.href} href={getAnchorHref(link.href)} onClick={() => setOpen(false)}>{t(link.labelKey)}</a>
         ))}
-        <LanguageSwitcher className="language-switcher--mobile" />
+        <LanguageSwitcher className="language-switcher--mobile" getLanguageHref={languageHref} />
         <ThemeToggle theme={theme} onToggle={onToggleTheme} className="theme-toggle--mobile" />
         <Button
           href={bookingHref}
@@ -559,8 +561,9 @@ export function SearchableCountryInput({ invalid }: { invalid: boolean }) {
   </>;
 }
 
-function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
+function BookingSection({ activeBookingType, onBookingTypeChange, requestedProgram }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void; requestedProgram?: string }) {
   const { t, i18n } = useTranslation();
+  const preselectedProgram = bookingProgramOptions.some((program) => program.key === requestedProgram) ? requestedProgram : '';
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedLead, setSubmittedLead] = useState<BookingLeadData | null>(null);
@@ -790,7 +793,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
               </div>
             </div>
           ) : (
-            <form className="booking-form" onSubmit={handleSubmit} noValidate key={`${activeBookingType}-${formResetKey}`}>
+            <form className="booking-form" onSubmit={handleSubmit} noValidate key={`${activeBookingType}-${formResetKey}-${preselectedProgram}`}>
               <div className="form-grid">
                 <label>
                   <span>{t('booking.fields.name')}</span>
@@ -853,7 +856,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
                     </label>
                     <label>
                       <span>{t('booking.fields.program')}</span>
-                      <select name="program" defaultValue="" aria-invalid={Boolean(errors.program)}>
+                      <select name="program" defaultValue={preselectedProgram} aria-invalid={Boolean(errors.program)}>
                         <option value="" disabled>{t('booking.placeholders.program')}</option>
                         {bookingProgramOptions.map((program) => (
                           <option value={program.key} key={program.key}>
@@ -1093,7 +1096,8 @@ function PricingSection() {
 
 function WhyChooseSection() {
   const { t } = useTranslation();
-  const [cardsPerPage, setCardsPerPage] = useState(getWhyCardsPerPage);
+  // Matches the server render; the layout effect below sizes it to the viewport.
+  const [cardsPerPage, setCardsPerPage] = useState(4);
   const [activePage, setActivePage] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
   const totalPages = Math.ceil(reasons.length / cardsPerPage);
@@ -1123,7 +1127,7 @@ function WhyChooseSection() {
     return () => window.clearInterval(interval);
   }, [isSliderPaused, totalPages]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     function handleResize() {
       setCardsPerPage(getWhyCardsPerPage());
     }
@@ -1632,7 +1636,7 @@ const whatsappCourseMessages: Record<SupportedLanguage, string> = {
   "tr": "Selamünaleyküm! Kurslarınız, ders saatleri ve ücretleriniz hakkında bilgi almak istiyorum."
 };
 
-export default function LandingPage({ manageSeo = true, programPages = false, requestedBookingType }: { manageSeo?: boolean; programPages?: boolean; requestedBookingType?: BookingType }) {
+export default function LandingPage({ manageSeo = true, programPages = false, requestedBookingType, requestedProgram, languageHref }: { manageSeo?: boolean; programPages?: boolean; requestedBookingType?: BookingType; requestedProgram?: string; languageHref?: (language: SupportedLanguage) => string }) {
   const { i18n, t } = useTranslation();
   const pageLanguage = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
   const pageLinks: Record<string, string> = programPages ? {
@@ -1643,18 +1647,20 @@ export default function LandingPage({ manageSeo = true, programPages = false, re
     program.key,
     `/${pageLanguage}/programs/${program.key === 'islamicValues' ? 'islamic-values-for-children' : program.image.split('/').pop()?.replace('.png', '')}`,
   ])) : {};
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === 'undefined') {
-      return 'light';
-    }
+  // Start from the server-rendered theme and apply the visitor's preference
+  // before the first paint, so server and client markup match on hydration.
+  const [theme, setTheme] = useState<Theme>('light');
+  const [themeResolved, setThemeResolved] = useState(false);
 
+  useLayoutEffect(() => {
     const savedTheme = window.localStorage.getItem('musliman-theme');
     if (savedTheme === 'light' || savedTheme === 'dark') {
-      return savedTheme;
+      setTheme(savedTheme);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
     }
-
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
+    setThemeResolved(true);
+  }, []);
   const [activeBookingType, setActiveBookingType] = useState<BookingType>('trial');
 
   useEffect(() => {
@@ -1673,9 +1679,13 @@ export default function LandingPage({ manageSeo = true, programPages = false, re
   }, []);
 
   useEffect(() => {
+    if (!themeResolved) {
+      return;
+    }
+
     document.documentElement.dataset.theme = theme;
     window.localStorage.setItem('musliman-theme', theme);
-  }, [theme]);
+  }, [theme, themeResolved]);
 
   useEffect(() => {
     if (!manageSeo) {
@@ -1703,11 +1713,11 @@ export default function LandingPage({ manageSeo = true, programPages = false, re
 
   return (
     <div className="app-shell" data-theme={theme}>
-      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} linkOverrides={pageLinks} />
+      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} linkOverrides={pageLinks} languageHref={languageHref} />
       <main>
         <HeroSection onSelectBookingType={setActiveBookingType} />
         <AboutSection />
-        <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} />
+        <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} requestedProgram={requestedProgram} />
         <ProgramsSection programPages={programPages} />
         <PricingSection />
         <WhyChooseSection />

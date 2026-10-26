@@ -17,9 +17,12 @@ describe('SEO infrastructure', () => {
       return rule ? { destination: path.replace(new RegExp(rule.src), rule.dest), headers: rule.headers } : undefined;
     };
     const origin = 'https://musliman-academy-public.vercel.app';
-    for (const path of ['/', '/en/programs', '/ar/programs/quran-tajweed', '/de/teachers/mazin-yasser', '/_next/static/app.js', '/sitemap.xml', '/robots.txt', '/manifest.webmanifest', '/opengraph-image']) {
+    for (const path of ['/', '/en', '/ar', '/ur', '/en/programs', '/ar/programs/quran-tajweed', '/de/teachers/mazin-yasser', '/_next/static/app.js', '/sitemap.xml', '/robots.txt', '/manifest.webmanifest', '/opengraph-image']) {
       expect(resolveRoute(path)?.destination).toBe(origin + path);
     }
+    // Localized homepages are canonical without a trailing slash.
+    expect(resolveRoute('/de/')?.destination).toBe(`${origin}/de`);
+    expect(resolveRoute('/fr')).toBeUndefined();
     for (const path of ['/dashboard', '/dashboard/login', '/dashboard/admin/leads']) {
       expect(resolveRoute(path)).toEqual({
         destination: '/index.html',

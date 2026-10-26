@@ -892,6 +892,20 @@ p {
   min-width: 100%;
 }
 
+.language-switcher__menu[hidden] {
+  display: none;
+}
+
+a.language-switcher__option {
+  display: block;
+  text-decoration: none;
+}
+
+a.language-switcher__option:focus-visible {
+  outline: 2px solid #B87333;
+  outline-offset: 2px;
+}
+
 .menu-button {
   display: none;
   color: var(--midnight);

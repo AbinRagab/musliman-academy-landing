@@ -13,6 +13,10 @@
       "dest": "https://musliman-academy-public.vercel.app/"
     },
     {
+      "src": "^/(en|ar|es|de|it|ur|tr)/?$",
+      "dest": "https://musliman-academy-public.vercel.app/$1"
+    },
+    {
       "src": "^/(en|ar|es|de|it|ur|tr)/(.*)$",
       "dest": "https://musliman-academy-public.vercel.app/$1/$2"
     },

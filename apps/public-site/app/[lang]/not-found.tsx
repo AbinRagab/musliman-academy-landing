@@ -13,7 +13,7 @@ export default function NotFound() {
       <p className="route-not-found__code">404</p>
       <h1>Page not found</h1>
       <p>The page you requested does not exist or may have moved.</p>
-      <Link href="/">Return to Musliman Academy</Link>
+      <Link href="/en">Return to Musliman Academy</Link>
     </main>
   );
 }

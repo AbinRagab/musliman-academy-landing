@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Musliman Academy',
     short_name: 'Musliman',
     description: 'Online Quran, Arabic, Tajweed, and Islamic Studies classes.',
-    start_url: '/',
+    start_url: '/en',
     display: 'standalone',
     background_color: '#F8F7F3',
     theme_color: '#0B1F3A',

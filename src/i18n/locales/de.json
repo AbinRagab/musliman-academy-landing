@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "Musliman Academy | Online Quran- und Arabischkurse",
-    "description": "Musliman Academy unterrichtet Quran, Arabisch, Tajweed, islamische Studien und Lehrertraining online fur Nicht-Arabischsprachige."
+    "title": "Musliman Academy | Online-Kurse für Quran, Arabisch & Tajweed",
+    "description": "Musliman Academy bietet Online-Unterricht in Quran, Arabisch, Tajweed und islamischen Studien sowie Lehrertraining für Nicht-Arabischsprachige – mit qualifizierten ägyptischen Lehrkräften."
   },
   "language": {
     "label": "Sprache",
@@ -15,25 +15,25 @@
   },
   "aria": {
     "mainNavigation": "Hauptnavigation",
-    "contactWhatsapp": "Uber WhatsApp kontaktieren",
-    "openMenu": "Menu offnen",
-    "closeMenu": "Menu schliessen",
-    "bookingType": "Anfragetyp",
+    "contactWhatsapp": "Über WhatsApp kontaktieren",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "bookingType": "Art der Anfrage",
     "previousFeature": "Vorheriges Merkmal",
-    "nextFeature": "Nachstes Merkmal",
+    "nextFeature": "Nächstes Merkmal",
     "showFeaturePage": "Merkmalsseite {{page}} anzeigen",
-    "floatingWhatsapp": "Musliman Academy uber WhatsApp kontaktieren",
+    "floatingWhatsapp": "Musliman Academy über WhatsApp kontaktieren",
     "trustHighlights": "Vertrauensmerkmale der Akademie",
-    "switchToTheme": "Zum {{theme}}-Design wechseln"
+    "switchToTheme": "Zum Design „{{theme}}“ wechseln"
   },
   "theme": {
     "light": "Hell",
     "dark": "Dunkel"
   },
   "nav": {
-    "about": "Uber uns",
+    "about": "Über uns",
     "programs": "Programme",
-    "scheduleFee": "Schedule & Fee",
+    "scheduleFee": "Zeiten & Gebühren",
     "whoWeTeach": "Wen wir unterrichten",
     "whyChooseUs": "Warum wir",
     "teacherTraining": "Lehrertraining",
@@ -43,14 +43,16 @@
   "hero": {
     "eyebrow": {
       "live": "Live",
-      "personalized": "Personlich",
-      "trusted": "Vertrauensvoll"
+      "personalized": "Persönlich",
+      "trusted": "Vertrauenswürdig"
     },
-    "headlineLine1": "Beginne deine Quran-",
-    "headlineLine2": "und Arabischreise",
-    "headlineAccent": "heute",
-    "description": "Buche eine kostenlose Probestunde fur dich oder dein Kind und erlebe live, personlichen islamischen Unterricht mit qualifizierten agyptischen Lehrern.",
+    "headlineLine1": "Beginne deine Reise",
+    "headlineLine2": "mit Quran und Arabisch",
+    "headlineAccent": "jetzt",
+    "description": "Lerne Quran, islamische Studien und Arabisch online – im Einzelunterricht, Schritt für Schritt. Vertrauenswürdige islamische Bildung für alle Altersgruppen, unterrichtet von qualifizierten Al-Azhar-Absolventen – jederzeit, überall und bequem von zu Hause aus.",
     "cta": "Kostenlose Probestunde buchen",
+    "secondaryCta": "Unsere Programme entdecken",
+    "languagesTitle": "Unterricht verfügbar auf",
     "trust": {
       "online": "Online-Unterricht",
       "schedule": "Flexible Zeiten",
@@ -62,78 +64,81 @@
     "badgeTraining": "Lehrertraining",
     "titleTrial": "Kostenlose Probestunde buchen",
     "titleTraining": "Am Lehrertraining teilnehmen",
-    "descTrial": "Fulle das Formular aus und unser Team meldet sich bei dir.",
-    "descTraining": "Erzahle uns von deinem Unterrichtshintergrund und wir melden uns mit dem passenden Trainingsweg.",
+    "descTrial": "Fülle das Formular aus, und unser Team meldet sich bei dir.",
+    "descTraining": "Erzähle uns von deinem Unterrichtshintergrund, und unser Team meldet sich mit dem passenden Trainingsweg.",
     "toggleTrial": "Kostenlose Probestunde",
     "toggleTraining": "Lehrertraining",
     "successTitle": "Anfrage erhalten",
-    "successTrial": "Deine Anfrage fur eine Probestunde wurde erhalten. Unser Team meldet sich bald.",
-    "successTraining": "Deine Anfrage zum Lehrertraining wurde erhalten. Unser Team meldet sich bald.",
+    "successTrial": "Deine Anfrage für eine kostenlose Probestunde ist eingegangen. Unser Team meldet sich in Kürze.",
+    "successTraining": "Deine Anfrage zum Lehrertraining ist eingegangen. Unser Team meldet sich in Kürze.",
     "continueWhatsapp": "Auf WhatsApp fortfahren",
     "submitAnother": "Weitere Anfrage senden",
     "submitTrial": "Probestunde buchen",
-    "submitTraining": "Trainingsanfrage senden",
+    "submitTraining": "Anfrage zum Lehrertraining senden",
     "submitting": "Wird gesendet...",
     "requestTypes": {
       "freeTrial": "Kostenlose Probestunde",
       "teacherTraining": "Lehrertraining"
     },
     "fields": {
-      "name": "Vollstandiger Name",
+      "name": "Vollständiger Name",
       "whatsapp": "WhatsApp-Nummer",
       "country": "Land",
       "experience": "Unterrichtserfahrung",
       "qualification": "Aktuelle Qualifikation",
       "trainingGoal": "Trainingsziel",
-      "studentAge": "Alter des Schulers",
-      "program": "Interessiertes Programm",
+      "studentAge": "Alter der lernenden Person",
+      "program": "Gewünschtes Programm",
       "preferredTrainingTime": "Bevorzugte Trainingszeit",
       "preferredClassTime": "Bevorzugte Unterrichtszeit",
       "message": "Nachricht (optional)"
     },
     "placeholders": {
-      "name": "Vollstandigen Namen eingeben",
-      "whatsapp": "Phone number",
-      "country": "Land auswahlen",
-      "experience": "Erfahrung auswahlen",
-      "qualification": "Qualifikation auswahlen",
-      "trainingGoal": "Trainingsziel auswahlen",
+      "name": "Vollständigen Namen eingeben",
+      "whatsapp": "Telefonnummer",
+      "country": "Land auswählen",
+      "experience": "Erfahrung auswählen",
+      "qualification": "Qualifikation auswählen",
+      "trainingGoal": "Trainingsziel auswählen",
       "studentAge": "Alter eingeben",
-      "program": "Programm auswahlen",
-      "preferredTime": "Zeit auswahlen",
+      "program": "Programm auswählen",
+      "preferredTime": "Bevorzugte Zeit auswählen",
       "message": "Teile uns weitere Details mit...",
-      "email": "E-Mail eingeben"
+      "email": "E-Mail-Adresse eingeben"
     },
     "options": {
+      "country": {
+        "other": "Anderes Land"
+      },
       "experience": {
         "none": "Keine Erfahrung",
         "lessThanOne": "Weniger als 1 Jahr",
-        "oneToTwo": "1-2 Jahre",
+        "oneToTwo": "1–2 Jahre",
         "threePlus": "3+ Jahre"
       },
       "qualification": {
-        "quranTeacher": "Quran-Lehrer",
-        "arabicTeacher": "Arabischlehrer",
-        "islamicStudiesTeacher": "Lehrer fur islamische Studien",
-        "ijazahHolder": "Ijazah-Inhaber",
-        "studentOfKnowledge": "Wissensstudent",
-        "other": "Andere"
+        "quranTeacher": "Quran-Lehrkraft",
+        "arabicTeacher": "Arabisch-Lehrkraft",
+        "islamicStudiesTeacher": "Lehrkraft für islamische Studien",
+        "ijazahHolder": "Ijazah-Inhaber/in",
+        "studentOfKnowledge": "Student/in des Wissens",
+        "other": "Sonstiges"
       },
       "trainingGoal": {
         "teachNonArabic": "Nicht-Arabischsprachige unterrichten",
         "onlineTeaching": "Online-Unterricht verbessern",
         "lessonPlanning": "Unterrichtsplanung lernen",
-        "studentFollowUp": "Schulerbetreuung verbessern",
-        "joinAcademy": "Musliman Academy Lehrern beitreten",
-        "other": "Andere"
+        "studentFollowUp": "Lernbegleitung verbessern",
+        "joinAcademy": "Lehrkraft bei Musliman Academy werden",
+        "other": "Sonstiges"
       },
       "studentAge": {
         "child": "Kind",
-        "teenager": "Teenager",
-        "adult": "Erwachsener"
+        "teenager": "Jugendliche/r",
+        "adult": "Erwachsene/r"
       },
       "preferredTime": {
-        "morning": "Morgen",
+        "morning": "Vormittag",
         "afternoon": "Nachmittag",
         "evening": "Abend",
         "flexible": "Flexibel"
@@ -142,16 +147,16 @@
     "validation": {
       "required": "Dieses Feld ist erforderlich.",
       "ageRange": "Gib ein gültiges Alter zwischen 3 und 100 Jahren ein.",
-      "submitError": "Etwas ist schiefgelaufen. Bitte versuche es erneut oder kontaktiere uns uber WhatsApp."
+      "submitError": "Etwas ist schiefgelaufen. Bitte versuche es erneut oder kontaktiere uns über WhatsApp."
     },
     "whatsapp": {
-      "trialIntro": "Hallo Musliman Academy, ich mochte eine kostenlose Probestunde buchen.",
-      "trainingIntro": "Hallo Musliman Academy, ich mochte am Lehrertrainingsprogramm teilnehmen.",
-      "requestType": "Anfragetyp",
+      "trialIntro": "Hallo Musliman Academy, ich möchte eine kostenlose Probestunde buchen.",
+      "trainingIntro": "Hallo Musliman Academy, ich möchte am Lehrertraining teilnehmen.",
+      "requestType": "Art der Anfrage",
       "name": "Name",
       "whatsapp": "WhatsApp",
       "country": "Land",
-      "studentAge": "Alter des Schulers",
+      "studentAge": "Alter der lernenden Person",
       "program": "Programm",
       "experience": "Unterrichtserfahrung",
       "qualification": "Aktuelle Qualifikation",
@@ -161,101 +166,362 @@
     }
   },
   "about": {
-    "badge": "Uber Musliman Academy",
-    "heading": "Jeder Lernende hat seinen Weg",
-    "lead": "Bei Musliman Academy machen wir Lernen einfach, klar und erreichbar durch die richtige Methode, geduldige Begleitung und Schritt-fur-Schritt-Unterstutzung.",
-    "paragraph1": "Jeder Schuler lernt anders. Deshalb bieten wir einfachen und geduldigen Online-Unterricht passend zum Niveau und Bedarf.",
-    "paragraph2": "Die Akademie bietet Quran, Arabisch, Tajweed, islamische Studien, islamische Werte, Auswendiglernen, Tafseer und Lehrertraining mit qualifizierten agyptischen Lehrern.",
-    "imageAlt": "Quran-Lernvisual"
+    "badge": "Über Musliman Academy",
+    "heading": "Lerne in deinem Tempo. Wachse mit Zuversicht.",
+    "lead": "Erhalte persönliche Begleitung, kontinuierliche Unterstützung durch deine Lehrkraft und einen Lernplan, der auf deine Ziele, dein Niveau und deinen Fortschritt abgestimmt ist.",
+    "paragraph1": "Bei Musliman Academy glauben wir, dass jeder Lernende seinen eigenen Weg hat. Jeder lernt anders – deshalb bieten wir einfachen, geduldigen Online-Unterricht in Quran und Arabisch für Anfänger, Schritt für Schritt und abgestimmt auf Niveau und Bedürfnisse.",
+    "paragraph2": "Die Akademie bietet Quran-Lesen für Kinder, Online-Tajweed-Unterricht, Arabisch, islamische Studien für Kinder, Quran-Auswendiglernen, Quran-Tafseer, Tarteel Qaidah und Lehrertraining für Quran-Lehrkräfte – mit qualifizierten ägyptischen Quran-Lehrkräften mit Al-Azhar-Bildungshintergrund.",
+    "imageAlt": "Bild zum Quran-Lernen",
+    "benefits": {
+      "oneOnOne": {
+        "title": "Einzelunterricht",
+        "text": "Genieße Privatunterricht, in dem sich deine Lehrkraft ganz auf dein Lernen und deinen Fortschritt konzentriert."
+      },
+      "personalizedPlan": {
+        "title": "Persönlicher Lernplan",
+        "text": "Deine Lektionen sind auf dein Niveau und deine Ziele abgestimmt – ob du Quran, Tajweed, Arabisch oder islamische Studien lernst."
+      },
+      "realTimeFeedback": {
+        "title": "Feedback in Echtzeit",
+        "text": "Erhalte in jeder Lektion sofortige Korrekturen und Hinweise, damit du dich genau und sicher verbesserst."
+      },
+      "flexibleSchedule": {
+        "title": "Flexible und regelmäßige Zeiten",
+        "text": "Baue eine feste Lernroutine auf, die dich motiviert und voranbringt – mit flexiblen Zeiten, die zu deinem Alltag passen."
+      },
+      "progressTracking": {
+        "title": "Fortschrittsverfolgung",
+        "text": "Erhalte regelmäßig Feedback und Fortschrittsberichte, damit du deine Entwicklung klar siehst und weißt, worauf du dich als Nächstes konzentrieren solltest."
+      }
+    }
   },
   "trust": {
-    "experiencedTeachers": "Erfahrene agyptische Lehrer",
-    "ijazahCertified": "Ijazah-zertifizierte Lehrer",
+    "experiencedTeachers": "Erfahrene ägyptische Lehrkräfte",
+    "ijazahCertified": "Lehrkräfte mit Ijazah",
     "azharBackground": "Al-Azhar-Bildungshintergrund",
-    "personalizedPlans": "Personliche Lernplane",
+    "personalizedPlans": "Persönliche Lernpläne",
     "liveOnline": "Live-Online-Unterricht",
     "smallGroups": "Einzelunterricht und Kleingruppen",
-    "parentFollowUp": "Eltern-Updates",
+    "parentFollowUp": "Rückmeldungen an Eltern",
     "freeTrial": "Kostenlose Probestunde",
     "allLevels": "Alle Niveaus willkommen"
   },
   "programs": {
     "badge": "Unsere Programme",
-    "heading": "Wahle den richtigen Lernweg",
-    "description": "Programme fur jedes Niveau, Alter und Ziel, damit du mit Vertrauen lernst und verstehst.",
+    "heading": "Wähle den richtigen Lernweg",
+    "description": "Programme für jedes Niveau, Alter und Ziel – darunter Online-Quran-Unterricht, Online-Tajweed-Kurse, Arabisch für Anfänger und islamische Studien für Kinder.",
     "learnMore": "Mehr erfahren",
     "items": {
-      "quranReading": { "title": "Quran-Lesen" },
-      "tarteelQaidah": { "title": "Tarteel Qaidah" },
-      "quranMemorization": { "title": "Quran-Auswendiglernen" },
-      "tajweed": { "title": "Tajweed" },
-      "quranTafseer": { "title": "Quran-Tafseer" },
-      "arabicLanguage": { "title": "Arabische Sprache" },
-      "islamicStudies": { "title": "Islamische Studien" },
-      "islamicValues": { "title": "Islamische Werte fur Kinder" }
+      "quranReading": {
+        "title": "Quran-Lesen",
+        "text": "Lerne online, den Quran korrekt zu lesen – mit schrittweiser Anleitung, klarer Aussprache und fortlaufender Korrektur."
+      },
+      "tarteelQaidah": {
+        "title": "Tarteel Qaidah",
+        "text": "Beginne mit den arabischen Buchstaben und Lauten und gehe dann zum Lesen von Quran-Wörtern und -Versen und zur sicheren Rezitation über."
+      },
+      "quranMemorization": {
+        "title": "Quran-Auswendiglernen",
+        "text": "Ein strukturiertes Auswendiglern-Programm mit Wiederholung, Korrektur und regelmäßiger Begleitung, damit Lernende wirksam auswendig lernen."
+      },
+      "tajweed": {
+        "title": "Tajweed",
+        "text": "Verbessere deine Quran-Rezitation, indem du die Tajweed-Regeln auf einfache, praktische und leicht anwendbare Weise lernst."
+      },
+      "quranTafseer": {
+        "title": "Quran-Tafseer",
+        "text": "Verstehe die Bedeutungen der Quran-Verse durch vereinfachte Erklärungen, die zu Alter und Niveau der Lernenden passen."
+      },
+      "arabicLanguage": {
+        "title": "Arabische Sprache",
+        "text": "Arabischkurse für Anfänger mit Buchstaben, Aussprache, Lesen, Schreiben und einfachem Verstehen für eine solide sprachliche Grundlage."
+      },
+      "islamicStudies": {
+        "title": "Islamische Studien",
+        "text": "Islamische Studien für Kinder und Erwachsene zu Glauben, Gottesdienst, Seerah, Umgangsformen und Moral – klar und einfach erklärt."
+      },
+      "islamicValues": {
+        "title": "Islamische Werte für Kinder",
+        "text": "Hilf Kindern, einen guten islamischen Charakter aufzubauen – durch praktische Werte wie Ehrlichkeit, Respekt, Barmherzigkeit, Zusammenarbeit und Freude am Lernen."
+      }
     }
   },
   "pricing": {
-    "badge": "Pricing Plans",
-    "heading": "Schedule & Fee",
+    "badge": "Preispläne",
+    "heading": "Zeiten & Gebühren",
     "subtitle": "Die Monatspläne umfassen 8 Unterrichtseinheiten von jeweils 30 Minuten, insgesamt 4 Lernstunden pro Monat.",
-    "currencyAria": "Select currency",
-    "columns": {
-      "program": "Program",
-      "tier": "Tier",
-      "oneOnOne": "1-on-1 Class",
-      "group": "Group Class",
-      "monthly": "Monthly Plan"
+    "currencyAria": "Währung auswählen",
+    "currencies": {
+      "USD": "US-Dollar",
+      "CAD": "Kanadische Dollar",
+      "GBP": "Britische Pfund",
+      "AUD": "Australische Dollar"
     },
-    "note": "All prices are starting prices and may vary depending on the selected program, class type, and learning plan.",
-    "ctaText": "Flexible plans designed for different learning goals.",
-    "cta": "Book a Free Trial"
+    "columns": {
+      "program": "Programm",
+      "tier": "Stufe",
+      "oneOnOne": "Einzelunterricht",
+      "group": "Gruppenunterricht",
+      "monthly": "Monatsplan"
+    },
+    "tiers": {
+      "Foundational": "Grundlagen",
+      "Standard": "Standard",
+      "Specialized": "Spezialisiert"
+    },
+    "units": {
+      "hour": "Stunde",
+      "month": "Monat"
+    },
+    "scrollHint": "Wische, um alle Preisdetails zu sehen",
+    "note": "Alle Preise sind Ab-Preise und können je nach gewähltem Programm, Unterrichtsform und Lernplan variieren.",
+    "ctaText": "Flexible Pläne für unterschiedliche Lernziele.",
+    "cta": "Kostenlose Probestunde buchen"
   },
   "audience": {
     "badge": "Wen wir unterrichten",
-    "headingLine1": "Lernen fur jede",
+    "headingLine1": "Lernen für jede",
     "headingLine2": "Phase und jedes Niveau",
-    "description": "Wir unterrichten Kinder, Erwachsene, Anfanger und Nicht-Arabischsprachige mit einfachem, geduldigem Online-Unterricht.",
-    "visualAlt": "Online-Lernen fur verschiedene Schuler",
-    "reassurance": "Egal wer du bist oder woher du kommst, du bist willkommen.",
-    "reassuranceStrong": "Wir helfen dir, zu lernen, zu wachsen und mit Quran und Glauben verbunden zu bleiben."
+    "description": "Wir unterrichten Kinder, Erwachsene, Nicht-Arabischsprachige, Anfänger und Fortgeschrittene – mit Quran-Unterricht für Nicht-Arabischsprachige und einfachem, geduldigem Online-Unterricht Schritt für Schritt.",
+    "visualAlt": "Online-Lernen für verschiedene Lernende",
+    "reassurance": "Egal, wer du bist oder woher du kommst – du bist hier willkommen.",
+    "reassuranceStrong": "Wir helfen dir, zu lernen, zu wachsen und mit dem Quran und deinem Glauben verbunden zu bleiben."
   },
   "whyChoose": {
     "badge": "Warum Musliman Academy",
     "headingLine1": "Eine einfache,",
-    "headingLine2": "vertrauensvolle Lernerfahrung",
-    "description": "Wir machen Quran, Arabisch und islamische Studien einfach, effektiv und sinnvoll.",
-    "visualAlt": "Vertrauensvolle Online-Quran-Lernerfahrung",
+    "headingLine2": "vertrauenswürdige Lernerfahrung",
+    "description": "Wir machen Online-Quran-Unterricht, Arabisch, Tajweed und islamische Studien einfach, wirksam und sinnvoll – für jeden Hintergrund, jedes Alter und jedes Niveau.",
+    "intro": {
+      "paragraph1": "Bei Musliman Academy machen wir das Quran-Lernen einfach, zugänglich und sinnvoll – durch persönlichen Online-Unterricht mit zertifizierten Lehrkräften. Flexible Zeiten und eine sichere Lernumgebung ermöglichen es, von überall im eigenen Tempo zu lernen.",
+      "paragraph2": "Wir legen Wert auf korrektes Tajweed, fortlaufende Begleitung und schrittweisen Fortschritt, damit alle Lernenden Selbstvertrauen gewinnen und eine Verbindung zu den Worten Allahs aufbauen."
+    },
+    "visualAlt": "Vertrauenswürdige Online-Quran-Lernerfahrung",
     "stats": {
-      "students": "Unterrichtete Schuler",
-      "teachers": "Expertenlehrer",
-      "countries": "Lander erreicht"
+      "students": "Unterrichtete Lernende",
+      "teachers": "Erfahrene Lehrkräfte",
+      "countries": "Erreichte Länder"
+    },
+    "items": {
+      "qualifiedTeachers": {
+        "title": "Qualifizierte ägyptische Lehrkräfte",
+        "description": "Lerne mit erfahrenen, geduldigen und zertifizierten ägyptischen Lehrkräften."
+      },
+      "azharBackground": {
+        "title": "Al-Azhar-Bildungshintergrund",
+        "description": "Eine solide Grundlage in authentischem islamischem Wissen und islamischen Werten."
+      },
+      "simpleApproach": {
+        "title": "Einfacher Ansatz für Nicht-Arabischsprachige",
+        "description": "Schrittweise Lektionen, die Verständnis und Selbstvertrauen aufbauen."
+      },
+      "allLevels": {
+        "title": "Für alle Niveaus geeignet",
+        "description": "Vom Anfänger bis zum Fortgeschrittenen – wir haben das passende Programm für dich."
+      },
+      "flexibleClasses": {
+        "title": "Flexibler Einzel- und Kleingruppenunterricht",
+        "description": "Wähle das Format, das zu deinem Zeitplan und deinen Zielen passt."
+      },
+      "parentReports": {
+        "title": "Rückmeldungen und Berichte für Eltern",
+        "description": "Bleib mit regelmäßigen Updates über den Fortschritt deines Kindes informiert."
+      },
+      "safeLearning": {
+        "title": "Sichere Online-Lernumgebung",
+        "description": "Ein sicherer, respektvoller und betreuter Raum für konzentriertes islamisches Lernen."
+      },
+      "freeTrial": {
+        "title": "Kostenlose Probestunde",
+        "description": "Probiere eine Stunde kostenlos aus und erlebe, was Musliman Academy ausmacht."
+      }
     }
   },
   "how": {
     "eyebrow": "So funktioniert es",
-    "heading": "Starte in 4 einfachen Schritten",
-    "description": "Der Einstieg bei Musliman Academy ist einfach und unkompliziert."
+    "heading": "In 4 einfachen Schritten loslernen",
+    "description": "Der Einstieg bei Musliman Academy ist einfach und unkompliziert.",
+    "steps": {
+      "freeTrial": {
+        "title": "Probestunde",
+        "text": "Buche deine kostenlose Probestunde und lerne unseren Unterrichtsansatz mit einer qualifizierten Lehrkraft kennen."
+      },
+      "findPlan": {
+        "title": "Plan finden",
+        "text": "Wähle den Kurs und Lernweg, die zu deinen Zielen und deinem Niveau passen."
+      },
+      "setSchedule": {
+        "title": "Zeiten festlegen",
+        "text": "Wähle eine passende Zeit und buche deinen regelmäßigen Unterricht."
+      },
+      "startLearning": {
+        "title": "Loslernen",
+        "text": "Schließe deine Anmeldung ab und beginne deine Lernreise mit Zuversicht."
+      }
+    }
   },
   "training": {
-    "badge": "Lehrertrainingsprogramm",
-    "heading": "Lehrer sicher unterrichten lassen",
-    "description": "Praktisches Training fur neue und erfahrene Lehrer, die Quran-, Arabisch- und Werteunterricht verbessern mochten.",
-    "cta": "Am Lehrertraining teilnehmen"
+    "badge": "Lehrertraining",
+    "heading": "Lehrkräfte für sicheres Unterrichten ausbilden",
+    "description": "Ein praxisnahes Online-Trainingsprogramm für Lehrkräfte in Quran, Arabisch und islamischen Studien, die ihre Unterrichtsmethoden für Nicht-Arabischsprachige verbessern möchten.",
+    "cta": "Am Lehrertraining teilnehmen",
+    "imageAlt": "Online-Lehrertraining für Quran-Lehrkräfte",
+    "includes": {
+      "methods": "Unterrichtsmethoden für Nicht-Arabischsprachige",
+      "online": "Techniken für den Online-Unterricht",
+      "planning": "Unterrichtsplanung und Klassenführung",
+      "progress": "Lernbegleitung und Fortschrittsbewertung"
+    },
+    "badges": {
+      "certificate": "Teilnahmezertifikat",
+      "mentorship": "Praktisches Training und Mentoring",
+      "schedule": "Flexible Online-Zeiten",
+      "impact": "Wirke stärker als Lehrkraft"
+    }
+  },
+  "testimonials": {
+    "badge": "ERFAHRUNGEN VON LERNENDEN",
+    "heading": "Geschätzt von Lernenden weltweit",
+    "description": "Lies die echte Erfahrung eines Lernenden, der mit Musliman Academy das Lesen des Quran gelernt hat.",
+    "aria": {
+      "region": "Erfahrungsberichte von Lernenden und Eltern",
+      "previous": "Vorheriger Erfahrungsbericht",
+      "next": "Nächster Erfahrungsbericht",
+      "show": "Erfahrungsbericht {{index}} anzeigen"
+    },
+    "items": {
+      "mazinStudentBeginning": {
+        "name": "Ein Quran-Schüler",
+        "country": "Vereinigte Staaten",
+        "program": "Quran-Lesen",
+        "quote": "Als ich anfing, konnte ich den Quran überhaupt nicht lesen. Ich kannte nicht einmal das arabische Alphabet richtig, also habe ich ganz von vorne angefangen. Ich war nicht sicher, wie schnell ich lernen würde, aber Bruder Mazen hat den ganzen Weg leicht nachvollziehbar gemacht und mich nie entmutigt."
+      },
+      "mazinStudentProgress": {
+        "name": "Ein Quran-Schüler",
+        "country": "Vereinigte Staaten",
+        "program": "Quran-Lesen",
+        "quote": "Alhamdulillah, durch die Barmherzigkeit Allahs und die Anleitung von Bruder Mazen kann ich jetzt den Quran in die Hand nehmen und lesen. Ich habe noch viel zu lernen, aber wenn ich daran denke, wo ich angefangen habe, staune ich, wie viel Fortschritt ich im letzten Jahr mit ihm gemacht habe."
+      },
+      "mazinStudentStructure": {
+        "name": "Ein Quran-Schüler",
+        "country": "Vereinigte Staaten",
+        "program": "Quran-Lesen",
+        "quote": "Sein Unterrichtsstil ist strukturiert, ermutigend und leicht zu verstehen. Jede Lektion baut auf der vorherigen auf, sodass man stetig Fortschritte macht, ohne sich überfordert zu fühlen. Er gibt einem auch das Selbstvertrauen, es weiter zu versuchen, selbst wenn man Fehler macht – und das hat für mein Lernen einen großen Unterschied gemacht."
+      },
+      "mazinStudentPatience": {
+        "name": "Ein Quran-Schüler",
+        "country": "Australien",
+        "program": "Quran-Lesen",
+        "quote": "Eine seiner größten Stärken als Lehrer ist seine Geduld. Er nimmt sich die Zeit, jede Lektion klar zu erklären, zerlegt alles in einfache Schritte und stellt sicher, dass man es verstanden hat, bevor es weitergeht. Wenn man etwas beim ersten Mal nicht versteht, erklärt er es gerne noch einmal auf andere Weise, bis es endlich klick macht."
+      },
+      "mazinStudentPrayer": {
+        "name": "Ein Quran-Schüler",
+        "country": "Australien",
+        "program": "Quran-Lesen",
+        "quote": "Möge Allah (SWT) ihn segnen, ihn reichlich für seine Mühe belohnen und Barakah in seinen Unterricht legen, In-Shaa-Allah. Ameen."
+      }
+    }
+  },
+  "teachers": {
+    "badge": "UNSERE LEHRKRÄFTE",
+    "heading": "Lerne von erfahrenen und fürsorglichen Lehrkräften",
+    "description": "Lerne mit qualifizierten Lehrkräften, die fundiertes islamisches Wissen, Unterrichtserfahrung und eine persönliche Herangehensweise an alle Lernenden verbinden.",
+    "languagesLabel": "Sprachen",
+    "experienceLabel": "Erfahrung",
+    "specializationLabel": "Fachgebiet",
+    "languages": {
+      "Arabic": "Arabisch",
+      "English": "Englisch"
+    },
+    "aria": {
+      "region": "Lehrkräfte von Musliman Academy",
+      "previous": "Vorherige Lehrkräfte",
+      "next": "Nächste Lehrkräfte"
+    },
+    "items": {
+      "mazinYasser": {
+        "name": "Mazin Yasser",
+        "specialization": "Quran, Tajweed, islamische Studien",
+        "experience": "3+ Jahre"
+      },
+      "fatimahAlShazly": {
+        "name": "Fatimah Al_Shazly",
+        "specialization": "Quran, Tajweed, islamische Studien",
+        "experience": "5+ Jahre"
+      },
+      "ahmedYasser": {
+        "name": "Ahmed Yasser",
+        "specialization": "Quran, Tajweed, islamische Studien",
+        "experience": "2+ Jahre"
+      },
+      "gehadRagab": {
+        "name": "Gehad Ragab",
+        "specialization": "Quran, Tajweed, islamische Studien",
+        "experience": "4+ Jahre"
+      },
+      "yossefAbdEltwab": {
+        "name": "Yossef Abd Eltwab",
+        "specialization": "Quran, Tajweed, islamische Studien",
+        "experience": "3+ Jahre"
+      }
+    }
   },
   "faq": {
     "eyebrow": "FAQ",
-    "heading": "Haufige Fragen",
-    "description": "Antworten auf haufige Fragen zu unseren Online-Kursen.",
+    "heading": "Häufig gestellte Fragen",
+    "description": "Antworten auf häufige Fragen zu unserem islamischen und arabischen Online-Unterricht.",
     "cardTitle": "Noch Fragen?",
-    "cardText": "Wir helfen dir auf deinem Lernweg.",
+    "cardText": "Wir begleiten dich gerne auf deinem Lernweg.",
     "whatsappCta": "Kontaktiere uns auf WhatsApp",
-    "trust": "Vertrauensvolle Unterstutzung von echten Menschen"
+    "trust": "Verlässliche Unterstützung von echten Menschen",
+    "followSocial": "Folge uns in den sozialen Medien",
+    "socialAria": "Social-Media-Links von Musliman Academy",
+    "followPlatform": "Musliman Academy auf {{platform}} folgen",
+    "q1": {
+      "question": "Findet der Unterricht online statt?",
+      "answer": "Ja, unser gesamter Unterricht findet zu 100 % online statt. Du kannst bequem von zu Hause aus lernen – zu einer Zeit, die dir passt, und von überall auf der Welt."
+    },
+    "q2": {
+      "question": "Unterrichtet ihr auch komplette Anfänger?",
+      "answer": "Ja, wir unterrichten komplette Anfänger Schritt für Schritt – von den Grundlagen, bis sie Sicherheit gewinnen."
+    },
+    "q3": {
+      "question": "Unterrichtet ihr Kinder und Erwachsene?",
+      "answer": "Ja, wir unterrichten Kinder, Erwachsene, Anfänger und Fortgeschrittene."
+    },
+    "q4": {
+      "question": "Gibt es eine kostenlose Probestunde?",
+      "answer": "Ja, du kannst eine kostenlose Probestunde buchen, bevor du mit deinem Lernplan beginnst."
+    },
+    "q5": {
+      "question": "Können Eltern den Fortschritt ihres Kindes verfolgen?",
+      "answer": "Ja, Eltern erhalten regelmäßige Rückmeldungen und Updates zum Fortschritt."
+    },
+    "q6": {
+      "question": "Bietet ihr Einzelunterricht an?",
+      "answer": "Ja, wir bieten Einzelunterricht und Unterricht in Kleingruppen an – je nach den Bedürfnissen der Lernenden."
+    },
+    "q7": {
+      "question": "Wie beginne ich mit dem Quran-Unterricht bei Musliman Academy?",
+      "answer": "Du beginnst mit der Buchung einer kostenlosen Probestunde. Nachdem du deine Daten gesendet hast, meldet sich unser Team, um dein Niveau, deine Ziele und deine Wunschzeiten kennenzulernen. Danach helfen wir dir, eine passende Lehrkraft und einen passenden Lernplan zu wählen."
+    },
+    "q8": {
+      "question": "Gibt es bei Musliman Academy weibliche Quran-Lehrkräfte?",
+      "answer": "Ja, Musliman Academy hat qualifizierte weibliche Quran-Lehrkräfte für Schwestern und junge Mädchen. Unsere Lehrkräfte begleiten geduldig beim Quran-Lesen, Tajweed, Auswendiglernen und islamischen Lernen in einer unterstützenden Online-Umgebung."
+    },
+    "q9": {
+      "question": "Wie flexibel sind die Unterrichtszeiten?",
+      "answer": "Unsere Unterrichtszeiten sind flexibel und auf Lernende in verschiedenen Ländern und Zeitzonen ausgerichtet. Ob Eltern, Schüler oder Berufstätige – wir helfen dir, eine passende Zeit für deinen Unterricht zu finden."
+    },
+    "q10": {
+      "question": "Wie kann ich den Quran online lernen?",
+      "answer": "Du kannst den Quran online in Live-Einzelunterricht oder in Kleingruppen mit qualifizierten Lehrkräften lernen. Musliman Academy bietet schrittweisen Unterricht in Quran-Lesen, Tajweed, Auswendiglernen und Korrektur für Anfänger und Fortgeschrittene."
+    }
   },
   "footer": {
-    "aboutText": "Musliman Academy ist eine vertrauensvolle Online-Plattform fur Quran, Arabisch und islamische Werte.",
-    "stayConnected": "Verbunden bleiben",
-    "subscribeText": "Erhalte Updates zu Programmen, Kursen und Angeboten.",
+    "aboutText": "Musliman Academy ist ein bescheidener Beitrag, das Lernen von Quran und Arabisch für alle Lernenden klar, zugänglich und sinnvoll zu machen.",
+    "stayConnected": "In Verbindung bleiben",
+    "subscribeText": "Erhalte Neuigkeiten zu neuen Programmen, Kursen und exklusiven Angeboten.",
     "programs": "Programme",
     "quickLinks": "Schnelllinks",
     "contact": "Kontakt",
@@ -265,6 +531,6 @@
     "email": "E-Mail",
     "website": "Website",
     "copyright": "Copyright 2026 Musliman Academy. Alle Rechte vorbehalten.",
-    "trusted": "Vertrauensvolle islamische Online-Bildung"
+    "trusted": "Vertrauenswürdige islamische Online-Bildung"
   }
 }

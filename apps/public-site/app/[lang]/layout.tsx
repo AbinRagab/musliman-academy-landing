@@ -1,31 +1,16 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
+import { notFound } from 'next/navigation';
 import { GoogleTagManager } from '@next/third-parties/google';
-import '../../../src/landing/styles/landing.css';
+import { direction, isLanguage, languages, siteUrl } from '../../lib/catalog';
+import '../../../../src/landing/styles/landing.css';
 
-const siteUrl = 'https://www.muslimanacademy.com';
-
+// Every page sets its own title, description, canonical URL and alternates.
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Musliman Academy | Online Quran, Arabic & Tajweed Classes',
+    default: 'Musliman Academy',
     template: '%s | Musliman Academy',
-  },
-  description: 'Learn Quran, Arabic, Tajweed, and Islamic Studies online with qualified Egyptian teachers. Book a free trial class with Musliman Academy.',
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    type: 'website',
-    siteName: 'Musliman Academy',
-    title: 'Musliman Academy | Online Quran, Arabic & Tajweed Classes',
-    description: 'Live, personalized online Quran and Arabic classes for children and adults.',
-    url: '/',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Musliman Academy | Online Quran, Arabic & Tajweed Classes',
-    description: 'Live, personalized online Quran and Arabic classes for children and adults.',
   },
   icons: {
     icon: '/assets/favicon.ico',
@@ -38,6 +23,12 @@ export const viewport: Viewport = {
   initialScale: 1,
   themeColor: '#0B1F3A',
 };
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return languages.map(lang => ({ lang }));
+}
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
@@ -55,9 +46,11 @@ const organizationJsonLd = {
   ],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children, params }: Readonly<{ children: React.ReactNode; params: Promise<{ lang: string }> }>) {
+  const { lang } = await params;
+  if (!isLanguage(lang)) notFound();
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
+    <html lang={lang} dir={direction(lang)} suppressHydrationWarning>
       <GoogleTagManager gtmId="GTM-NTDCC9TM" />
       <body>
         {children}

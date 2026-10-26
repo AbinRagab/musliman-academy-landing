@@ -5,8 +5,7 @@ import { courseContent, trainingBookingHref } from '../../../lib/course-content'
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { languages, labels, text, courses, teachers, paths, alternateUrls, siteUrl, yearLabels } from '../../../lib/catalog';
-import DocumentLanguage from '../../document-language';
+import { languages, labels, text, courses, teachers, paths, languageAlternates, localizedPath, siteUrl, socialImage, yearLabels, direction } from '../../../lib/catalog';
 import '../../catalog.css';
 type Props = { params: Promise<{lang:string; segments:string[]}> };
 export const dynamicParams = false;
@@ -25,19 +24,19 @@ function resolve(lang:string, path:string) {
 }
 export async function generateMetadata({params}:Props):Promise<Metadata> {
  const {lang,segments}=await params; const path=segments.join('/'); const page=resolve(lang,path); const url=`${siteUrl}/${lang}/${path}`;
- return {title:page.metaTitle,description:page.metaDescription,alternates:{canonical:url,languages:{...alternateUrls(path),'x-default':`${siteUrl}/en/${path}`}},openGraph:{title:page.metaTitle,description:page.metaDescription,url,type:'website'},twitter:{card:'summary_large_image',title:page.metaTitle,description:page.metaDescription}};
+ return {title:page.metaTitle,description:page.metaDescription,alternates:{canonical:url,languages:languageAlternates(path)},openGraph:{title:page.metaTitle,description:page.metaDescription,url,type:'website',images:[socialImage]},twitter:{card:'summary_large_image',title:page.metaTitle,description:page.metaDescription,images:[socialImage]}};
 }
 export default async function Page({params}:Props) {
  const {lang,segments}=await params;const path=segments.join('/');const p=resolve(lang,path);const l=labels[lang];
  if (p.reading && p.contentKey) return <CourseDetail lang={lang} courseKey={p.contentKey}/>;
- const bookingHref=p.training ? trainingBookingHref(lang) : `/?lang=${lang}${p.course && p.course.key !== 'quranTajweed' ? `&program=${p.course.key}` : ''}#book-trial`;
+ const bookingHref=p.training ? trainingBookingHref(lang) : `${localizedPath(lang)}${p.course && p.course.key !== 'quranTajweed' ? `?program=${p.course.key}` : ''}#book-trial`;
  const bookingLabel=p.training ? text(lang,'training.cta') : l[3];
  const specializations=['quranReading','tajweed','islamicStudies'].map(k=>text(lang,`programs.items.${k}.title`)).join(', ');
  const experience = p.teacher ? text(lang,`teachers.items.${p.teacher.key}.experience`,new Intl.NumberFormat(lang).format(parseInt(p.teacher.experience || '0'))+'+ '+yearLabels[lang]) : '';
- const jsonLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:l[0],item:siteUrl},{'@type':'ListItem',position:2,name:l[p.kind==='programs'?1:2],item:`${siteUrl}/${lang}/${p.kind}`},...(p.slug?[{'@type':'ListItem',position:3,name:p.title,item:`${siteUrl}/${lang}/${path}`}]:[])]};
- return <div className="catalog-shell" lang={lang} dir={lang==='ar'||lang==='ur'?'rtl':'ltr'}><DocumentLanguage language={lang}/>
+ const jsonLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:l[0],item:siteUrl+localizedPath(lang)},{'@type':'ListItem',position:2,name:l[p.kind==='programs'?1:2],item:`${siteUrl}/${lang}/${p.kind}`},...(p.slug?[{'@type':'ListItem',position:3,name:p.title,item:`${siteUrl}/${lang}/${path}`}]:[])]};
+ return <div className="catalog-shell" lang={lang} dir={direction(lang)}>
 <CourseChrome lang={lang} path={path}/>
- <main className="catalog-main"><nav className="catalog-breadcrumb"><Link href={`/?lang=${lang}`}>{l[0]}</Link> / <Link href={`/${lang}/${p.kind}`}>{l[p.kind==='programs'?1:2]}</Link>{p.slug&&<> / {p.title}</>}</nav><div className={p.course ? 'catalog-hero catalog-hero--course' : 'catalog-hero'}>
+ <main className="catalog-main"><nav className="catalog-breadcrumb"><Link href={localizedPath(lang)}>{l[0]}</Link> / <Link href={`/${lang}/${p.kind}`}>{l[p.kind==='programs'?1:2]}</Link>{p.slug&&<> / {p.title}</>}</nav><div className={p.course ? 'catalog-hero catalog-hero--course' : 'catalog-hero'}>
  <div className="catalog-hero-copy"><span className="catalog-eyebrow">{l[p.kind==='programs'?1:2]} · Musliman Academy</span><h1>{p.title}</h1><p className="catalog-intro">{p.description}</p>
  {p.slug&&<Link className="btn btn-primary catalog-hero-cta" href={bookingHref}>{bookingLabel} <span aria-hidden="true">→</span></Link>}</div>
  {p.course&&<div className="catalog-hero-visual"><img src={p.course.image} alt={p.title}/></div>}
@@ -48,5 +47,5 @@ export default async function Page({params}:Props) {
 
  {p.slug&&<section><h2>{l[7]}</h2><p>{l[8]}</p><Link className="btn btn-primary" href={bookingHref}>{bookingLabel}</Link><p><Link href={`/${lang}/programs`}>{l[9]}</Link></p></section>}
  </main><CourseChrome lang={lang} path={path} footer/>
- <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(jsonLd).replace(/</g,'\u003c')}}/></div>;
+ <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(jsonLd).replace(/</g,'\\u003c')}}/></div>;
 }

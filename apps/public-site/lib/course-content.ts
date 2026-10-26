@@ -54,11 +54,11 @@ export function courseContent(key: string | undefined, lang: string): CourseCont
 }
 
 export function trainingBookingHref(lang: string) {
-  return `/?type=training&lang=${lang}#book-trial`;
+  return `/${lang}?type=training#book-trial`;
 }
 
 export function courseBookingHref(lang: string, courseKey: string) {
   if (courseKey === 'teacherTraining') return trainingBookingHref(lang);
   // The combined Quran & Tajweed page books the Quran Reading program.
-  return `/?program=${courseKey === 'quranTajweed' ? 'quranReading' : courseKey}&lang=${lang}#book-trial`;
+  return `/${lang}?program=${courseKey === 'quranTajweed' ? 'quranReading' : courseKey}#book-trial`;
 }

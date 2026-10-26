@@ -13,10 +13,10 @@ vi.mock('../../../src/shared/services/programsService', () => ({
 }));
 
 const pages = [
-  { key: 'tajweed', path: 'programs/tajweed', booking: '/?program=tajweed&lang=en#book-trial' },
-  { key: 'tarteelQaidah', path: 'programs/tarteel-qaidah', booking: '/?program=tarteelQaidah&lang=en#book-trial' },
-  { key: 'islamicValues', path: 'programs/islamic-values-for-children', booking: '/?program=islamicValues&lang=en#book-trial' },
-  { key: 'teacherTraining', path: 'programs/teacher-training', booking: '/?type=training&lang=en#book-trial' },
+  { key: 'tajweed', path: 'programs/tajweed', booking: '/en?program=tajweed#book-trial' },
+  { key: 'tarteelQaidah', path: 'programs/tarteel-qaidah', booking: '/en?program=tarteelQaidah#book-trial' },
+  { key: 'islamicValues', path: 'programs/islamic-values-for-children', booking: '/en?program=islamicValues#book-trial' },
+  { key: 'teacherTraining', path: 'programs/teacher-training', booking: '/en?type=training#book-trial' },
 ];
 const metadataFor = (lang: string, path: string) => generateMetadata({ params: Promise.resolve({ lang, segments: path.split('/') }) });
 

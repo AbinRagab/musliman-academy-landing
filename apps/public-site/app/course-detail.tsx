@@ -4,8 +4,7 @@ import { contact } from '../../../src/landing/data/siteData';
 import Link from 'next/link';
 import { ArrowRight, BookOpen, CalendarDays, Check, ChevronRight, GraduationCap, Laptop, MessageCircle, UserRound, UsersRound, Video, Wifi } from 'lucide-react';
 import { courseBookingHref, courseContent } from '../lib/course-content';
-import { courses, labels, text, siteUrl } from '../lib/catalog';
-import DocumentLanguage from './document-language';
+import { courses, direction, labels, localizedPath, text, siteUrl } from '../lib/catalog';
 import './course-detail.css';
 const ui: Record<string,string[]> = {
  en:['Online · Live classes','Overview','Curriculum','How it works','FAQs','All levels','1-to-1 online','Children & adults','Flexible schedule','Start with a free trial','Related programs','What you will need','Device with camera','Stable internet','Quiet learning space','Your journey, in four simple steps','Your next chapter starts with one lesson.','Questions? Talk to us on WhatsApp','This program'],
@@ -30,11 +29,11 @@ export default function CourseDetail({lang, courseKey}:{lang:string; courseKey:s
  const related=courses.filter(p=>p.key!==programKey && (copy.related || ['quranReading','arabicLanguage','quranMemorization','islamicStudies']).includes(p.key)).slice(0,3);
  const journey=copy.journey || ['freeTrial','findPlan','setSchedule','startLearning'].map(key=>({title:text(lang,`how.steps.${key}.title`),text:text(lang,`how.steps.${key}.text`)}));
  const trialPoints=copy.cta?.points || ['personalizedPlan','flexibleSchedule','progressTracking'].map(key=>({title:text(lang,`about.benefits.${key}.title`),text:text(lang,`about.benefits.${key}.text`)}));
- const crumbs={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:l[0],item:siteUrl},{'@type':'ListItem',position:2,name:l[1],item:`${siteUrl}/${lang}/programs`},{'@type':'ListItem',position:3,name:copy.title,item:`${siteUrl}/${lang}/${path}`}]};
+ const crumbs={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:l[0],item:siteUrl+localizedPath(lang)},{'@type':'ListItem',position:2,name:l[1],item:`${siteUrl}/${lang}/programs`},{'@type':'ListItem',position:3,name:copy.title,item:`${siteUrl}/${lang}/${path}`}]};
  const booking=<Link className="course-button" href={bookHref}>{bookLabel}<ArrowRight size={18}/></Link>;
- return <div className="course-page" lang={lang} dir={lang==='ar'||lang==='ur'?'rtl':'ltr'}><DocumentLanguage language={lang}/>
+ return <div className="course-page" lang={lang} dir={direction(lang)}>
  <CourseChrome lang={lang} path={path}/>
- <nav className="course-wrap course-breadcrumb"><Link href={`/?lang=${lang}`}>{l[0]}</Link> / <Link href={`/${lang}/programs`}>{l[1]}</Link> / {copy.title}</nav>
+ <nav className="course-wrap course-breadcrumb"><Link href={localizedPath(lang)}>{l[0]}</Link> / <Link href={`/${lang}/programs`}>{l[1]}</Link> / {copy.title}</nav>
  <section className="course-hero"><div className="course-wrap course-hero-grid"><div><span className="course-live"><Video size={16}/>{copy.badge || u[0]}</span><p className="course-eyebrow">{copy.eyebrow || text(lang,`programs.items.${programKey}.title`)}</p><h1>{copy.title}</h1><p className="course-lead">{copy.intro}</p><div className="course-hero-actions">{booking}<a className="course-button course-button-outline" href="#course-curriculum">{u[2]}<BookOpen size={18}/></a></div></div><div className="course-hero-image"><div className="course-arch"/><img src={copy.image || courses.find(course=>course.key===programKey)!.image} alt={copy.imageAlt || text(lang,`programs.items.${programKey}.title`)}/><span className="course-motto">Musliman<br/>Academy</span></div></div></section>
  <div className="course-wrap"><div className="course-features">{features.map((feature,i)=>{const Icon=icons[i];return <div key={feature.title}><span className="course-icon"><Icon size={25}/></span><div><strong>{feature.title}</strong><p>{feature.text}</p></div></div>;})}</div>
  <div className="course-columns"><article className="course-panel"><nav className="course-tabs">{[u[1],u[2],u[3],u[4]].map((name,i)=><a key={name} href={['#course-overview','#course-curriculum','#course-steps','#course-faq'][i]}>{name}</a>)}</nav>
