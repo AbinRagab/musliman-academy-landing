@@ -1,0 +1,335 @@
+{
+  "tajweed": {
+    "en": {
+      "metaTitle": "Online Tajweed Classes",
+      "metaDescription": "Live online Tajweed classes for learners who can already read the Qur’an. Study articulation, Noon and Meem rules, Madd and stopping through guided recitation.",
+      "title": "Online Tajweed Classes for Clearer, More Accurate Recitation",
+      "intro": "Learn the rules of Tajweed step by step and put each one into practice as you recite. Your teacher listens, explains what to adjust and helps you build recitation that is accurate, steady and consistent.",
+      "eyebrow": "Tajweed · Rules applied in recitation",
+      "imageAlt": "Illustration of a student reciting from a Mushaf on a stand, with articulation points, letter characteristics and Madd marked as topics",
+      "features": [
+        { "title": "For readers", "text": "Suited to learners who can already read Quranic text, even if slowly." },
+        { "title": "Live recitation", "text": "Recite in every lesson so rules are practised, not only explained." },
+        { "title": "Real-time correction", "text": "Your teacher points out mistakes as they happen and shows what to change." },
+        { "title": "Flexible schedule", "text": "Choose a class time that fits your week and time zone." }
+      ],
+      "audienceTitle": "Who is this course for?",
+      "audience": [
+        "Learners who can read the Qur’an and want to recite it with correct Tajweed.",
+        "Children and teenagers ready to move from reading to applying recitation rules.",
+        "Adults who learned to read in the past and want their recitation reviewed and corrected."
+      ],
+      "learnTitle": "What you will learn",
+      "learn": [
+        "Where each letter is articulated and which characteristics shape its sound.",
+        "The rules of Noon Sakinah and Tanween: Izhar, Idgham, Iqlab and Ikhfa.",
+        "Meem Sakinah rules and where Ghunnah is held.",
+        "The main types of Madd and how long to extend them.",
+        "When letters are pronounced heavy or light.",
+        "How to stop and resume recitation at suitable places."
+      ],
+      "outcomesTitle": "Learning outcomes",
+      "outcomesIntro": "As you progress, the course works towards helping you:",
+      "outcomes": [
+        "Recognise common Tajweed rules when you see them in a verse.",
+        "Apply the rules you have studied while reciting, not only in theory.",
+        "Notice and correct your own frequent pronunciation mistakes.",
+        "Recite with a steadier rhythm and more consistent elongation.",
+        "Understand which areas of your recitation still need focused practice."
+      ],
+      "requirementsTitle": "Prerequisites",
+      "requirements": "You should be able to read Arabic letters with their vowel marks, even if slowly. If letters and vowels are still new to you, Tarteel Qaidah or Quran Reading is a better starting point. You will also need a device with a camera, stable internet and a quiet space; a Mushaf or digital copy you can follow is helpful.",
+      "lessonsTitle": "How lessons work",
+      "lessons": "Each lesson pairs a short explanation of a rule with recitation of verses where it appears. You recite, your teacher points out what to adjust, and you repeat until the correction feels natural. Rules from earlier lessons are revisited during recitation, so they are applied together rather than in isolation.",
+      "planNote": "Your teacher reviews your recitation during the free trial and adapts the order and pace of these modules. Progress depends on attendance and practice; no completion date is guaranteed.",
+      "curriculum": [
+        { "title": "Assessing your current recitation", "topics": ["Recite a short passage so your teacher can hear your pronunciation and fluency.", "Identify the rules and sounds to focus on first."] },
+        { "title": "Articulation points and letter characteristics", "topics": ["The places in the throat, tongue, lips and nasal passage where letters are produced.", "Characteristics that distinguish similar letters, with paired practice."] },
+        { "title": "Noon Sakinah and Tanween", "topics": ["Izhar, Idgham, Iqlab and Ikhfa, and the letters that trigger each rule.", "Spotting these rules in verses before reciting them."] },
+        { "title": "Meem Sakinah and Ghunnah", "topics": ["Ikhfa Shafawi, Idgham Shafawi and Izhar Shafawi.", "Holding Ghunnah on Noon and Meem with Shaddah for the right length."] },
+        { "title": "Madd rules", "topics": ["Natural Madd and the main secondary types.", "Keeping elongation consistent across a passage."] },
+        { "title": "Heavy and light pronunciation", "topics": ["Letters that are always heavy, always light, or change with context.", "The heavy and light pronunciation of Ra and the Lam in the name of Allah."] },
+        { "title": "Stopping and starting", "topics": ["Common stopping signs in the Mushaf and what they indicate.", "How to pause and resume without breaking the sense of a verse."] },
+        { "title": "Guided recitation and revision", "topics": ["Longer passages that combine the rules you have studied.", "Reviewing recurring mistakes and agreeing what to practise next."] }
+      ],
+      "guide": {
+        "title": "Tajweed, Quran Reading or Quran & Tajweed?",
+        "text": "All three programs involve reading the Qur’an aloud. The difference is where they start and what they concentrate on. You can talk through your current level during the free trial before settling on a program.",
+        "items": [
+          { "title": "Quran Reading", "text": "Concentrates on learning to read Quranic text and building fluency, from letters and vowel marks to words and verses.", "slug": "quran-reading" },
+          { "title": "Tajweed", "text": "For learners who already read and want to study the rules of recitation and apply them accurately." },
+          { "title": "Quran & Tajweed", "text": "A combined path that builds reading foundations and introduces essential Tajweed within one learning plan.", "slug": "quran-tajweed" }
+        ]
+      },
+      "journeyTitle": "Your Tajweed learning journey",
+      "journey": [
+        { "title": "Book a free trial", "text": "Choose Tajweed in the booking form and tell us what you would like to improve." },
+        { "title": "Recitation review", "text": "Your teacher listens to you recite and notes which sounds and rules need attention." },
+        { "title": "Rule-by-rule practice", "text": "Study each rule with examples, then apply it while reciting verses." },
+        { "title": "Guided revision", "text": "Revisit earlier rules in longer passages and discuss what to focus on next." }
+      ],
+      "related": ["quranTajweed", "quranReading", "quranMemorization"],
+      "faqTitle": "Frequently asked questions",
+      "faq": [
+        ["Do I need to read the Qur’an fluently before starting?", "You need to be able to read Arabic letters with vowel marks, but you do not need to be fast. If letters and vowels are still new to you, Tarteel Qaidah or Quran Reading may be a better first step; you can discuss this during your trial."],
+        ["How is this different from the Quran & Tajweed program?", "This program concentrates on Tajweed rules for learners who already read. Quran & Tajweed combines reading foundations with essential Tajweed in one plan, which can suit learners who still need reading support."],
+        ["Is the course only theory?", "No. Each rule is explained briefly and then practised in recitation, with your teacher correcting you as you read."],
+        ["Can children study Tajweed?", "Yes. Explanations, examples and the amount of terminology are adapted to the learner’s age and reading level."],
+        ["Are lessons live?", "Yes. Lessons are live online with a teacher, one-to-one or in a small group depending on your needs, so your recitation can be heard and corrected during the lesson."],
+        ["Can I ask for a female teacher?", "Musliman Academy has female Quran teachers for sisters and young girls. Mention your preference in the message field when you book your trial."],
+        ["How long does it take to learn Tajweed?", "It depends on your starting level, how often you attend and how much you practise between lessons. Your teacher can suggest a realistic pace after hearing your recitation."],
+        ["How do I start?", "Book a free trial, choose Tajweed as your program and tell us about your goals and preferred class time."]
+      ]
+    }
+  },
+  "tarteelQaidah": {
+    "en": {
+      "metaTitle": "Tarteel Qaidah: Quran Classes for Beginners",
+      "metaDescription": "Online Quran classes for beginners. Start with Arabic letters and sounds, then build to vowel marks, Shaddah, long vowels and reading short Quranic words.",
+      "title": "Tarteel Qaidah: Online Quran Classes for Beginners",
+      "intro": "Start from the Arabic letters and their sounds, then build step by step to vowel marks, joined words and short Quranic examples. Live lessons with a patient teacher give beginners a solid base for reading the Qur’an.",
+      "eyebrow": "Foundations of Quran reading",
+      "imageAlt": "Illustration of a child reading an Arabic alphabet book, surrounded by individual Arabic letters",
+      "features": [
+        { "title": "Starts from the alphabet", "text": "No previous Arabic is needed; the first lessons begin with letters and sounds." },
+        { "title": "Live correction", "text": "Your teacher hears each sound and helps you correct it straight away." },
+        { "title": "Children & adults", "text": "Pace, examples and explanations are adapted to the learner’s age." },
+        { "title": "Flexible schedule", "text": "Choose a class time that fits your week and time zone." }
+      ],
+      "audienceTitle": "Who is this course for?",
+      "audience": [
+        "Complete beginners who have not yet learned the Arabic letters.",
+        "Children starting their first Quran reading lessons.",
+        "Adults and non-Arabic speakers who want a careful, structured start."
+      ],
+      "learnTitle": "What you will learn",
+      "learn": [
+        "Recognising and pronouncing the Arabic letters.",
+        "How letters change shape and connect within a word.",
+        "Short vowels: Fathah, Kasrah and Dammah.",
+        "Sukoon, Tanween and Shaddah.",
+        "Long vowels and how they extend a sound.",
+        "Blending sounds into words and short Quranic examples."
+      ],
+      "outcomesTitle": "Learning outcomes",
+      "outcomesIntro": "The course works towards helping you:",
+      "outcomes": [
+        "Recognise the Arabic letters in their different forms.",
+        "Pronounce each letter clearly, including sounds that do not exist in your own language.",
+        "Read syllables and words with vowel marks, Sukoon, Tanween and Shaddah.",
+        "Blend sounds into short Quranic words and phrases with growing confidence.",
+        "Build the foundation needed to continue to Quran Reading or Tajweed."
+      ],
+      "requirementsTitle": "Prerequisites",
+      "requirements": "None. Tarteel Qaidah is designed for learners starting from the beginning, so no previous Arabic is needed. A device with a camera, stable internet and a quiet space are enough; a notebook helps for practising letter shapes.",
+      "lessonsTitle": "How lessons work",
+      "lessons": "Your teacher introduces a few letters or a single reading rule, models the sound and asks you to repeat and read examples. Mistakes are corrected as they happen, and each lesson revisits earlier material so new skills rest on firm ground. Short practice between lessons helps the sounds become familiar.",
+      "planNote": "Your teacher checks what you already know during the free trial and starts from the right point. Pace depends on attendance and practice; no completion date is guaranteed.",
+      "curriculum": [
+        { "title": "Arabic letter recognition", "topics": ["Identify each letter by shape and name.", "Practise sounds that are new to non-Arabic speakers."] },
+        { "title": "Letter forms and connections", "topics": ["How a letter looks at the start, middle and end of a word.", "Letters that do not connect to the letter after them."] },
+        { "title": "Short vowels", "topics": ["Fathah, Kasrah and Dammah on single letters.", "Reading short syllables with each vowel."] },
+        { "title": "Sukoon", "topics": ["Reading a letter without a vowel.", "Joining a voweled letter with a silent one."] },
+        { "title": "Tanween", "topics": ["The doubled vowel marks and the sound they add.", "Reading words that end in Tanween."] },
+        { "title": "Shaddah", "topics": ["Recognising a doubled letter.", "Pronouncing Shaddah with a vowel and in short words."] },
+        { "title": "Long vowels", "topics": ["Alif, Waw and Ya as letters of extension.", "Telling short and long vowels apart when reading."] },
+        { "title": "Combining sounds and reading Quranic examples", "topics": ["Blending syllables into complete words.", "Reading short words and phrases taken from the Qur’an."] }
+      ],
+      "guide": {
+        "title": "Where Tarteel Qaidah fits",
+        "text": "Tarteel Qaidah is the starting point for reading. It teaches you to decode Quranic text accurately; it is not an Arabic conversation course and does not teach the meaning of words.",
+        "items": [
+          { "title": "Tarteel Qaidah", "text": "Letters, sounds, vowel marks and the basic rules needed to start reading." },
+          { "title": "Quran Reading", "text": "Builds on those foundations with reading words and verses and developing fluency.", "slug": "quran-reading" },
+          { "title": "Arabic Language", "text": "For learners who want vocabulary, grammar and communication skills in Arabic.", "slug": "arabic-language" }
+        ]
+      },
+      "journeyTitle": "Your learning journey",
+      "journey": [
+        { "title": "Book a free trial", "text": "Choose Tarteel Qaidah in the booking form and share the learner’s age and goals." },
+        { "title": "Find the starting point", "text": "Your teacher checks which letters and sounds are already familiar." },
+        { "title": "Build step by step", "text": "Move from letters to vowel marks and joined words, one skill at a time." },
+        { "title": "Read Quranic examples", "text": "Apply what you know to short Quranic words, then discuss the next step." }
+      ],
+      "related": ["quranReading", "tajweed", "arabicLanguage"],
+      "faqTitle": "Frequently asked questions",
+      "faq": [
+        ["Is this suitable if I don’t know any Arabic letters?", "Yes. The course starts with the letters and their sounds, so no previous knowledge is needed."],
+        ["What is the difference between Tarteel Qaidah and Quran Reading?", "Tarteel Qaidah builds the foundations: letters, vowel marks and basic reading rules. Quran Reading continues from there with reading words and verses and developing fluency. Your teacher can help you decide during the trial."],
+        ["Will I learn to speak Arabic?", "No. This is a reading course focused on reading Quranic text accurately. For vocabulary, grammar and communication, explore our Arabic Language program."],
+        ["Can young children join?", "Yes. Lessons are adapted to the learner’s age, attention span and current level. Share the child’s age when you book so the trial can be planned accordingly."],
+        ["How much practice is needed between lessons?", "Short, regular practice is more useful than long, occasional sessions. Your teacher will suggest what to review before the next lesson."],
+        ["Are lessons live?", "Yes. Lessons are live online with a teacher, one-to-one or in a small group depending on the learner’s needs."],
+        ["How long does the course take?", "It depends on the starting point, attendance and practice between lessons. Your teacher can discuss a suitable pace after the trial."],
+        ["How do I start?", "Book a free trial, choose Tarteel Qaidah as the program and tell us about the learner’s age and preferred class time."]
+      ]
+    }
+  },
+  "islamicValues": {
+    "en": {
+      "metaTitle": "Islamic Values & Manners Classes for Kids",
+      "metaDescription": "Online Islamic classes for kids focused on character and manners: kindness, honesty, gratitude and respect, taught through stories, discussion and examples.",
+      "title": "Islamic Values for Children: Character and Manners for Everyday Life",
+      "intro": "Help your child understand values such as honesty, kindness, gratitude and respect, and see how they shape everyday choices. Live online lessons use stories, conversation and familiar situations at home, at school and with friends.",
+      "eyebrow": "Character · Manners · Daily practice",
+      "imageAlt": "Illustration of children sitting together holding cards and books labelled kindness, respect, honesty and Quran",
+      "features": [
+        { "title": "Designed for children", "text": "Themes, examples and activities are chosen for young learners." },
+        { "title": "Live & interactive", "text": "Children answer questions, share ideas and talk through examples with the teacher." },
+        { "title": "Values in practice", "text": "Each value is linked to real situations at home, at school and with friends." },
+        { "title": "Flexible schedule", "text": "Choose a class time that fits your family’s routine." }
+      ],
+      "audienceTitle": "Who is this program for?",
+      "audience": [
+        "Children who are learning what good character looks like in daily life.",
+        "Parents seeking support in building Islamic values and manners alongside learning at home.",
+        "Children who enjoy learning through stories, questions and discussion."
+      ],
+      "learnTitle": "What your child will learn",
+      "learn": [
+        "Kindness and respect towards others.",
+        "Honesty and taking responsibility for their actions.",
+        "Gratitude, mercy and compassion.",
+        "Good manners with parents, family, teachers and friends.",
+        "Everyday Islamic etiquette, such as greetings and table manners.",
+        "Cooperation and a love for learning."
+      ],
+      "outcomesTitle": "Learning outcomes",
+      "outcomesIntro": "Lessons work towards helping your child:",
+      "outcomes": [
+        "Explain in their own words what values such as honesty and kindness mean.",
+        "Recognise good choices in familiar situations and talk about why they matter.",
+        "Use everyday etiquette, such as greeting with Salam, with more confidence.",
+        "Connect the values they discuss with their behaviour at home and at school.",
+        "Feel comfortable asking questions about character and behaviour."
+      ],
+      "requirementsTitle": "Before you begin",
+      "requirements": "No previous Islamic knowledge is needed. Your child will need a device with a camera, stable internet and a quiet space. For younger children, having a parent nearby to help with the setup can make lessons smoother.",
+      "lessonsTitle": "How lessons work",
+      "lessons": "Each lesson focuses on one value or habit. The teacher may open with a short story or example, ask questions that help your child think it through, and discuss what the value looks like in real situations. Activities and explanations are adapted to your child’s age, and earlier values are revisited so they are practised, not just remembered.",
+      "planNote": "The teacher gets to know your child during the free trial and adapts the themes and activities to their age. Progress depends on attendance and practice.",
+      "curriculum": [
+        { "title": "Kindness and respect", "topics": ["Speaking gently and listening when others talk.", "Showing respect to people who are different from us."] },
+        { "title": "Honesty and responsibility", "topics": ["Telling the truth, even when it is difficult.", "Keeping promises and owning up to mistakes."] },
+        { "title": "Gratitude and compassion", "topics": ["Noticing blessings and saying thank you.", "Caring for people, animals and the world around us."] },
+        { "title": "Manners with parents and family", "topics": ["Respecting and helping parents.", "Being kind and patient with brothers, sisters and relatives."] },
+        { "title": "Manners with teachers and friends", "topics": ["Good behaviour in class and while learning.", "Sharing, cooperating and resolving disagreements kindly."] },
+        { "title": "Everyday Islamic etiquette", "topics": ["Greeting with Salam and responding to it.", "Manners of eating, entering the home and visiting others."] },
+        { "title": "Values through discussion and examples", "topics": ["Talking through familiar situations and possible choices.", "Linking values to stories and simple examples."] },
+        { "title": "Review and reflection", "topics": ["Revisiting earlier values in new situations.", "Discussing which habits to practise next."] }
+      ],
+      "guide": {
+        "title": "Islamic Values or Islamic Studies?",
+        "text": "Both programs include good manners, but their focus differs. You can discuss which suits your child during the free trial.",
+        "items": [
+          { "title": "Islamic Values for Children", "text": "Concentrates on character, manners and applying values in daily life." },
+          { "title": "Islamic Studies", "text": "Covers broader foundational knowledge, including beliefs, worship, Seerah and Islamic history, alongside manners.", "slug": "islamic-studies" }
+        ]
+      },
+      "journeyTitle": "Your child’s learning journey",
+      "journey": [
+        { "title": "Book a free trial", "text": "Choose Islamic Values for Children and share your child’s age." },
+        { "title": "Getting to know your child", "text": "The teacher learns about your child’s age, interests and understanding." },
+        { "title": "One value at a time", "text": "Explore each value through stories, questions and familiar examples." },
+        { "title": "Practise and reflect", "text": "Revisit values in new situations and talk about how they are being practised." }
+      ],
+      "related": ["islamicStudies", "tarteelQaidah", "quranReading"],
+      "faqTitle": "Frequently asked questions",
+      "faq": [
+        ["How is this different from Islamic Studies?", "Islamic Values for Children concentrates on character, manners and everyday behaviour. Islamic Studies covers broader foundational knowledge such as beliefs, worship, Seerah and Islamic history."],
+        ["What age is this program for?", "The program is designed for children. Lessons are adapted to each child’s age and understanding rather than fixed age groups, so please share your child’s age when you book."],
+        ["Does my child need previous Islamic knowledge?", "No. Lessons start from your child’s current understanding."],
+        ["How are values taught?", "Through short stories, questions, discussion and familiar examples, so children can see how a value applies to their own choices."],
+        ["Are lessons live?", "Yes. Lessons are live online with a teacher, one-to-one or in a small group depending on your child’s needs."],
+        ["Can I follow my child’s progress?", "Yes. Parents receive follow-up and progress updates, and you can share any values or habits you would like the teacher to focus on."],
+        ["How long does the program last?", "There is no fixed length. Values are revisited over time, and the pace depends on attendance and your child’s needs."],
+        ["How do I start?", "Book a free trial, choose Islamic Values for Children as the program and tell us your child’s age and preferred class time."]
+      ]
+    }
+  },
+  "teacherTraining": {
+    "en": {
+      "metaTitle": "Quran Teacher Training Course Online",
+      "metaDescription": "Online training for Quran, Arabic and Islamic Studies teachers: methods for non-Arabic speakers, online teaching, lesson planning and student follow-up.",
+      "title": "Teacher Training for Teaching Non-Arabic Speakers Online",
+      "intro": "A practical online training program for Quran, Arabic and Islamic Studies teachers who want to explain clearly to non-Arabic-speaking learners, plan structured lessons and follow each student’s development.",
+      "eyebrow": "Teacher Training Program",
+      "badge": "Online · Teacher training",
+      "image": "/assets/teacher-training-visual.jpg",
+      "imageAlt": "A teacher taking notes while following an online teacher training session on a laptop",
+      "features": [
+        { "title": "Methods for non-Arabic speakers", "text": "Approaches for learners who do not share your language or script." },
+        { "title": "Online teaching techniques", "text": "Keep virtual lessons clear, focused and well organised." },
+        { "title": "Lesson planning", "text": "Structure lessons and manage your classes with purpose." },
+        { "title": "Student follow-up", "text": "Evaluate progress and decide on each learner’s next steps." }
+      ],
+      "audienceTitle": "Who is this training for?",
+      "audience": [
+        "Quran teachers who want clearer methods for learners who do not speak Arabic.",
+        "Arabic and Islamic Studies teachers adapting their lessons for online classes.",
+        "New and developing teachers, including students of knowledge, building practical teaching skills."
+      ],
+      "learnTitle": "What the training covers",
+      "learn": [
+        "Teaching methods suited to non-Arabic-speaking learners.",
+        "Explaining foundational concepts in small, clear steps.",
+        "Online teaching techniques and managing a virtual class.",
+        "Lesson planning and class management.",
+        "Adapting explanations to each learner’s level and age.",
+        "Student follow-up and progress evaluation."
+      ],
+      "outcomesTitle": "Learning outcomes",
+      "outcomesIntro": "The training aims to help you:",
+      "outcomes": [
+        "Plan lessons with a clear objective, explanation, practice and review.",
+        "Explain new concepts in plain steps for learners who do not speak Arabic.",
+        "Give feedback and corrections in a way that keeps learners motivated.",
+        "Use online teaching routines that keep lessons focused.",
+        "Track each learner’s development and decide on next steps."
+      ],
+      "requirementsTitle": "Before you apply",
+      "requirements": "The application form asks about your teaching experience, current qualification and main training goal, so the team can suggest a suitable training path. Experience options range from no experience to three or more years. Training takes place online, so you will need a device with a camera, stable internet and a quiet space.",
+      "lessonsTitle": "How the training works",
+      "lessons": "The training is practical and online. Methods are discussed alongside real teaching situations, with mentorship, so you can try an approach, reflect on it and refine it with guidance. After you submit the form, the team contacts you to discuss your background, a suitable training path and your preferred training time.",
+      "planNote": "The training path is discussed with you after you apply, based on your experience and goals. Details such as duration and schedule are confirmed directly with the team.",
+      "curriculum": [
+        { "title": "Understanding non-Arabic-speaking learners", "topics": ["Common difficulties with unfamiliar sounds, script and terminology.", "Building on what a learner already knows."] },
+        { "title": "Explaining foundational concepts clearly", "topics": ["Breaking letters, vowel marks and rules into small steps.", "Using demonstration and examples, then checking understanding."] },
+        { "title": "Lesson planning", "topics": ["Setting a clear objective for each lesson.", "Structuring explanation, practice and review across a series of lessons."] },
+        { "title": "Adapting to learner level and age", "topics": ["Adjusting pace, language and examples for children and adults.", "Responding when a learner needs more support or more challenge."] },
+        { "title": "Giving constructive corrections", "topics": ["Deciding when and how to correct.", "Encouraging learners while keeping standards clear."] },
+        { "title": "Managing online lessons", "topics": ["Routines that keep a virtual lesson organised.", "Keeping learners engaged and attentive on screen."] },
+        { "title": "Student follow-up and progress evaluation", "topics": ["Recording what each learner has covered and where they struggle.", "Using that record to plan the next steps."] }
+      ],
+      "journeyTitle": "How to join the training",
+      "journey": [
+        { "title": "Submit the training form", "text": "Share your experience, qualification, training goal and preferred time." },
+        { "title": "Talk with the team", "text": "The team contacts you to discuss your background and a suitable path." },
+        { "title": "Practical training", "text": "Work through teaching methods with guidance and mentorship." },
+        { "title": "Apply and refine", "text": "Use what you learn in your teaching, reflect and keep improving." }
+      ],
+      "related": ["quranReading", "tajweed", "arabicLanguage"],
+      "cta": {
+        "title": "Apply for teacher training",
+        "text": "Tell us about your teaching background and our team will contact you with the suitable training path.",
+        "points": [
+          { "title": "Practical training & mentorship", "text": "Learn by applying methods to real teaching situations." },
+          { "title": "Flexible online schedule", "text": "Choose a preferred training time in the application form." },
+          { "title": "A suitable training path", "text": "The team considers your experience and goals before suggesting a path." }
+        ],
+        "closingTitle": "Ready to strengthen your teaching?"
+      },
+      "faqTitle": "Frequently asked questions",
+      "faq": [
+        ["Who can apply?", "Quran, Arabic and Islamic Studies teachers, Ijazah holders, students of knowledge and others who want to teach non-Arabic speakers more effectively."],
+        ["Do I need teaching experience?", "The form includes an option for applicants with no experience as well as for experienced teachers. The team uses your answers to suggest a suitable training path."],
+        ["Is the training only for Quran teachers?", "No. It is designed for Quran, Arabic and Islamic Studies teachers working with non-Arabic-speaking learners."],
+        ["Is the training online?", "Yes. Training takes place online, and you can choose a preferred training time in the form."],
+        ["What happens after I submit the form?", "Our team reviews your request and contacts you to discuss your background, goals and the suitable training path."],
+        ["How long is the training?", "Duration and schedule depend on the training path agreed with you. The team will share the details when they contact you."],
+        ["Will I receive a certificate or Ijazah?", "This is a teaching-skills program, not an Ijazah program. Please ask the team about certificate details when they contact you so you receive current, accurate information."],
+        ["Does the training lead to a teaching position?", "The training focuses on developing your teaching skills and does not guarantee employment. If you are interested in teaching with Musliman Academy, choose that as your training goal in the form and the team can discuss it with you."]
+      ]
+    }
+  }
+}

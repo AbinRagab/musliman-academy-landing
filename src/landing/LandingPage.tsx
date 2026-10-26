@@ -1632,7 +1632,7 @@ const whatsappCourseMessages: Record<SupportedLanguage, string> = {
   "tr": "Selamünaleyküm! Kurslarınız, ders saatleri ve ücretleriniz hakkında bilgi almak istiyorum."
 };
 
-export default function LandingPage({ manageSeo = true, programPages = false }: { manageSeo?: boolean; programPages?: boolean }) {
+export default function LandingPage({ manageSeo = true, programPages = false, requestedBookingType }: { manageSeo?: boolean; programPages?: boolean; requestedBookingType?: BookingType }) {
   const { i18n, t } = useTranslation();
   const pageLanguage = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
   const pageLinks: Record<string, string> = programPages ? {
@@ -1656,6 +1656,12 @@ export default function LandingPage({ manageSeo = true, programPages = false }: 
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
   const [activeBookingType, setActiveBookingType] = useState<BookingType>('trial');
+
+  useEffect(() => {
+    if (requestedBookingType) {
+      setActiveBookingType(requestedBookingType);
+    }
+  }, [requestedBookingType]);
 
   useEffect(() => {
     if (marketingAttributionCaptured) {
