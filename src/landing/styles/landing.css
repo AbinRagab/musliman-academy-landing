@@ -4115,6 +4115,10 @@ html[dir="rtl"] .step-card:not(:last-child)::after {
   background: rgba(248, 247, 243, 0.78);
 }
 
+.accordion__content[hidden] {
+  display: none;
+}
+
 .accordion__content svg {
   width: 58px;
   height: 58px;

@@ -1486,6 +1486,7 @@ function TeacherTrainingSection({ onSelectBookingType }: { onSelectBookingType: 
 function FAQSection() {
   const { t } = useTranslation();
   const [openIndex, setOpenIndex] = useState(0);
+  const idPrefix = useId();
 
   return (
     <section className="faq section-light" id="faq">
@@ -1500,20 +1501,27 @@ function FAQSection() {
           <div className="accordion-list">
             {faqs.map((faq, index) => {
               const isOpen = openIndex === index;
+              const questionId = `${idPrefix}faq-${faq.key}-question`;
+              const answerId = `${idPrefix}faq-${faq.key}-answer`;
               return (
                 <div className={`accordion ${isOpen ? 'is-open' : ''}`} key={faq.key}>
-                  <button type="button" onClick={() => setOpenIndex(isOpen ? -1 : index)}>
-                    <span className="accordion__icon">{isOpen ? '-' : '+'}</span>
-                    <span className="accordion__number">{index + 1}.</span>
+                  <button
+                    type="button"
+                    id={questionId}
+                    aria-expanded={isOpen}
+                    aria-controls={answerId}
+                    onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                  >
+                    <span className="accordion__icon" aria-hidden="true">{isOpen ? '-' : '+'}</span>
+                    <span className="accordion__number" aria-hidden="true">{index + 1}.</span>
                     <strong>{t(`faq.${faq.key}.question`)}</strong>
                     <span className="accordion__chevron" aria-hidden="true" />
                   </button>
-                  {isOpen && (
-                    <div className="accordion__content">
-                      <Icon name={faqIcons[index] || 'question'} />
-                      <p>{t(`faq.${faq.key}.answer`)}</p>
-                    </div>
-                  )}
+                  {/* Collapsed answers stay in the DOM so aria-controls always resolves. */}
+                  <div className="accordion__content" id={answerId} role="region" aria-labelledby={questionId} hidden={!isOpen}>
+                    <Icon name={faqIcons[index] || 'question'} />
+                    <p>{t(`faq.${faq.key}.answer`)}</p>
+                  </div>
                 </div>
               );
             })}

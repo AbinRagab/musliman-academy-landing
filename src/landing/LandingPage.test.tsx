@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import i18n, { initializeI18n, loadLanguageResource } from '../i18n';
 import LandingPage from './LandingPage';
@@ -31,6 +31,39 @@ describe('LandingPage', () => {
     expect(programSelect).toBeEnabled();
     expect(within(programSelect).getByRole('option', { name: 'Quran Reading' })).toBeInTheDocument();
     expect(within(programSelect).getAllByRole('option')).toHaveLength(9);
+  });
+
+  it('exposes FAQ open state and answer panels to assistive technology', async () => {
+    render(<LandingPage />);
+    const faq = document.getElementById('faq')!;
+    const toggles = () => within(faq).getAllByRole('button').filter(button => button.hasAttribute('aria-expanded'));
+    const panelFor = (button: HTMLElement) => document.getElementById(button.getAttribute('aria-controls')!)!;
+    const expanded = () => toggles().map(button => button.getAttribute('aria-expanded'));
+    const onlyOpen = (index: number) => toggles().map((_, i) => String(i === index));
+
+    const ids = toggles().map(button => button.getAttribute('aria-controls'));
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(expanded()).toEqual(onlyOpen(0));
+    for (const button of toggles()) {
+      const panel = panelFor(button);
+      expect(panel).toHaveAttribute('aria-labelledby', button.id);
+      expect(panel.hidden).toBe(button.getAttribute('aria-expanded') === 'false');
+    }
+    expect(within(faq).getByRole('region', { name: 'Are the classes online?' })).toBeVisible();
+
+    fireEvent.click(toggles()[1]);
+    expect(expanded()).toEqual(onlyOpen(1));
+    expect(panelFor(toggles()[0]).hidden).toBe(true);
+    fireEvent.click(toggles()[1]);
+    expect(expanded().every(state => state === 'false')).toBe(true);
+    fireEvent.click(toggles()[2]);
+
+    // Switching language keeps the open item and the panel associations.
+    await loadLanguageResource('ar');
+    await act(() => i18n.changeLanguage('ar'));
+    expect(toggles().map(button => button.getAttribute('aria-controls'))).toEqual(ids);
+    expect(expanded()).toEqual(onlyOpen(2));
+    expect(within(faq).getByRole('button', { name: 'هل الحصص أونلاين؟' })).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('renders the Arabic experience without English fallbacks or raw translation keys', async () => {
