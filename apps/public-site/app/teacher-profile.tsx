@@ -3,6 +3,7 @@ import CourseChrome from './course-chrome';
 import { labels, localizedPath, siteUrl, teachers, text, direction } from '../lib/catalog';
 import type { Language } from '../lib/languages';
 import { teacherPhotoPath, teacherProfile, teacherSubjects } from '../lib/teacher-profiles';
+import { organizationReference } from '../lib/brand';
 import './teacher-profile.css';
 
 const languageCodes: Record<string, string> = { Arabic: 'ar', English: 'en' };
@@ -51,7 +52,7 @@ export function teacherStructuredData(lang: Language, id: string) {
         description: profile.intro,
         knowsLanguage: (profile.teacher.languages ?? []).map(language => languageCodes[language] ?? language),
         knowsAbout: teacherSubjects.map(subject => text(lang, `programs.items.${subject.key}.title`)),
-        worksFor: { '@type': 'Organization', name: 'Musliman Academy', url: siteUrl },
+        worksFor: organizationReference,
       },
     },
   ];
