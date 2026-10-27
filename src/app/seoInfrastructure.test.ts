@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { landingTeachers } from '../landing/data/siteData';
 
 const root = process.cwd();
 
@@ -30,6 +31,30 @@ describe('SEO infrastructure', () => {
       });
     }
     for (const path of ['/assets/index.js', '/index.html', '/dashboard-other', '/unknown']) {
+      expect(resolveRoute(path)).toBeUndefined();
+    }
+  });
+
+  it('forwards teacher portraits, which profile pages use as social images', () => {
+    const config = JSON.parse(readFileSync(resolve(root, 'vercel.json'), 'utf8'));
+    const routes = config.routes as Array<{ src?: string; dest?: string; handle?: string }>;
+    const filesystemIndex = routes.findIndex(route => route.handle === 'filesystem');
+    const portraitIndex = routes.findIndex(route => route.src?.startsWith('^/teacher-photos/'));
+    const dashboardIndex = routes.findIndex(route => route.src?.startsWith('^/dashboard'));
+    // Forwarded before the Vite files, and after the dashboard keeps its own rule.
+    expect(portraitIndex).toBeGreaterThan(dashboardIndex);
+    expect(portraitIndex).toBeLessThan(filesystemIndex);
+    const resolveRoute = (path: string) => {
+      const rule = routes.slice(0, filesystemIndex).find(route => new RegExp(route.src!).test(path));
+      return rule && path.replace(new RegExp(rule.src!), rule.dest!);
+    };
+    const origin = 'https://musliman-academy-public.vercel.app';
+    for (const { id } of landingTeachers) {
+      expect(resolveRoute(`/teacher-photos/${id}.jpg`)).toBe(`${origin}/teacher-photos/${id}.jpg`);
+    }
+    // Only portrait-shaped file names are forwarded; nothing else under the
+    // prefix reaches the public origin.
+    for (const path of ['/teacher-photos', '/teacher-photos/', '/teacher-photos/mazin-yasser.png', '/teacher-photos/a/b.jpg', '/teacher-photos/Mazin-Yasser.jpg', '/teacher-photos/mazin-yasser.jpg/x', '/teacher-photosx/mazin-yasser.jpg']) {
       expect(resolveRoute(path)).toBeUndefined();
     }
   });

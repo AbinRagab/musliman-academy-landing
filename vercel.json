@@ -25,6 +25,10 @@
       "dest": "https://musliman-academy-public.vercel.app/_next/$1"
     },
     {
+      "src": "^/teacher-photos/([a-z0-9-]+\\.jpg)$",
+      "dest": "https://musliman-academy-public.vercel.app/teacher-photos/$1"
+    },
+    {
       "src": "^/(sitemap\\.xml|robots\\.txt|manifest\\.webmanifest|opengraph-image)$",
       "dest": "https://musliman-academy-public.vercel.app/$1"
     },
