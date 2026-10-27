@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "Musliman Academy | Online Quran ve Arapca Dersleri",
-    "description": "Musliman Academy, Arapca bilmeyenler icin online Quran, Arapca, Tajweed, Islami ilimler ve ogretmen egitimi sunar."
+    "title": "Musliman Academy | Online Quran, Arapça ve Tajweed Dersleri",
+    "description": "Musliman Academy, Arapça bilmeyenler için nitelikli Mısırlı öğretmenlerle online Quran, Arapça, Tajweed, İslami ilimler dersleri ve öğretmen eğitimi sunar."
   },
   "language": {
     "label": "Dil",
@@ -14,257 +14,525 @@
     "turkish": "Türkçe"
   },
   "aria": {
-    "mainNavigation": "Ana navigasyon",
-    "contactWhatsapp": "WhatsApp ile iletisime gec",
-    "openMenu": "Menuyu ac",
-    "closeMenu": "Menuyu kapat",
-    "bookingType": "Basvuru turu",
-    "previousFeature": "Onceki ozellik",
-    "nextFeature": "Sonraki ozellik",
-    "showFeaturePage": "{{page}}. ozellik sayfasini goster",
-    "floatingWhatsapp": "Musliman Academy ile WhatsApp uzerinden iletisime gec",
-    "trustHighlights": "Akademi guven noktalarimiz",
-    "switchToTheme": "{{theme}} temaya gec"
+    "mainNavigation": "Ana gezinme",
+    "contactWhatsapp": "WhatsApp üzerinden iletişime geçin",
+    "openMenu": "Menüyü aç",
+    "closeMenu": "Menüyü kapat",
+    "bookingType": "Talep türü",
+    "previousFeature": "Önceki özellik",
+    "nextFeature": "Sonraki özellik",
+    "showFeaturePage": "{{page}}. özellik sayfasını göster",
+    "floatingWhatsapp": "Musliman Academy ile WhatsApp üzerinden iletişime geçin",
+    "dismissWhatsappGreeting": "WhatsApp karşılama mesajını gizle",
+    "trustHighlights": "Akademinin güven unsurları",
+    "switchToTheme": "{{theme}} temaya geç"
   },
   "theme": {
-    "light": "Acik",
+    "light": "Açık",
     "dark": "Koyu"
   },
   "nav": {
-    "about": "Hakkimizda",
+    "about": "Hakkımızda",
     "programs": "Programlar",
-    "scheduleFee": "Schedule & Fee",
-    "whoWeTeach": "Kimlere ogretiyoruz",
+    "scheduleFee": "Program ve Ücretler",
+    "whoWeTeach": "Kimlere öğretiyoruz",
     "whyChooseUs": "Neden biz",
-    "teacherTraining": "Ogretmen egitimi",
+    "teacherTraining": "Öğretmen eğitimi",
     "faq": "SSS",
-    "bookFreeTrial": "Ucretsiz deneme al"
+    "bookFreeTrial": "Ücretsiz deneme dersi"
   },
   "hero": {
     "eyebrow": {
-      "live": "Canli",
-      "personalized": "Kisisel",
-      "trusted": "Guvenilir"
+      "live": "Canlı",
+      "personalized": "Kişiye özel",
+      "trusted": "Güvenilir"
     },
-    "headlineLine1": "Quran ve Arapca",
-    "headlineLine2": "ogrenme yolculuguna",
-    "headlineAccent": "bugun basla",
-    "description": "Kendiniz veya cocugunuz icin ucretsiz deneme dersi ayirtin ve nitelikli Misirli ogretmenlerle canli, birebir Islami egitimi deneyimleyin.",
-    "cta": "Ucretsiz deneme dersi ayirt",
+    "headlineLine1": "Quran ve Arapça",
+    "headlineLine2": "öğrenme yolculuğunuza",
+    "headlineAccent": "şimdi başlayın",
+    "description": "Quran, İslami ilimler ve Arapçayı online öğrenin: birebir, adım adım. Her yaştan öğrenciye güvenilir İslami eğitim; nitelikli Al-Azhar mezunu öğretmenlerden, istediğiniz zaman, istediğiniz yerde ve evinizin rahatlığında.",
+    "cta": "Ücretsiz deneme dersinizi ayırtın",
+    "secondaryCta": "Programlarımızı keşfedin",
+    "languagesTitle": "Derslerin verildiği diller",
     "trust": {
       "online": "Online dersler",
       "schedule": "Esnek program",
-      "levels": "Tum seviyeler"
+      "levels": "Her seviyeye açık"
     }
   },
   "booking": {
     "badgeTrial": "Online rezervasyon",
-    "badgeTraining": "Ogretmen egitimi",
-    "titleTrial": "Ucretsiz deneme dersi ayirt",
-    "titleTraining": "Ogretmen egitimine katil",
-    "descTrial": "Formu doldurun, ekibimiz sizinle iletisime gececek.",
-    "descTraining": "Ogretmenlik gecmisinizi anlatin, ekibimiz uygun egitim yolu icin sizinle iletisime gececek.",
-    "toggleTrial": "Ucretsiz deneme",
-    "toggleTraining": "Ogretmen egitimi",
-    "successTitle": "Basvuru alindi",
-    "successTrial": "Ucretsiz deneme basvurunuz alindi. Ekibimiz yakinda iletisime gececek.",
-    "successTraining": "Ogretmen egitimi basvurunuz alindi. Ekibimiz yakinda iletisime gececek.",
+    "badgeTraining": "Öğretmen eğitimi",
+    "titleTrial": "Ücretsiz deneme dersi ayırtın",
+    "titleTraining": "Öğretmen eğitimine katılın",
+    "descTrial": "Formu doldurun, ekibimiz sizinle iletişime geçecek.",
+    "descTraining": "Bize öğretmenlik geçmişinizden bahsedin; ekibimiz size uygun eğitim yoluyla ilgili iletişime geçecek.",
+    "toggleTrial": "Ücretsiz deneme dersi",
+    "toggleTraining": "Öğretmen eğitimi",
+    "successTitle": "Talebiniz alındı",
+    "successTrial": "Ücretsiz deneme dersi talebiniz alındı. Ekibimiz kısa süre içinde sizinle iletişime geçecek.",
+    "successTraining": "Öğretmen eğitimi talebiniz alındı. Ekibimiz kısa süre içinde sizinle iletişime geçecek.",
     "continueWhatsapp": "WhatsApp'ta devam et",
-    "submitAnother": "Baska basvuru gonder",
-    "submitTrial": "Deneme dersi ayirt",
-    "submitTraining": "Egitim basvurusu gonder",
-    "submitting": "Gonderiliyor...",
+    "submitAnother": "Başka bir talep gönder",
+    "submitTrial": "Ücretsiz deneme dersi ayırt",
+    "submitTraining": "Öğretmen eğitimi talebi gönder",
+    "submitting": "Gönderiliyor...",
     "requestTypes": {
-      "freeTrial": "Ucretsiz deneme",
-      "teacherTraining": "Ogretmen egitimi"
+      "freeTrial": "Ücretsiz deneme dersi",
+      "teacherTraining": "Öğretmen eğitimi"
     },
     "fields": {
       "name": "Ad soyad",
-      "whatsapp": "WhatsApp numarasi",
-      "country": "Ulke",
-      "experience": "Ogretmenlik deneyimi",
+      "whatsapp": "WhatsApp numarası",
+      "country": "Ülke",
+      "experience": "Öğretmenlik deneyimi",
       "qualification": "Mevcut yeterlilik",
-      "trainingGoal": "Egitim hedefi",
-      "studentAge": "Ogrenci yasi",
-      "program": "Ilgilenilen program",
-      "preferredTrainingTime": "Tercih edilen egitim saati",
+      "trainingGoal": "Eğitim hedefi",
+      "studentAge": "Öğrencinin yaşı",
+      "program": "İlgilenilen program",
+      "preferredTrainingTime": "Tercih edilen eğitim saati",
       "preferredClassTime": "Tercih edilen ders saati",
-      "message": "Mesaj (istege bagli)"
+      "message": "Mesaj (isteğe bağlı)"
     },
     "placeholders": {
-      "name": "Adinizi ve soyadinizi girin",
-      "whatsapp": "Phone number",
-      "country": "Ulkenizi secin",
-      "experience": "Deneyim secin",
-      "qualification": "Yeterlilik secin",
-      "trainingGoal": "Egitim hedefi secin",
+      "name": "Adınızı ve soyadınızı girin",
+      "whatsapp": "Telefon numarası",
+      "country": "Ülkenizi seçin",
+      "experience": "Deneyimi seçin",
+      "qualification": "Yeterliliği seçin",
+      "trainingGoal": "Eğitim hedefini seçin",
       "studentAge": "Yaşı girin",
-      "program": "Program secin",
-      "preferredTime": "Tercih edilen zamani secin",
-      "message": "Eklemek istediginiz bilgiler...",
-      "email": "E-postanizi girin"
+      "program": "Bir program seçin",
+      "preferredTime": "Tercih edilen saati seçin",
+      "message": "Bilmemiz gereken başka bir şey varsa yazın...",
+      "email": "E-posta adresinizi girin"
     },
     "options": {
+      "country": {
+        "other": "Diğer"
+      },
       "experience": {
         "none": "Deneyim yok",
-        "lessThanOne": "1 yildan az",
-        "oneToTwo": "1-2 yil",
-        "threePlus": "3+ yil"
+        "lessThanOne": "1 yıldan az",
+        "oneToTwo": "1-2 yıl",
+        "threePlus": "3 yıl ve üzeri"
       },
       "qualification": {
-        "quranTeacher": "Quran ogretmeni",
-        "arabicTeacher": "Arapca ogretmeni",
-        "islamicStudiesTeacher": "Islami ilimler ogretmeni",
+        "quranTeacher": "Quran öğretmeni",
+        "arabicTeacher": "Arapça öğretmeni",
+        "islamicStudiesTeacher": "İslami ilimler öğretmeni",
         "ijazahHolder": "Ijazah sahibi",
-        "studentOfKnowledge": "Ilm talebesi",
-        "other": "Diger"
+        "studentOfKnowledge": "İlim talebesi",
+        "other": "Diğer"
       },
       "trainingGoal": {
-        "teachNonArabic": "Arapca bilmeyenlere ogretmek",
-        "onlineTeaching": "Online ogretim becerilerini gelistirmek",
-        "lessonPlanning": "Ders planlamasi ogrenmek",
-        "studentFollowUp": "Ogrenci takibini gelistirmek",
-        "joinAcademy": "Musliman Academy ogretmenlerine katilmak",
-        "other": "Diger"
+        "teachNonArabic": "Arapça bilmeyenlere öğretmek",
+        "onlineTeaching": "Online öğretim becerilerini geliştirmek",
+        "lessonPlanning": "Ders planlamayı öğrenmek",
+        "studentFollowUp": "Öğrenci takibini geliştirmek",
+        "joinAcademy": "Musliman Academy öğretmenlerine katılmak",
+        "other": "Diğer"
       },
       "studentAge": {
-        "child": "Cocuk",
-        "teenager": "Genc",
-        "adult": "Yetiskin"
+        "child": "Çocuk",
+        "teenager": "Genç",
+        "adult": "Yetişkin"
       },
       "preferredTime": {
         "morning": "Sabah",
-        "afternoon": "Ogle",
-        "evening": "Aksam",
+        "afternoon": "Öğleden sonra",
+        "evening": "Akşam",
         "flexible": "Esnek"
       }
     },
     "validation": {
       "required": "Bu alan zorunludur.",
       "ageRange": "3 ile 100 arasında geçerli bir yaş girin.",
-      "submitError": "Bir seyler ters gitti. Lutfen tekrar deneyin veya WhatsApp'tan bize ulasin."
+      "submitError": "Bir sorun oluştu. Lütfen tekrar deneyin veya WhatsApp üzerinden bize ulaşın."
     },
     "whatsapp": {
-      "trialIntro": "Merhaba Musliman Academy, ucretsiz deneme dersi ayirtmak istiyorum.",
-      "trainingIntro": "Merhaba Musliman Academy, ogretmen egitimi programina katilmak istiyorum.",
-      "requestType": "Basvuru turu",
+      "trialIntro": "Merhaba Musliman Academy, ücretsiz deneme dersi ayırtmak istiyorum.",
+      "trainingIntro": "Merhaba Musliman Academy, Öğretmen Eğitimi programına katılmak istiyorum.",
+      "requestType": "Talep türü",
       "name": "Ad",
       "whatsapp": "WhatsApp",
-      "country": "Ulke",
-      "studentAge": "Ogrenci yasi",
+      "country": "Ülke",
+      "studentAge": "Öğrencinin yaşı",
       "program": "Program",
-      "experience": "Ogretmenlik deneyimi",
+      "experience": "Öğretmenlik deneyimi",
       "qualification": "Mevcut yeterlilik",
-      "trainingGoal": "Egitim hedefi",
-      "preferredTime": "Tercih edilen zaman",
+      "trainingGoal": "Eğitim hedefi",
+      "preferredTime": "Tercih edilen saat",
       "message": "Mesaj"
     }
   },
   "about": {
-    "badge": "Musliman Academy hakkinda",
-    "heading": "Her ogrencinin bir yolu vardir",
-    "lead": "Musliman Academy'de dogru yontem, sabirli rehberlik ve adim adim destekle ogrenmeyi basit, net ve ulasilabilir hale getiriyoruz.",
-    "paragraph1": "Her ogrenci farkli ogrenir. Bu nedenle her seviyeye ve ihtiyaca uygun, sabirli ve sade online egitim sunuyoruz.",
-    "paragraph2": "Akademi Quran, Arapca, Tajweed, Islami ilimler, Islami degerler, ezber, Tafseer ve ogretmen egitimi programlari sunar.",
-    "imageAlt": "Quran ogrenme gorseli"
+    "badge": "Musliman Academy hakkında",
+    "heading": "Kendi hızınızda öğrenin. Güvenle gelişin.",
+    "lead": "Kişiye özel rehberlik, öğretmeninizden sürekli destek ve hedeflerinize, seviyenize ve ilerlemenize göre hazırlanmış bir öğrenme planı edinin.",
+    "paragraph1": "Musliman Academy olarak her öğrencinin kendine ait bir yolu olduğuna inanıyoruz. Her öğrenci farklı öğrenir; bu yüzden her öğrencinin seviyesine ve ihtiyaçlarına göre tasarlanmış sade, sabırlı ve adım adım ilerleyen online Quran dersleri ve yeni başlayanlar için Arapça dersleri sunuyoruz.",
+    "paragraph2": "Akademi; çocuklar için Quran okuma, online Tajweed dersleri, Arapça, çocuklar için İslami ilimler, Quran ezberi, Quran Tafseer, Tarteel Qaidah ve Quran öğretmenleri için öğretmen eğitimi programlarını, Al-Azhar eğitim geçmişine sahip nitelikli Mısırlı Quran öğretmenleriyle sunar.",
+    "imageAlt": "Quran öğrenme görseli",
+    "benefits": {
+      "oneOnOne": {
+        "title": "Birebir öğrenme",
+        "text": "Öğretmeninizin tüm dikkatini sizin öğreniminize ve ilerlemenize verdiği özel derslerin keyfini çıkarın."
+      },
+      "personalizedPlan": {
+        "title": "Kişiye özel öğrenme planı",
+        "text": "Quran, Tajweed, Arapça veya İslami ilimler öğreniyor olun, dersleriniz seviyenize ve hedeflerinize göre uyarlanır."
+      },
+      "realTimeFeedback": {
+        "title": "Anında geri bildirim",
+        "text": "Her derste anında düzeltme ve yönlendirme alarak doğru ve özgüvenle gelişin."
+      },
+      "flexibleSchedule": {
+        "title": "Esnek ve düzenli program",
+        "text": "Hayatınıza uyan esnek saatlerle sizi motive eden ve ilerleten düzenli bir öğrenme alışkanlığı oluşturun."
+      },
+      "progressTracking": {
+        "title": "İlerleme takibi",
+        "text": "Gelişiminizi açıkça görmeniz ve bir sonraki adımda neye odaklanacağınızı bilmeniz için düzenli geri bildirim ve ilerleme raporları alın."
+      }
+    }
   },
   "trust": {
-    "experiencedTeachers": "Deneyimli Misirli ogretmenler",
-    "ijazahCertified": "Ijazah sertifikali ogretmenler",
-    "azharBackground": "Al-Azhar egitim gecmisi",
-    "personalizedPlans": "Kisisel ogrenme planlari",
-    "liveOnline": "Canli online dersler",
-    "smallGroups": "Birebir ve kucuk gruplar",
-    "parentFollowUp": "Veli takibi",
-    "freeTrial": "Ucretsiz deneme dersi",
-    "allLevels": "Tum seviyeler"
+    "experiencedTeachers": "Deneyimli Mısırlı öğretmenler",
+    "qualifiedCertified": "Nitelikli ve sertifikalı öğretmenler",
+    "azharBackground": "Al-Azhar eğitim geçmişi",
+    "personalizedPlans": "Kişiye özel öğrenme planları",
+    "liveOnline": "Canlı online dersler",
+    "smallGroups": "Birebir ve küçük grup dersleri",
+    "parentFollowUp": "Veli bilgilendirmesi",
+    "freeTrial": "Ücretsiz deneme dersi",
+    "allLevels": "Her seviyeye açık"
   },
   "programs": {
-    "badge": "Programlarimiz",
-    "heading": "Dogru ogrenme yolunu secin",
-    "description": "Her seviye, yas ve hedef icin guvenle ogrenmenizi saglayan programlar.",
+    "badge": "Programlarımız",
+    "heading": "Doğru öğrenme yolunu seçin",
+    "description": "Online Quran dersleri, online Tajweed dersleri, yeni başlayanlar için Arapça ve çocuklar için İslami ilimler dahil, her seviye, yaş ve hedefe uygun programlar.",
     "learnMore": "Daha fazla bilgi",
     "items": {
-      "quranReading": { "title": "Quran okuma" },
-      "tarteelQaidah": { "title": "Tarteel Qaidah" },
-      "quranMemorization": { "title": "Quran ezberi" },
-      "tajweed": { "title": "Tajweed" },
-      "quranTafseer": { "title": "Quran Tafseer" },
-      "arabicLanguage": { "title": "Arapca dili" },
-      "islamicStudies": { "title": "Islami ilimler" },
-      "islamicValues": { "title": "Cocuklar icin Islami degerler" }
+      "quranReading": {
+        "title": "Quran okuma",
+        "text": "Adım adım rehberlik, net telaffuz ve sürekli düzeltmeyle Quran'ı online öğrenin ve doğru okuyun."
+      },
+      "tarteelQaidah": {
+        "title": "Tarteel Qaidah",
+        "text": "Arap harfleri ve seslerinden başlayın, ardından Quran kelimelerini ve ayetlerini okumaya ve güvenle tilavet etmeye ilerleyin."
+      },
+      "quranMemorization": {
+        "title": "Quran ezberi",
+        "text": "Öğrencilerin etkili şekilde ezberlemesine yardımcı olan, tekrar, düzeltme ve düzenli takip içeren yapılandırılmış bir ezber programı."
+      },
+      "tajweed": {
+        "title": "Tajweed",
+        "text": "Tajweed kurallarını sade, pratik ve kolay uygulanabilir bir şekilde öğrenerek Quran tilavetinizi geliştirin."
+      },
+      "quranTafseer": {
+        "title": "Quran Tafseer",
+        "text": "Öğrencinin yaşına ve seviyesine uygun sadeleştirilmiş açıklamalarla Quran ayetlerinin anlamlarını kavrayın."
+      },
+      "arabicLanguage": {
+        "title": "Arapça dili",
+        "text": "Harfler, telaffuz, okuma, yazma ve temel anlamayı kapsayan, sağlam bir dil temeli oluşturan yeni başlayanlar için Arapça dersleri."
+      },
+      "islamicStudies": {
+        "title": "İslami ilimler",
+        "text": "Çocuklar ve yetişkinler için inanç, ibadet, Seerah, adab ve ahlak konularını açık ve sade bir şekilde ele alan İslami ilimler."
+      },
+      "islamicValues": {
+        "title": "Çocuklar için İslami değerler",
+        "text": "Dürüstlük, saygı, merhamet, yardımlaşma ve öğrenme sevgisi gibi pratik değerlerle çocukların güzel bir İslami karakter kazanmasına yardımcı olun."
+      }
     }
   },
   "pricing": {
-    "badge": "Pricing Plans",
-    "heading": "Schedule & Fee",
-    "subtitle": "Aylık planlar, her biri 30 dakika süren 8 ders içerir; ayda toplam 4 saat eğitim sunulur.",
-    "currencyAria": "Select currency",
+    "badge": "Ücret planları",
+    "heading": "Program ve Ücretler",
+    "subtitle": "Aylık planlar, her biri 30 dakika süren 8 ders içerir; ayda toplam 4 saatlik eğitim.",
+    "currencyAria": "Para birimi seçin",
+    "currencies": {
+      "USD": "ABD doları",
+      "CAD": "Kanada doları",
+      "GBP": "İngiliz sterlini",
+      "AUD": "Avustralya doları"
+    },
     "columns": {
       "program": "Program",
-      "tier": "Tier",
-      "oneOnOne": "1-on-1 Class",
-      "group": "Group Class",
-      "monthly": "Monthly Plan"
+      "tier": "Kademe",
+      "oneOnOne": "Birebir ders",
+      "group": "Grup dersi",
+      "monthly": "Aylık plan"
     },
-    "note": "All prices are starting prices and may vary depending on the selected program, class type, and learning plan.",
-    "ctaText": "Flexible plans designed for different learning goals.",
-    "cta": "Book a Free Trial"
+    "tiers": {
+      "Foundational": "Temel",
+      "Standard": "Standart",
+      "Specialized": "Uzmanlık"
+    },
+    "units": {
+      "hour": "Saat",
+      "month": "Ay"
+    },
+    "scrollHint": "Tüm ücret ayrıntılarını görmek için kaydırın",
+    "note": "Tüm fiyatlar başlangıç fiyatlarıdır ve seçilen programa, ders türüne ve öğrenme planına göre değişebilir.",
+    "ctaText": "Farklı öğrenme hedefleri için tasarlanmış esnek planlar.",
+    "cta": "Ücretsiz deneme dersi ayırtın"
   },
   "audience": {
-    "badge": "Kimlere ogretiyoruz",
-    "headingLine1": "Her asama ve",
-    "headingLine2": "seviye icin egitim",
-    "description": "Cocuklara, yetiskinlere, baslangic seviyesindekilere ve Arapca bilmeyenlere sade, sabirli ve adim adim online egitim veriyoruz.",
-    "visualAlt": "Farkli ogrenciler icin online ogrenme",
-    "reassurance": "Kim olursaniz olun ve nereden gelirseniz gelin, burada hos geldiniz.",
-    "reassuranceStrong": "Ogrenmenize, gelismenize ve Quran ile imanla bagli kalmaniza yardim etmek icin buradayiz."
+    "badge": "Kimlere öğretiyoruz",
+    "headingLine1": "Her aşama ve seviye",
+    "headingLine2": "için öğrenme",
+    "description": "Arapça bilmeyenler için Quran dersleri ve sade, sabırlı, adım adım ilerleyen online eğitimle çocuklara, yetişkinlere, Arapça bilmeyenlere, yeni başlayanlara ve ileri seviye öğrencilere öğretiyoruz.",
+    "visualAlt": "Farklı öğrenciler için online öğrenme",
+    "reassurance": "Kim olursanız olun, nereden gelirseniz gelin, burada hoş karşılanırsınız.",
+    "reassuranceStrong": "Öğrenmeniz, gelişmeniz ve Quran'la ve inancınızla bağınızı korumanız için yanınızdayız."
   },
   "whyChoose": {
     "badge": "Neden Musliman Academy",
-    "headingLine1": "Basit ve guvenilir",
-    "headingLine2": "bir ogrenme deneyimi",
-    "description": "Quran, Arapca ve Islami ilimleri her yas, seviye ve gecmis icin kolay, etkili ve anlamli hale getiriyoruz.",
-    "visualAlt": "Guvenilir online Quran ogrenme deneyimi",
+    "headingLine1": "Sade ve güvenilir",
+    "headingLine2": "bir öğrenme deneyimi",
+    "description": "Online Quran derslerini, Arapçayı, Tajweed'i ve İslami ilimleri her geçmişten, yaştan ve seviyeden öğrenci için kolay, etkili ve anlamlı hale getiriyoruz.",
+    "intro": {
+      "paragraph1": "Musliman Academy'de sertifikalı eğitmenlerle kişiye özel online derslerle Quran öğrenmeyi sade, erişilebilir ve anlamlı hale getiriyoruz. Esnek programlarımız ve güvenli öğrenme ortamımız, öğrencilerin her yerden kendi hızlarında öğrenmesini sağlar.",
+      "paragraph2": "Doğru Tajweed'e, sürekli rehberliğe ve adım adım ilerlemeye odaklanarak her öğrencinin özgüven kazanmasına ve Allah'ın kelamıyla bağ kurmasına yardımcı oluyoruz."
+    },
+    "visualAlt": "Güvenilir online Quran öğrenme deneyimi",
     "stats": {
-      "students": "Egitilen ogrenci",
-      "teachers": "Uzman ogretmen",
-      "countries": "Hizmet verilen ulke"
+      "students": "Ders verilen öğrenci",
+      "teachers": "Uzman öğretmen",
+      "countries": "Hizmet verilen ülke"
+    },
+    "items": {
+      "qualifiedTeachers": {
+        "title": "Nitelikli Mısırlı öğretmenler",
+        "description": "Deneyimli, sabırlı ve sertifikalı Mısırlı öğretmenlerle öğrenin."
+      },
+      "azharBackground": {
+        "title": "Al-Azhar eğitim geçmişi",
+        "description": "Sahih İslami bilgi ve değerlerde sağlam bir temel."
+      },
+      "simpleApproach": {
+        "title": "Arapça bilmeyenler için sade yaklaşım",
+        "description": "Anlayış ve özgüven kazandırmak için tasarlanmış adım adım dersler."
+      },
+      "allLevels": {
+        "title": "Her seviyeye uygun",
+        "description": "Başlangıçtan ileri seviyeye kadar size uygun bir programımız var."
+      },
+      "flexibleClasses": {
+        "title": "Esnek birebir ve küçük grup dersleri",
+        "description": "Programınıza ve hedeflerinize uyan formatı seçin."
+      },
+      "parentReports": {
+        "title": "Veli takibi ve raporlar",
+        "description": "Çocuğunuzun ilerlemesiyle ilgili düzenli bilgilendirmelerle haberdar olun."
+      },
+      "safeLearning": {
+        "title": "Güvenli online öğrenme ortamı",
+        "description": "Odaklı İslami öğrenim için güvenli, saygılı ve denetimli bir ortam."
+      },
+      "freeTrial": {
+        "title": "Ücretsiz deneme dersi",
+        "description": "Bir dersi ücretsiz deneyin ve Musliman Academy farkını yaşayın."
+      }
     }
   },
   "how": {
-    "eyebrow": "Nasil calisir",
-    "heading": "4 basit adimda baslayin",
-    "description": "Musliman Academy'de baslamak kolay ve zahmetsizdir."
+    "eyebrow": "Nasıl işler",
+    "heading": "4 basit adımda öğrenmeye başlayın",
+    "description": "Musliman Academy'de başlamak kolay ve zahmetsizdir.",
+    "steps": {
+      "freeTrial": {
+        "title": "Ücretsiz deneme",
+        "text": "Ücretsiz deneme dersinizi ayırtın ve nitelikli bir öğretmenle öğretim yaklaşımımızı deneyimleyin."
+      },
+      "findPlan": {
+        "title": "Planınızı bulun",
+        "text": "Hedeflerinize ve seviyenize uygun kursu ve öğrenme yolunu seçin."
+      },
+      "setSchedule": {
+        "title": "Programınızı belirleyin",
+        "text": "Size uygun bir saat seçin ve düzenli derslerinizi ayırtın."
+      },
+      "startLearning": {
+        "title": "Öğrenmeye başlayın",
+        "text": "Kaydınızı tamamlayın ve öğrenme yolculuğunuza güvenle başlayın."
+      }
+    }
   },
   "training": {
-    "badge": "Ogretmen egitimi programi",
-    "heading": "Ogretmenleri guvenle ogretmeye hazirla",
-    "description": "Quran, Arapca ve Islami degerler ogretimini gelistirmek isteyen yeni ve deneyimli ogretmenler icin pratik egitim.",
-    "cta": "Ogretmen egitimine katil"
+    "badge": "Öğretmen eğitimi programı",
+    "heading": "Öğretmenleri özgüvenle öğretmeye hazırlıyoruz",
+    "description": "Arapça bilmeyenlere yönelik öğretim yöntemlerini geliştirmek isteyen Quran, Arapça ve İslami ilimler öğretmenleri için tasarlanmış pratik bir online eğitim programı.",
+    "cta": "Öğretmen eğitimine katılın",
+    "imageAlt": "Online Quran öğretmeni eğitim programı",
+    "includes": {
+      "methods": "Arapça bilmeyenler için öğretim yöntemleri",
+      "online": "Online öğretim teknikleri",
+      "planning": "Ders planlama ve sınıf yönetimi",
+      "progress": "Öğrenci takibi ve ilerleme değerlendirmesi"
+    },
+    "badges": {
+      "certificate": "Tamamlama belgesi",
+      "mentorship": "Uygulamalı eğitim ve mentorluk",
+      "schedule": "Esnek online program",
+      "impact": "Öğretmen olarak etkinizi artırın"
+    }
+  },
+  "testimonials": {
+    "badge": "ÖĞRENCİ HİKÂYELERİ",
+    "heading": "Dünyanın dört bir yanındaki öğrencilerin tercihi",
+    "description": "Musliman Academy ile Quran okumayı öğrenen bir öğrencinin gerçek deneyimini okuyun.",
+    "aria": {
+      "region": "Öğrenci ve veli yorumları",
+      "previous": "Önceki yorum",
+      "next": "Sonraki yorum",
+      "show": "{{index}}. yorumu göster"
+    },
+    "items": {
+      "mazinStudentBeginning": {
+        "name": "Bir Quran öğrencisi",
+        "country": "Amerika Birleşik Devletleri",
+        "program": "Quran okuma",
+        "quote": "İlk başladığımda Quran'ı hiç okuyamıyordum. Arap alfabesini bile pek bilmiyordum, yani tamamen en baştan başlıyordum. Ne kadar hızlı öğreneceğimden emin değildim ama Mazen kardeş bütün süreci takip etmesi kolay hale getirdi ve beni hiç cesaretsiz hissettirmedi."
+      },
+      "mazinStudentProgress": {
+        "name": "Bir Quran öğrencisi",
+        "country": "Amerika Birleşik Devletleri",
+        "program": "Quran okuma",
+        "quote": "Elhamdülillah, Allah'ın rahmetiyle ve Mazen kardeşin rehberliği sayesinde artık Quran'ı elime alıp okuyabiliyorum. Hâlâ öğrenecek çok şeyim var ama nereden başladığımı düşündüğümde, geçen yıl onunla ne kadar ilerleme kaydettiğime şaşırıyorum."
+      },
+      "mazinStudentStructure": {
+        "name": "Bir Quran öğrencisi",
+        "country": "Amerika Birleşik Devletleri",
+        "program": "Quran okuma",
+        "quote": "Öğretim tarzı düzenli, cesaret verici ve takip etmesi kolay. Her ders bir öncekinin üzerine kurulduğu için bunalmadan istikrarlı şekilde ilerlemeye devam ediyorsunuz. Hata yaptığınızda bile denemeye devam etmeniz için size güven veriyor ve bu, öğrenimimde çok büyük bir fark yarattı."
+      },
+      "mazinStudentPatience": {
+        "name": "Bir Quran öğrencisi",
+        "country": "Avustralya",
+        "program": "Quran okuma",
+        "quote": "Bir öğretmen olarak en büyük güçlü yanlarından biri sabrı. Her dersi açıkça anlatmak için zaman ayırıyor, her şeyi basit adımlara bölüyor ve devam etmeden önce anladığınızdan emin oluyor. Bir şeyi ilk seferde anlamazsanız, sonunda kafanıza yatana kadar farklı bir şekilde yeniden anlatmaktan her zaman memnuniyet duyuyor."
+      },
+      "mazinStudentPrayer": {
+        "name": "Bir Quran öğrencisi",
+        "country": "Avustralya",
+        "program": "Quran okuma",
+        "quote": "Allah (SWT) onu bereketlendirsin, emeklerinin karşılığını bolca versin ve öğretimine bereket versin, inşallah. Amin."
+      }
+    }
+  },
+  "teachers": {
+    "badge": "ÖĞRETMENLERİMİZ",
+    "heading": "Deneyimli ve ilgili öğretmenlerden öğrenin",
+    "description": "Sağlam İslami bilgiyi, öğretim deneyimini ve her öğrenciye kişisel yaklaşımı bir araya getiren nitelikli öğretmenlerle öğrenin.",
+    "languagesLabel": "Diller",
+    "experienceLabel": "Deneyim",
+    "specializationLabel": "Uzmanlık",
+    "viewProfile": "Profili görüntüle",
+    "languages": {
+      "Arabic": "Arapça",
+      "English": "İngilizce"
+    },
+    "aria": {
+      "region": "Musliman Academy öğretmenleri",
+      "previous": "Önceki öğretmenler",
+      "next": "Sonraki öğretmenler"
+    },
+    "items": {
+      "mazinYasser": {
+        "name": "Mazin Yasser",
+        "specialization": "Quran, Tajweed, İslami ilimler",
+        "experience": "3+ yıl"
+      },
+      "fatimahAlShazly": {
+        "name": "Fatimah Al Shazly",
+        "specialization": "Quran, Tajweed, İslami ilimler",
+        "experience": "5+ yıl"
+      },
+      "ahmedYasser": {
+        "name": "Ahmed Yasser",
+        "specialization": "Quran, Tajweed, İslami ilimler",
+        "experience": "2+ yıl"
+      },
+      "gehadRagab": {
+        "name": "Gehad Ragab",
+        "specialization": "Quran, Tajweed, İslami ilimler",
+        "experience": "4+ yıl"
+      },
+      "yossefAbdEltwab": {
+        "name": "Yossef Abd Eltwab",
+        "specialization": "Quran, Tajweed, İslami ilimler",
+        "experience": "3+ yıl"
+      }
+    }
   },
   "faq": {
     "eyebrow": "SSS",
-    "heading": "Sik sorulan sorular",
-    "description": "Online Islami ve Arapca derslerimiz hakkinda sik sorulan sorularin cevaplari.",
-    "cardTitle": "Hala sorulariniz var mi?",
-    "cardText": "Ogrenme yolculugunuzda size yardim etmek icin buradayiz.",
-    "whatsappCta": "WhatsApp'tan bize ulasin",
-    "trust": "Gercek kisilerden guvenilir destek"
+    "heading": "Sıkça sorulan sorular",
+    "description": "Online İslami ilimler ve Arapça derslerimizle ilgili sık sorulan soruların yanıtlarını bulun.",
+    "cardTitle": "Hâlâ sorunuz mu var?",
+    "cardText": "Öğrenme yolculuğunuzda size yardımcı olmak için buradayız.",
+    "whatsappCta": "WhatsApp üzerinden bize ulaşın",
+    "trust": "Gerçek kişilerden güvenilir destek",
+    "followSocial": "Bizi sosyal medyada takip edin",
+    "socialAria": "Musliman Academy sosyal medya bağlantıları",
+    "followPlatform": "Musliman Academy'yi {{platform}} üzerinde takip edin",
+    "q1": {
+      "question": "Dersler online mı?",
+      "answer": "Evet, tüm derslerimiz %100 online. Dünyanın her yerinden, size uygun bir saatte, evinizin rahatlığında öğrenebilirsiniz."
+    },
+    "q2": {
+      "question": "Hiç bilmeyen yeni başlayanlara da ders veriyor musunuz?",
+      "answer": "Evet, hiç bilmeyen yeni başlayanlara temelden başlayarak, özgüven kazanana kadar adım adım ders veriyoruz."
+    },
+    "q3": {
+      "question": "Çocuklara ve yetişkinlere ders veriyor musunuz?",
+      "answer": "Evet, çocuklara, yetişkinlere, yeni başlayanlara ve ileri seviye öğrencilere ders veriyoruz."
+    },
+    "q4": {
+      "question": "Ücretsiz deneme dersi var mı?",
+      "answer": "Evet, öğrenme planınıza başlamadan önce ücretsiz bir deneme dersi ayırtabilirsiniz."
+    },
+    "q5": {
+      "question": "Veliler çocuklarının ilerlemesini takip edebilir mi?",
+      "answer": "Evet, veliler düzenli takip ve ilerleme bilgilendirmeleri alır."
+    },
+    "q6": {
+      "question": "Birebir ders veriyor musunuz?",
+      "answer": "Evet, öğrencinin ihtiyaçlarına göre birebir dersler ve küçük grup dersleri sunuyoruz."
+    },
+    "q7": {
+      "question": "Musliman Academy'de Quran derslerine nasıl başlarım?",
+      "answer": "Ücretsiz bir deneme dersi ayırtarak başlayabilirsiniz. Bilgilerinizi gönderdikten sonra ekibimiz seviyenizi, hedeflerinizi ve tercih ettiğiniz programı öğrenmek için sizinle iletişime geçer. Ardından uygun bir öğretmen ve öğrenme planı seçmenize yardımcı oluruz."
+    },
+    "q8": {
+      "question": "Musliman Academy'de kadın Quran öğretmenleri var mı?",
+      "answer": "Evet, Musliman Academy'de kız kardeşlerimiz ve genç kızlar için nitelikli kadın Quran öğretmenleri bulunmaktadır. Öğretmenlerimiz Quran okuma, Tajweed, ezber ve İslami öğrenim konusunda destekleyici bir online ortamda sabırlı rehberlik sunar."
+    },
+    "q9": {
+      "question": "Quran ders saatleri ne kadar esnek?",
+      "answer": "Quran ders saatlerimiz esnektir ve farklı ülkelerdeki ve saat dilimlerindeki öğrencilere uygun olacak şekilde planlanır. İster veli, ister öğrenci, ister çalışan olun, dersleriniz için uygun bir saat seçmenize yardımcı oluruz."
+    },
+    "q10": {
+      "question": "Quran'ı online nasıl öğrenebilirim?",
+      "answer": "Quran'ı nitelikli öğretmenlerle canlı birebir veya küçük grup dersleriyle online öğrenebilirsiniz. Musliman Academy, yeni başlayanlar ve ileri seviye öğrenciler için adım adım Quran okuma, Tajweed, ezber ve düzeltme dersleri sunar."
+    }
   },
   "footer": {
-    "aboutText": "Musliman Academy, Arapca bilmeyenlere Quran, Arapca ve Islami degerleri ogreten guvenilir bir online platformdur.",
-    "stayConnected": "Baglantida kalin",
-    "subscribeText": "Yeni programlar, dersler ve tekliflerle ilgili guncellemeler alin.",
+    "aboutText": "Musliman Academy, Quran ve Arapça öğrenimini her öğrenci için açık, erişilebilir ve anlamlı kılmaya yönelik mütevazı bir çabadır.",
+    "stayConnected": "Bağlantıda kalın",
+    "subscribeText": "Yeni programlar, dersler ve özel fırsatlarla ilgili güncellemeleri alın.",
     "programs": "Programlar",
-    "quickLinks": "Hizli baglantilar",
-    "contact": "Iletisim",
-    "teacherTraining": "Ogretmen egitimi",
-    "bookFreeTrial": "Ucretsiz deneme",
+    "quickLinks": "Hızlı bağlantılar",
+    "contact": "İletişim",
+    "teacherTraining": "Öğretmen eğitimi",
+    "bookFreeTrial": "Ücretsiz deneme dersi",
     "whatsapp": "WhatsApp",
     "email": "E-posta",
     "website": "Web sitesi",
-    "copyright": "Copyright 2026 Musliman Academy. Tum haklari saklidir.",
-    "trusted": "Guvenilir online Islami egitim"
+    "copyright": "Copyright 2026 Musliman Academy. Tüm hakları saklıdır.",
+    "trusted": "Güvenilir online İslami eğitim"
   }
 }

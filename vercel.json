@@ -13,12 +13,24 @@
       "dest": "https://musliman-academy-public.vercel.app/"
     },
     {
+      "src": "^/index\\.html/?$",
+      "dest": "https://musliman-academy-public.vercel.app/"
+    },
+    {
+      "src": "^/(en|ar|es|de|it|ur|tr)/?$",
+      "dest": "https://musliman-academy-public.vercel.app/$1"
+    },
+    {
       "src": "^/(en|ar|es|de|it|ur|tr)/(.*)$",
       "dest": "https://musliman-academy-public.vercel.app/$1/$2"
     },
     {
       "src": "^/_next/(.*)$",
       "dest": "https://musliman-academy-public.vercel.app/_next/$1"
+    },
+    {
+      "src": "^/teacher-photos/([a-z0-9-]+\\.jpg)$",
+      "dest": "https://musliman-academy-public.vercel.app/teacher-photos/$1"
     },
     {
       "src": "^/(sitemap\\.xml|robots\\.txt|manifest\\.webmanifest|opengraph-image)$",

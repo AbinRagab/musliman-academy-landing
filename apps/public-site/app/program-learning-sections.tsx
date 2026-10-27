@@ -61,7 +61,7 @@ export default function ProgramLearningSections({ lang }: { lang: string }) {
           </details>;
         })}
       </div>
-      <div className="program-learning__cta"><Link className="btn btn-primary" href={`/?lang=${lang}#book-trial`}>{copy.cta}</Link></div>
+      <div className="program-learning__cta"><Link className="btn btn-primary" href={`/${lang}#book-trial`}>{copy.cta}</Link></div>
     </section>
   </div>;
 }

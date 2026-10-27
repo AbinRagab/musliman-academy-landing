@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
     root: repositoryRoot,
   },
   poweredByHeader: false,
+  experimental: {
+    // The root layout lives under app/[lang], so unmatched URLs need a
+    // standalone 404 document.
+    globalNotFound: true,
+  },
 };
 
 export default nextConfig;

@@ -23,6 +23,7 @@
     "nextFeature": "Next feature",
     "showFeaturePage": "Show feature page {{page}}",
     "floatingWhatsapp": "Contact Musliman Academy on WhatsApp",
+    "dismissWhatsappGreeting": "Hide WhatsApp greeting",
     "trustHighlights": "Academy trust highlights",
     "switchToTheme": "Switch to {{theme}} theme"
   },
@@ -204,7 +205,7 @@
   },
   "trust": {
     "experiencedTeachers": "Experienced Egyptian Teachers",
-    "ijazahCertified": "Ijazah-Certified Teachers",
+    "qualifiedCertified": "Qualified and Certified Teachers",
     "azharBackground": "Al-Azhar Educational Background",
     "personalizedPlans": "Personalized Learning Plans",
     "liveOnline": "Live Online Classes",
@@ -542,6 +543,7 @@
     "languagesLabel": "Languages",
     "experienceLabel": "Experience",
     "specializationLabel": "Specialization",
+    "viewProfile": "View profile",
     "languages": {
       "Arabic": "Arabic",
       "English": "English"
@@ -558,7 +560,7 @@
         "experience": "3+ Years"
       },
       "fatimahAlShazly": {
-        "name": "Fatimah Al_Shazly",
+        "name": "Fatimah Al Shazly",
         "specialization": "Qur'an, Tajweed, Islamic Studies",
         "experience": "5+ Years"
       },

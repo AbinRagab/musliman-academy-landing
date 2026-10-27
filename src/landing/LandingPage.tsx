@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent, MouseEventHandler, TouchEvent, useEffect, useId, useRef, useState } from 'react';
+import { FormEvent, KeyboardEvent, MouseEvent, MouseEventHandler, TouchEvent, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
@@ -291,6 +291,8 @@ export function Navbar({
   logoHref = '#home',
   scrollToBooking = true,
   linkOverrides = {},
+  languageHref,
+  onMenuOpenChange,
 }: {
   theme: Theme;
   onToggleTheme: () => void;
@@ -300,10 +302,80 @@ export function Navbar({
   logoHref?: string;
   scrollToBooking?: boolean;
   linkOverrides?: Record<string, string>;
+  languageHref?: (language: SupportedLanguage) => string;
+  onMenuOpenChange?: (open: boolean) => void;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const logoVariant = theme === 'dark' ? 'light' : 'dark';
+  const panelId = useId();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    onMenuOpenChange?.(open);
+  }, [open, onMenuOpenChange]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    // The panel is still sliding in from off-screen, so focusing without
+    // preventScroll would scroll the page sideways and back.
+    panelRef.current?.querySelector<HTMLElement>('.mobile-panel__top .menu-button')?.focus({ preventScroll: true });
+
+    function closeOnOutsidePointer(event: PointerEvent) {
+      if (!panelRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    // The panel only exists in the compact layouts; widening the window closes it.
+    function closeWhenMenuHidden() {
+      if (menuButtonRef.current && getComputedStyle(menuButtonRef.current).display === 'none') {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    window.addEventListener('resize', closeWhenMenuHidden);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      window.removeEventListener('resize', closeWhenMenuHidden);
+    };
+  }, [open]);
+
+  function closeMenu() {
+    setOpen(false);
+    menuButtonRef.current?.focus();
+  }
+
+  // The open panel covers the page, so keyboard focus stays inside it until it closes.
+  function handlePanelKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeMenu();
+      return;
+    }
+
+    if (event.key !== 'Tab' || !panelRef.current) {
+      return;
+    }
+
+    const focusable = Array.from(panelRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'))
+      .filter((element) => !element.closest('[hidden]'));
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  }
 
   function getAnchorHref(href: string) {
     return linkOverrides[href] || (href.startsWith('#') ? `${anchorPrefix}${href}` : href);
@@ -340,24 +412,41 @@ export function Navbar({
             <Icon name="whatsapp" />
           </a>
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-          <LanguageSwitcher />
+          <LanguageSwitcher getLanguageHref={languageHref} />
           <Button href={bookingHref} onClick={handleBookTrialClick()}>{t('nav.bookFreeTrial')}</Button>
-          <button className="menu-button" type="button" aria-label={t('aria.openMenu')} onClick={() => setOpen(true)}>
+          <button
+            className="menu-button"
+            type="button"
+            ref={menuButtonRef}
+            aria-label={t('aria.openMenu')}
+            aria-expanded={open}
+            aria-controls={panelId}
+            onClick={() => setOpen(true)}
+          >
             <Icon name="menu" />
           </button>
         </div>
       </div>
-      <div className={`mobile-panel ${open ? 'is-open' : ''}`}>
+      <div
+        className={`mobile-panel ${open ? 'is-open' : ''}`}
+        id={panelId}
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('aria.mainNavigation')}
+        inert={!open}
+        onKeyDown={handlePanelKeyDown}
+      >
         <div className="mobile-panel__top">
           <Logo variant={logoVariant} href={logoHref} />
-          <button className="menu-button" type="button" aria-label={t('aria.closeMenu')} onClick={() => setOpen(false)}>
+          <button className="menu-button" type="button" aria-label={t('aria.closeMenu')} onClick={closeMenu}>
             <Icon name="x" />
           </button>
         </div>
         {navLinks.map((link) => (
           <a key={link.href} href={getAnchorHref(link.href)} onClick={() => setOpen(false)}>{t(link.labelKey)}</a>
         ))}
-        <LanguageSwitcher className="language-switcher--mobile" />
+        <LanguageSwitcher className="language-switcher--mobile" getLanguageHref={languageHref} />
         <ThemeToggle theme={theme} onToggle={onToggleTheme} className="theme-toggle--mobile" />
         <Button
           href={bookingHref}
@@ -559,8 +648,9 @@ export function SearchableCountryInput({ invalid }: { invalid: boolean }) {
   </>;
 }
 
-function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void }) {
+function BookingSection({ activeBookingType, onBookingTypeChange, requestedProgram }: { activeBookingType: BookingType; onBookingTypeChange: (type: BookingType) => void; requestedProgram?: string }) {
   const { t, i18n } = useTranslation();
+  const preselectedProgram = bookingProgramOptions.some((program) => program.key === requestedProgram) ? requestedProgram : '';
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedLead, setSubmittedLead] = useState<BookingLeadData | null>(null);
@@ -790,7 +880,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
               </div>
             </div>
           ) : (
-            <form className="booking-form" onSubmit={handleSubmit} noValidate key={`${activeBookingType}-${formResetKey}`}>
+            <form className="booking-form" onSubmit={handleSubmit} noValidate key={`${activeBookingType}-${formResetKey}-${preselectedProgram}`}>
               <div className="form-grid">
                 <label>
                   <span>{t('booking.fields.name')}</span>
@@ -853,7 +943,7 @@ function BookingSection({ activeBookingType, onBookingTypeChange }: { activeBook
                     </label>
                     <label>
                       <span>{t('booking.fields.program')}</span>
-                      <select name="program" defaultValue="" aria-invalid={Boolean(errors.program)}>
+                      <select name="program" defaultValue={preselectedProgram} aria-invalid={Boolean(errors.program)}>
                         <option value="" disabled>{t('booking.placeholders.program')}</option>
                         {bookingProgramOptions.map((program) => (
                           <option value={program.key} key={program.key}>
@@ -1093,7 +1183,8 @@ function PricingSection() {
 
 function WhyChooseSection() {
   const { t } = useTranslation();
-  const [cardsPerPage, setCardsPerPage] = useState(getWhyCardsPerPage);
+  // Matches the server render; the layout effect below sizes it to the viewport.
+  const [cardsPerPage, setCardsPerPage] = useState(4);
   const [activePage, setActivePage] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
   const totalPages = Math.ceil(reasons.length / cardsPerPage);
@@ -1123,7 +1214,7 @@ function WhyChooseSection() {
     return () => window.clearInterval(interval);
   }, [isSliderPaused, totalPages]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     function handleResize() {
       setCardsPerPage(getWhyCardsPerPage());
     }
@@ -1309,7 +1400,7 @@ function HowItWorksSection() {
   );
 }
 
-function TeachersSection() {
+function TeachersSection({ profileHref }: { profileHref?: (teacherId: string) => string }) {
   const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(3);
@@ -1431,6 +1522,11 @@ function TeachersSection() {
                       )}
                       <p><Icon name="star" /><span><strong>{t('teachers.specializationLabel')}:</strong> {t(`${teacherKey}.specialization`, { defaultValue: teacher.specialization })}</span></p>
                     </div>
+                    {profileHref && (
+                      <a className="teacher-card__profile" href={profileHref(teacher.id)} aria-label={`${t('teachers.viewProfile')}: ${fullName}`}>
+                        {t('teachers.viewProfile')} <span className="teacher-card__profile-arrow" aria-hidden="true">→</span>
+                      </a>
+                    )}
                   </div>
                 </article>
                 );
@@ -1482,6 +1578,7 @@ function TeacherTrainingSection({ onSelectBookingType }: { onSelectBookingType: 
 function FAQSection() {
   const { t } = useTranslation();
   const [openIndex, setOpenIndex] = useState(0);
+  const idPrefix = useId();
 
   return (
     <section className="faq section-light" id="faq">
@@ -1496,20 +1593,27 @@ function FAQSection() {
           <div className="accordion-list">
             {faqs.map((faq, index) => {
               const isOpen = openIndex === index;
+              const questionId = `${idPrefix}faq-${faq.key}-question`;
+              const answerId = `${idPrefix}faq-${faq.key}-answer`;
               return (
                 <div className={`accordion ${isOpen ? 'is-open' : ''}`} key={faq.key}>
-                  <button type="button" onClick={() => setOpenIndex(isOpen ? -1 : index)}>
-                    <span className="accordion__icon">{isOpen ? '-' : '+'}</span>
-                    <span className="accordion__number">{index + 1}.</span>
+                  <button
+                    type="button"
+                    id={questionId}
+                    aria-expanded={isOpen}
+                    aria-controls={answerId}
+                    onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                  >
+                    <span className="accordion__icon" aria-hidden="true">{isOpen ? '-' : '+'}</span>
+                    <span className="accordion__number" aria-hidden="true">{index + 1}.</span>
                     <strong>{t(`faq.${faq.key}.question`)}</strong>
                     <span className="accordion__chevron" aria-hidden="true" />
                   </button>
-                  {isOpen && (
-                    <div className="accordion__content">
-                      <Icon name={faqIcons[index] || 'question'} />
-                      <p>{t(`faq.${faq.key}.answer`)}</p>
-                    </div>
-                  )}
+                  {/* Collapsed answers stay in the DOM so aria-controls always resolves. */}
+                  <div className="accordion__content" id={answerId} role="region" aria-labelledby={questionId} hidden={!isOpen}>
+                    <Icon name={faqIcons[index] || 'question'} />
+                    <p>{t(`faq.${faq.key}.answer`)}</p>
+                  </div>
                 </div>
               );
             })}
@@ -1632,7 +1736,7 @@ const whatsappCourseMessages: Record<SupportedLanguage, string> = {
   "tr": "Selamünaleyküm! Kurslarınız, ders saatleri ve ücretleriniz hakkında bilgi almak istiyorum."
 };
 
-export default function LandingPage({ manageSeo = true, programPages = false }: { manageSeo?: boolean; programPages?: boolean }) {
+export default function LandingPage({ manageSeo = true, programPages = false, requestedBookingType, requestedProgram, languageHref }: { manageSeo?: boolean; programPages?: boolean; requestedBookingType?: BookingType; requestedProgram?: string; languageHref?: (language: SupportedLanguage) => string }) {
   const { i18n, t } = useTranslation();
   const pageLanguage = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
   const pageLinks: Record<string, string> = programPages ? {
@@ -1643,19 +1747,28 @@ export default function LandingPage({ manageSeo = true, programPages = false }: 
     program.key,
     `/${pageLanguage}/programs/${program.key === 'islamicValues' ? 'islamic-values-for-children' : program.image.split('/').pop()?.replace('.png', '')}`,
   ])) : {};
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === 'undefined') {
-      return 'light';
-    }
+  // Start from the server-rendered theme and apply the visitor's preference
+  // before the first paint, so server and client markup match on hydration.
+  const [theme, setTheme] = useState<Theme>('light');
+  const [themeResolved, setThemeResolved] = useState(false);
 
+  useLayoutEffect(() => {
     const savedTheme = window.localStorage.getItem('musliman-theme');
     if (savedTheme === 'light' || savedTheme === 'dark') {
-      return savedTheme;
+      setTheme(savedTheme);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
     }
-
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
+    setThemeResolved(true);
+  }, []);
   const [activeBookingType, setActiveBookingType] = useState<BookingType>('trial');
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (requestedBookingType) {
+      setActiveBookingType(requestedBookingType);
+    }
+  }, [requestedBookingType]);
 
   useEffect(() => {
     if (marketingAttributionCaptured) {
@@ -1667,9 +1780,13 @@ export default function LandingPage({ manageSeo = true, programPages = false }: 
   }, []);
 
   useEffect(() => {
+    if (!themeResolved) {
+      return;
+    }
+
     document.documentElement.dataset.theme = theme;
     window.localStorage.setItem('musliman-theme', theme);
-  }, [theme]);
+  }, [theme, themeResolved]);
 
   useEffect(() => {
     if (!manageSeo) {
@@ -1697,29 +1814,140 @@ export default function LandingPage({ manageSeo = true, programPages = false }: 
 
   return (
     <div className="app-shell" data-theme={theme}>
-      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} linkOverrides={pageLinks} />
+      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} linkOverrides={pageLinks} languageHref={languageHref} onMenuOpenChange={setMenuOpen} />
       <main>
         <HeroSection onSelectBookingType={setActiveBookingType} />
         <AboutSection />
-        <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} />
+        <BookingSection activeBookingType={activeBookingType} onBookingTypeChange={setActiveBookingType} requestedProgram={requestedProgram} />
         <ProgramsSection programPages={programPages} />
         <PricingSection />
         <WhyChooseSection />
         <TestimonialsSection />
         <HowItWorksSection />
-        <TeachersSection />
+        <TeachersSection profileHref={programPages ? (teacherId) => `/${pageLanguage}/teachers/${teacherId}` : undefined} />
         <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />
         <FAQSection />
       </main>
       <Footer linkOverrides={pageLinks} programLinks={footerProgramLinks} />
-      <a className="floating-whatsapp-message" href={whatsappCourseHref} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppContact}>
-        <span className="floating-whatsapp-message__brand">Musliman Academy</span>
-        <span>{whatsappCourseMessage}</span>
-        <Icon name="send" />
-      </a>
-      <a className="floating-whatsapp" href={whatsappCourseHref} target="_blank" rel="noreferrer" aria-label={t('aria.floatingWhatsapp')} onClick={trackWhatsAppContact}>
+      <FloatingWhatsApp href={whatsappCourseHref} message={whatsappCourseMessage} menuOpen={menuOpen} />
+    </div>
+  );
+}
+
+const whatsappGreetingDismissedKey = 'musliman-whatsapp-greeting-dismissed';
+
+function isFormControl(target: EventTarget | null) {
+  return target instanceof HTMLElement && target.matches('input, select, textarea, [contenteditable="true"]');
+}
+
+function FloatingWhatsApp({ href, message, menuOpen }: { href: string; message: string; menuOpen: boolean }) {
+  const { t } = useTranslation();
+  // The greeting starts hidden on the server and is revealed after hydration,
+  // once an earlier dismissal in this visit can be read.
+  const [greetingAllowed, setGreetingAllowed] = useState(false);
+  const [bookingInView, setBookingInView] = useState(false);
+  const [buttonOverBooking, setButtonOverBooking] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const buttonRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    try {
+      setGreetingAllowed(window.sessionStorage.getItem(whatsappGreetingDismissedKey) !== 'true');
+    } catch {
+      setGreetingAllowed(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const booking = document.getElementById('book-trial');
+    if (!booking || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+
+    // Whether the button's column crosses the booking card, so it would cover fields.
+    function measureOverlap() {
+      const card = booking?.querySelector('.booking-card') ?? booking;
+      const button = buttonRef.current;
+      if (!card || !button) {
+        return;
+      }
+
+      const cardBox = card.getBoundingClientRect();
+      const buttonBox = button.getBoundingClientRect();
+      setButtonOverBooking(buttonBox.left < cardBox.right && cardBox.left < buttonBox.right);
+    }
+
+    // Several changes can arrive together; the last entry is the current one.
+    const observer = new IntersectionObserver((entries) => {
+      setBookingInView(entries[entries.length - 1].isIntersecting);
+      measureOverlap();
+    });
+    observer.observe(booking);
+    window.addEventListener('resize', measureOverlap);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measureOverlap);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Covers the on-screen keyboard, which leaves little room above the field.
+    function handleFocusIn(event: FocusEvent) {
+      setEditing(isFormControl(event.target));
+    }
+
+    function handleFocusOut(event: FocusEvent) {
+      if (!isFormControl(event.relatedTarget)) {
+        setEditing(false);
+      }
+    }
+
+    document.addEventListener('focusin', handleFocusIn);
+    document.addEventListener('focusout', handleFocusOut);
+    return () => {
+      document.removeEventListener('focusin', handleFocusIn);
+      document.removeEventListener('focusout', handleFocusOut);
+    };
+  }, []);
+
+  function dismissGreeting() {
+    setGreetingAllowed(false);
+    try {
+      window.sessionStorage.setItem(whatsappGreetingDismissedKey, 'true');
+    } catch {
+      // Without storage the greeting stays closed until the next page load.
+    }
+    buttonRef.current?.focus();
+  }
+
+  // The open menu panel is modal, so both stay out of the way until it closes.
+  const showGreeting = greetingAllowed && !menuOpen && !bookingInView && !editing;
+  const showButton = !menuOpen && !editing && !(bookingInView && buttonOverBooking);
+
+  return (
+    <>
+      <div className={`floating-whatsapp-greeting ${showGreeting ? 'is-visible' : ''}`} inert={!showGreeting}>
+        <a className="floating-whatsapp-message" href={href} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppContact}>
+          <span className="floating-whatsapp-message__brand">Musliman Academy</span>
+          <span>{message}</span>
+          <Icon name="send" />
+        </a>
+        <button className="floating-whatsapp-greeting__close" type="button" aria-label={t('aria.dismissWhatsappGreeting')} onClick={dismissGreeting}>
+          <Icon name="x" />
+        </button>
+      </div>
+      <a
+        className={`floating-whatsapp ${showButton ? '' : 'is-tucked'}`}
+        href={href}
+        ref={buttonRef}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={t('aria.floatingWhatsapp')}
+        inert={!showButton}
+        onClick={trackWhatsAppContact}
+      >
         <Icon name="whatsapp" />
       </a>
-    </div>
+    </>
   );
 }

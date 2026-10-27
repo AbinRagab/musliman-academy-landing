@@ -5,7 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/dashboard/', '/login', '/auth/'],
+      // /dashboard stays crawlable so crawlers can read its noindex header;
+      // robots.txt and noindex control indexing, not access.
+      disallow: ['/login', '/auth/'],
     },
     sitemap: 'https://www.muslimanacademy.com/sitemap.xml',
   };

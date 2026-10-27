@@ -1,0 +1,317 @@
+{
+  "en": {
+    "ui": {
+      "role": "Quran, Tajweed & Islamic Studies teacher",
+      "breadcrumbLabel": "Breadcrumb",
+      "metaTitle": "{{name}} – Quran & Tajweed Teacher",
+      "metaDescription": "Meet {{name}}, a Musliman Academy teacher for Quran, Tajweed and Islamic Studies, with lessons in Arabic and English. Experience: {{experience}}.",
+      "imageAlt": "{{name}}, Musliman Academy teacher",
+      "factsLabel": "Teaching profile",
+      "cta": "Book a free trial class",
+      "ctaNote": "Trial requests go to the academy team, who suggest a suitable teacher for your level, goals and schedule. You can mention a teacher preference in the message field.",
+      "allTeachers": "Meet all teachers",
+      "aboutHeading": "About {{name}}",
+      "subjectsHeading": "Subjects with {{name}}",
+      "subjectsIntro": "Each subject has its own course page with the curriculum, lesson format and FAQs.",
+      "viewCourse": "View course",
+      "howHeading": "How learning works at Musliman Academy",
+      "howIntro": "These steps apply to every Musliman Academy teacher and program.",
+      "faqHeading": "Questions about learning with Musliman Academy",
+      "preferenceQuestion": "Can I ask to learn with {{name}}?",
+      "preferenceAnswer": "Yes. Mention your preference in the message field when you book your free trial. The team will discuss it with you; a specific teacher depends on availability and is not guaranteed.",
+      "relatedHeading": "Other Musliman Academy teachers"
+    },
+    "teachers": {
+      "mazinYasser": {
+        "intro": "Mazin Yasser is a Musliman Academy teacher with 3+ years of teaching experience.",
+        "about": "Mazin Yasser teaches Quran, Tajweed and Islamic Studies, and lessons can be held in Arabic or English."
+      },
+      "fatimahAlShazly": {
+        "intro": "Fatimah Al Shazly has 5+ years of teaching experience and teaches at Musliman Academy.",
+        "about": "Learn Quran, Tajweed and Islamic Studies with Fatimah Al Shazly, in Arabic or in English."
+      },
+      "ahmedYasser": {
+        "intro": "Ahmed Yasser teaches at Musliman Academy and has 2+ years of teaching experience.",
+        "about": "Lessons with Ahmed Yasser cover Quran, Tajweed and Islamic Studies and can be taught in Arabic or English."
+      },
+      "gehadRagab": {
+        "intro": "Gehad Ragab is part of the Musliman Academy teaching team, with 4+ years of teaching experience.",
+        "about": "With Gehad Ragab you can study Quran, Tajweed and Islamic Studies, with lessons in Arabic or English."
+      },
+      "yossefAbdEltwab": {
+        "intro": "Yossef Abd Eltwab brings 3+ years of teaching experience to Musliman Academy.",
+        "about": "Yossef Abd Eltwab teaches Quran, Tajweed and Islamic Studies in Arabic and English."
+      }
+    }
+  },
+  "ar": {
+    "ui": {
+      "role": "تدريس القرآن والتجويد والدراسات الإسلامية",
+      "breadcrumbLabel": "مسار التنقل",
+      "metaTitle": "تعلّم القرآن والتجويد مع {{name}}",
+      "metaDescription": "تعرّف على {{name}} من فريق التدريس في Musliman Academy: القرآن والتجويد والدراسات الإسلامية، بالعربية والإنجليزية. الخبرة: {{experience}}.",
+      "imageAlt": "{{name}}، من فريق التدريس في Musliman Academy",
+      "factsLabel": "معلومات التدريس",
+      "cta": "احجز حصة تجريبية مجانية",
+      "ctaNote": "تصل طلبات الحصة التجريبية إلى فريق الأكاديمية، الذي يقترح المعلم المناسب لمستواك وأهدافك ومواعيدك. يمكنك ذكر المعلم الذي تفضّله في خانة الرسالة.",
+      "allTeachers": "تعرّف على جميع المعلمين",
+      "aboutHeading": "نبذة عن {{name}}",
+      "subjectsHeading": "مواد التدريس مع {{name}}",
+      "subjectsIntro": "لكل مادة صفحة خاصة تشرح المنهج وطريقة الدروس والأسئلة الشائعة.",
+      "viewCourse": "عرض البرنامج",
+      "howHeading": "كيف يسير التعلّم في Musliman Academy",
+      "howIntro": "تنطبق هذه الخطوات على جميع معلمي Musliman Academy وبرامجها.",
+      "faqHeading": "أسئلة عن التعلّم مع Musliman Academy",
+      "preferenceQuestion": "هل يمكنني طلب الدراسة مع {{name}}؟",
+      "preferenceAnswer": "نعم. اذكر رغبتك في خانة الرسالة عند حجز الحصة التجريبية المجانية، وسيناقشها الفريق معك. يعتمد ذلك على توفّر المعلم، ولا يمكن ضمانه.",
+      "relatedHeading": "معلمون آخرون في Musliman Academy"
+    },
+    "teachers": {
+      "mazinYasser": {
+        "intro": "مازن ياسر من فريق التدريس في Musliman Academy، بخبرة تدريسية تزيد على 3 سنوات.",
+        "about": "مع مازن ياسر تتعلّم القرآن والتجويد والدراسات الإسلامية، ويمكن أن تكون الدروس بالعربية أو الإنجليزية."
+      },
+      "fatimahAlShazly": {
+        "intro": "لدى فاطمة الشاذلي خبرة تدريسية تزيد على 5 سنوات ضمن فريق التدريس في Musliman Academy.",
+        "about": "تعلّم القرآن والتجويد والدراسات الإسلامية مع فاطمة الشاذلي، بالعربية أو بالإنجليزية."
+      },
+      "ahmedYasser": {
+        "intro": "أحمد ياسر من فريق التدريس في Musliman Academy، بخبرة تدريسية تزيد على سنتين.",
+        "about": "تشمل الدروس مع أحمد ياسر القرآن والتجويد والدراسات الإسلامية، ويمكن تقديمها بالعربية أو الإنجليزية."
+      },
+      "gehadRagab": {
+        "intro": "جهاد رجب ضمن فريق التدريس في Musliman Academy، بخبرة تدريسية تزيد على 4 سنوات.",
+        "about": "مع جهاد رجب يمكنك دراسة القرآن والتجويد والدراسات الإسلامية، والدروس متاحة بالعربية أو الإنجليزية."
+      },
+      "yossefAbdEltwab": {
+        "intro": "تزيد الخبرة التدريسية ليوسف عبد التواب على 3 سنوات، ضمن فريق Musliman Academy.",
+        "about": "تدرس مع يوسف عبد التواب القرآن والتجويد والدراسات الإسلامية باللغتين العربية والإنجليزية."
+      }
+    }
+  },
+  "es": {
+    "ui": {
+      "role": "Docente de Quran, Tajweed y estudios islámicos",
+      "breadcrumbLabel": "Ruta de navegación",
+      "metaTitle": "{{name}} – Docente de Quran y Tajweed",
+      "metaDescription": "Conoce a {{name}}, docente de Musliman Academy de Quran, Tajweed y estudios islámicos, con clases en árabe e inglés. Experiencia: {{experience}}.",
+      "imageAlt": "{{name}}, docente de Musliman Academy",
+      "factsLabel": "Perfil docente",
+      "cta": "Reserva una clase de prueba gratis",
+      "ctaNote": "Las solicitudes de clase de prueba llegan al equipo de la academia, que propone un docente adecuado para tu nivel, tus objetivos y tu horario. Puedes indicar tu preferencia de docente en el campo de mensaje.",
+      "allTeachers": "Ver todos los profesores",
+      "aboutHeading": "Sobre {{name}}",
+      "subjectsHeading": "Materias con {{name}}",
+      "subjectsIntro": "Cada materia tiene su propia página de curso con el temario, el formato de las clases y preguntas frecuentes.",
+      "viewCourse": "Ver curso",
+      "howHeading": "Cómo funciona el aprendizaje en Musliman Academy",
+      "howIntro": "Estos pasos se aplican a todos los docentes y programas de Musliman Academy.",
+      "faqHeading": "Preguntas sobre aprender con Musliman Academy",
+      "preferenceQuestion": "¿Puedo pedir estudiar con {{name}}?",
+      "preferenceAnswer": "Sí. Indica tu preferencia en el campo de mensaje al reservar tu clase de prueba gratis. El equipo lo hablará contigo; un docente concreto depende de la disponibilidad y no se puede garantizar.",
+      "relatedHeading": "Otros docentes de Musliman Academy"
+    },
+    "teachers": {
+      "mazinYasser": {
+        "intro": "Mazin Yasser es docente de Musliman Academy y cuenta con más de 3 años de experiencia en la enseñanza.",
+        "about": "Con Mazin Yasser aprendes Quran, Tajweed y estudios islámicos, y las clases pueden impartirse en árabe o en inglés."
+      },
+      "fatimahAlShazly": {
+        "intro": "Fatimah Al Shazly suma más de 5 años de experiencia docente y enseña en Musliman Academy.",
+        "about": "Aprende Quran, Tajweed y estudios islámicos con Fatimah Al Shazly, en árabe o en inglés."
+      },
+      "ahmedYasser": {
+        "intro": "Ahmed Yasser enseña en Musliman Academy y tiene más de 2 años de experiencia docente.",
+        "about": "Las clases con Ahmed Yasser abarcan Quran, Tajweed y estudios islámicos, y pueden darse en árabe o en inglés."
+      },
+      "gehadRagab": {
+        "intro": "Gehad Ragab forma parte del equipo docente de Musliman Academy, con más de 4 años de experiencia en la enseñanza.",
+        "about": "Con Gehad Ragab puedes estudiar Quran, Tajweed y estudios islámicos, con clases en árabe o en inglés."
+      },
+      "yossefAbdEltwab": {
+        "intro": "Yossef Abd Eltwab aporta a Musliman Academy más de 3 años de experiencia docente.",
+        "about": "Yossef Abd Eltwab enseña Quran, Tajweed y estudios islámicos en árabe y en inglés."
+      }
+    }
+  },
+  "de": {
+    "ui": {
+      "role": "Lehrkraft für Quran, Tajweed und islamische Studien",
+      "breadcrumbLabel": "Brotkrümelnavigation",
+      "metaTitle": "{{name}} – Lehrkraft für Quran & Tajweed",
+      "metaDescription": "Lerne {{name}} kennen, Lehrkraft bei Musliman Academy für Quran, Tajweed und islamische Studien, mit Unterricht auf Arabisch und Englisch. Erfahrung: {{experience}}.",
+      "imageAlt": "{{name}}, Lehrkraft bei Musliman Academy",
+      "factsLabel": "Unterrichtsprofil",
+      "cta": "Kostenlose Probestunde buchen",
+      "ctaNote": "Anfragen für Probestunden gehen an das Team der Akademie, das eine passende Lehrkraft für dein Niveau, deine Ziele und deine Zeiten vorschlägt. Einen Wunsch nach einer bestimmten Lehrkraft kannst du im Nachrichtenfeld angeben.",
+      "allTeachers": "Alle Lehrkräfte ansehen",
+      "aboutHeading": "Über {{name}}",
+      "subjectsHeading": "Fächer bei {{name}}",
+      "subjectsIntro": "Jedes Fach hat eine eigene Kursseite mit Lehrplan, Unterrichtsablauf und häufigen Fragen.",
+      "viewCourse": "Zum Kurs",
+      "howHeading": "So funktioniert das Lernen bei Musliman Academy",
+      "howIntro": "Diese Schritte gelten für alle Lehrkräfte und Programme von Musliman Academy.",
+      "faqHeading": "Fragen zum Lernen bei Musliman Academy",
+      "preferenceQuestion": "Kann ich mir {{name}} als Lehrkraft wünschen?",
+      "preferenceAnswer": "Ja. Gib deinen Wunsch bei der Buchung der kostenlosen Probestunde im Nachrichtenfeld an. Das Team bespricht ihn mit dir; eine bestimmte Lehrkraft hängt von der Verfügbarkeit ab und kann nicht garantiert werden.",
+      "relatedHeading": "Weitere Lehrkräfte von Musliman Academy"
+    },
+    "teachers": {
+      "mazinYasser": {
+        "intro": "Mazin Yasser ist Lehrkraft bei Musliman Academy und hat über 3 Jahre Unterrichtserfahrung.",
+        "about": "Bei Mazin Yasser lernst du Quran, Tajweed und islamische Studien; der Unterricht kann auf Arabisch oder Englisch stattfinden."
+      },
+      "fatimahAlShazly": {
+        "intro": "Fatimah Al Shazly hat über 5 Jahre Unterrichtserfahrung und unterrichtet bei Musliman Academy.",
+        "about": "Lerne Quran, Tajweed und islamische Studien mit Fatimah Al Shazly – auf Arabisch oder auf Englisch."
+      },
+      "ahmedYasser": {
+        "intro": "Ahmed Yasser unterrichtet bei Musliman Academy und bringt über 2 Jahre Unterrichtserfahrung mit.",
+        "about": "Der Unterricht bei Ahmed Yasser umfasst Quran, Tajweed und islamische Studien und ist auf Arabisch oder Englisch möglich."
+      },
+      "gehadRagab": {
+        "intro": "Gehad Ragab gehört zum Lehrteam von Musliman Academy und hat über 4 Jahre Unterrichtserfahrung.",
+        "about": "Mit Gehad Ragab kannst du Quran, Tajweed und islamische Studien lernen, im Unterricht auf Arabisch oder Englisch."
+      },
+      "yossefAbdEltwab": {
+        "intro": "Yossef Abd Eltwab bringt über 3 Jahre Unterrichtserfahrung zu Musliman Academy mit.",
+        "about": "Yossef Abd Eltwab unterrichtet Quran, Tajweed und islamische Studien auf Arabisch und Englisch."
+      }
+    }
+  },
+  "it": {
+    "ui": {
+      "role": "Docente di Quran, Tajweed e studi islamici",
+      "breadcrumbLabel": "Percorso di navigazione",
+      "metaTitle": "{{name}} – Docente di Quran e Tajweed",
+      "metaDescription": "Scopri {{name}}, docente di Musliman Academy per Quran, Tajweed e studi islamici, con lezioni in arabo e in inglese. Esperienza: {{experience}}.",
+      "imageAlt": "{{name}}, docente di Musliman Academy",
+      "factsLabel": "Profilo didattico",
+      "cta": "Prenota una lezione di prova gratuita",
+      "ctaNote": "Le richieste di lezione di prova arrivano al team dell'accademia, che propone un docente adatto al tuo livello, ai tuoi obiettivi e ai tuoi orari. Puoi indicare una preferenza per un docente nel campo del messaggio.",
+      "allTeachers": "Vedi tutti gli insegnanti",
+      "aboutHeading": "Chi è {{name}}",
+      "subjectsHeading": "Materie con {{name}}",
+      "subjectsIntro": "Ogni materia ha una pagina del corso con programma, formato delle lezioni e domande frequenti.",
+      "viewCourse": "Vai al corso",
+      "howHeading": "Come funziona l'apprendimento in Musliman Academy",
+      "howIntro": "Questi passaggi valgono per tutti i docenti e i programmi di Musliman Academy.",
+      "faqHeading": "Domande sull'apprendimento con Musliman Academy",
+      "preferenceQuestion": "Posso chiedere di studiare con {{name}}?",
+      "preferenceAnswer": "Sì. Indica la tua preferenza nel campo del messaggio quando prenoti la lezione di prova gratuita. Il team ne parlerà con te; un docente specifico dipende dalla disponibilità e non può essere garantito.",
+      "relatedHeading": "Altri docenti di Musliman Academy"
+    },
+    "teachers": {
+      "mazinYasser": {
+        "intro": "Mazin Yasser è docente di Musliman Academy e ha oltre 3 anni di esperienza nell'insegnamento.",
+        "about": "Con Mazin Yasser impari Quran, Tajweed e studi islamici, e le lezioni possono svolgersi in arabo o in inglese."
+      },
+      "fatimahAlShazly": {
+        "intro": "Fatimah Al Shazly ha oltre 5 anni di esperienza nell'insegnamento e insegna in Musliman Academy.",
+        "about": "Studia Quran, Tajweed e studi islamici con Fatimah Al Shazly, in arabo o in inglese."
+      },
+      "ahmedYasser": {
+        "intro": "Ahmed Yasser insegna in Musliman Academy e ha oltre 2 anni di esperienza nell'insegnamento.",
+        "about": "Le lezioni con Ahmed Yasser comprendono Quran, Tajweed e studi islamici e possono tenersi in arabo o in inglese."
+      },
+      "gehadRagab": {
+        "intro": "Gehad Ragab fa parte del corpo docente di Musliman Academy, con oltre 4 anni di esperienza nell'insegnamento.",
+        "about": "Con Gehad Ragab puoi studiare Quran, Tajweed e studi islamici, con lezioni in arabo o in inglese."
+      },
+      "yossefAbdEltwab": {
+        "intro": "Yossef Abd Eltwab porta in Musliman Academy oltre 3 anni di esperienza nell'insegnamento.",
+        "about": "Yossef Abd Eltwab insegna Quran, Tajweed e studi islamici in arabo e in inglese."
+      }
+    }
+  },
+  "ur": {
+    "ui": {
+      "role": "قرآن، تجوید اور اسلامی علوم کی تدریس",
+      "breadcrumbLabel": "نیویگیشن کا راستہ",
+      "metaTitle": "{{name}} کے ساتھ قرآن اور تجوید سیکھیں",
+      "metaDescription": "Musliman Academy کی تدریسی ٹیم کے رکن {{name}} سے متعارف ہوں: قرآن، تجوید اور اسلامی علوم، عربی اور انگریزی میں۔ تجربہ: {{experience}}۔",
+      "imageAlt": "{{name}}، Musliman Academy کی تدریسی ٹیم",
+      "factsLabel": "تدریسی معلومات",
+      "cta": "مفت آزمائشی کلاس بک کریں",
+      "ctaNote": "آزمائشی کلاس کی درخواستیں اکیڈمی کی ٹیم کو موصول ہوتی ہیں، جو آپ کی سطح، اہداف اور اوقات کے مطابق مناسب استاد تجویز کرتی ہے۔ آپ پیغام کے خانے میں اپنے پسندیدہ استاد کا ذکر کر سکتے ہیں۔",
+      "allTeachers": "تمام اساتذہ دیکھیں",
+      "aboutHeading": "{{name}} کا تعارف",
+      "subjectsHeading": "{{name}} کے ساتھ مضامین",
+      "subjectsIntro": "ہر مضمون کا اپنا کورس صفحہ ہے جس میں نصاب، کلاسوں کا طریقہ اور عام سوالات شامل ہیں۔",
+      "viewCourse": "کورس دیکھیں",
+      "howHeading": "Musliman Academy میں سیکھنے کا طریقہ",
+      "howIntro": "یہ مراحل Musliman Academy کے تمام اساتذہ اور پروگراموں پر لاگو ہوتے ہیں۔",
+      "faqHeading": "Musliman Academy کے ساتھ سیکھنے کے بارے میں سوالات",
+      "preferenceQuestion": "کیا {{name}} سے پڑھنے کی درخواست کی جا سکتی ہے؟",
+      "preferenceAnswer": "جی ہاں۔ مفت آزمائشی کلاس بک کرتے وقت پیغام کے خانے میں اپنی ترجیح لکھ دیں۔ ٹیم اس پر آپ سے بات کرے گی؛ کسی مخصوص استاد کا ملنا دستیابی پر منحصر ہے اور اس کی ضمانت نہیں دی جا سکتی۔",
+      "relatedHeading": "Musliman Academy کے دیگر اساتذہ"
+    },
+    "teachers": {
+      "mazinYasser": {
+        "intro": "مازن یاسر Musliman Academy کی تدریسی ٹیم کا حصہ ہیں اور انہیں تدریس کا 3 سال سے زائد تجربہ ہے۔",
+        "about": "مازن یاسر کے ساتھ آپ قرآن، تجوید اور اسلامی علوم سیکھ سکتے ہیں، اور اسباق عربی یا انگریزی میں ہو سکتے ہیں۔"
+      },
+      "fatimahAlShazly": {
+        "intro": "فاطمہ الشاذلی کو تدریس کا 5 سال سے زائد تجربہ ہے اور وہ Musliman Academy کی تدریسی ٹیم میں شامل ہیں۔",
+        "about": "فاطمہ الشاذلی کے ساتھ قرآن، تجوید اور اسلامی علوم عربی یا انگریزی میں سیکھیں۔"
+      },
+      "ahmedYasser": {
+        "intro": "احمد یاسر Musliman Academy میں تدریس سے وابستہ ہیں اور انہیں تدریس کا 2 سال سے زائد تجربہ ہے۔",
+        "about": "احمد یاسر کے اسباق میں قرآن، تجوید اور اسلامی علوم شامل ہیں، جو عربی یا انگریزی میں پڑھائے جا سکتے ہیں۔"
+      },
+      "gehadRagab": {
+        "intro": "جہاد رجب کا تدریسی تجربہ 4 سال سے زائد ہے اور وہ Musliman Academy کی تدریسی ٹیم سے وابستہ ہیں۔",
+        "about": "جہاد رجب کے ساتھ آپ قرآن، تجوید اور اسلامی علوم پڑھ سکتے ہیں، اور اسباق عربی یا انگریزی میں دستیاب ہیں۔"
+      },
+      "yossefAbdEltwab": {
+        "intro": "Musliman Academy کی تدریسی ٹیم میں یوسف عبدالتواب بھی شامل ہیں، جنہیں تدریس کا 3 سال سے زائد تجربہ ہے۔",
+        "about": "یوسف عبدالتواب کے ساتھ قرآن، تجوید اور اسلامی علوم عربی اور انگریزی دونوں زبانوں میں سیکھے جا سکتے ہیں۔"
+      }
+    }
+  },
+  "tr": {
+    "ui": {
+      "role": "Quran, tecvid ve İslami ilimler öğretmeni",
+      "breadcrumbLabel": "Sayfa yolu",
+      "metaTitle": "{{name}} – Quran ve Tecvid Öğretmeni",
+      "metaDescription": "Musliman Academy'de Quran, tecvid ve İslami ilimler dersleri veren {{name}} ile tanışın; dersler Arapça ve İngilizce. Deneyim: {{experience}}.",
+      "imageAlt": "{{name}}, Musliman Academy öğretmeni",
+      "factsLabel": "Öğretmenlik bilgileri",
+      "cta": "Ücretsiz deneme dersi ayırtın",
+      "ctaNote": "Deneme dersi talepleri akademi ekibine ulaşır; ekip seviyenize, hedeflerinize ve programınıza uygun bir öğretmen önerir. Öğretmen tercihinizi mesaj alanında belirtebilirsiniz.",
+      "allTeachers": "Tüm öğretmenleri görün",
+      "aboutHeading": "{{name}} hakkında",
+      "subjectsHeading": "{{name}} ile dersler",
+      "subjectsIntro": "Her dersin müfredatı, ders düzenini ve sık sorulan soruları anlatan kendi sayfası vardır.",
+      "viewCourse": "Kursu görüntüle",
+      "howHeading": "Musliman Academy'de öğrenme nasıl işler?",
+      "howIntro": "Bu adımlar Musliman Academy'nin tüm öğretmenleri ve programları için geçerlidir.",
+      "faqHeading": "Musliman Academy ile öğrenmeye dair sorular",
+      "preferenceQuestion": "{{name}} ile ders almak istediğimi belirtebilir miyim?",
+      "preferenceAnswer": "Evet. Ücretsiz deneme dersinizi ayırtırken tercihinizi mesaj alanına yazın. Ekip bunu sizinle görüşür; belirli bir öğretmen müsaitliğe bağlıdır ve garanti edilemez.",
+      "relatedHeading": "Musliman Academy'nin diğer öğretmenleri"
+    },
+    "teachers": {
+      "mazinYasser": {
+        "intro": "Mazin Yasser, 3 yılı aşkın öğretmenlik deneyimine sahip bir Musliman Academy öğretmenidir.",
+        "about": "Mazin Yasser ile Quran, tecvid ve İslami ilimler öğrenebilirsiniz; dersler Arapça veya İngilizce yapılabilir."
+      },
+      "fatimahAlShazly": {
+        "intro": "Fatimah Al Shazly'nin 5 yılı aşkın öğretmenlik deneyimi vardır ve Musliman Academy'de ders verir.",
+        "about": "Fatimah Al Shazly ile Quran, tecvid ve İslami ilimleri Arapça veya İngilizce öğrenin."
+      },
+      "ahmedYasser": {
+        "intro": "Ahmed Yasser, Musliman Academy'de ders verir ve 2 yılı aşkın öğretmenlik deneyimine sahiptir.",
+        "about": "Ahmed Yasser'in dersleri Quran, tecvid ve İslami ilimleri kapsar ve Arapça veya İngilizce yapılabilir."
+      },
+      "gehadRagab": {
+        "intro": "Gehad Ragab, 4 yılı aşkın öğretmenlik deneyimiyle Musliman Academy öğretim kadrosunda yer alır.",
+        "about": "Gehad Ragab ile Quran, tecvid ve İslami ilimler çalışabilirsiniz; dersler Arapça veya İngilizce olabilir."
+      },
+      "yossefAbdEltwab": {
+        "intro": "Yossef Abd Eltwab, Musliman Academy'ye 3 yılı aşkın öğretmenlik deneyimi katar.",
+        "about": "Yossef Abd Eltwab, Quran, tecvid ve İslami ilimleri Arapça ve İngilizce olarak öğretir."
+      }
+    }
+  }
+}
