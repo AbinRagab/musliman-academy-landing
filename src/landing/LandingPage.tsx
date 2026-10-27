@@ -1392,7 +1392,7 @@ function HowItWorksSection() {
   );
 }
 
-function TeachersSection() {
+function TeachersSection({ profileHref }: { profileHref?: (teacherId: string) => string }) {
   const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(3);
@@ -1514,6 +1514,11 @@ function TeachersSection() {
                       )}
                       <p><Icon name="star" /><span><strong>{t('teachers.specializationLabel')}:</strong> {t(`${teacherKey}.specialization`, { defaultValue: teacher.specialization })}</span></p>
                     </div>
+                    {profileHref && (
+                      <a className="teacher-card__profile" href={profileHref(teacher.id)} aria-label={`${t('teachers.viewProfile')}: ${fullName}`}>
+                        {t('teachers.viewProfile')} <span className="teacher-card__profile-arrow" aria-hidden="true">→</span>
+                      </a>
+                    )}
                   </div>
                 </article>
                 );
@@ -1810,7 +1815,7 @@ export default function LandingPage({ manageSeo = true, programPages = false, re
         <WhyChooseSection />
         <TestimonialsSection />
         <HowItWorksSection />
-        <TeachersSection />
+        <TeachersSection profileHref={programPages ? (teacherId) => `/${pageLanguage}/teachers/${teacherId}` : undefined} />
         <TeacherTrainingSection onSelectBookingType={setActiveBookingType} />
         <FAQSection />
       </main>

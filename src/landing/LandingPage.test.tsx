@@ -191,4 +191,21 @@ describe('LandingPage', () => {
     expect(document.querySelector('.floating-whatsapp-greeting')).not.toHaveClass('is-visible');
     vi.unstubAllGlobals();
   });
+
+  it('links each carousel teacher to a localized profile only where profiles exist', async () => {
+    const { unmount } = render(<LandingPage />);
+    expect(document.querySelector('.teacher-card__profile')).toBeNull();
+    unmount();
+
+    await loadLanguageResource('de');
+    await i18n.changeLanguage('de');
+    render(<LandingPage programPages />);
+    const carousel = screen.getByRole('region', { name: i18n.t('teachers.aria.region') });
+    const links = () => within(carousel).getAllByRole('link');
+    expect(links().map(link => link.getAttribute('href'))).toEqual(['/de/teachers/mazin-yasser', '/de/teachers/fatimah-al-shazly', '/de/teachers/ahmed-yasser']);
+    expect(links()[1]).toHaveAccessibleName('Profil ansehen: Fatimah Al Shazly');
+    for (const link of links()) expect(link.querySelector('a, button')).toBeNull();
+    fireEvent.click(within(carousel).getByRole('button', { name: i18n.t('teachers.aria.next') }));
+    expect(links().map(link => link.getAttribute('href'))).toEqual(['/de/teachers/fatimah-al-shazly', '/de/teachers/ahmed-yasser', '/de/teachers/gehad-ragab']);
+  });
 });

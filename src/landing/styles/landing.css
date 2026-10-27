@@ -6777,6 +6777,44 @@ html[dir="rtl"] .floating-whatsapp {
 }
 @media (prefers-reduced-motion: reduce) { .stories-portrait { transition: none; } }
 
+/* Profile link at the foot of each carousel card. */
+.teacher-card__profile {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: auto;
+  padding: 10px 20px;
+  border: 1px solid rgba(184, 115, 51, 0.45);
+  border-radius: 999px;
+  color: var(--midnight);
+  background: var(--white);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.teacher-card__details + .teacher-card__profile {
+  margin-top: 24px;
+}
+
+.teacher-card__profile:hover {
+  border-color: var(--copper);
+  color: var(--copper-2);
+}
+
+.teacher-card__profile:focus-visible {
+  outline: 3px solid var(--copper);
+  outline-offset: 3px;
+}
+
+html[dir="rtl"] .teacher-card__profile-arrow {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
 /* One row of up to three teacher cards, matching carousel breakpoints. */
 .teachers-carousel .teachers-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .teachers-carousel .teacher-card { min-width: 0; }

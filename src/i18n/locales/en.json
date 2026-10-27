@@ -543,6 +543,7 @@
     "languagesLabel": "Languages",
     "experienceLabel": "Experience",
     "specializationLabel": "Specialization",
+    "viewProfile": "View profile",
     "languages": {
       "Arabic": "Arabic",
       "English": "English"
