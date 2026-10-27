@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent, MouseEventHandler, TouchEvent, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { FormEvent, KeyboardEvent, MouseEvent, MouseEventHandler, TouchEvent, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { ImgHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6';
@@ -306,6 +306,68 @@ export function Navbar({
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const logoVariant = theme === 'dark' ? 'light' : 'dark';
+  const panelId = useId();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    panelRef.current?.querySelector<HTMLElement>('.mobile-panel__top .menu-button')?.focus();
+
+    function closeOnOutsidePointer(event: PointerEvent) {
+      if (!panelRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    // The panel only exists in the compact layouts; widening the window closes it.
+    function closeWhenMenuHidden() {
+      if (menuButtonRef.current && getComputedStyle(menuButtonRef.current).display === 'none') {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    window.addEventListener('resize', closeWhenMenuHidden);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      window.removeEventListener('resize', closeWhenMenuHidden);
+    };
+  }, [open]);
+
+  function closeMenu() {
+    setOpen(false);
+    menuButtonRef.current?.focus();
+  }
+
+  // The open panel covers the page, so keyboard focus stays inside it until it closes.
+  function handlePanelKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeMenu();
+      return;
+    }
+
+    if (event.key !== 'Tab' || !panelRef.current) {
+      return;
+    }
+
+    const focusable = Array.from(panelRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'))
+      .filter((element) => !element.closest('[hidden]'));
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  }
 
   function getAnchorHref(href: string) {
     return linkOverrides[href] || (href.startsWith('#') ? `${anchorPrefix}${href}` : href);
@@ -344,15 +406,32 @@ export function Navbar({
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
           <LanguageSwitcher getLanguageHref={languageHref} />
           <Button href={bookingHref} onClick={handleBookTrialClick()}>{t('nav.bookFreeTrial')}</Button>
-          <button className="menu-button" type="button" aria-label={t('aria.openMenu')} onClick={() => setOpen(true)}>
+          <button
+            className="menu-button"
+            type="button"
+            ref={menuButtonRef}
+            aria-label={t('aria.openMenu')}
+            aria-expanded={open}
+            aria-controls={panelId}
+            onClick={() => setOpen(true)}
+          >
             <Icon name="menu" />
           </button>
         </div>
       </div>
-      <div className={`mobile-panel ${open ? 'is-open' : ''}`}>
+      <div
+        className={`mobile-panel ${open ? 'is-open' : ''}`}
+        id={panelId}
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('aria.mainNavigation')}
+        inert={!open}
+        onKeyDown={handlePanelKeyDown}
+      >
         <div className="mobile-panel__top">
           <Logo variant={logoVariant} href={logoHref} />
-          <button className="menu-button" type="button" aria-label={t('aria.closeMenu')} onClick={() => setOpen(false)}>
+          <button className="menu-button" type="button" aria-label={t('aria.closeMenu')} onClick={closeMenu}>
             <Icon name="x" />
           </button>
         </div>
@@ -1736,14 +1815,123 @@ export default function LandingPage({ manageSeo = true, programPages = false, re
         <FAQSection />
       </main>
       <Footer linkOverrides={pageLinks} programLinks={footerProgramLinks} />
-      <a className="floating-whatsapp-message" href={whatsappCourseHref} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppContact}>
-        <span className="floating-whatsapp-message__brand">Musliman Academy</span>
-        <span>{whatsappCourseMessage}</span>
-        <Icon name="send" />
-      </a>
-      <a className="floating-whatsapp" href={whatsappCourseHref} target="_blank" rel="noreferrer" aria-label={t('aria.floatingWhatsapp')} onClick={trackWhatsAppContact}>
+      <FloatingWhatsApp href={whatsappCourseHref} message={whatsappCourseMessage} />
+    </div>
+  );
+}
+
+const whatsappGreetingDismissedKey = 'musliman-whatsapp-greeting-dismissed';
+
+function isFormControl(target: EventTarget | null) {
+  return target instanceof HTMLElement && target.matches('input, select, textarea, [contenteditable="true"]');
+}
+
+function FloatingWhatsApp({ href, message }: { href: string; message: string }) {
+  const { t } = useTranslation();
+  // The greeting starts hidden on the server and is revealed after hydration,
+  // once an earlier dismissal in this visit can be read.
+  const [greetingAllowed, setGreetingAllowed] = useState(false);
+  const [bookingInView, setBookingInView] = useState(false);
+  const [buttonOverBooking, setButtonOverBooking] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const buttonRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    try {
+      setGreetingAllowed(window.sessionStorage.getItem(whatsappGreetingDismissedKey) !== 'true');
+    } catch {
+      setGreetingAllowed(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const booking = document.getElementById('book-trial');
+    if (!booking || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+
+    // Whether the button's column crosses the booking card, so it would cover fields.
+    function measureOverlap() {
+      const card = booking?.querySelector('.booking-card') ?? booking;
+      const button = buttonRef.current;
+      if (!card || !button) {
+        return;
+      }
+
+      const cardBox = card.getBoundingClientRect();
+      const buttonBox = button.getBoundingClientRect();
+      setButtonOverBooking(buttonBox.left < cardBox.right && cardBox.left < buttonBox.right);
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setBookingInView(entry.isIntersecting);
+      measureOverlap();
+    });
+    observer.observe(booking);
+    window.addEventListener('resize', measureOverlap);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measureOverlap);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Covers the on-screen keyboard, which leaves little room above the field.
+    function handleFocusIn(event: FocusEvent) {
+      setEditing(isFormControl(event.target));
+    }
+
+    function handleFocusOut(event: FocusEvent) {
+      if (!isFormControl(event.relatedTarget)) {
+        setEditing(false);
+      }
+    }
+
+    document.addEventListener('focusin', handleFocusIn);
+    document.addEventListener('focusout', handleFocusOut);
+    return () => {
+      document.removeEventListener('focusin', handleFocusIn);
+      document.removeEventListener('focusout', handleFocusOut);
+    };
+  }, []);
+
+  function dismissGreeting() {
+    setGreetingAllowed(false);
+    try {
+      window.sessionStorage.setItem(whatsappGreetingDismissedKey, 'true');
+    } catch {
+      // Without storage the greeting stays closed until the next page load.
+    }
+    buttonRef.current?.focus();
+  }
+
+  const showGreeting = greetingAllowed && !bookingInView && !editing;
+  const showButton = !editing && !(bookingInView && buttonOverBooking);
+
+  return (
+    <>
+      <div className={`floating-whatsapp-greeting ${showGreeting ? 'is-visible' : ''}`} inert={!showGreeting}>
+        <a className="floating-whatsapp-message" href={href} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppContact}>
+          <span className="floating-whatsapp-message__brand">Musliman Academy</span>
+          <span>{message}</span>
+          <Icon name="send" />
+        </a>
+        <button className="floating-whatsapp-greeting__close" type="button" aria-label={t('aria.dismissWhatsappGreeting')} onClick={dismissGreeting}>
+          <Icon name="x" />
+        </button>
+      </div>
+      <a
+        className={`floating-whatsapp ${showButton ? '' : 'is-tucked'}`}
+        href={href}
+        ref={buttonRef}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={t('aria.floatingWhatsapp')}
+        inert={!showButton}
+        onClick={trackWhatsAppContact}
+      >
         <Icon name="whatsapp" />
       </a>
-    </div>
+    </>
   );
 }

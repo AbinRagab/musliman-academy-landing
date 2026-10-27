@@ -54,7 +54,9 @@ export default function LanguageSwitcher({ className = '', getLanguageHref }: La
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' && isOpen) {
+      // Close only this list, not a menu panel that contains the switcher.
+      event.stopPropagation();
       setIsOpen(false);
     }
   }

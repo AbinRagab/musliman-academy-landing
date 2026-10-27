@@ -23,6 +23,7 @@
     "nextFeature": "Caratteristica successiva",
     "showFeaturePage": "Mostra la pagina delle caratteristiche {{page}}",
     "floatingWhatsapp": "Contatta Musliman Academy su WhatsApp",
+    "dismissWhatsappGreeting": "Nascondi il messaggio di benvenuto di WhatsApp",
     "trustHighlights": "Punti di forza dell'accademia",
     "switchToTheme": "Passa al tema {{theme}}"
   },

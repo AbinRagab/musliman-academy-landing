@@ -13,6 +13,7 @@ describe('LandingPage', () => {
   });
 
   afterEach(async () => {
+    window.sessionStorage.clear();
     await i18n.changeLanguage('en');
   });
 
@@ -93,5 +94,101 @@ describe('LandingPage', () => {
     expect(screen.queryByText('Schedule & Fee')).not.toBeInTheDocument();
     expect(screen.queryByText(/^(hero|about|how|training|faq)\./i)).not.toBeInTheDocument();
     expect(screen.queryByText(/returned an object instead of string/i)).not.toBeInTheDocument();
+  });
+  it('opens the compact menu as a labelled dialog that manages focus and Escape', () => {
+    render(<LandingPage />);
+    const header = document.querySelector('header.navbar') as HTMLElement;
+    const toggle = within(header).getByRole('button', { name: 'Open menu' });
+    const panel = document.getElementById(toggle.getAttribute('aria-controls')!)!;
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(panel).toHaveAttribute('role', 'dialog');
+    expect(panel).toHaveAttribute('aria-modal', 'true');
+    expect(panel).toHaveAttribute('aria-label', 'Main navigation');
+    // A closed panel cannot receive focus.
+    expect(panel).toHaveAttribute('inert');
+
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(panel).not.toHaveAttribute('inert');
+    expect(within(panel).getByRole('button', { name: 'Close menu' })).toHaveFocus();
+
+    // Focus wraps inside the open panel.
+    const focusable = Array.from(panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+    focusable[focusable.length - 1].focus();
+    fireEvent.keyDown(panel, { key: 'Tab' });
+    expect(focusable[0]).toHaveFocus();
+    fireEvent.keyDown(panel, { key: 'Tab', shiftKey: true });
+    expect(focusable[focusable.length - 1]).toHaveFocus();
+
+    // Escape inside the language list closes only that list.
+    const languageToggle = within(panel).getByRole('button', { name: /language/i });
+    fireEvent.click(languageToggle);
+    expect(languageToggle).toHaveAttribute('aria-expanded', 'true');
+    fireEvent.keyDown(languageToggle, { key: 'Escape' });
+    expect(languageToggle).toHaveAttribute('aria-expanded', 'false');
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+    fireEvent.keyDown(panel, { key: 'Escape' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(panel).toHaveAttribute('inert');
+    expect(toggle).toHaveFocus();
+
+    fireEvent.click(toggle);
+    fireEvent.pointerDown(document.querySelector('main')!);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    for (const link of Array.from(panel.querySelectorAll('a'))) expect(link.querySelector('a, button')).toBeNull();
+  });
+
+  it('keeps the WhatsApp greeting dismissible and out of the way of the booking form', () => {
+    let reportBooking: ((entries: Array<Partial<IntersectionObserverEntry>>) => void) | undefined;
+    vi.stubGlobal('IntersectionObserver', class {
+      constructor(callback: (entries: Array<Partial<IntersectionObserverEntry>>) => void) { reportBooking = callback; }
+      observe() {}
+      disconnect() {}
+    });
+    const box = (left: number, width: number, top: number, height: number) => () => ({ left, right: left + width, top, bottom: top + height, width, height, x: left, y: top, toJSON: () => ({}) });
+    const { unmount } = render(<LandingPage />);
+    const greeting = document.querySelector('.floating-whatsapp-greeting') as HTMLElement;
+    const button = screen.getByRole('link', { name: 'Contact Musliman Academy on WhatsApp' });
+    // The number and enquiry message are unchanged; nothing is sent until the visitor follows the link.
+    const href = `https://wa.me/201038331058?text=${encodeURIComponent("Assalamu Alaikum! I'd like to know more about your courses, schedules, and fees.")}`;
+    expect(greeting.querySelector('a')).toHaveAttribute('href', href);
+    expect(button).toHaveAttribute('href', href);
+    expect(greeting).toHaveClass('is-visible');
+
+    // Editing a field hides the greeting and the button, then restores them.
+    const nameField = document.querySelector<HTMLInputElement>('#book-trial input[name="name"]')!;
+    act(() => nameField.focus());
+    expect(greeting).not.toHaveClass('is-visible');
+    expect(greeting).toHaveAttribute('inert');
+    expect(button).toHaveClass('is-tucked');
+    expect(button).toHaveAttribute('inert');
+    act(() => nameField.blur());
+    expect(greeting).toHaveClass('is-visible');
+    expect(button).not.toHaveClass('is-tucked');
+
+    // With the booking card in view the greeting hides; the button steps aside only where it would cover the card.
+    const card = document.querySelector('#book-trial .booking-card') as HTMLElement;
+    card.getBoundingClientRect = box(16, 358, 0, 800);
+    button.getBoundingClientRect = box(320, 54, 774, 54);
+    act(() => reportBooking!([{ isIntersecting: true }]));
+    expect(greeting).not.toHaveClass('is-visible');
+    expect(button).toHaveClass('is-tucked');
+    card.getBoundingClientRect = box(130, 1180, 0, 800);
+    button.getBoundingClientRect = box(1356, 60, 816, 60);
+    act(() => reportBooking!([{ isIntersecting: true }]));
+    expect(button).not.toHaveClass('is-tucked');
+    act(() => reportBooking!([{ isIntersecting: false }]));
+    expect(greeting).toHaveClass('is-visible');
+
+    // Dismissal moves focus to the WhatsApp button and lasts for the visit.
+    fireEvent.click(within(greeting).getByRole('button', { name: 'Hide WhatsApp greeting' }));
+    expect(greeting).not.toHaveClass('is-visible');
+    expect(button).toHaveFocus();
+    expect(window.sessionStorage.getItem('musliman-whatsapp-greeting-dismissed')).toBe('true');
+    unmount();
+    render(<LandingPage />);
+    expect(document.querySelector('.floating-whatsapp-greeting')).not.toHaveClass('is-visible');
+    vi.unstubAllGlobals();
   });
 });
