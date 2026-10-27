@@ -53,6 +53,7 @@ export default function CourseDetail({lang, courseKey}:{lang:string; courseKey:s
  <section className="course-bottom-cta"><h2>{copy.cta?.closingTitle || u[16]}</h2><p>{copy.intro}</p>{booking}</section>
  </main>
  <CourseChrome lang={lang} path={path} footer/>
- {courseKey!=='quranReading'&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@type':'Course',name:copy.title,description:copy.intro,inLanguage:lang,url:`${siteUrl}/${lang}/${path}`,provider:organizationReference}).replace(/</g,'\\u003c')}}/>}
+ {/* Quran Reading describes the course only where its copy has been revised (English so far). */}
+ {(courseKey!=='quranReading'||lang==='en')&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@type':'Course',name:copy.title,description:copy.intro,inLanguage:lang,url:`${siteUrl}/${lang}/${path}`,provider:organizationReference}).replace(/</g,'\\u003c')}}/>}
  <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(crumbs).replace(/</g,'\\u003c')}}/></div>;
 }
