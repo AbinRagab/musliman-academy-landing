@@ -30,9 +30,28 @@ describe('SEO infrastructure', () => {
         headers: { 'X-Robots-Tag': 'noindex, nofollow, noarchive' },
       });
     }
-    for (const path of ['/assets/index.js', '/index.html', '/dashboard-other', '/unknown']) {
+    for (const path of ['/assets/index.js', '/dashboard-other', '/unknown', '/index.htm', '/index.html.map']) {
       expect(resolveRoute(path)).toBeUndefined();
     }
+  });
+
+  it('sends the old /index.html landing page to the public site root redirect', () => {
+    const config = JSON.parse(readFileSync(resolve(root, 'vercel.json'), 'utf8'));
+    const routes = config.routes as Array<{ src?: string; dest?: string; handle?: string }>;
+    const firstMatch = (path: string) => routes.findIndex(route => route.src && new RegExp(route.src).test(path));
+    const indexRule = firstMatch('/index.html');
+    const dashboardRule = routes.findIndex(route => route.src?.startsWith('^/dashboard'));
+    const filesystemIndex = routes.findIndex(route => route.handle === 'filesystem');
+    expect(firstMatch('/index.html/')).toBe(indexRule);
+    for (const path of ['/dashboard', '/dashboard/login', '/dashboard/admin/leads']) expect(firstMatch(path)).toBe(dashboardRule);
+    // The public root decides the language and keeps booking parameters, so
+    // /index.html reuses it instead of a second copy of that logic.
+    expect(routes[indexRule].dest).toBe('https://musliman-academy-public.vercel.app/');
+    // Before the Vite files, and after the dashboard rule, whose internal
+    // rewrite to /index.html must keep serving the dashboard entry point.
+    expect(indexRule).toBeGreaterThan(dashboardRule);
+    expect(indexRule).toBeLessThan(filesystemIndex);
+    expect(routes[dashboardRule].dest).toBe('/index.html');
   });
 
   it('forwards teacher portraits, which profile pages use as social images', () => {

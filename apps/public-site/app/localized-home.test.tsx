@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { render, screen } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import { NextRequest } from 'next/server';
@@ -131,6 +132,26 @@ describe('root and legacy homepage redirects', () => {
   ])('%s -> %s %s', (url, status, location) => {
     const response = redirect(url);
     expect(response.status).toBe(status);
+    const target = new URL(response.headers.get('Location')!);
+    expect(target.origin).toBe('http://localhost');
+    expect(target.pathname + target.search).toBe(location);
+  });
+
+  // The main domain forwards /index.html to this site's root, so the old landing
+  // page URL gets the same redirect, query and all.
+  it.each([
+    ['/index.html', 307, '/en'],
+    ['/index.html?lang=ar&program=tajweed', 308, '/ar?program=tajweed'],
+    ['/index.html?lang=ur&type=training', 308, '/ur?type=training'],
+  ])('main-domain %s -> %s %s', (url, status, location) => {
+    const routes: Array<{ src?: string; dest?: string }> = JSON.parse(readFileSync(`${process.cwd()}/vercel.json`, 'utf8')).routes;
+    const requested = new URL(url, 'https://www.muslimanacademy.com');
+    const rule = routes.find(route => route.src && new RegExp(route.src).test(requested.pathname))!;
+    const forwarded = new URL(requested.pathname.replace(new RegExp(rule.src!), rule.dest!));
+    expect(forwarded.href).toBe('https://musliman-academy-public.vercel.app/');
+    const response = redirect(forwarded.pathname + requested.search);
+    expect(response.status).toBe(status);
+    // A relative Location keeps the visitor on the main domain.
     const target = new URL(response.headers.get('Location')!);
     expect(target.origin).toBe('http://localhost');
     expect(target.pathname + target.search).toBe(location);
