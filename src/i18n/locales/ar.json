@@ -205,7 +205,7 @@
   },
   "trust": {
     "experiencedTeachers": "معلمون مصريون ذوو خبرة",
-    "ijazahCertified": "معلمون حاصلون على إجازات",
+    "qualifiedCertified": "معلمون مؤهلون ومعتمدون",
     "azharBackground": "خلفية تعليمية أزهرية",
     "personalizedPlans": "خطط تعلم مخصصة",
     "liveOnline": "حصص مباشرة أونلاين",

@@ -182,4 +182,22 @@ describe('confirmed academy statements', () => {
     expect(ur.training.description).not.toContain('اقدار');
     for (const lang of languages) expect(JSON.stringify(await loadMessages(lang))).not.toContain('Al_Shazly');
   });
+
+  // Teachers are confirmed as qualified and certified, not as Ijazah holders. The
+  // only remaining mention is the qualification an applicant can pick on the form.
+  it.each(languages)('/%s makes no Ijazah claim about academy teachers', async lang => {
+    const messages = lang === 'en' ? en : await loadMessages(lang);
+    const mentions: string[] = [];
+    const walk = (value: unknown, path: string) => {
+      if (typeof value === 'string') {
+        if (/ija[sz]|icaze|إجاز|اجاز/i.test(value)) mentions.push(path);
+      } else if (value && typeof value === 'object') {
+        for (const [key, child] of Object.entries(value)) walk(child, path ? `${path}.${key}` : key);
+      }
+    };
+    walk(messages, '');
+    expect(mentions).toEqual(['booking.options.qualification.ijazahHolder']);
+    expect(messages.trust.qualifiedCertified).toBeTruthy();
+    expect(messages.trust).not.toHaveProperty('ijazahCertified');
+  });
 });
