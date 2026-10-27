@@ -6,6 +6,7 @@ import { openGraphLocales } from '../lib/messages';
 import copy from '../lib/teacher-pages.json';
 import { teacherPhotoPath, teacherProfile } from '../lib/teacher-profiles';
 import sitemap from './sitemap';
+import { metadata as layoutMetadata } from './[lang]/layout';
 import Page, { generateMetadata } from './[lang]/[...segments]/page';
 import { GET as photo, generateStaticParams as photoParams } from './teacher-photos/[file]/route';
 import TeacherProfile from './teacher-profile';
@@ -164,6 +165,18 @@ describe('teacher profile pages', () => {
     const all = await Promise.all(combinations.map(({ lang, id }) => metadataFor(lang, `teachers/${id}`)));
     expect(new Set(all.map(metadata => metadata.title)).size).toBe(combinations.length);
     expect(new Set(all.map(metadata => metadata.description)).size).toBe(combinations.length);
+
+    // As rendered, through the layout's title template: the full name, the
+    // brand exactly once, and short enough that search results rarely cut it.
+    const template = (layoutMetadata.title as { template: string }).template;
+    const rendered = all.map(metadata => template.replace('%s', String(metadata.title)));
+    expect(new Set(rendered).size).toBe(combinations.length);
+    rendered.forEach((title, index) => {
+      const { lang, id } = combinations[index];
+      expect(title).toContain(teacherProfile(lang, id)!.name);
+      expect(title.split('Musliman Academy')).toHaveLength(2);
+      expect(title.length).toBeLessThanOrEqual(70);
+    });
   });
 
   it.each(languages)('/%s/teachers links every card to its localized profile', async lang => {
