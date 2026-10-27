@@ -292,6 +292,7 @@ export function Navbar({
   scrollToBooking = true,
   linkOverrides = {},
   languageHref,
+  onMenuOpenChange,
 }: {
   theme: Theme;
   onToggleTheme: () => void;
@@ -302,6 +303,7 @@ export function Navbar({
   scrollToBooking?: boolean;
   linkOverrides?: Record<string, string>;
   languageHref?: (language: SupportedLanguage) => string;
+  onMenuOpenChange?: (open: boolean) => void;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -311,11 +313,17 @@ export function Navbar({
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    onMenuOpenChange?.(open);
+  }, [open, onMenuOpenChange]);
+
+  useEffect(() => {
     if (!open) {
       return;
     }
 
-    panelRef.current?.querySelector<HTMLElement>('.mobile-panel__top .menu-button')?.focus();
+    // The panel is still sliding in from off-screen, so focusing without
+    // preventScroll would scroll the page sideways and back.
+    panelRef.current?.querySelector<HTMLElement>('.mobile-panel__top .menu-button')?.focus({ preventScroll: true });
 
     function closeOnOutsidePointer(event: PointerEvent) {
       if (!panelRef.current?.contains(event.target as Node)) {
@@ -1754,6 +1762,7 @@ export default function LandingPage({ manageSeo = true, programPages = false, re
     setThemeResolved(true);
   }, []);
   const [activeBookingType, setActiveBookingType] = useState<BookingType>('trial');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (requestedBookingType) {
@@ -1805,7 +1814,7 @@ export default function LandingPage({ manageSeo = true, programPages = false, re
 
   return (
     <div className="app-shell" data-theme={theme}>
-      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} linkOverrides={pageLinks} languageHref={languageHref} />
+      <Navbar theme={theme} onToggleTheme={toggleTheme} onSelectBookingType={setActiveBookingType} linkOverrides={pageLinks} languageHref={languageHref} onMenuOpenChange={setMenuOpen} />
       <main>
         <HeroSection onSelectBookingType={setActiveBookingType} />
         <AboutSection />
@@ -1820,7 +1829,7 @@ export default function LandingPage({ manageSeo = true, programPages = false, re
         <FAQSection />
       </main>
       <Footer linkOverrides={pageLinks} programLinks={footerProgramLinks} />
-      <FloatingWhatsApp href={whatsappCourseHref} message={whatsappCourseMessage} />
+      <FloatingWhatsApp href={whatsappCourseHref} message={whatsappCourseMessage} menuOpen={menuOpen} />
     </div>
   );
 }
@@ -1831,7 +1840,7 @@ function isFormControl(target: EventTarget | null) {
   return target instanceof HTMLElement && target.matches('input, select, textarea, [contenteditable="true"]');
 }
 
-function FloatingWhatsApp({ href, message }: { href: string; message: string }) {
+function FloatingWhatsApp({ href, message, menuOpen }: { href: string; message: string; menuOpen: boolean }) {
   const { t } = useTranslation();
   // The greeting starts hidden on the server and is revealed after hydration,
   // once an earlier dismissal in this visit can be read.
@@ -1868,8 +1877,9 @@ function FloatingWhatsApp({ href, message }: { href: string; message: string }) 
       setButtonOverBooking(buttonBox.left < cardBox.right && cardBox.left < buttonBox.right);
     }
 
-    const observer = new IntersectionObserver(([entry]) => {
-      setBookingInView(entry.isIntersecting);
+    // Several changes can arrive together; the last entry is the current one.
+    const observer = new IntersectionObserver((entries) => {
+      setBookingInView(entries[entries.length - 1].isIntersecting);
       measureOverlap();
     });
     observer.observe(booking);
@@ -1910,8 +1920,9 @@ function FloatingWhatsApp({ href, message }: { href: string; message: string }) 
     buttonRef.current?.focus();
   }
 
-  const showGreeting = greetingAllowed && !bookingInView && !editing;
-  const showButton = !editing && !(bookingInView && buttonOverBooking);
+  // The open menu panel is modal, so both stay out of the way until it closes.
+  const showGreeting = greetingAllowed && !menuOpen && !bookingInView && !editing;
+  const showButton = !menuOpen && !editing && !(bookingInView && buttonOverBooking);
 
   return (
     <>

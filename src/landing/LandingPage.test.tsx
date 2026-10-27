@@ -178,7 +178,27 @@ describe('LandingPage', () => {
     button.getBoundingClientRect = box(1356, 60, 816, 60);
     act(() => reportBooking!([{ isIntersecting: true }]));
     expect(button).not.toHaveClass('is-tucked');
+    // When changes arrive together, the latest one decides.
+    card.getBoundingClientRect = box(16, 358, 0, 800);
+    button.getBoundingClientRect = box(320, 54, 774, 54);
+    act(() => reportBooking!([{ isIntersecting: false }, { isIntersecting: true }]));
+    expect(button).toHaveClass('is-tucked');
     act(() => reportBooking!([{ isIntersecting: false }]));
+    expect(greeting).toHaveClass('is-visible');
+    expect(button).not.toHaveClass('is-tucked');
+
+    // The open menu is modal: both stay hidden and unfocusable until it closes.
+    const menuToggle = within(document.querySelector('header.navbar') as HTMLElement).getByRole('button', { name: 'Open menu' });
+    fireEvent.click(menuToggle);
+    expect(greeting).not.toHaveClass('is-visible');
+    expect(greeting).toHaveAttribute('inert');
+    expect(button).toHaveClass('is-tucked');
+    expect(button).toHaveAttribute('inert');
+    fireEvent.keyDown(document.getElementById(menuToggle.getAttribute('aria-controls')!)!, { key: 'Escape' });
+    expect(greeting).toHaveClass('is-visible');
+    expect(button).not.toHaveClass('is-tucked');
+    fireEvent.click(menuToggle);
+    fireEvent.pointerDown(document.querySelector('main')!);
     expect(greeting).toHaveClass('is-visible');
 
     // Dismissal moves focus to the WhatsApp button and lasts for the visit.
