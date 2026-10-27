@@ -94,6 +94,19 @@ describe('localized homepages', () => {
     expect(container.querySelector<HTMLSelectElement>('select[name="program"]')?.value).toBe('tajweed');
   });
 
+  it.each(languages)('/%s preselects each expanded course program and opens training from course links', async lang => {
+    const messages = lang === 'en' ? undefined : await loadMessages(lang);
+    for (const program of ['tajweed', 'tarteelQaidah', 'islamicValues']) {
+      window.history.replaceState({}, '', `/${lang}?program=${program}#book-trial`);
+      const { container, unmount } = render(<LandingClient lang={lang} messages={messages} />);
+      expect(container.querySelector<HTMLSelectElement>('select[name="program"]')?.value, `${lang} ${program}`).toBe(program);
+      unmount();
+    }
+    window.history.replaceState({}, '', `/${lang}?type=training#book-trial`);
+    render(<LandingClient lang={lang} messages={messages} />);
+    expect((await screen.findByRole('tab', { name: (messages ?? en).booking.toggleTraining })).getAttribute('aria-selected')).toBe('true');
+  });
+
   it('opens the teacher training form from training links', async () => {
     window.history.replaceState({}, '', '/ur?type=training#book-trial');
     const ur = await loadMessages('ur');
