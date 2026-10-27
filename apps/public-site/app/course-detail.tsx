@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowRight, BookOpen, CalendarDays, Check, ChevronRight, GraduationCap, Laptop, MessageCircle, UserRound, UsersRound, Video, Wifi } from 'lucide-react';
 import { courseBookingHref, courseContent } from '../lib/course-content';
 import { courses, direction, labels, localizedPath, text, siteUrl } from '../lib/catalog';
+import { organizationReference } from '../lib/brand';
 import './course-detail.css';
 const ui: Record<string,string[]> = {
  en:['Online · Live classes','Overview','Curriculum','How it works','FAQs','All levels','1-to-1 online','Children & adults','Flexible schedule','Start with a free trial','Related programs','What you will need','Device with camera','Stable internet','Quiet learning space','Your journey, in four simple steps','Your next chapter starts with one lesson.','Questions? Talk to us on WhatsApp','This program'],
@@ -52,6 +53,6 @@ export default function CourseDetail({lang, courseKey}:{lang:string; courseKey:s
  <section className="course-bottom-cta"><h2>{copy.cta?.closingTitle || u[16]}</h2><p>{copy.intro}</p>{booking}</section>
  </main>
  <CourseChrome lang={lang} path={path} footer/>
- {courseKey!=='quranReading'&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@type':'Course',name:copy.title,description:copy.intro,inLanguage:lang,url:`${siteUrl}/${lang}/${path}`,provider:{'@type':'EducationalOrganization',name:'Musliman Academy',url:siteUrl}}).replace(/</g,'\\u003c')}}/>}
+ {courseKey!=='quranReading'&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@type':'Course',name:copy.title,description:copy.intro,inLanguage:lang,url:`${siteUrl}/${lang}/${path}`,provider:organizationReference}).replace(/</g,'\\u003c')}}/>}
  <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(crumbs).replace(/</g,'\\u003c')}}/></div>;
 }

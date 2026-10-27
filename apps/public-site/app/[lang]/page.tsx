@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import LandingClient from '../landing-client';
 import { isLanguage, labels, languageAlternates, languages, localizedPath, siteUrl, socialImage } from '../../lib/catalog';
 import { loadMessages, openGraphLocales } from '../../lib/messages';
+import { brandName, jsonLdHtml, organizationId, websiteId, websiteJsonLd } from '../../lib/brand';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: { canonical: url, languages: languageAlternates('') },
     openGraph: {
       type: 'website',
-      siteName: 'Musliman Academy',
+      siteName: brandName,
       url,
       title,
       description,
@@ -37,14 +38,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function HomePage({ params }: Props) {
   const { lang, messages, url } = await resolve(params);
   const l = labels[lang];
-  const webPage = {
+  // `/` redirects here, so every localized homepage carries the same
+  // domain-level WebSite (one @id, name and URL), not a website per language.
+  const homeGraph = {
     '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    name: messages.seo.title,
-    description: messages.seo.description,
-    url,
-    inLanguage: lang,
-    isPartOf: { '@type': 'WebSite', name: 'Musliman Academy', url: siteUrl },
+    '@graph': [
+      websiteJsonLd,
+      {
+        '@type': 'WebPage',
+        '@id': `${url}#webpage`,
+        name: messages.seo.title,
+        description: messages.seo.description,
+        url,
+        inLanguage: lang,
+        isPartOf: { '@id': websiteId },
+        about: { '@id': organizationId },
+        publisher: { '@id': organizationId },
+      },
+    ],
   };
   return <>
     {/* English is bundled with the client; other languages travel with this page only. */}
@@ -52,6 +63,6 @@ export default async function HomePage({ params }: Props) {
     <nav style={{ padding: '24px', textAlign: 'center' }} aria-label={l[1]}>
       <Link href={localizedPath(lang, 'programs')}>{l[9]}</Link> · <Link href={localizedPath(lang, 'teachers')}>{l[2]}</Link>
     </nav>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPage).replace(/</g, '\\u003c') }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(homeGraph) }} />
   </>;
 }

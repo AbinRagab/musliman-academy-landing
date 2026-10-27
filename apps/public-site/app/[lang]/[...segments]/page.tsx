@@ -10,6 +10,7 @@ import { notFound } from 'next/navigation';
 import { languages, labels, text, courses, teachers, paths, languageAlternates, localizedPath, siteUrl, socialImage, direction } from '../../../lib/catalog';
 import type { Language } from '../../../lib/languages';
 import { openGraphLocales } from '../../../lib/messages';
+import { brandName } from '../../../lib/brand';
 import '../../catalog.css';
 type Props = { params: Promise<{lang:string; segments:string[]}> };
 export const dynamicParams = false;
@@ -32,7 +33,7 @@ export async function generateMetadata({params}:Props):Promise<Metadata> {
  const {lang,segments}=await params; const path=segments.join('/'); const page=resolve(lang,path); const url=`${siteUrl}/${lang}/${path}`;
  // Teacher profiles share their portrait; other pages keep the site-wide card.
  const images=page.profile?[{url:siteUrl+teacherPhotoPath(page.profile.teacher.id),alt:page.profile.ui.imageAlt}]:[socialImage];
- return {title:page.metaTitle,description:page.metaDescription,alternates:{canonical:url,languages:languageAlternates(path)},openGraph:{title:page.metaTitle,description:page.metaDescription,url,type:'website',locale:openGraphLocales[lang as Language],alternateLocale:languages.filter(other=>other!==lang).map(other=>openGraphLocales[other]),images},twitter:{card:page.profile?'summary':'summary_large_image',title:page.metaTitle,description:page.metaDescription,images}};
+ return {title:page.metaTitle,description:page.metaDescription,alternates:{canonical:url,languages:languageAlternates(path)},openGraph:{siteName:brandName,title:page.metaTitle,description:page.metaDescription,url,type:'website',locale:openGraphLocales[lang as Language],alternateLocale:languages.filter(other=>other!==lang).map(other=>openGraphLocales[other]),images},twitter:{card:page.profile?'summary':'summary_large_image',title:page.metaTitle,description:page.metaDescription,images}};
 }
 export default async function Page({params}:Props) {
  const {lang,segments}=await params;const path=segments.join('/');const p=resolve(lang,path);const l=labels[lang];
