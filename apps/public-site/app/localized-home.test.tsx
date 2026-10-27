@@ -14,6 +14,7 @@ import LandingClient from './landing-client';
 import RootLayout from './[lang]/layout';
 import { generateMetadata } from './[lang]/page';
 import { generateStaticParams as detailParams, generateMetadata as detailMetadata } from './[lang]/[...segments]/page';
+import robots from './robots';
 import sitemap from './sitemap';
 
 vi.mock('../../../src/shared/services/programsService', () => ({
@@ -170,6 +171,24 @@ describe('sitemap and detail routes', () => {
       expect(home[0].alternates?.languages).toEqual(languageAlternates(''));
     }
     expect(urls.some(url => url.includes('dashboard'))).toBe(false);
+  });
+
+  // A crawler blocked by robots.txt never sees the dashboard's noindex header,
+  // so the dashboard stays crawlable and the header keeps it out of results.
+  it('lets crawlers reach the noindexed dashboard and keeps the other rules', () => {
+    const { rules, sitemap: sitemapUrl } = robots();
+    const disallowed = [rules].flat().flatMap(rule => [rule.disallow ?? []].flat());
+    for (const path of ['/dashboard', '/dashboard/', '/dashboard/login', '/dashboard/admin/leads']) {
+      expect(disallowed.some(prefix => path.startsWith(prefix))).toBe(false);
+    }
+    expect(disallowed).toEqual(['/login', '/auth/']);
+    expect(sitemapUrl).toBe(`${siteUrl}/sitemap.xml`);
+    const routes: Array<{ src?: string; dest?: string; headers?: Record<string, string> }> = JSON.parse(readFileSync(`${process.cwd()}/vercel.json`, 'utf8')).routes;
+    for (const path of ['/dashboard', '/dashboard/login', '/dashboard/admin/leads']) {
+      const rule = routes.find(route => route.src && new RegExp(route.src).test(path))!;
+      expect(rule.dest).toBe('/index.html');
+      expect(rule.headers?.['X-Robots-Tag']).toBe('noindex, nofollow, noarchive');
+    }
   });
 
   it('keeps every localized program and teacher route', async () => {

@@ -90,4 +90,16 @@ describe('SEO infrastructure', () => {
 
     expect(indexHtml).not.toMatch(/<meta\s+name=["']keywords["']/i);
   });
+
+  // index.html is now only the dashboard entry point, so its initial HTML
+  // agrees with the X-Robots-Tag header before the app updates the tags.
+  it('marks the dashboard entry document noindex from the first byte', () => {
+    const indexHtml = readFileSync(resolve(root, 'index.html'), 'utf8');
+    for (const name of ['robots', 'googlebot']) {
+      const tags = [...indexHtml.matchAll(new RegExp(`<meta\\s+name="${name}"\\s+content="([^"]*)"`, 'g'))].map(match => match[1]);
+      expect(tags).toEqual(['noindex, nofollow, noarchive']);
+    }
+    expect(indexHtml).toContain('<link rel="canonical" href="https://www.muslimanacademy.com/dashboard/" />');
+    expect(indexHtml).not.toMatch(/content="index/);
+  });
 });

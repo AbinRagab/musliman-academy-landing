@@ -18,10 +18,13 @@
       content="Learn Quran, Arabic, Tajweed, Islamic Studies, and Quran reading online with qualified Egyptian teachers. Book a free trial class with Musliman Academy."
     />
     <meta name="author" content="Musliman Academy" />
-    <meta name="robots" content="index, follow" />
-    <meta name="googlebot" content="index, follow" />
+    <!-- This document is only served for /dashboard routes on the main domain;
+         the public pages come from the Next.js site. Match the X-Robots-Tag
+         header from the first byte, before the app updates the robots tag. -->
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="googlebot" content="noindex, nofollow, noarchive" />
     <meta name="theme-color" content="#0B1F3A" />
-    <link rel="canonical" href="https://www.muslimanacademy.com/" />
+    <link rel="canonical" href="https://www.muslimanacademy.com/dashboard/" />
     <link rel="preload" as="image" href="/assets/optimized/hero-bg.webp" type="image/webp" />
     <link rel="icon" href="/assets/favicon.ico" sizes="any" />
     <link
