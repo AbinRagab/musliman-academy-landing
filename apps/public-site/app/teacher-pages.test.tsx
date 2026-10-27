@@ -102,6 +102,8 @@ describe('teacher profile pages', () => {
     expect(metadata.title).toBe(profile.ui.metaTitle);
     expect(metadata.description).toBe(profile.ui.metaDescription);
     expect(String(metadata.title)).toContain(profile.name);
+    // The layout's title template adds the brand once.
+    expect(String(metadata.title)).not.toContain('Musliman Academy');
     expect(String(metadata.description)).toContain(profile.experience);
     expect(metadata.alternates?.canonical).toBe(url);
     expect(metadata.alternates?.languages).toEqual(languageAlternates(path));

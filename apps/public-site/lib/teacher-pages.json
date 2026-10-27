@@ -3,7 +3,7 @@
     "ui": {
       "role": "Quran, Tajweed & Islamic Studies teacher",
       "breadcrumbLabel": "Breadcrumb",
-      "metaTitle": "{{name}} – Quran, Tajweed & Islamic Studies Teacher | Musliman Academy",
+      "metaTitle": "{{name}} – Quran, Tajweed & Islamic Studies Teacher",
       "metaDescription": "Meet {{name}}, a Musliman Academy teacher for Quran, Tajweed and Islamic Studies, with lessons in Arabic and English. Experience: {{experience}}.",
       "imageAlt": "{{name}}, Musliman Academy teacher",
       "factsLabel": "Teaching profile",
@@ -48,7 +48,7 @@
     "ui": {
       "role": "تدريس القرآن والتجويد والدراسات الإسلامية",
       "breadcrumbLabel": "مسار التنقل",
-      "metaTitle": "{{name}} | القرآن والتجويد والدراسات الإسلامية | Musliman Academy",
+      "metaTitle": "{{name}} | القرآن والتجويد والدراسات الإسلامية",
       "metaDescription": "تعرّف على {{name}} من فريق التدريس في Musliman Academy: القرآن والتجويد والدراسات الإسلامية، بالعربية والإنجليزية. الخبرة: {{experience}}.",
       "imageAlt": "{{name}}، من فريق التدريس في Musliman Academy",
       "factsLabel": "معلومات التدريس",
@@ -93,7 +93,7 @@
     "ui": {
       "role": "Docente de Quran, Tajweed y estudios islámicos",
       "breadcrumbLabel": "Ruta de navegación",
-      "metaTitle": "{{name}} – Docente de Quran, Tajweed y estudios islámicos | Musliman Academy",
+      "metaTitle": "{{name}} – Docente de Quran, Tajweed y estudios islámicos",
       "metaDescription": "Conoce a {{name}}, docente de Musliman Academy de Quran, Tajweed y estudios islámicos, con clases en árabe e inglés. Experiencia: {{experience}}.",
       "imageAlt": "{{name}}, docente de Musliman Academy",
       "factsLabel": "Perfil docente",
@@ -138,7 +138,7 @@
     "ui": {
       "role": "Lehrkraft für Quran, Tajweed und islamische Studien",
       "breadcrumbLabel": "Brotkrümelnavigation",
-      "metaTitle": "{{name}} – Lehrkraft für Quran, Tajweed & islamische Studien | Musliman Academy",
+      "metaTitle": "{{name}} – Lehrkraft für Quran, Tajweed & islamische Studien",
       "metaDescription": "Lerne {{name}} kennen, Lehrkraft bei Musliman Academy für Quran, Tajweed und islamische Studien, mit Unterricht auf Arabisch und Englisch. Erfahrung: {{experience}}.",
       "imageAlt": "{{name}}, Lehrkraft bei Musliman Academy",
       "factsLabel": "Unterrichtsprofil",
@@ -183,7 +183,7 @@
     "ui": {
       "role": "Docente di Quran, Tajweed e studi islamici",
       "breadcrumbLabel": "Percorso di navigazione",
-      "metaTitle": "{{name}} – Docente di Quran, Tajweed e studi islamici | Musliman Academy",
+      "metaTitle": "{{name}} – Docente di Quran, Tajweed e studi islamici",
       "metaDescription": "Scopri {{name}}, docente di Musliman Academy per Quran, Tajweed e studi islamici, con lezioni in arabo e in inglese. Esperienza: {{experience}}.",
       "imageAlt": "{{name}}, docente di Musliman Academy",
       "factsLabel": "Profilo didattico",
@@ -228,7 +228,7 @@
     "ui": {
       "role": "قرآن، تجوید اور اسلامی علوم کی تدریس",
       "breadcrumbLabel": "نیویگیشن کا راستہ",
-      "metaTitle": "{{name}} | قرآن، تجوید اور اسلامی علوم | Musliman Academy",
+      "metaTitle": "{{name}} | قرآن، تجوید اور اسلامی علوم",
       "metaDescription": "Musliman Academy کی تدریسی ٹیم کے رکن {{name}} سے متعارف ہوں: قرآن، تجوید اور اسلامی علوم، عربی اور انگریزی میں۔ تجربہ: {{experience}}۔",
       "imageAlt": "{{name}}، Musliman Academy کی تدریسی ٹیم",
       "factsLabel": "تدریسی معلومات",
@@ -273,7 +273,7 @@
     "ui": {
       "role": "Quran, tecvid ve İslami ilimler öğretmeni",
       "breadcrumbLabel": "Sayfa yolu",
-      "metaTitle": "{{name}} – Quran, Tecvid ve İslami İlimler Öğretmeni | Musliman Academy",
+      "metaTitle": "{{name}} – Quran, Tecvid ve İslami İlimler Öğretmeni",
       "metaDescription": "Musliman Academy'de Quran, tecvid ve İslami ilimler dersleri veren {{name}} ile tanışın; dersler Arapça ve İngilizce. Deneyim: {{experience}}.",
       "imageAlt": "{{name}}, Musliman Academy öğretmeni",
       "factsLabel": "Öğretmenlik bilgileri",

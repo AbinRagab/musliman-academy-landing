@@ -98,6 +98,12 @@ describe('expanded program pages in every language', () => {
     expect(page.getAttribute('dir')).toBe(direction(lang));
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(copy.title);
+    // One main landmark holds the content, between the shared header and footer.
+    const main = screen.getByRole('main');
+    const header = container.querySelector('header.navbar');
+    expect(main.contains(screen.getByRole('heading', { level: 1 }))).toBe(true);
+    expect(header).not.toBeNull();
+    expect(main.contains(header)).toBe(false);
     expect(container.querySelector('.course-hero-image img')?.getAttribute('alt')).toBe(copy.imageAlt);
     for (const [question] of copy.faq) expect(page.textContent).toContain(question);
     for (const module of copy.curriculum!) expect(page.textContent).toContain(module.title);
