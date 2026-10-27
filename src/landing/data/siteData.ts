@@ -404,7 +404,7 @@ export const landingTeachers: LandingTeacher[] = [
   {
     id: 'fatimah-al-shazly',
     key: 'fatimahAlShazly',
-    fullName: 'Fatimah Al_Shazly',
+    fullName: 'Fatimah Al Shazly',
     specialization: "Qur'an, Tajweed, Islamic Studies",
     photo: fatimahAlShazlyPhoto,
     photoPosition: 'center 28%',

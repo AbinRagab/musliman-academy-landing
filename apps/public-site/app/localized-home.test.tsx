@@ -6,6 +6,7 @@ import en from '../../../src/i18n/locales/en.json';
 import globalI18n from '../../../src/i18n';
 import { languages, languageAlternates, siteUrl } from '../lib/catalog';
 import { loadMessages } from '../lib/messages';
+import { courseContent } from '../lib/course-content';
 import { proxy } from '../proxy';
 import CourseChrome from './course-chrome';
 import LandingClient from './landing-client';
@@ -156,5 +157,29 @@ describe('sitemap and detail routes', () => {
     const metadata = await detailMetadata({ params: Promise.resolve({ lang: 'ar', segments: ['programs', 'quran-memorization'] }) });
     expect(metadata.alternates?.canonical).toBe(`${siteUrl}/ar/programs/quran-memorization`);
     expect(metadata.alternates?.languages).toEqual(languageAlternates('programs/quran-memorization'));
+  });
+});
+
+describe('confirmed academy statements', () => {
+  it.each(languages)('/%s states the Teacher Training certificate without unconfirmed conditions', async lang => {
+    const answer = courseContent('teacherTraining', lang)!.faq[6][1];
+    expect(answer).toContain('Musliman Academy');
+    const messages = lang === 'en' ? en : await loadMessages(lang);
+    expect(messages.training.badges.certificate).toBeTruthy();
+    if (lang === 'en') {
+      expect(answer).toContain('Certificate of Completion issued by Musliman Academy');
+      expect(answer).not.toMatch(/accredit|recogni[sz]ed|employment|guarantee|ask the team/i);
+    }
+  });
+
+  it('keeps the corrected Arabic, Urdu and display-name wording', async () => {
+    const [ar, ur] = await Promise.all([loadMessages('ar'), loadMessages('ur')]);
+    expect(ar.hero.description).toContain('خريجي الأزهر');
+    expect(ar.whyChoose.items.qualifiedTeachers.description).toContain('معتمدين');
+    expect(ur.hero.description).toContain('الازہر');
+    // Urdu now matches the English source: Islamic Studies, not Islamic values.
+    expect(ur.training.description).toContain('اسلامی علوم');
+    expect(ur.training.description).not.toContain('اقدار');
+    for (const lang of languages) expect(JSON.stringify(await loadMessages(lang))).not.toContain('Al_Shazly');
   });
 });

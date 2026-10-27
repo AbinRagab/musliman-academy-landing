@@ -1779,7 +1779,7 @@
         ["Is the training online?", "Yes. Training takes place online, and you can choose a preferred training time in the form."],
         ["What happens after I submit the form?", "Our team reviews your request and contacts you to discuss your background, goals and the suitable training path."],
         ["How long is the training?", "Duration and schedule depend on the training path agreed with you. The team will share the details when they contact you."],
-        ["Will I receive a certificate or Ijazah?", "This is a teaching-skills program, not an Ijazah program. Please ask the team about certificate details when they contact you so you receive current, accurate information."],
+        ["Will I receive a certificate or Ijazah?", "The Teacher Training program includes a Certificate of Completion issued by Musliman Academy. This is a teaching-skills program, not an Ijazah program, so the certificate is not an Ijazah."],
         ["Does the training lead to a teaching position?", "The training focuses on developing your teaching skills and does not guarantee employment. If you are interested in teaching with Musliman Academy, choose that as your training goal in the form and the team can discuss it with you."]
       ]
     },
@@ -1862,7 +1862,7 @@
         ["هل التدريب أونلاين؟", "نعم. يجري التدريب أونلاين، ويمكنك اختيار وقت التدريب المفضّل في النموذج."],
         ["ماذا يحدث بعد إرسال النموذج؟", "يراجع فريقنا طلبك ويتواصل معك لمناقشة خلفيتك وأهدافك والمسار التدريبي المناسب."],
         ["ما مدة التدريب؟", "تعتمد المدة والمواعيد على المسار التدريبي المتفق عليه معك، وسيشاركك الفريق التفاصيل عند التواصل معك."],
-        ["هل سأحصل على شهادة أو إجازة؟", "هذا برنامج لتطوير مهارات التدريس، وليس برنامج إجازة. يُرجى سؤال الفريق عن تفاصيل الشهادة عند تواصله معك، لتحصل على معلومات حديثة ودقيقة."],
+        ["هل سأحصل على شهادة أو إجازة؟", "يتضمن برنامج تدريب المعلمين شهادة إتمام تصدرها Musliman Academy. هذا برنامج لتطوير مهارات التدريس، وليس برنامج إجازة، لذلك فالشهادة ليست إجازة."],
         ["هل يؤدي التدريب إلى وظيفة في التدريس؟", "يركّز التدريب على تطوير مهاراتك في التدريس ولا يضمن التوظيف. وإذا كنت مهتمًا بالتدريس مع Musliman Academy، فاختر ذلك هدفًا للتدريب في النموذج، ويمكن للفريق مناقشته معك."]
       ]
     },
@@ -1945,7 +1945,7 @@
         ["¿La formación es online?", "Sí. La formación es online y puedes elegir tu horario preferido en el formulario."],
         ["¿Qué ocurre después de enviar el formulario?", "Nuestro equipo revisa tu solicitud y se pone en contacto contigo para hablar de tu experiencia, tus objetivos y el itinerario de formación adecuado."],
         ["¿Cuánto dura la formación?", "La duración y el horario dependen del itinerario acordado contigo. El equipo te dará los detalles cuando se ponga en contacto contigo."],
-        ["¿Recibiré un certificado o una Ijazah?", "Es un programa de desarrollo de habilidades docentes, no un programa de Ijazah. Pregunta al equipo por los detalles del certificado cuando se ponga en contacto contigo, para recibir información actualizada y exacta."],
+        ["¿Recibiré un certificado o una Ijazah?", "El programa de formación docente incluye un certificado de finalización emitido por Musliman Academy. Es un programa de desarrollo de habilidades docentes, no un programa de Ijazah, por lo que el certificado no es una Ijazah."],
         ["¿La formación lleva a un puesto de profesor?", "La formación se centra en desarrollar tus habilidades docentes y no garantiza un empleo. Si te interesa enseñar en Musliman Academy, elígelo como objetivo de formación en el formulario y el equipo podrá hablarlo contigo."]
       ]
     },
@@ -2028,7 +2028,7 @@
         ["Findet das Training online statt?", "Ja. Das Training findet online statt, und du kannst im Formular eine bevorzugte Trainingszeit wählen."],
         ["Was passiert, nachdem ich das Formular abgeschickt habe?", "Unser Team prüft deine Anfrage und meldet sich, um deinen Hintergrund, deine Ziele und den passenden Trainingsweg zu besprechen."],
         ["Wie lange dauert das Training?", "Dauer und Zeitplan hängen vom Trainingsweg ab, der mit dir vereinbart wird. Das Team teilt dir die Einzelheiten mit, wenn es sich bei dir meldet."],
-        ["Erhalte ich ein Zertifikat oder eine Ijazah?", "Dies ist ein Programm zur Entwicklung von Unterrichtskompetenzen, kein Ijazah-Programm. Frag das Team nach Einzelheiten zu einem Zertifikat, wenn es sich bei dir meldet, damit du aktuelle und genaue Informationen erhältst."],
+        ["Erhalte ich ein Zertifikat oder eine Ijazah?", "Das Lehrertraining umfasst ein Abschlusszertifikat, das von Musliman Academy ausgestellt wird. Es ist ein Programm zur Entwicklung von Unterrichtskompetenzen, kein Ijazah-Programm; das Zertifikat ist daher keine Ijazah."],
         ["Führt das Training zu einer Lehrtätigkeit?", "Das Training konzentriert sich auf die Entwicklung deiner Unterrichtskompetenzen und garantiert keine Anstellung. Wenn du daran interessiert bist, bei Musliman Academy zu unterrichten, wähle das im Formular als Trainingsziel, und das Team kann es mit dir besprechen."]
       ]
     },
@@ -2111,7 +2111,7 @@
         ["La formazione è online?", "Sì. La formazione si svolge online e puoi scegliere l'orario che preferisci nel modulo."],
         ["Cosa succede dopo l'invio del modulo?", "Il nostro team esamina la tua richiesta e ti contatta per parlare della tua esperienza, dei tuoi obiettivi e del percorso formativo adatto."],
         ["Quanto dura la formazione?", "Durata e orari dipendono dal percorso formativo concordato con te. Il team ti fornirà i dettagli quando ti contatterà."],
-        ["Riceverò un attestato o una Ijazah?", "Si tratta di un programma di sviluppo delle competenze didattiche, non di un programma di Ijazah. Chiedi al team i dettagli sull'attestato quando ti contatterà, così riceverai informazioni aggiornate e accurate."],
+        ["Riceverò un attestato o una Ijazah?", "Il programma di formazione per insegnanti include un attestato di completamento rilasciato da Musliman Academy. Si tratta di un programma di sviluppo delle competenze didattiche, non di un programma di Ijazah, quindi l'attestato non è una Ijazah."],
         ["La formazione porta a un incarico di insegnamento?", "La formazione si concentra sullo sviluppo delle tue competenze didattiche e non garantisce un impiego. Se ti interessa insegnare con Musliman Academy, sceglilo come obiettivo formativo nel modulo e il team potrà parlarne con te."]
       ]
     },
@@ -2194,7 +2194,7 @@
         ["کیا تربیت آن لائن ہے؟", "جی ہاں۔ تربیت آن لائن ہوتی ہے، اور آپ فارم میں تربیت کا پسندیدہ وقت منتخب کر سکتے ہیں۔"],
         ["فارم جمع کرانے کے بعد کیا ہوتا ہے؟", "ہماری ٹیم آپ کی درخواست دیکھتی ہے اور آپ کے پس منظر، اہداف اور مناسب تربیتی راستے پر بات کرنے کے لیے رابطہ کرتی ہے۔"],
         ["تربیت کتنے عرصے کی ہے؟", "مدت اور اوقات اس تربیتی راستے پر منحصر ہیں جو آپ کے ساتھ طے ہو۔ رابطے کے وقت ٹیم آپ کو تفصیلات بتائے گی۔"],
-        ["کیا مجھے سرٹیفکیٹ یا اجازہ ملے گا؟", "یہ تدریسی مہارتوں کا پروگرام ہے، اجازہ کا پروگرام نہیں۔ تازہ اور درست معلومات کے لیے ٹیم کے رابطہ کرنے پر سرٹیفکیٹ کی تفصیلات ان سے پوچھ لیں۔"],
+        ["کیا مجھے سرٹیفکیٹ یا اجازہ ملے گا؟", "ٹیچر ٹریننگ پروگرام میں Musliman Academy کی طرف سے جاری کردہ تکمیل کا سرٹیفکیٹ شامل ہے۔ یہ تدریسی مہارتوں کا پروگرام ہے، اجازہ کا پروگرام نہیں، اس لیے یہ سرٹیفکیٹ اجازہ نہیں ہے۔"],
         ["کیا تربیت کے بعد تدریس کی ملازمت ملے گی؟", "تربیت آپ کی تدریسی مہارتیں نکھارنے پر مرکوز ہے اور ملازمت کی ضمانت نہیں دیتی۔ اگر آپ Musliman Academy کے ساتھ پڑھانے میں دلچسپی رکھتے ہیں تو فارم میں اسے تربیت کے مقصد کے طور پر منتخب کریں، ٹیم اس پر آپ سے بات کر سکتی ہے۔"]
       ]
     },
@@ -2277,7 +2277,7 @@
         ["Eğitim online mı?", "Evet. Eğitim online yapılır ve formda tercih ettiğiniz eğitim saatini seçebilirsiniz."],
         ["Formu gönderdikten sonra ne olur?", "Ekibimiz talebinizi inceler ve geçmişinizi, hedeflerinizi ve size uygun eğitim yolunu konuşmak için sizinle iletişime geçer."],
         ["Eğitim ne kadar sürer?", "Süre ve program, sizinle kararlaştırılan eğitim yoluna bağlıdır. Ekip sizinle iletişime geçtiğinde ayrıntıları paylaşacaktır."],
-        ["Sertifika veya icazet alacak mıyım?", "Bu bir öğretim becerileri programıdır, icazet programı değildir. Güncel ve doğru bilgi almak için ekip sizinle iletişime geçtiğinde sertifika ayrıntılarını sorun."],
+        ["Sertifika veya icazet alacak mıyım?", "Öğretmen eğitimi programı, Musliman Academy tarafından verilen bir tamamlama belgesi içerir. Bu bir öğretim becerileri programıdır, icazet programı değildir; bu nedenle belge bir icazet değildir."],
         ["Eğitim bir öğretmenlik pozisyonuna yol açar mı?", "Eğitim öğretim becerilerinizi geliştirmeye odaklanır ve iş garantisi vermez. Musliman Academy’de öğretmenlik yapmakla ilgileniyorsanız bunu formda eğitim hedefi olarak seçin; ekip bunu sizinle konuşabilir."]
       ]
     }

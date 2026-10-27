@@ -374,7 +374,7 @@
       "progress": "Öğrenci takibi ve ilerleme değerlendirmesi"
     },
     "badges": {
-      "certificate": "Katılım belgesi",
+      "certificate": "Tamamlama belgesi",
       "mentorship": "Uygulamalı eğitim ve mentorluk",
       "schedule": "Esnek online program",
       "impact": "Öğretmen olarak etkinizi artırın"
@@ -446,7 +446,7 @@
         "experience": "3+ yıl"
       },
       "fatimahAlShazly": {
-        "name": "Fatimah Al_Shazly",
+        "name": "Fatimah Al Shazly",
         "specialization": "Quran, Tajweed, İslami ilimler",
         "experience": "5+ yıl"
       },
