@@ -1,37 +1,110 @@
 {
   "en": {
-    "title": "Learn to Read the Qur’an with Confidence",
-    "intro": "Build your Qur’an reading skills through personalized online lessons. Learn at your pace with clear explanations, guided practice, and corrections tailored to your level.",
+    "title": "Learn to Read the Quran Online with Confidence",
+    "intro": "Read Quranic words and verses more accurately and fluently through live, personalized online lessons. Your teacher guides your practice and provides corrections suited to your level, helping you build confidence step by step.",
+    "metaTitle": "Learn to Read Quran Online",
+    "metaDescription": "Build confident Quran reading with qualified Egyptian teachers in live one-to-one or small-group lessons. Learn at your pace and book a free trial.",
     "audienceTitle": "Who Is This Program For?",
     "audience": [
       "Beginners starting their Qur’an reading journey.",
-      "Learners who recognize Arabic letters but need help joining them into words.",
-      "Children and adults who want to improve their reading accuracy."
+      "Learners who recognize Arabic letters but need help reading words and verses.",
+      "Children and adults who want to improve their reading accuracy and fluency."
     ],
     "learnTitle": "What Will You Learn?",
     "learn": [
-      "Recognizing Arabic letters and their different forms.",
-      "Reading vowel marks, Sukoon, Shaddah, and Tanween.",
-      "Connecting letters and reading words and verses.",
-      "Improving pronunciation through guided practice."
+      "Reading vowel marks, Sukoon, Shaddah, and Tanween as they appear in Quranic words.",
+      "Connecting letters to read Quranic words and verses accurately.",
+      "Building reading fluency through guided practice with your teacher.",
+      "Improving pronunciation with corrections suited to your level."
     ],
+    "curriculum": [
+      {
+        "title": "Reading marks in Quranic words",
+        "topics": [
+          "Understand how short vowels, Sukoon, Shaddah, and Tanween guide the reading of Quranic words, with examples and guided practice."
+        ]
+      },
+      {
+        "title": "Connecting letters into words and verses",
+        "topics": [
+          "Practise recognizing connected letter forms and combining sounds to read Quranic words and verses accurately."
+        ]
+      },
+      {
+        "title": "Developing reading fluency",
+        "topics": [
+          "Build a steadier reading flow through guided practice, with attention to accuracy rather than rushing."
+        ]
+      },
+      {
+        "title": "Improving pronunciation",
+        "topics": [
+          "Receive live corrections on pronunciation and practise the areas that need more attention."
+        ]
+      }
+    ],
+    "guide": {
+      "title": "Which Quran program should you start with?",
+      "text": "Your starting point depends on your current reading skills and learning goals. During the free trial, your teacher assesses your level and recommends a suitable program.",
+      "items": [
+        {
+          "title": "Tarteel Qaidah",
+          "text": "Foundational work on Arabic letters, vowel marks, and combining sounds for learners who need to build the basics first.",
+          "slug": "tarteel-qaidah"
+        },
+        {
+          "title": "Quran Reading",
+          "text": "Guided practice reading Quranic words and verses, improving accuracy, pronunciation, and fluency with corrections suited to your level."
+        },
+        {
+          "title": "Tajweed",
+          "text": "Focused study of recitation rules and how to apply them while reading the Quran.",
+          "slug": "tajweed"
+        },
+        {
+          "title": "Quran & Tajweed",
+          "text": "A combined learning path that brings Quran reading practice and Tajweed learning together in one plan.",
+          "slug": "quran-tajweed"
+        }
+      ]
+    },
     "requirementsTitle": "Do You Need Previous Experience?",
-    "requirements": "You don’t need to read fluently before starting. During your free trial, your teacher will assess your level. If you need a foundation in Arabic letters and sounds, we’ll help you choose the appropriate starting program.",
+    "requirements": "You do not need to read fluently before booking a free trial. Your teacher will assess your current level and recommend a suitable starting program. If you need foundational work on Arabic letters and sounds, Tarteel Qaidah may be the recommended first step.",
     "lessonsTitle": "How Do Lessons Work?",
-    "lessons": "Your teacher introduces a reading skill, demonstrates it, and guides you through practice. You receive corrections during the lesson and revisit areas that need more attention.",
+    "lessons": "Learn through live one-to-one or small-group lessons. Your teacher introduces a reading skill, demonstrates it, and guides your practice. You receive corrections during the lesson and revisit areas that need more attention.",
     "faqTitle": "Frequently Asked Questions",
     "faq": [
       [
-        "Is this an Arabic conversation course?",
-        "This program focuses on reading the Qur’an. For broader Arabic language skills, explore our Arabic Language program."
+        "Can I join if I cannot read Arabic yet?",
+        "Yes, you can book a free trial. Your teacher will assess your current level and recommend a suitable starting program. If you need to begin with Arabic letters, vowel marks, and combining sounds, Tarteel Qaidah may be the recommended first step."
       ],
       [
-        "Can my child join?",
-        "Yes. Lessons are adapted to the learner’s age and current level."
+        "What is the difference between Quran Reading and Tajweed?",
+        "Quran Reading focuses on reading Quranic words and verses accurately and fluently. Tajweed focuses on understanding recitation rules and applying them. The Quran & Tajweed program combines reading practice and Tajweed learning in one plan."
+      ],
+      [
+        "Is this suitable for children and adults?",
+        "Yes. Lessons are adapted to the learner’s age, current level, and learning needs."
+      ],
+      [
+        "How do the live lessons work?",
+        "Lessons take place online, either one-to-one or in a small group. Your teacher demonstrates reading skills, listens as you practise, and provides corrections suited to your level."
+      ],
+      [
+        "What reading skills does this program focus on?",
+        "The program focuses on reading Quranic words and verses, improving pronunciation, and developing accuracy and fluency through guided practice."
+      ],
+      [
+        "Is this an Arabic conversation course?",
+        "This program focuses on reading the Quran. For broader Arabic language skills, including reading, writing, listening, and speaking, explore our Arabic Language program."
       ],
       [
         "How long does it take to improve?",
-        "Progress depends on your starting level, attendance, and practice. Your teacher will guide you at a suitable pace."
+        "Progress depends on your starting level, attendance, and practice. Your teacher will guide you at a suitable pace and help you focus on the areas that need improvement."
+      ],
+      [
+        "How do I choose the right starting program?",
+        "Book a free trial and tell us about your learning goals. Your teacher will assess your level and recommend whether Tarteel Qaidah, Quran Reading, Tajweed, or Quran & Tajweed is a suitable starting point."
       ]
     ]
   },
